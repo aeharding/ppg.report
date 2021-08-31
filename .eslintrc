@@ -1,0 +1,13 @@
+{
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    // use @emotion/styled/macro and @emotion/react/macro for better debugging
+    // (will add the component name to the css class in dev)
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": ["@emotion/styled", "@emotion/react"]
+      }
+    ]
+  }
+}
