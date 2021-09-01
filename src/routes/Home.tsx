@@ -30,7 +30,6 @@ export default function Home() {
       <Location />
       <Wind />
       {renderHome()}
-      <Loading />
     </>
   );
 }
