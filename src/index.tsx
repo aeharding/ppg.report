@@ -40,6 +40,12 @@ const globalStyles = css`
 
   a {
     color: inherit;
+
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 

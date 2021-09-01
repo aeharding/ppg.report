@@ -4,12 +4,12 @@ import { AppDispatch } from "../../store";
 import Rap from "../../models/Rap";
 import * as rapidRefresh from "../../services/rapidRefresh";
 
-type RapResult =
+export type RapResult =
   // component has requested a book, to be batched in next bulk request
   | "pending"
 
-  // the book (finished resolving)
-  | Rap
+  // the Rap by hour (finished resolving)
+  | Rap[]
 
   // API request failed
   | "failed";
@@ -46,7 +46,7 @@ export const rapReducer = createSlice({
     /**
      * @param action Action containing payload as the Rap
      */
-    rapReceived: (state, action: PayloadAction<{ id: string; rap: Rap }>) => {
+    rapReceived: (state, action: PayloadAction<{ id: string; rap: Rap[] }>) => {
       if (state.rapByLocation[action.payload.id] === "pending") {
         state.rapByLocation[action.payload.id] = action.payload.rap;
       }
@@ -71,7 +71,7 @@ export const getRap =
 
     try {
       const rap = await rapidRefresh.getRap(lat, lon);
-      console.log("rap", rap);
+
       dispatch(rapReceived({ id: latLonToId(lat, lon), rap }));
     } catch (e) {
       dispatch(rapFailed(latLonToId(lat, lon)));

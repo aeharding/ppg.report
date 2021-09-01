@@ -8,6 +8,7 @@ const LogoContainer = styled.span`
 
   svg {
     width: 1.5em;
+    height: 1em;
     transform: scaleX(-1);
     margin-right: 0.6em;
   }
@@ -20,6 +21,7 @@ const Text = styled.div`
 
 const Title = styled.h1`
   display: flex;
+  align-items: center;
   margin: 0;
 `;
 
@@ -35,7 +37,7 @@ export default function Logo() {
           <Icon />
           PPG.report
         </Title>
-        <Aside>Wind report for Paramotorists</Aside>
+        <Aside>Wind report for Paramotor Pilots</Aside>
       </Text>
     </LogoContainer>
   );

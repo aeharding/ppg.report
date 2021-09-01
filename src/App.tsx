@@ -5,14 +5,12 @@ import { createMuiTheme } from "./theme";
 import Header from "./header/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./Routes";
-
-export const maxBodyWidth = "975px";
+import HeaderRoutes from "./HeaderRoutes";
 
 const AppContainer = styled.div`
   flex: 1;
 
   width: 100%;
-  max-width: ${maxBodyWidth};
   margin: 0 auto;
 
   display: flex;
@@ -41,7 +39,9 @@ function App() {
       <Router>
         <AppContainer>
           <AppContents>
-            <Header />
+            <Header>
+              <HeaderRoutes />
+            </Header>
             <Main>
               <Routes />
             </Main>

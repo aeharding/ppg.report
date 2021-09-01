@@ -1,25 +1,24 @@
 import styled from "@emotion/styled/macro";
+import { Link } from "react-router-dom";
 
 const FancyFooter = styled.footer`
-  margin: 1em;
+  padding: 1em;
   text-align: center;
   color: var(--softText);
 
-  transition: color 100ms ease-out;
-
-  &:hover {
-    color: inherit;
+  a:hover {
+    color: var(--text);
   }
+`;
+
+const Warning = styled.span`
+  color: yellow;
 `;
 
 export default function Footer() {
   return (
     <FancyFooter>
-      👷‍♂️ by{" "}
-      <a href="https://harding.dev" target="_blank" rel="noreferrer noopener">
-        Alex
-      </a>{" "}
-      for 🪂 PPG Pilots — Powered by{" "}
+      Powered by{" "}
       <a
         href="https://rucsoundings.noaa.gov/"
         target="_blank"
@@ -27,7 +26,8 @@ export default function Footer() {
       >
         NOAA
       </a>{" "}
-      — Privacy
+      — <Link to="/terms">Terms</Link> —{" "}
+      <Warning>⚠️ Warning! Fly at your own risk.</Warning>
     </FancyFooter>
   );
 }
