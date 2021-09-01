@@ -2,7 +2,7 @@ import styled from "@emotion/styled/macro";
 import Rap from "../../models/Rap";
 import Hour from "./Hour";
 
-const minHourWidth = 400;
+const minHourWidth = 350;
 
 const Hours = styled.div`
   display: flex;
@@ -59,6 +59,8 @@ const HourContainer = styled.div`
 
 const StyledHour = styled(Hour)`
   margin-left: 1em;
+
+  width: calc(100vw - 4em);
 
   ${() => {
     let css = "";

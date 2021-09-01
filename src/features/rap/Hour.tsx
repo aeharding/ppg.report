@@ -31,7 +31,7 @@ const Header = styled.div`
 const HourContainer = styled.h3`
   font-size: 1.6em;
   margin: 0 auto;
-  font-weight: 100;
+  font-weight: 200;
 
   sup {
     font-size: 0.6em;

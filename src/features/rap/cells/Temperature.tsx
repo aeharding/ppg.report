@@ -4,7 +4,7 @@ import { Aside } from "./Height";
 
 const colorScale = chroma
   .scale(["blue", "white", "white", "yellow", "red"])
-  .domain([25, 61, 82, 87, 95]);
+  .domain([25, 73, 82, 87, 95]);
 
 const TemperatureContainer = styled.div<{ temperature: number }>`
   color: ${({ temperature }) => colorScale(temperature).css()};
