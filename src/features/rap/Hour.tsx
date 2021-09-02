@@ -8,7 +8,9 @@ import WindSpeed from "./cells/WindSpeed";
 import CinCape, { headerText } from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
-import { format, subDays } from "date-fns";
+import startOfTomorrow from "date-fns/startOfTomorrow";
+import subDays from "date-fns/subDays";
+import format from "date-fns/format";
 
 const Column = styled.div`
   position: relative;
@@ -103,7 +105,7 @@ export default function Hour({ rap, ...rest }: HourProps) {
       <Header>
         <HourContainer>
           {format(new Date(rap.date), "h:mmaaaaa")}
-          {new Date(rap.date).getDate() !== new Date().getDate() && (
+          {new Date(rap.date).getTime() >= startOfTomorrow().getTime() && (
             <sup>+1</sup>
           )}
         </HourContainer>

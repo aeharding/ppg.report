@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import SunCalc from "suncalc";
-import { format } from "date-fns";
 import styled from "@emotion/styled/macro";
 import ReverseLocation from "../features/geocode/ReverseLocation";
+import format from "date-fns/format";
 
 const Icon = styled(FontAwesomeIcon)`
   && {
