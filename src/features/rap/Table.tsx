@@ -1,16 +1,15 @@
 import styled from "@emotion/styled/macro";
 import Rap from "../../models/Rap";
 import Hour from "./Hour";
+import DragToScroll from "./DragToScroll";
 
 const minHourWidth = 350;
 
-const Hours = styled.div`
+const Hours = styled(DragToScroll)`
   display: flex;
 
-  scroll-snap-type: x mandatory;
   overflow: auto;
   min-height: 0;
-  cursor: grab;
 
   ::-webkit-scrollbar {
     width: 8px;
