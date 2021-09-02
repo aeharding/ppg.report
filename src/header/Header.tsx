@@ -2,12 +2,6 @@ import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
-const StyledLink = styled(Link)`
-  &:hover {
-    text-decoration: none;
-  }
-`;
-
 const HeaderContainer = styled.div`
   width: 100%;
   max-width: 975px;
@@ -15,10 +9,22 @@ const HeaderContainer = styled.div`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    justify-content: center;
+  }
 `;
 
-const Aside = styled.aside`
-  margin-left: auto;
+const StyledLink = styled(Link)`
+  &:hover {
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    margin-bottom: 1rem;
+  }
 `;
 
 interface HeaderProps {
@@ -32,7 +38,7 @@ export default function Header({ children }: HeaderProps) {
         <Logo />
       </StyledLink>
 
-      <Aside>{children}</Aside>
+      <aside>{children}</aside>
     </HeaderContainer>
   );
 }

@@ -18,15 +18,14 @@ const Warning = styled.span`
 export default function Footer() {
   return (
     <FancyFooter>
-      Powered by{" "}
       <a
-        href="https://rucsoundings.noaa.gov/"
+        href="https://github.com/aeharding/ppg.report"
         target="_blank"
-        rel="noreferrer noopener"
+        rel="noopener noreferrer"
       >
-        NOAA
+        ⭐️ on Github
       </a>{" "}
-      — <Link to="/terms">Terms</Link> —{" "}
+      — <Link to="/terms">Terms &amp; Privacy</Link> —{" "}
       <Warning>⚠️ Warning! Fly at your own risk.</Warning>
     </FancyFooter>
   );

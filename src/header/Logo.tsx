@@ -37,7 +37,7 @@ export default function Logo() {
           <Icon />
           PPG.report
         </Title>
-        <Aside>Wind report for Paramotor Pilots</Aside>
+        <Aside>Weather report for Paramotor Pilots</Aside>
       </Text>
     </LogoContainer>
   );

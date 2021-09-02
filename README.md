@@ -1,6 +1,10 @@
+```diff
+- ⚠️ Warning! Fly at your own risk.
+```
+
 # [🪂 PPG.report](https://ppg.report)
 
-Wind report tailored for paramotor pilots. Uses the [NOAA Rapid Refresh API](https://rucsoundings.noaa.gov/).
+Weather report tailored for paramotor pilots. Uses the [NOAA rapid refresh Op40 analysis](https://rucsoundings.noaa.gov/).
 
 ![Screenshot of PPG.report website](preview.png)
 

@@ -2,7 +2,8 @@ import styled from "@emotion/styled/macro";
 
 export const Aside = styled.aside`
   display: inline;
-  opacity: 0.3;
+  opacity: 0.45;
+  font-size: 0.9em;
 `;
 
 interface HeightProps {

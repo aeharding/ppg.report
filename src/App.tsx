@@ -42,6 +42,7 @@ function App() {
             <Header>
               <HeaderRoutes />
             </Header>
+
             <Main>
               <Routes />
             </Main>

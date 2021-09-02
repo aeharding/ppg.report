@@ -9,6 +9,7 @@ import { RouteComponentProps } from "react-router-dom";
 import SunCalc from "suncalc";
 import { format } from "date-fns";
 import styled from "@emotion/styled/macro";
+import ReverseLocation from "../features/geocode/ReverseLocation";
 
 const Icon = styled(FontAwesomeIcon)`
   && {
@@ -18,7 +19,7 @@ const Icon = styled(FontAwesomeIcon)`
 
 const SunLine = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 
 interface ReportHeaderProps
@@ -27,28 +28,26 @@ interface ReportHeaderProps
 export default function ReportHeader(props: ReportHeaderProps) {
   const { lat, lon } = props.match.params;
 
-  const [times] = useState(SunCalc.getTimes(new Date(new Date()), +lat, +lon));
+  const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
 
   return (
     <>
       <Icon icon={faMapMarkerAlt} />{" "}
       <a
-        href={`https://duckduckgo.com/?q=${encodeURIComponent(
-          `${lat}, ${lon}`
-        )}&iaxm=maps`}
+        href={`http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=12&layers=M`}
         target="_blank"
         rel="noreferrer noopener"
       >
-        {lat}, {lon}
+        <ReverseLocation lat={+lat} lon={+lon} />
       </a>
       <br />
       <SunLine>
         <span>
-          <Icon icon={faSunset} /> {format(times.sunset, "h:mm")}
+          <Icon icon={faSunset} /> {format(times.sunsetStart, "h:mmaaaaa")}
         </span>
         &nbsp;&nbsp;
         <span>
-          <Icon icon={faSunrise} /> {format(times.sunrise, "h:mm")}
+          <Icon icon={faSunrise} /> {format(times.sunriseEnd, "h:mmaaaaa")}
         </span>
       </SunLine>
     </>

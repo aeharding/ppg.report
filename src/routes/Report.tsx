@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { getRap } from "../features/rap/rapSlice";
 import Table from "../features/rap/Table";
-import Wind from "../features/wind/Wind";
 import { useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 
@@ -15,13 +14,12 @@ export default function Report(props: ReportProps) {
 
   const dispatch = useDispatch();
   const rap = useAppSelector(
-    (state) => state.rap.rapByLocation[`${lat},${lon}`]
+    (state) => state.rap.rapByLocation[`${+lat},${+lon}`]
   );
 
   useEffect(() => {
     dispatch(getRap(+lat, +lon));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, lat, lon]);
 
   switch (rap) {
     case "pending":
@@ -30,11 +28,6 @@ export default function Report(props: ReportProps) {
     case "failed":
       return <>The request failed.</>;
     default:
-      return (
-        <>
-          <Wind />
-          <Table raps={rap} />
-        </>
-      );
+      return <Table raps={rap} />;
   }
 }

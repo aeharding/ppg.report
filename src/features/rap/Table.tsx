@@ -10,6 +10,7 @@ const Hours = styled.div`
   scroll-snap-type: x mandatory;
   overflow: auto;
   min-height: 0;
+  cursor: grab;
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -49,7 +50,7 @@ const HourContainer = styled.div`
     padding-left: 2em;
   }
   &:last-of-type {
-    padding-right: 2em;
+    padding-right: 1em;
 
     > div {
       margin-right: 1em;

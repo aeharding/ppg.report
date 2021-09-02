@@ -62,13 +62,14 @@ export const { locationLoading, locationReceived, locationFailed } =
   locationReducer.actions;
 
 export const getLocation = () => async (dispatch: AppDispatch) => {
-  dispatch(locationLoading());
+  await dispatch(locationLoading());
 
   try {
     const position = await getPosition();
-    dispatch(locationReceived(position));
+    await dispatch(locationReceived(position));
+    return position;
   } catch (e: unknown) {
-    dispatch(locationFailed(e));
+    await dispatch(locationFailed(e));
     throw e;
   }
 };

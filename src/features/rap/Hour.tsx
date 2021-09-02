@@ -16,7 +16,6 @@ const Column = styled.div`
 
 const Container = styled.div`
   border-radius: 1em;
-  backdrop-filter: blur(8px);
   padding: 0.75em 0;
 
   position: relative;
@@ -25,13 +24,14 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: flex-end;
+  justify-content: space-around;
   margin: 0 1em;
 `;
 
 const HourContainer = styled.h3`
   font-size: 1.6em;
-  margin: 0 auto;
   font-weight: 200;
+  margin: 0;
 
   sup {
     font-size: 0.6em;
@@ -43,6 +43,7 @@ const HourContainer = styled.h3`
 const Table = styled.table`
   width: 100%;
   text-align: center;
+  overflow: hidden;
 
   th {
     ${headerText}
@@ -82,17 +83,17 @@ export default function Hour({ rap, ...rest }: HourProps) {
       yesterdayTimes.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
       yesterdayTimes.sunrise.getTime() + 4 * 60 * 60 * 1000,
 
+      yesterdayTimes.sunset.getTime() - 4.5 * 60 * 60 * 1000,
       yesterdayTimes.sunset.getTime() - 4 * 60 * 60 * 1000,
-      yesterdayTimes.sunset.getTime() - 2.5 * 60 * 60 * 1000,
-      yesterdayTimes.sunset.getTime() + 1 * 60 * 60 * 1000,
+      yesterdayTimes.sunset.getTime() + 0.5 * 60 * 60 * 1000,
 
       times.sunrise.getTime() - 0.5 * 60 * 60 * 1000,
       times.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
       times.sunrise.getTime() + 6 * 60 * 60 * 1000,
 
+      times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
       times.sunset.getTime() - 4 * 60 * 60 * 1000,
-      times.sunset.getTime() - 2.5 * 60 * 60 * 1000,
-      times.sunset.getTime() + 1 * 60 * 60 * 1000,
+      times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
     ]);
 
   const surfaceLevel = rap.data[0].height;
@@ -128,8 +129,8 @@ export default function Hour({ rap, ...rest }: HourProps) {
           <tbody>
             {rap.data
               .filter(({ height }) => height < 5800)
-              .map((datum) => (
-                <tr key={datum.height}>
+              .map((datum, index) => (
+                <tr key={index}>
                   <td>
                     <Height height={datum.height} surfaceLevel={surfaceLevel} />
                   </td>
@@ -137,10 +138,16 @@ export default function Hour({ rap, ...rest }: HourProps) {
                     <Temperature temperature={datum.temp} />
                   </td>
                   <td>
-                    <WindDirection direction={datum.windDir} />
+                    <WindDirection
+                      curr={datum.windDir}
+                      prev={rap.data[index - 1]?.windDir}
+                    />
                   </td>
                   <td>
-                    <WindSpeed speed={datum.windSpd} />
+                    <WindSpeed
+                      curr={datum.windSpd}
+                      prev={rap.data[index - 1]?.windSpd}
+                    />
                   </td>
                 </tr>
               ))}
