@@ -3,6 +3,7 @@ import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import Geocode from "../../models/Geocode";
 import { reverse } from "../../services/geocode";
+import { getTrimmedCoordinates } from "../../helpers/coordinates";
 
 type GeocodeResult =
   // component has requested a geocode, to be batched in next bulk request
@@ -45,7 +46,10 @@ export const geocodeReducer = createSlice({
      * @param action Action containing payload as the Rap
      */
     geocodeReceived: (state, action: PayloadAction<Geocode>) => {
-      const coordinates = `${action.payload.lat},${action.payload.lon}`;
+      const coordinates = getTrimmedCoordinates(
+        action.payload.lat,
+        action.payload.lon
+      );
 
       if (state.geocodeByCoordinates[coordinates] === "pending") {
         state.geocodeByCoordinates[coordinates] = action.payload;
@@ -68,13 +72,13 @@ export const { geocodeLoading, geocodeReceived, geocodeFailed } =
 
 export const getGeocode =
   (lat: number, lon: number) => async (dispatch: AppDispatch) => {
-    dispatch(geocodeLoading(`${lat},${lon}`));
+    dispatch(geocodeLoading(getTrimmedCoordinates(lat, lon)));
 
     try {
       const geocode = await reverse(lat, lon);
       dispatch(geocodeReceived(geocode));
     } catch (e: unknown) {
-      dispatch(geocodeFailed(`${lat},${lon}`));
+      dispatch(geocodeFailed(getTrimmedCoordinates(lat, lon)));
       throw e;
     }
   };

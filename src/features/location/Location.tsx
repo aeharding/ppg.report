@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconButton } from "@material-ui/core";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { useAppDispatch } from "../../hooks";
 import { getLocation } from "./locationSlice";
 
@@ -14,9 +15,10 @@ export default function Location({ ...rest }) {
     const location = await dispatch(getLocation());
 
     history.push(
-      `/${location.coords.latitude.toPrecision(
-        6
-      )},${location.coords.longitude.toPrecision(6)}`
+      `/${getTrimmedCoordinates(
+        location.coords.latitude,
+        location.coords.longitude
+      )}`
     );
   }, [dispatch, history]);
 

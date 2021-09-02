@@ -4,8 +4,9 @@ import Logo from "./Logo";
 
 const HeaderContainer = styled.div`
   width: 100%;
-  max-width: 975px;
+  max-width: 1200px;
   margin: 1em auto;
+  padding: 0 1em;
 
   display: flex;
   align-items: center;

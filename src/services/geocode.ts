@@ -1,8 +1,8 @@
-import axios from "axios";
 import Geocode from "../models/Geocode";
+import axiosCached from "./axiosCached";
 
 export async function reverse(lat: number, lon: number): Promise<Geocode> {
-  const { data } = await axios.get("/api/position/reverse", {
+  const { data } = await axiosCached.get("/api/position/reverse", {
     params: {
       format: "jsonv2",
       lat,
@@ -13,17 +13,24 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
   return {
     lat,
     lon,
-    label: `${
-      data.name ||
-      data.address.village ||
-      data.address.city ||
-      data.address.county
-    }, ${data.address.state} ${data.address.postcode}`,
+    label: [
+      `${
+        data.address.aeroway ||
+        data.address.municipality ||
+        data.address.village ||
+        data.address.city ||
+        data.address.county
+      },`,
+      data.address.state,
+      data.address.postcode,
+    ]
+      .filter((x) => x)
+      .join(" "),
   };
 }
 
 export async function search(q: string): Promise<{ lat: number; lon: number }> {
-  let { data } = await axios.get("/api/position/search", {
+  let { data } = await axiosCached.get("/api/position/search", {
     params: {
       format: "jsonv2",
       countrycodes: "us",

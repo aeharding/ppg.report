@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Location from "./features/location/Location";
+import { getTrimmedCoordinates } from "./helpers/coordinates";
 import { search } from "./services/geocode";
 
 const Container = styled.div`
@@ -90,7 +91,7 @@ export default function Search({ ...rest }) {
     try {
       const { lat, lon } = await search(query);
 
-      history.push(`/${lat.toPrecision(6)},${lon.toPrecision(6)}`);
+      history.push(`/${getTrimmedCoordinates(lat, lon)}`);
     } catch (e) {
       setError("Nothing found, please try again.");
     }

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
+import { Redirect, RouteComponentProps } from "react-router-dom";
 import { getRap } from "../features/rap/rapSlice";
 import Table from "../features/rap/Table";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
+import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
 
 interface ReportProps
   extends RouteComponentProps<{ lat: string; lon: string }> {}
@@ -12,14 +12,20 @@ interface ReportProps
 export default function Report(props: ReportProps) {
   const { lat, lon } = props.match.params;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const rap = useAppSelector(
-    (state) => state.rap.rapByLocation[`${+lat},${+lon}`]
+    (state) => state.rap.rapByLocation[getTrimmedCoordinates(+lat, +lon)]
   );
 
   useEffect(() => {
+    if (!isLatLonTrimmed(lat, lon)) return;
+
     dispatch(getRap(+lat, +lon));
   }, [dispatch, lat, lon]);
+
+  if (!isLatLonTrimmed(lat, lon)) {
+    return <Redirect to={getTrimmedCoordinates(+lat, +lon)} push={false} />;
+  }
 
   switch (rap) {
     case "pending":
@@ -28,6 +34,6 @@ export default function Report(props: ReportProps) {
     case "failed":
       return <>The request failed.</>;
     default:
-      return <Table raps={rap} />;
+      return <Table rap={rap} />;
   }
 }

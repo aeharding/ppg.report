@@ -1,15 +1,18 @@
 import styled from "@emotion/styled/macro";
-import Rap from "../../models/Rap";
 import Hour from "./Hour";
+import { RapPayload } from "./rapSlice";
+import ReportWatchdog from "./ReportWatchdog";
 
 const minHourWidth = 350;
 
 const Hours = styled.div`
   display: flex;
 
-  scroll-snap-type: x mandatory;
   overflow: auto;
   min-height: 0;
+
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -78,17 +81,21 @@ const StyledHour = styled(Hour)`
 `;
 
 interface TableProps {
-  raps: Rap[];
+  rap: RapPayload;
 }
 
-export default function Table({ raps }: TableProps) {
+export default function Table({ rap }: TableProps) {
   return (
-    <Hours>
-      {raps.map((rap) => (
-        <HourContainer key={rap.date}>
-          <StyledHour rap={rap} />
-        </HourContainer>
-      ))}
-    </Hours>
+    <>
+      <Hours>
+        {rap.data.map((rap) => (
+          <HourContainer key={rap.date}>
+            <StyledHour rap={rap} />
+          </HourContainer>
+        ))}
+      </Hours>
+
+      <ReportWatchdog rap={rap} />
+    </>
   );
 }

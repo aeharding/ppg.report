@@ -42,7 +42,7 @@ export default function ReportHeader(props: ReportHeaderProps) {
         target="_blank"
         rel="noreferrer noopener"
       >
-        <ReverseLocation lat={+lat} lon={+lon} />
+        <ReverseLocation lat={lat} lon={lon} />
       </a>
       <br />
       <SunLine>

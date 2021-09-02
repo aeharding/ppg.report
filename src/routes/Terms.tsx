@@ -3,8 +3,9 @@ import { ReactComponent as Email } from "./email.svg";
 
 const TermsContainer = styled.div`
   width: 100%;
-  max-width: 975px;
+  max-width: 1200px;
   margin: 1em auto;
+  padding: 0 1em;
 `;
 
 const Warning = styled.strong`

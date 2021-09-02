@@ -3,16 +3,23 @@ import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import Rap from "../../models/Rap";
 import * as rapidRefresh from "../../services/rapidRefresh";
+import differenceInMinutes from "date-fns/differenceInMinutes";
+import { getTrimmedCoordinates } from "../../helpers/coordinates";
 
 export type RapResult =
   // component has requested a book, to be batched in next bulk request
   | "pending"
 
   // the Rap by hour (finished resolving)
-  | Rap[]
+  | RapPayload
 
   // API request failed
   | "failed";
+
+export interface RapPayload {
+  updated: string;
+  data: Rap[];
+}
 
 interface RapState {
   rapByLocation: Record<string, RapResult>;
@@ -22,8 +29,6 @@ interface RapState {
 const initialState: RapState = {
   rapByLocation: {},
 };
-
-const latLonToId = (lat: number, lon: number) => `${lat},${lon}`;
 
 /**
  * The characters rap array gives us raps in the form of
@@ -38,8 +43,24 @@ export const rapReducer = createSlice({
      * @param action Action containing payload as the URL of the rap resource
      */
     rapLoading: (state, action: PayloadAction<string>) => {
-      if (state.rapByLocation[action.payload] === undefined) {
-        state.rapByLocation[action.payload] = "pending";
+      const payload = state.rapByLocation[action.payload];
+
+      switch (payload) {
+        case "failed":
+        case undefined:
+          state.rapByLocation[action.payload] = "pending";
+          return;
+        case "pending":
+          return;
+        default: {
+          if (
+            Math.abs(
+              differenceInMinutes(new Date(payload.updated), new Date())
+            ) > 30
+          ) {
+            state.rapByLocation[action.payload] = "pending";
+          }
+        }
       }
     },
 
@@ -48,7 +69,10 @@ export const rapReducer = createSlice({
      */
     rapReceived: (state, action: PayloadAction<{ id: string; rap: Rap[] }>) => {
       if (state.rapByLocation[action.payload.id] === "pending") {
-        state.rapByLocation[action.payload.id] = action.payload.rap;
+        state.rapByLocation[action.payload.id] = {
+          updated: new Date().toISOString(),
+          data: action.payload.rap,
+        };
       }
     },
 
@@ -66,15 +90,22 @@ export const rapReducer = createSlice({
 export const { rapLoading, rapReceived, rapFailed } = rapReducer.actions;
 
 export const getRap =
-  (lat: number, lon: number) => async (dispatch: AppDispatch) => {
-    dispatch(rapLoading(latLonToId(lat, lon)));
+  (lat: number, lon: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(rapLoading(getTrimmedCoordinates(lat, lon)));
+
+    const isPending =
+      getState().rap.rapByLocation[getTrimmedCoordinates(lat, lon)] ===
+      "pending";
+
+    if (!isPending) return;
 
     try {
       const rap = await rapidRefresh.getRap(lat, lon);
 
-      dispatch(rapReceived({ id: latLonToId(lat, lon), rap }));
+      dispatch(rapReceived({ id: getTrimmedCoordinates(lat, lon), rap }));
     } catch (e) {
-      dispatch(rapFailed(latLonToId(lat, lon)));
+      dispatch(rapFailed(getTrimmedCoordinates(lat, lon)));
       throw e;
     }
   };
