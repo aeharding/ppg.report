@@ -10,7 +10,6 @@ const Hours = styled.div`
   scroll-snap-type: x mandatory;
   overflow: auto;
   min-height: 0;
-  cursor: grab;
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -21,8 +20,8 @@ const Hours = styled.div`
   ::-webkit-scrollbar-thumb {
     border-left: 2px solid rgba(255, 255, 255, 0);
     border-right: 2px solid rgba(255, 255, 255, 0);
-    border-top: 20px solid rgba(255, 255, 255, 0);
-    border-bottom: 5px solid rgba(255, 255, 255, 0);
+    border-top: 0px solid rgba(255, 255, 255, 0);
+    border-bottom: 12px solid rgba(255, 255, 255, 0);
     background-clip: padding-box;
     margin: 0 2em;
   }
@@ -43,7 +42,7 @@ const Hours = styled.div`
 const HourContainer = styled.div`
   scroll-snap-align: start;
 
-  margin: 0 -1em;
+  margin: 0 -1em 1em;
   padding: 0 1em;
 
   &:first-of-type {

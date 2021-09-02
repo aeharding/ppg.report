@@ -13,9 +13,12 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
   return {
     lat,
     lon,
-    label: `${data.name || data.address.village || data.address.city}, ${
-      data.address.state
-    } ${data.address.postcode}`,
+    label: `${
+      data.name ||
+      data.address.village ||
+      data.address.city ||
+      data.address.county
+    }, ${data.address.state} ${data.address.postcode}`,
   };
 }
 

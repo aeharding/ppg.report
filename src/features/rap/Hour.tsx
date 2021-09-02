@@ -17,10 +17,12 @@ const Column = styled.div`
 `;
 
 const Container = styled.div`
-  border-radius: 1em;
   padding: 0.75em 0;
 
   position: relative;
+
+  border-radius: 1em;
+  box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
 `;
 
 const Header = styled.div`
