@@ -16,6 +16,10 @@ const Container = styled.div`
 
   margin: 3px 0;
 
+  > *:not(:last-of-type) {
+    margin-right: 5px;
+  }
+
   h4 {
     margin: 0 5px;
     display: inline;
@@ -25,8 +29,8 @@ const Container = styled.div`
 `;
 
 const cinColorScale = chroma
-  .scale(["white", "yellow", "red"])
-  .domain([0, -38, -90]);
+  .scale(["white", "white", "yellow", "red"])
+  .domain([0, -20, -50, -90]);
 
 const Cin = styled.div<{ cin: number }>`
   color: ${({ cin }) => cinColorScale(cin).css()};
@@ -34,7 +38,7 @@ const Cin = styled.div<{ cin: number }>`
 
 const capeColorScale = chroma
   .scale(["white", "yellow", "red"])
-  .domain([0, 1750, 5000, 95]);
+  .domain([0, 1250, 3000]);
 
 const Cape = styled.div<{ cape: number }>`
   color: ${({ cape }) => capeColorScale(cape).css()};
