@@ -20,6 +20,10 @@ const Icon = styled(FontAwesomeIcon)`
 const SunLine = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  @media (max-width: 600px) {
+    justify-content: center;
+  }
 `;
 
 interface ReportHeaderProps
