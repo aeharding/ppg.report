@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
-import Rap from "../../models/Rap";
 import * as rapidRefresh from "../../services/rapidRefresh";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
+import { Rap } from "gsl-parser";
 
 export type RapResult =
   // component has requested a book, to be batched in next bulk request

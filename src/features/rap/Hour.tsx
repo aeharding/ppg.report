@@ -1,6 +1,5 @@
 import styled from "@emotion/styled/macro";
 import { useState } from "react";
-import Rap from "../../models/Rap";
 import Height from "./cells/Height";
 import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
@@ -11,6 +10,7 @@ import chroma from "chroma-js";
 import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
 import format from "date-fns/format";
+import { Rap } from "gsl-parser";
 
 const Column = styled.div`
   position: relative;
