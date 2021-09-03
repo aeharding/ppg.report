@@ -10,11 +10,15 @@ const Container = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1em;
+  padding: 0 2rem;
 
   color: var(--softText);
   font-size: 0.8em;
   text-align: right;
+
+  @media (max-width: 700px) {
+    text-align: center;
+  }
 `;
 
 interface ReportWatchdogProps {
