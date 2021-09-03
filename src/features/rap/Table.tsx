@@ -1,104 +1,64 @@
 import styled from "@emotion/styled/macro";
-import Hour from "./Hour";
-import { RapPayload } from "./rapSlice";
-import ReportWatchdog from "./ReportWatchdog";
+import { Rap } from "gsl-parser";
+import Height from "./cells/Height";
+import Temperature from "./cells/Temperature";
+import WindDirection from "./cells/WindDirection";
+import WindSpeed from "./cells/WindSpeed";
+import { headerText } from "./CinCape";
 
-const minHourWidth = 350;
+const TableEl = styled.table`
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
 
-const Hours = styled.div`
-  display: flex;
-
-  overflow: auto;
-  min-height: 0;
-
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-
-  ::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(255, 255, 255, 0);
+  th {
+    ${headerText}
   }
-
-  ::-webkit-scrollbar-track,
-  ::-webkit-scrollbar-thumb {
-    border-left: 2px solid rgba(255, 255, 255, 0);
-    border-right: 2px solid rgba(255, 255, 255, 0);
-    border-top: 0px solid rgba(255, 255, 255, 0);
-    border-bottom: 12px solid rgba(255, 255, 255, 0);
-    background-clip: padding-box;
-    margin: 0 2em;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
-    }
-  }
-
-  > * {
-    flex-shrink: 0;
-  }
-`;
-
-const HourContainer = styled.div`
-  scroll-snap-align: start;
-
-  margin: 0 calc(-1 * var(--right-safe-area)) 1em
-    calc(-1 * var(--left-safe-area));
-  padding: 0 var(--right-safe-area) 0 var(--left-safe-area);
-
-  &:first-of-type {
-    padding-left: calc(2 * var(--left-safe-area));
-  }
-  &:last-of-type {
-    padding-right: var(--right-safe-area);
-
-    > div {
-      margin-right: 1em;
-    }
-  }
-`;
-
-const StyledHour = styled(Hour)`
-  margin-left: 1em;
-
-  width: calc(100vw - 4em);
-
-  ${() => {
-    let css = "";
-
-    for (let i = 1; i <= 10; i++) {
-      css += `
-        @media (min-width: ${i * minHourWidth}px) {
-          width: calc(${100 / i}vw - ${1 + 1 / i}em - calc(${
-        1 / i
-      } * var(--right-safe-area)) - calc(${1 / i} * var(--left-safe-area)));
-        }
-      `;
-    }
-
-    return css;
-  }}
 `;
 
 interface TableProps {
-  rap: RapPayload;
+  rap: Rap;
+  rows: number; // number of altitudes/rows to render
 }
 
-export default function Table({ rap }: TableProps) {
-  return (
-    <>
-      <Hours>
-        {rap.data.map((rap) => (
-          <HourContainer key={rap.date}>
-            <StyledHour rap={rap} />
-          </HourContainer>
-        ))}
-      </Hours>
+export default function Table({ rap, rows }: TableProps) {
+  const surfaceLevel = rap.data[0].height;
 
-      <ReportWatchdog rap={rap} />
-    </>
+  return (
+    <TableEl>
+      <thead>
+        <tr>
+          <th>Altitude</th>
+          <th>Temp</th>
+          <th>Direction</th>
+          <th>Speed</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {rap.data.slice(0, rows).map((datum, index) => (
+          <tr key={index}>
+            <td>
+              <Height height={datum.height} surfaceLevel={surfaceLevel} />
+            </td>
+            <td>
+              <Temperature temperature={datum.temp} />
+            </td>
+            <td>
+              <WindDirection
+                curr={datum.windDir}
+                prev={rap.data[index - 1]?.windDir}
+              />
+            </td>
+            <td>
+              <WindSpeed
+                curr={datum.windSpd}
+                prev={rap.data[index - 1]?.windSpd}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </TableEl>
   );
 }

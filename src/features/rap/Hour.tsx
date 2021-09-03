@@ -1,22 +1,19 @@
 import styled from "@emotion/styled/macro";
 import { useState } from "react";
-import Height from "./cells/Height";
-import Temperature from "./cells/Temperature";
-import WindDirection from "./cells/WindDirection";
-import WindSpeed from "./cells/WindSpeed";
-import CinCape, { headerText } from "./CinCape";
+import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
 import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
 import format from "date-fns/format";
 import { Rap } from "gsl-parser";
+import Table from "./Table";
 
 const Column = styled.div`
   position: relative;
 `;
 
-const Container = styled.div`
+const TableContainer = styled.div`
   padding: 0.75em 0;
 
   position: relative;
@@ -44,26 +41,17 @@ const HourContainer = styled.h3`
   }
 `;
 
-const Table = styled.table`
-  width: 100%;
-  text-align: center;
-  overflow: hidden;
-
-  th {
-    ${headerText}
-  }
-`;
-
 interface HourProps {
   rap: Rap;
+  rows: number; // number of altitudes/rows to render
 }
 
-export default function Hour({ rap, ...rest }: HourProps) {
+export default function Hour({ rap, rows, ...rest }: HourProps) {
   const [yesterdayTimes] = useState(
-    SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, rap.lon)
+    SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
   );
   const [times] = useState(
-    SunCalc.getTimes(new Date(rap.date), rap.lat, rap.lon)
+    SunCalc.getTimes(new Date(rap.date), rap.lat, -rap.lon)
   );
 
   const colorScale = chroma
@@ -83,24 +71,22 @@ export default function Hour({ rap, ...rest }: HourProps) {
     ])
     .mode("lch")
     .domain([
-      yesterdayTimes.sunrise.getTime() - 0.2 * 60 * 60 * 1000,
-      yesterdayTimes.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
-      yesterdayTimes.sunrise.getTime() + 4 * 60 * 60 * 1000,
+      yesterdayTimes.sunrise.getTime() - 1 * 60 * 60 * 1000,
+      yesterdayTimes.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
+      yesterdayTimes.sunrise.getTime() + 3 * 60 * 60 * 1000,
 
       yesterdayTimes.sunset.getTime() - 4.5 * 60 * 60 * 1000,
       yesterdayTimes.sunset.getTime() - 4 * 60 * 60 * 1000,
       yesterdayTimes.sunset.getTime() + 0.5 * 60 * 60 * 1000,
 
-      times.sunrise.getTime() - 0.5 * 60 * 60 * 1000,
-      times.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
-      times.sunrise.getTime() + 6 * 60 * 60 * 1000,
+      times.sunrise.getTime() - 1 * 60 * 60 * 1000,
+      times.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
+      times.sunrise.getTime() + 3 * 60 * 60 * 1000,
 
       times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
       times.sunset.getTime() - 4 * 60 * 60 * 1000,
       times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
     ]);
-
-  const surfaceLevel = rap.data[0].height;
 
   return (
     <Column {...rest}>
@@ -115,49 +101,13 @@ export default function Hour({ rap, ...rest }: HourProps) {
         <CinCape cin={rap.cin} cape={rap.cape} />
       </Header>
 
-      <Container
+      <TableContainer
         style={{
           backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
         }}
       >
-        <Table>
-          <thead>
-            <tr>
-              <th>Altitude</th>
-              <th>Temp</th>
-              <th>Direction</th>
-              <th>Speed</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {rap.data
-              .filter(({ height }) => height < 5800)
-              .map((datum, index) => (
-                <tr key={index}>
-                  <td>
-                    <Height height={datum.height} surfaceLevel={surfaceLevel} />
-                  </td>
-                  <td>
-                    <Temperature temperature={datum.temp} />
-                  </td>
-                  <td>
-                    <WindDirection
-                      curr={datum.windDir}
-                      prev={rap.data[index - 1]?.windDir}
-                    />
-                  </td>
-                  <td>
-                    <WindSpeed
-                      curr={datum.windSpd}
-                      prev={rap.data[index - 1]?.windSpd}
-                    />
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      </Container>
+        <Table rap={rap} rows={rows} />
+      </TableContainer>
     </Column>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
 import { getRap } from "../features/rap/rapSlice";
-import Table from "../features/rap/Table";
+import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
@@ -34,6 +34,6 @@ export default function Report(props: ReportProps) {
     case "failed":
       return <>The request failed.</>;
     default:
-      return <Table rap={rap} />;
+      return <Hours rap={rap} />;
   }
 }
