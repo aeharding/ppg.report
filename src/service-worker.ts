@@ -43,7 +43,12 @@ registerRoute(
 
     // If this looks like a URL for a resource, because it contains
     // a file extension, skip.
-    if (url.pathname.match(fileExtensionRegexp)) {
+    //
+    // Check for "," to exempt lat/lon paths /22.0354,-88.5532
+    if (
+      url.pathname.match(fileExtensionRegexp) &&
+      url.pathname.indexOf(",") === -1
+    ) {
       return false;
     }
 
