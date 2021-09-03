@@ -8,8 +8,16 @@ import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 const globalStyles = css`
+  html {
+    // Color for Safari overscroll
+    // Has to be a solid color, and can't be referenced by a CSS variable
+    // ... because Safari
+    background-color: #111;
+  }
+
   body {
     margin: 0;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
       "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
       "Helvetica Neue", sans-serif;

@@ -45,14 +45,15 @@ const Hours = styled.div`
 const HourContainer = styled.div`
   scroll-snap-align: start;
 
-  margin: 0 -1em 1em;
-  padding: 0 1em;
+  margin: 0 calc(-1 * var(--right-safe-area)) 1em
+    calc(-1 * var(--left-safe-area));
+  padding: 0 var(--right-safe-area) 0 var(--left-safe-area);
 
   &:first-of-type {
-    padding-left: 2em;
+    padding-left: calc(2 * var(--left-safe-area));
   }
   &:last-of-type {
-    padding-right: 1em;
+    padding-right: var(--right-safe-area);
 
     > div {
       margin-right: 1em;
@@ -71,7 +72,9 @@ const StyledHour = styled(Hour)`
     for (let i = 1; i <= 10; i++) {
       css += `
         @media (min-width: ${i * minHourWidth}px) {
-          width: calc(${100 / i}vw - ${1 + 3 / i}em);
+          width: calc(${100 / i}vw - ${1 + 1 / i}em - calc(${
+        1 / i
+      } * var(--right-safe-area)) - calc(${1 / i} * var(--left-safe-area)));
         }
       `;
     }
