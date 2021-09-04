@@ -1,6 +1,5 @@
 import styled from "@emotion/styled/macro";
 import { keyframes } from "@emotion/css/macro";
-import { CircularProgressProps } from "@material-ui/core";
 
 const Container = styled.div`
   position: relative;
@@ -61,10 +60,7 @@ const Line = styled.div`
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 `;
 
-export default function Loading(
-  // value: 0-100
-  props: Pick<CircularProgressProps, "value">
-) {
+export default function Loading() {
   return (
     <Container>
       <Outline>
