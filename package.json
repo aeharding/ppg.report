@@ -52,7 +52,9 @@
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
     "deploy": "aws s3 sync build/ s3://ppg.report",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "format": "prettier --check src/",
+    "lint": "eslint --max-warnings=0 src/"
   },
   "eslintConfig": {
     "extends": [
@@ -81,6 +83,7 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/suncalc": "^1.8.1",
+    "eslint": "^7.32.0",
     "prettier": "^2.3.2",
     "source-map-explorer": "^2.5.2",
     "ts-jest": "^27.0.5"
