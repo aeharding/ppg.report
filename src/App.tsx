@@ -1,7 +1,5 @@
 import styled from "@emotion/styled/macro";
-import { ThemeProvider } from "@material-ui/styles";
 import Footer from "./Footer";
-import { createMuiTheme } from "./theme";
 import Header from "./header/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./Routes";
@@ -32,25 +30,21 @@ const Main = styled.main`
 `;
 
 function App() {
-  const theme = createMuiTheme();
-
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <AppContainer>
-          <AppContents>
-            <Header>
-              <HeaderRoutes />
-            </Header>
+    <Router>
+      <AppContainer>
+        <AppContents>
+          <Header>
+            <HeaderRoutes />
+          </Header>
 
-            <Main>
-              <Routes />
-            </Main>
-            <Footer />
-          </AppContents>
-        </AppContainer>
-      </Router>
-    </ThemeProvider>
+          <Main>
+            <Routes />
+          </Main>
+          <Footer />
+        </AppContents>
+      </AppContainer>
+    </Router>
   );
 }
 

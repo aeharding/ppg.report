@@ -11,6 +11,11 @@ const Container = styled.div`
 
   align-items: center;
   justify-content: center;
+  padding: 0 1em;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
 `;
 
 const Form = styled.form`
@@ -28,6 +33,8 @@ const Input = styled.input`
   padding: 0 2rem;
   color: white;
 
+  width: 100%;
+
   margin-right: 1rem;
 
   font-family: inherit;
@@ -43,29 +50,15 @@ const Input = styled.input`
   }
 `;
 
-const StyledLocation = styled(Location)`
-  && {
-    width: 60px;
-    height: 60px;
-    color: rgba(255, 255, 255, 0.5);
-
-    &:hover {
-      color: #00b7ff;
-    }
-  }
-
-  svg {
-    font-size: 1.4em;
-  }
-`;
-
 const Error = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  @media (min-width: 500px) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-  transform: translateY(calc(100% + 1em));
+    transform: translateY(calc(100% + 1em));
+  }
 
   text-align: center;
   font-size: 0.9em;
@@ -109,7 +102,7 @@ export default function Search({ ...rest }) {
         />
         {error && <Error>{error}</Error>}
       </Form>
-      <StyledLocation />
+      <Location />
     </Container>
   );
 }

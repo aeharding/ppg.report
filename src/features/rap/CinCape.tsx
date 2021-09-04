@@ -1,6 +1,6 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { Tooltip } from "@material-ui/core";
+import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 
 export const headerText = css`
@@ -64,8 +64,8 @@ interface CinCapeProps {
 export default function CinCape({ cin, cape }: CinCapeProps) {
   return (
     <Container>
-      <Tooltip
-        title={
+      <Tippy
+        content={
           <Description>
             <p>
               <a
@@ -96,9 +96,9 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
           <h4>CIN</h4>
           {cin}
         </Cin>
-      </Tooltip>
-      <Tooltip
-        title={
+      </Tippy>
+      <Tippy
+        content={
           <Description>
             <p>
               <a
@@ -133,7 +133,7 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
           <h4>CAPE</h4>
           {cape}
         </Cape>
-      </Tooltip>
+      </Tippy>
     </Container>
   );
 }
