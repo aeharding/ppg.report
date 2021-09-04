@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+
 import { useAppDispatch } from "../../hooks";
 import useInterval from "../../helpers/useInterval";
 import { usePageVisibility } from "react-page-visibility";
@@ -5,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getRap, RapPayload } from "./rapSlice";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import styled from "@emotion/styled/macro";
+import differenceInMinutes from "date-fns/differenceInMinutes";
 
 const Container = styled.div`
   width: 100%;
@@ -41,15 +44,25 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
   useEffect(() => {
     if (document.hidden) return;
 
-    dispatch(getRap(rap.data[0].lat, rap.data[0].lon));
+    dispatch(getRap(rap.lat, rap.lon));
   }, [lastUpdated, dispatch, rap]);
 
   return (
     <Container>
-      Last updated{" "}
-      {formatDistanceToNow(new Date(rap.updated), {
-        addSuffix: true,
-      })}
+      <span
+        css={{
+          color:
+            Math.abs(differenceInMinutes(new Date(rap.updated), new Date())) >
+            30
+              ? "red"
+              : undefined,
+        }}
+      >
+        Last updated{" "}
+        {formatDistanceToNow(new Date(rap.updated), {
+          addSuffix: true,
+        })}
+      </span>
       <br />
       Automatically updates every 30 minutes
     </Container>

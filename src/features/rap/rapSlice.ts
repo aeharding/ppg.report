@@ -19,6 +19,8 @@ export type RapResult =
 export interface RapPayload {
   updated: string;
   data: Rap[];
+  lat: number;
+  lon: number;
 }
 
 interface RapState {
@@ -67,11 +69,22 @@ export const rapReducer = createSlice({
     /**
      * @param action Action containing payload as the Rap
      */
-    rapReceived: (state, action: PayloadAction<{ id: string; rap: Rap[] }>) => {
-      if (state.rapByLocation[action.payload.id] === "pending") {
-        state.rapByLocation[action.payload.id] = {
+    rapReceived: (
+      state,
+      action: PayloadAction<{
+        rap: Rap[];
+        lat: number;
+        lon: number;
+      }>
+    ) => {
+      const id = getTrimmedCoordinates(action.payload.lat, action.payload.lon);
+
+      if (state.rapByLocation[id] === "pending") {
+        state.rapByLocation[id] = {
           updated: new Date().toISOString(),
           data: action.payload.rap,
+          lat: action.payload.lat,
+          lon: action.payload.lon,
         };
       }
     },
@@ -103,7 +116,7 @@ export const getRap =
     try {
       const rap = await rapidRefresh.getRap(lat, lon);
 
-      dispatch(rapReceived({ id: getTrimmedCoordinates(lat, lon), rap }));
+      dispatch(rapReceived({ rap, lat, lon }));
     } catch (e) {
       dispatch(rapFailed(getTrimmedCoordinates(lat, lon)));
       throw e;
