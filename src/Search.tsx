@@ -13,12 +13,18 @@ const Container = styled.div`
   justify-content: center;
   padding: 0 1em;
 
+  max-width: 500px;
+  width: 100%;
+
   @media (max-width: 500px) {
     flex-direction: column;
   }
 `;
 
 const Form = styled.form`
+  flex: 1;
+
+  display: flex;
   position: relative;
 `;
 
@@ -31,7 +37,7 @@ const Input = styled.input`
   font-size: 1.5em;
   outline: 0;
   padding: 0 2rem;
-  color: white;
+  color: var(--text);
 
   width: 100%;
 
@@ -46,7 +52,14 @@ const Input = styled.input`
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text);
+    opacity: 1;
+  }
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
   }
 `;
 

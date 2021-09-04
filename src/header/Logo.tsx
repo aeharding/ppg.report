@@ -4,7 +4,7 @@ import { ReactComponent as Icon } from "./icon.svg";
 const LogoContainer = styled.span`
   display: flex;
 
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text);
 
   svg {
     width: 1.5em;

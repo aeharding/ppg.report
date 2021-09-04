@@ -6,7 +6,7 @@ import { writeVariables, Themes } from "./theme";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { tippyStyles } from './tippy'
+import { tippyStyles } from "./tippy";
 
 const globalStyles = css`
   html {
