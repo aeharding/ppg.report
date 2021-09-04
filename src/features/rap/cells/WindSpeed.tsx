@@ -3,15 +3,18 @@ import { css } from "@emotion/react/macro";
 import { Aside } from "./Height";
 import chroma from "chroma-js";
 import { shearIndicator } from "./WindDirection";
+import { memoize } from "lodash";
 
-const colorScale = chroma
-  .scale(["green", "green", "white", "white", "orange", "red", "purple"])
-  .domain([0, 4, 5.5, 10, 14, 30, 50]);
+const colorScale = memoize((textColor: string) => {
+  return chroma
+    .scale(["green", "green", textColor, textColor, "orange", "red", "purple"])
+    .domain([0, 4, 5.5, 10, 14, 30, 50]);
+});
 
 const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`
   position: relative;
 
-  color: ${({ speed }) => colorScale(speed).css()};
+  color: ${({ speed, theme }) => colorScale(theme.text)(speed).css()};
 
   ${({ shear }) =>
     shear &&

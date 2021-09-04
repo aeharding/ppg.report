@@ -3,14 +3,16 @@ import { css } from "@emotion/react/macro";
 export const tippyStyles = css`
   .tippy-box {
     position: relative;
-    background-color: #000;
-    color: #fff;
-    border-radius: 4px;
+    background-color: var(--tooltip-background);
+    color: var(--text);
     font-size: 14px;
     line-height: 1.4;
     outline: 0;
     transition-property: transform, visibility, opacity;
     text-align: left;
+    border: var(--rim);
+    border-radius: 0.5em;
+    box-shadow: var(--tooltip-box-shadow);
 
     &[data-animation="fade"][data-state="hidden"] {
       opacity: 0;

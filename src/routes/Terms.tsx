@@ -9,7 +9,7 @@ const TermsContainer = styled.div`
 `;
 
 const Warning = styled.strong`
-  color: yellow;
+  color: var(--warning);
 `;
 
 export default function Terms() {

@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
+
 import styled from "@emotion/styled/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
@@ -8,6 +10,8 @@ import subDays from "date-fns/subDays";
 import format from "date-fns/format";
 import { Rap } from "gsl-parser";
 import Table from "./Table";
+import { useAppSelector } from "../../hooks";
+import { Themes } from "../../theme";
 
 const Column = styled.div`
   position: relative;
@@ -19,7 +23,8 @@ const TableContainer = styled.div`
   position: relative;
 
   border-radius: 1em;
-  box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+  box-shadow: var(--table-box-shadow);
+  border: var(--rim);
 `;
 
 const Header = styled.div`
@@ -46,47 +51,111 @@ interface HourProps {
   rows: number; // number of altitudes/rows to render
 }
 
+const getColorScale = (
+  lat: number,
+  lon: number,
+  date: string,
+  theme: Themes
+) => {
+  const yesterdayTimes = SunCalc.getTimes(subDays(new Date(date), 1), lat, lon);
+  const times = SunCalc.getTimes(new Date(date), lat, lon);
+
+  switch (theme) {
+    case Themes.Dark: {
+      const night = "#0000004d";
+      const transition = "#6666660e";
+      const day = "#ffffff0a";
+
+      return chroma
+        .scale([
+          night,
+          transition,
+          day,
+          day,
+          transition,
+          night,
+          night,
+          transition,
+          day,
+          day,
+          transition,
+          night,
+        ])
+        .mode("lch")
+        .domain([
+          yesterdayTimes.sunrise.getTime() - 1 * 60 * 60 * 1000,
+          yesterdayTimes.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
+          yesterdayTimes.sunrise.getTime() + 3 * 60 * 60 * 1000,
+
+          yesterdayTimes.sunset.getTime() - 4.5 * 60 * 60 * 1000,
+          yesterdayTimes.sunset.getTime() - 4 * 60 * 60 * 1000,
+          yesterdayTimes.sunset.getTime() + 0.5 * 60 * 60 * 1000,
+
+          times.sunrise.getTime() - 1 * 60 * 60 * 1000,
+          times.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
+          times.sunrise.getTime() + 3 * 60 * 60 * 1000,
+
+          times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
+          times.sunset.getTime() - 4 * 60 * 60 * 1000,
+          times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
+        ]);
+    }
+    case Themes.Light: {
+      const night = "#c8d6ec8d";
+      const transition = "#ffffffeb";
+      const day = "#fff";
+
+      return chroma
+        .scale([
+          night,
+          transition,
+          day,
+          day,
+          transition,
+          night,
+          night,
+          transition,
+          day,
+          day,
+          transition,
+          night,
+        ])
+        .mode("lch")
+        .domain([
+          yesterdayTimes.sunrise.getTime() - 2 * 60 * 60 * 1000,
+          yesterdayTimes.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
+          yesterdayTimes.sunrise.getTime() + 3 * 60 * 60 * 1000,
+
+          yesterdayTimes.sunset.getTime() - 4 * 60 * 60 * 1000,
+          yesterdayTimes.sunset.getTime() - 1.5 * 60 * 60 * 1000,
+          yesterdayTimes.sunset.getTime() + 1 * 60 * 60 * 1000,
+
+          times.sunrise.getTime() - 2 * 60 * 60 * 1000,
+          times.sunrise.getTime() + 0.5 * 60 * 60 * 1000,
+          times.sunrise.getTime() + 3 * 60 * 60 * 1000,
+
+          times.sunset.getTime() - 4 * 60 * 60 * 1000,
+          times.sunset.getTime() - 1.5 * 60 * 60 * 1000,
+          times.sunset.getTime() + 1 * 60 * 60 * 1000,
+        ]);
+    }
+  }
+};
+
 export default function Hour({ rap, rows, ...rest }: HourProps) {
-  const [yesterdayTimes] = useState(
-    SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
-  );
-  const [times] = useState(
-    SunCalc.getTimes(new Date(rap.date), rap.lat, -rap.lon)
-  );
+  const theme = useAppSelector((state) => state.user.theme);
+  const [backgroundColor, setBackgroundColor] = useState("");
 
-  const colorScale = chroma
-    .scale([
-      "#0000004d",
-      "#6666660e",
-      "#ffffff0a",
-      "#ffffff0a",
-      "#6666660e",
-      "#0000004d",
-      "#0000004d",
-      "#6666660e",
-      "#ffffff0a",
-      "#ffffff0a",
-      "#6666660e",
-      "#0000004d",
-    ])
-    .mode("lch")
-    .domain([
-      yesterdayTimes.sunrise.getTime() - 1 * 60 * 60 * 1000,
-      yesterdayTimes.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
-      yesterdayTimes.sunrise.getTime() + 3 * 60 * 60 * 1000,
-
-      yesterdayTimes.sunset.getTime() - 4.5 * 60 * 60 * 1000,
-      yesterdayTimes.sunset.getTime() - 4 * 60 * 60 * 1000,
-      yesterdayTimes.sunset.getTime() + 0.5 * 60 * 60 * 1000,
-
-      times.sunrise.getTime() - 1 * 60 * 60 * 1000,
-      times.sunrise.getTime() + 0.7 * 60 * 60 * 1000,
-      times.sunrise.getTime() + 3 * 60 * 60 * 1000,
-
-      times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
-      times.sunset.getTime() - 4 * 60 * 60 * 1000,
-      times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
-    ]);
+  useEffect(() => {
+    setBackgroundColor(
+      getColorScale(
+        rap.lat,
+        -rap.lon,
+        rap.date,
+        theme
+      )(new Date(rap.date).getTime()).css()
+    );
+  }, [rap, theme]);
 
   return (
     <Column {...rest}>
@@ -101,11 +170,7 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
         <CinCape cin={rap.cin} cape={rap.cape} />
       </Header>
 
-      <TableContainer
-        style={{
-          backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
-        }}
-      >
+      <TableContainer css={{ backgroundColor }}>
         <Table rap={rap} rows={rows} />
       </TableContainer>
     </Column>

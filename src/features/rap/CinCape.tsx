@@ -1,4 +1,4 @@
-import { css } from "@emotion/react/macro";
+import { css, Theme } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
@@ -6,7 +6,7 @@ import chroma from "chroma-js";
 export const headerText = css`
   text-transform: uppercase;
   font-size: 0.7em;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 `;
 
 const Container = styled.div`
@@ -40,20 +40,20 @@ const Description = styled.div`
   }
 `;
 
-const cinColorScale = chroma
-  .scale(["white", "white", "yellow", "red"])
-  .domain([0, -20, -50, -90]);
+const cinColorScale = ({ text, yellow }: Theme) => {
+  return chroma.scale([text, text, yellow, "red"]).domain([0, -20, -50, -90]);
+};
 
 const Cin = styled.span<{ cin: number }>`
-  color: ${({ cin }) => cinColorScale(cin).css()};
+  color: ${({ theme, cin }) => cinColorScale(theme)(cin).css()};
 `;
 
-const capeColorScale = chroma
-  .scale(["white", "yellow", "red"])
-  .domain([0, 1250, 3000]);
+const capeColorScale = ({ text, yellow }: Theme) => {
+  return chroma.scale([text, yellow, "red"]).domain([0, 1250, 3000]);
+};
 
 const Cape = styled.span<{ cape: number }>`
-  color: ${({ cape }) => capeColorScale(cape).css()};
+  color: ${({ theme, cape }) => capeColorScale(theme)(cape).css()};
 `;
 
 interface CinCapeProps {

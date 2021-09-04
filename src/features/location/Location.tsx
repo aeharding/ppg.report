@@ -16,11 +16,11 @@ const Button = styled.button`
   border: 0;
   background: none;
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--softText);
   cursor: pointer;
 
   &:hover {
-    color: #00b7ff;
+    color: var(--text-active);
   }
 
   &:active {

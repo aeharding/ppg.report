@@ -12,7 +12,7 @@ const FancyFooter = styled.footer`
 `;
 
 const Warning = styled.span`
-  color: yellow;
+  color: var(--warning);
 `;
 
 export default function Footer() {

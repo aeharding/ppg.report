@@ -1,13 +1,16 @@
+import { Theme } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import chroma from "chroma-js";
 import { Aside } from "./Height";
 
-const colorScale = chroma
-  .scale(["blue", "white", "white", "yellow", "red"])
-  .domain([25, 73, 82, 87, 95]);
+const colorScale = ({ text, yellow }: Theme) => {
+  return chroma
+    .scale(["blue", text, text, yellow, "red"])
+    .domain([25, 73, 82, 87, 95]);
+};
 
 const TemperatureContainer = styled.div<{ temperature: number }>`
-  color: ${({ temperature }) => colorScale(temperature).css()};
+  color: ${({ temperature, theme }) => colorScale(theme)(temperature).css()};
 `;
 
 interface TemperatureProps {

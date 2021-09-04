@@ -54,7 +54,7 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
           color:
             Math.abs(differenceInMinutes(new Date(rap.updated), new Date())) >
             30
-              ? "red"
+              ? "var(--error)"
               : undefined,
         }}
       >

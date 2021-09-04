@@ -48,7 +48,7 @@ const Input = styled.input`
 
   &:focus,
   &:hover {
-    border-color: #00b7ff;
+    border-color: var(--text-active);
   }
 
   &::placeholder {
@@ -77,7 +77,7 @@ const Error = styled.div`
   font-size: 0.9em;
   margin-top: 1em;
 
-  color: red;
+  color: var(--error);
 `;
 
 export default function Search({ ...rest }) {
