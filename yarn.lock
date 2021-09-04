@@ -5756,9 +5756,9 @@ growly@^1.3.0:
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
 gsl-parser@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-1.0.2.tgz#669a9da124ef792ef4ec6ca79e5c311c9e1fed6d"
-  integrity sha512-Igvj05alJIFJkhafI1Sv4pQI5rVibzkkF1SellbLsuIW0eTECVLcDUedUJ4Clf37dgIQIQVdOOfkSl/0eHvO1g==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-1.1.0.tgz#65adaf68a4b958751c1b39020004523aaa5a7703"
+  integrity sha512-ojv9JieQskuA5jHy8NVhgfqDORsFY9PFW73ZaOEr5urZur4SA2bhBLaJZxJ6eVy36gPhBJF1jNN16gT2mDUcbA==
 
 gzip-size@5.1.1:
   version "5.1.1"
