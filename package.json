@@ -21,6 +21,7 @@
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
     "@tippyjs/react": "^4.2.5",
+    "@types/react-transition-group": "^4.4.2",
     "axios": "^0.21.1",
     "axios-cache-adapter": "^2.7.3",
     "chroma-js": "^2.1.2",

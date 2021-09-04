@@ -47,6 +47,7 @@ const Container = styled.div`
 
   overflow: auto;
   min-height: 0;
+  max-width: 100vw;
 
   scroll-snap-type: x mandatory;
 
