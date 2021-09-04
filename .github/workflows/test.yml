@@ -21,7 +21,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm i -g yarn
-      - run: yarn install
+      - run: |
+          npm config set '@fortawesome:registry' '${{ secrets.FONTAWESOME_REGISTRY }}'
+          npm config set '//harding.dev:23435/:_authToken' '${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}'
+          yarn install
 
       # TODO: code coverage, reporting, break these steps up
       - run: yarn format
