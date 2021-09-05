@@ -55,7 +55,8 @@
     "deploy": "aws s3 sync build/ s3://ppg.report",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "format": "prettier --check src/",
-    "lint": "eslint --max-warnings=0 src/"
+    "lint": "eslint --max-warnings=0 src/",
+    "splash": "pwa-asset-generator --index public/index.html --splash-only --path-override '%PUBLIC_URL%/splash' public/splash.png ./public/splash -p '15%' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html"
   },
   "eslintConfig": {
     "extends": [
