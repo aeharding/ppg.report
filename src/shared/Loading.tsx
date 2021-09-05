@@ -3,11 +3,17 @@ import { keyframes } from "@emotion/css/macro";
 
 const Container = styled.div`
   position: relative;
-  margin-top: 20vh;
-
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  margin-top: 20vh;
+
+  @media (max-height: 500px) {
+    margin-top: 0;
+    flex: 1;
+  }
 
   &:after {
     content: "loading";

@@ -27,7 +27,7 @@ const Form = styled.form`
 `;
 
 const Input = styled.input`
-  background: none;
+  background: rgba(0, 0, 0, 0.15);
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 2rem;
