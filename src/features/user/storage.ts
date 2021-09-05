@@ -57,3 +57,18 @@ export function removeLocation(location: UserLocation): UserLocation[] {
 
   return locations;
 }
+
+export function findLocation(
+  coords: GeolocationCoordinates
+): UserLocation | undefined {
+  const locations = getLocations();
+
+  locations.sort((a, b) => getDistance(a, coords) - getDistance(b, coords));
+
+  if (
+    locations.length &&
+    getDistance(locations[0], coords) <= MAX_DISTANCE_MATCH
+  ) {
+    return locations[0];
+  }
+}

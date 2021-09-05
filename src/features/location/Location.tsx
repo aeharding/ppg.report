@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { useAppDispatch } from "../../hooks";
+import * as storage from "../user/storage";
 import { getLocation } from "./locationSlice";
 
 const Button = styled.button`
@@ -35,12 +36,18 @@ export default function Location({ ...rest }) {
   const locate = useCallback(async () => {
     const location = await dispatch(getLocation());
 
-    history.push(
-      `/${getTrimmedCoordinates(
-        location.coords.latitude,
-        location.coords.longitude
-      )}`
-    );
+    const matchedLocation = storage.findLocation(location.coords);
+
+    if (matchedLocation) {
+      history.push(`${matchedLocation.lat},${matchedLocation.lon}`);
+    } else {
+      history.push(
+        `/${getTrimmedCoordinates(
+          location.coords.latitude,
+          location.coords.longitude
+        )}`
+      );
+    }
   }, [dispatch, history]);
 
   return (
