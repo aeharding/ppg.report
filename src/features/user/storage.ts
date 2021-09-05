@@ -9,7 +9,7 @@ export interface UserLocation {
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
 const MAX_LOCATIONS = 5;
-const MAX_DISTANCE_MATCH = 100; // meters
+const MAX_DISTANCE_MATCH = 1000; // meters
 
 export function getLocations(): UserLocation[] {
   const locations: UserLocation[] = JSON.parse(
