@@ -6,6 +6,7 @@ import Location from "./features/location/Location";
 import { getTrimmedCoordinates } from "./helpers/coordinates";
 import { useAppSelector } from "./hooks";
 import { search } from "./services/geocode";
+import { isTouchDevice } from "./helpers/device";
 
 const Container = styled.div`
   display: flex;
@@ -113,7 +114,7 @@ export default function Search({ ...rest }) {
         <Input
           type="search"
           placeholder="Search locations"
-          autoFocus={locationsLength === 0 || document.body.clientWidth > 600}
+          autoFocus={locationsLength === 0 || !isTouchDevice()}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
