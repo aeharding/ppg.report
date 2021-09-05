@@ -10,17 +10,19 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
     },
   });
 
+  const subject =
+    data.address.aeroway ||
+    data.address.municipality ||
+    data.address.town ||
+    data.address.village ||
+    data.address.city ||
+    data.address.county;
+
   return {
     lat,
     lon,
     label: [
-      `${
-        data.address.aeroway ||
-        data.address.municipality ||
-        data.address.village ||
-        data.address.city ||
-        data.address.county
-      },`,
+      subject ? `${subject},` : "",
       data.address.state,
       data.address.postcode,
     ]
