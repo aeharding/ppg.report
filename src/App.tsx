@@ -4,6 +4,8 @@ import Header from "./header/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./Routes";
 import HeaderRoutes from "./HeaderRoutes";
+import { css, Global } from "@emotion/react/macro";
+import { writeVariables } from "./theme";
 
 const AppContainer = styled.div`
   flex: 1;
@@ -32,6 +34,13 @@ const Main = styled.main`
 function App() {
   return (
     <Router>
+      <Global
+        styles={css`
+          html {
+            ${writeVariables()}
+          }
+        `}
+      />
       <AppContainer>
         <AppContents>
           <Header>

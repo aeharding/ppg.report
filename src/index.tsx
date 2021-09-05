@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { css, Global } from "@emotion/react/macro";
 import App from "./App";
-import { writeVariables, Themes } from "./theme";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -11,9 +10,8 @@ import { tippyStyles } from "./tippy";
 const globalStyles = css`
   html {
     // Color for Safari overscroll
-    // Has to be a solid color, and can't be referenced by a CSS variable
-    // ... because Safari
-    background-color: #111;
+    // Has to be a solid color... because Safari
+    background-color: var(--overscroll-background);
   }
 
   body {
@@ -24,8 +22,6 @@ const globalStyles = css`
       "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-
-    ${writeVariables(Themes.Dark)}
 
     position: relative; // needed for AsideHouses
     display: flex;

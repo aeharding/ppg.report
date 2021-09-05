@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Location from "./features/location/Location";
 import { getTrimmedCoordinates } from "./helpers/coordinates";
+import { useAppSelector } from "./hooks";
 import { search } from "./services/geocode";
 
 const Container = styled.div`
@@ -15,10 +16,6 @@ const Container = styled.div`
 
   max-width: 500px;
   width: 100%;
-
-  @media (max-width: 500px) {
-    flex-direction: column;
-  }
 `;
 
 const Form = styled.form`
@@ -45,6 +42,10 @@ const Input = styled.input`
 
   font-family: inherit;
   font-weight: 200;
+
+  @media (max-width: 500px) {
+    font-size: 1rem;
+  }
 
   &:focus,
   &:hover {
@@ -81,6 +82,9 @@ const Error = styled.div`
 `;
 
 export default function Search({ ...rest }) {
+  const locationsLength = useAppSelector(
+    (state) => state.user.recentLocations.length
+  );
   const history = useHistory();
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
@@ -109,7 +113,7 @@ export default function Search({ ...rest }) {
         <Input
           type="search"
           placeholder="Search locations"
-          autoFocus
+          autoFocus={locationsLength === 0 || document.body.clientWidth > 600}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
