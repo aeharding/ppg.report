@@ -12,12 +12,20 @@ const RemoveIcon = styled(FontAwesomeIcon)`
   padding: 1rem;
   box-sizing: content-box;
   opacity: 0.5;
+  transform: scale(0.95);
 
-  transition: opacity 100ms ease-out;
+  transition: 100ms ease-out;
+  transition-property: opacity, transform;
 
   &:hover {
     color: red;
   }
+`;
+
+const Label = styled.span`
+  transition: transform 100ms ease-out;
+
+  transform-origin: left center;
 `;
 
 const StyledLink = styled(Link)`
@@ -31,8 +39,14 @@ const StyledLink = styled(Link)`
     text-decoration: none;
     background-color: rgba(0, 0, 0, 0.1);
 
+    ${Label} {
+      transform: scale(1.015);
+      font-weight: 500;
+    }
+
     ${RemoveIcon} {
       opacity: 1;
+      transform: scale(1);
     }
   }
 `;
@@ -53,7 +67,7 @@ export default function Location({ location }: LocationProps) {
 
   return (
     <StyledLink to={`/${location.lat},${location.lon}`}>
-      {location.label}{" "}
+      <Label>{location.label}</Label>{" "}
       <RemoveIcon icon={faTimes} onClick={(e) => remove(e, location)} />
     </StyledLink>
   );
