@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { isTouchDevice } from "../../helpers/device";
 
 const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
-  position: fixed;
+  position: absolute;
   top: 50%;
   width: 5em;
   height: 10em;
@@ -64,6 +64,11 @@ type NavProps = { left: true } | { right: true };
 export default function Nav(props: NavProps) {
   const ref = useRef<SVGSVGElement>(null);
   const [visible, setVisible] = useState(false);
+  const visibleRef = useRef(visible);
+
+  useEffect(() => {
+    visibleRef.current = visible;
+  }, [visible]);
 
   useEffect(() => {
     if (!ref.current?.parentElement) return;
@@ -72,10 +77,10 @@ export default function Nav(props: NavProps) {
       ref.current.parentElement.getBoundingClientRect();
 
     const onMouseMove = ({ pageX, pageY }: MouseEvent) => {
-      if (pageY < top + height * 0.35 || pageY > top + height * 0.65) {
+      if (pageY < top + height * 0.15 || pageY > top + height * 0.95) {
         setVisible(false);
         return;
-      } else if (pageX < left + width * 0.15 || pageX > left + width * 0.85) {
+      } else if (pageX < left + width * 0.13 || pageX > left + width * 0.87) {
         setVisible(true);
       } else {
         setVisible(false);
@@ -86,11 +91,20 @@ export default function Nav(props: NavProps) {
       setVisible(false);
     };
 
+    const onClick = (e: MouseEvent) => {
+      if (visibleRef.current) {
+        window.getSelection()?.removeAllRanges();
+        e.preventDefault();
+      }
+    };
+
     document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseleave", onMouseLeave);
+    document.addEventListener("mouseout", onMouseLeave);
+    document.addEventListener("mousedown", onClick);
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseout", onMouseLeave);
+      document.addEventListener("mousedown", onClick);
     };
   }, []);
 
