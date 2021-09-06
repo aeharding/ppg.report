@@ -4,10 +4,15 @@ import { useEffect, useRef } from "react";
 import Hour from "./Hour";
 import { RapPayload } from "./rapSlice";
 import ReportWatchdog from "./ReportWatchdog";
+import Nav from "./Nav";
 
 const browser = detect();
 
 const minHourWidth = 350;
+
+const ScrollContainer = styled.div`
+  position: relative;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -111,7 +116,7 @@ export default function Hours({ rap }: TableProps) {
         case "ArrowLeft": {
           e.preventDefault();
           const prev =
-            Date.now() - timestamp < 500 ? last : ref.current.scrollLeft;
+            Date.now() - timestamp < 1000 ? last : ref.current.scrollLeft;
           ref.current.scrollLeft = prev - ref.current.children[0].clientWidth;
           last = ref.current.scrollLeft - ref.current.children[0].clientWidth;
           timestamp = Date.now();
@@ -120,7 +125,7 @@ export default function Hours({ rap }: TableProps) {
         case "ArrowRight": {
           e.preventDefault();
           const prev =
-            Date.now() - timestamp < 500 ? last : ref.current.scrollLeft;
+            Date.now() - timestamp < 1000 ? last : ref.current.scrollLeft;
           ref.current.scrollLeft = prev + ref.current.children[0].clientWidth;
           last = ref.current.scrollLeft + ref.current.children[0].clientWidth;
           timestamp = Date.now();
@@ -134,13 +139,17 @@ export default function Hours({ rap }: TableProps) {
 
   return (
     <>
-      <Container ref={ref}>
-        {rap.data.map((rap) => (
-          <HourContainer key={rap.date}>
-            <StyledHour rap={rap} rows={rows} />
-          </HourContainer>
-        ))}
-      </Container>
+      <ScrollContainer>
+        <Nav left />
+        <Container ref={ref}>
+          {rap.data.map((rap) => (
+            <HourContainer key={rap.date}>
+              <StyledHour rap={rap} rows={rows} />
+            </HourContainer>
+          ))}
+        </Container>
+        <Nav right />
+      </ScrollContainer>
 
       <ReportWatchdog rap={rap} />
     </>
