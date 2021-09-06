@@ -1,11 +1,15 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
+import { detect } from "detect-browser";
+import React from "react";
 import { isTouchDevice } from "../../helpers/device";
+
+const browser = detect();
 
 const Container = styled.div<{ flip: boolean }>`
   position: absolute;
   top: 0;
-  right: -1em;
+  right: 0;
   bottom: 0;
   left: 0;
   pointer-events: none;
@@ -19,13 +23,25 @@ const Container = styled.div<{ flip: boolean }>`
     `}
 `;
 
-const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
+const Button = styled.div<{ flip: boolean; visible: boolean }>`
   position: sticky;
   top: 50%;
   width: 5em;
   height: 10em;
-  padding: 6em 6em 6em 1em;
+  padding: 6em 2rem 6em 1rem;
   pointer-events: auto;
+
+  font-size: 0.85em;
+
+  @media (max-width: 600px) {
+    font-size: 0.7em;
+  }
+
+  ${({ visible }) =>
+    !visible &&
+    css`
+      pointer-events: none;
+    `}
 
   ${({ flip }) =>
     flip
@@ -63,35 +79,51 @@ const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
   transition: 100ms ease-out;
   transition-property: opacity, transform;
 
-  background: radial-gradient(circle at 0%, black, transparent 65%);
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -1em;
+    height: 200%;
+    width: 15em;
+    transform: translateY(-50%);
+
+    pointer-events: none;
+
+    z-index: -1;
+    background: radial-gradient(circle at 0%, #00000096, transparent 55%);
+  }
 
   &:hover {
     opacity: 1;
   }
 `;
 
-type NavProps = { left: true } | { right: true };
+type NavProps = React.HTMLAttributes<HTMLDivElement> & {
+  visible: boolean;
+} & ({ left: true } | { right: true });
 
 export default function Nav(props: NavProps) {
-  if (isTouchDevice()) return null;
+  // Safari scrolling snap views is super messed up
+  if (browser?.name === "safari" || isTouchDevice()) return null;
 
   return (
-    <Container flip={"right" in props}>
-      <Svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 8 14"
-        preserveAspectRatio="none"
-        flip={"right" in props}
-        visible={true}
-      >
-        <path
-          d="M7 1L1 7l6 6"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </Svg>
+    <Container flip={"right" in props} {...props}>
+      <Button flip={"right" in props} visible={props.visible}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 8 14"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M7 1L1 7l6 6"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </Button>
     </Container>
   );
 }
