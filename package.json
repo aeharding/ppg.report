@@ -23,6 +23,7 @@
     "axios-cache-adapter": "^2.7.3",
     "chroma-js": "^2.1.2",
     "date-fns": "^2.23.0",
+    "detect-browser": "^5.2.0",
     "emotion": "^11.0.0",
     "geolib": "^3.3.1",
     "gsl-parser": "^1.0.0",

@@ -1,7 +1,11 @@
 import styled from "@emotion/styled/macro";
+import { detect } from "detect-browser";
+import { useEffect, useRef } from "react";
 import Hour from "./Hour";
 import { RapPayload } from "./rapSlice";
 import ReportWatchdog from "./ReportWatchdog";
+
+const browser = detect();
 
 const minHourWidth = 350;
 
@@ -88,12 +92,49 @@ interface TableProps {
 }
 
 export default function Hours({ rap }: TableProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
   // Each report can have a different # of rows. This normalizes that
   const rows = rap.data[0].data.filter(({ height }) => height < 5800).length;
 
+  useEffect(() => {
+    // Safari behaves strangely
+    if (browser?.name === "safari") return;
+
+    let last = 0;
+    let timestamp = 0;
+
+    const callback = (e: KeyboardEvent) => {
+      if (!ref.current) return;
+
+      switch (e.key) {
+        case "ArrowLeft": {
+          e.preventDefault();
+          const prev =
+            Date.now() - timestamp < 500 ? last : ref.current.scrollLeft;
+          ref.current.scrollLeft = prev - ref.current.children[0].clientWidth;
+          last = ref.current.scrollLeft - ref.current.children[0].clientWidth;
+          timestamp = Date.now();
+          return;
+        }
+        case "ArrowRight": {
+          e.preventDefault();
+          const prev =
+            Date.now() - timestamp < 500 ? last : ref.current.scrollLeft;
+          ref.current.scrollLeft = prev + ref.current.children[0].clientWidth;
+          last = ref.current.scrollLeft + ref.current.children[0].clientWidth;
+          timestamp = Date.now();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", callback);
+    return () => document.removeEventListener("keydown", callback);
+  });
+
   return (
     <>
-      <Container>
+      <Container ref={ref}>
         {rap.data.map((rap) => (
           <HourContainer key={rap.date}>
             <StyledHour rap={rap} rows={rows} />
