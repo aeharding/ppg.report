@@ -1,30 +1,44 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { useEffect, useRef, useState } from "react";
 import { isTouchDevice } from "../../helpers/device";
 
-const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
+const Container = styled.div<{ flip: boolean }>`
   position: absolute;
+  top: 0;
+  right: -1em;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+
+  display: flex;
+
+  ${({ flip }) =>
+    flip &&
+    css`
+      justify-content: flex-end;
+    `}
+`;
+
+const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
+  position: sticky;
   top: 50%;
   width: 5em;
   height: 10em;
   padding: 6em 6em 6em 1em;
+  pointer-events: auto;
 
-  pointer-events: none;
-
-  ${({ flip, visible }) =>
+  ${({ flip }) =>
     flip
       ? css`
           right: 0;
           transform-origin: right center;
 
-          transform: translate(calc(-100% + 0.25em), -50%) scale(0.95)
+          transform: translate(calc(-100% - 0.25em), -50%) scale(0.95)
             rotate(180deg);
 
-          ${visible &&
-          css`
+          &:hover {
             transform: translate(-100%, -50%) scale(1) rotate(180deg);
-          `}
+          }
         `
       : css`
           left: 0;
@@ -32,10 +46,9 @@ const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
 
           transform: translate(0.25em, -50%) scale(0.95);
 
-          ${visible &&
-          css`
+          &:hover {
             transform: translate(0, -50%) scale(1);
-          `}
+          }
         `}
 
   z-index: 1;
@@ -52,88 +65,33 @@ const Svg = styled.svg<{ flip: boolean; visible: boolean }>`
 
   background: radial-gradient(circle at 0%, black, transparent 65%);
 
-  ${({ visible }) =>
-    visible &&
-    css`
-      opacity: 1;
-    `}
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 type NavProps = { left: true } | { right: true };
 
 export default function Nav(props: NavProps) {
-  const ref = useRef<SVGSVGElement>(null);
-  const [visible, setVisible] = useState(false);
-  const visibleRef = useRef(visible);
-
-  useEffect(() => {
-    visibleRef.current = visible;
-  }, [visible]);
-
-  useEffect(() => {
-    if (!ref.current?.parentElement) return;
-
-    const { left, top, width, height } =
-      ref.current.parentElement.getBoundingClientRect();
-
-    const onMouseMove = ({ pageX, pageY }: MouseEvent) => {
-      if (pageY < top + height * 0.15 || pageY > top + height * 0.95) {
-        setVisible(false);
-        return;
-      } else if (pageX < left + width * 0.13 || pageX > left + width * 0.87) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
-    };
-
-    const onMouseLeave = () => {
-      setVisible(false);
-    };
-
-    const onClick = (e: MouseEvent) => {
-      if (visibleRef.current) {
-        window.getSelection()?.removeAllRanges();
-        e.preventDefault();
-      }
-    };
-
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseout", onMouseLeave);
-    document.addEventListener("mousedown", onClick);
-    return () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseout", onMouseLeave);
-      document.addEventListener("mousedown", onClick);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.body.style.cursor = visible ? "pointer" : "";
-
-    return () => {
-      document.body.style.removeProperty("cursor");
-    };
-  }, [visible]);
-
   if (isTouchDevice()) return null;
 
   return (
-    <Svg
-      ref={ref}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 8 14"
-      preserveAspectRatio="none"
-      flip={"right" in props}
-      visible={visible}
-    >
-      <path
-        d="M7 1L1 7l6 6"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </Svg>
+    <Container flip={"right" in props}>
+      <Svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 8 14"
+        preserveAspectRatio="none"
+        flip={"right" in props}
+        visible={true}
+      >
+        <path
+          d="M7 1L1 7l6 6"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </Svg>
+    </Container>
   );
 }

@@ -12,6 +12,7 @@ const minHourWidth = 350;
 
 const ScrollContainer = styled.div`
   position: relative;
+  display: flex;
 `;
 
 const Container = styled.div`
@@ -139,17 +140,17 @@ export default function Hours({ rap }: TableProps) {
 
   return (
     <>
-      <ScrollContainer>
-        <Nav left />
-        <Container ref={ref}>
+      <Container ref={ref}>
+        <ScrollContainer>
+          <Nav left />
           {rap.data.map((rap) => (
             <HourContainer key={rap.date}>
               <StyledHour rap={rap} rows={rows} />
             </HourContainer>
           ))}
-        </Container>
-        <Nav right />
-      </ScrollContainer>
+          <Nav right />
+        </ScrollContainer>
+      </Container>
 
       <ReportWatchdog rap={rap} />
     </>
