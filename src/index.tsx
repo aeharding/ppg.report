@@ -28,15 +28,18 @@ const globalStyles = css`
     flex-direction: column;
     min-height: 100vh; // AsideHouses, and keep footer at bottom of viewport
 
-    background: linear-gradient(
-      0deg,
-      var(--bg-gradient-from),
-      var(--bg-gradient-to)
-    );
     color: var(--text);
     line-height: 1.4;
 
     box-sizing: border-box;
+
+    @media (any-hover: none) {
+      user-select: none;
+    }
+
+    @media (display-mode: standalone) {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   *,
