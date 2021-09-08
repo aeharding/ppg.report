@@ -40,13 +40,17 @@ const Container = styled.div`
 
   ${browser?.os !== "Mac OS" &&
   css`
-    ${roundedScrollbar}
+    @media (any-hover: hover) {
+      ${roundedScrollbar}
 
-    ::-webkit-scrollbar-track,
-    ::-webkit-scrollbar-thumb {
-      margin: 0 2em;
+      ::-webkit-scrollbar-track,
+      ::-webkit-scrollbar-thumb {
+        margin: 0 2em;
+      }
     }
   `}
+
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.15);
 
   > * {
     flex-shrink: 0;

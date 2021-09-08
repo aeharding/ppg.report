@@ -7,6 +7,8 @@ import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { tippyStyles } from "./tippy";
 
+import "./setupViewport";
+
 const globalStyles = css`
   html {
     // Color for Safari overscroll
