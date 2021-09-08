@@ -110,9 +110,10 @@ export default function Search({ ...rest }) {
 
   return (
     <Container {...rest}>
-      <Form onSubmit={submit}>
+      <Form onSubmit={submit} action="#">
         <Input
-          type="search"
+          type="text"
+          enterKeyHint="go"
           placeholder="Search locations"
           autoFocus={locationsLength === 0 || !isTouchDevice()}
           value={query}

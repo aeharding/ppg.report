@@ -47,11 +47,11 @@ export default function ReportHeader(props: ReportHeaderProps) {
       <br />
       <SunLine>
         <span>
-          <Icon icon={faSunset} /> {format(times.sunsetStart, "h:mmaaaaa")}
+          <Icon icon={faSunrise} /> {format(times.sunrise, "h:mmaaaaa")}
         </span>
         &nbsp;&nbsp;
         <span>
-          <Icon icon={faSunrise} /> {format(times.sunrise, "h:mmaaaaa")}
+          <Icon icon={faSunset} /> {format(times.sunsetStart, "h:mmaaaaa")}
         </span>
       </SunLine>
     </>

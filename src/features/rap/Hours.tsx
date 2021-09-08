@@ -5,6 +5,8 @@ import Hour from "./Hour";
 import { RapPayload } from "./rapSlice";
 import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
+import roundedScrollbar from "./roundedScrollbar";
+import { css } from "@emotion/react/macro";
 
 const browser = detect();
 
@@ -27,6 +29,8 @@ const ScrollContainer = styled.div`
 `;
 
 const Container = styled.div`
+  --hours-gutter: 1.4em;
+
   display: flex;
 
   overflow: auto;
@@ -34,28 +38,15 @@ const Container = styled.div`
 
   scroll-snap-type: x mandatory;
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(255, 255, 255, 0);
-  }
+  ${browser?.os !== "Mac OS" &&
+  css`
+    ${roundedScrollbar}
 
-  ::-webkit-scrollbar-track,
-  ::-webkit-scrollbar-thumb {
-    border-left: 2px solid rgba(255, 255, 255, 0);
-    border-right: 2px solid rgba(255, 255, 255, 0);
-    border-top: 0px solid rgba(255, 255, 255, 0);
-    border-bottom: 4px solid rgba(255, 255, 255, 0);
-    background-clip: padding-box;
-    margin: 0 2em;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-thumb {
+      margin: 0 2em;
     }
-  }
+  `}
 
   > * {
     flex-shrink: 0;
@@ -65,7 +56,7 @@ const Container = styled.div`
 const HourContainer = styled.section`
   scroll-snap-align: start;
 
-  margin: 0 calc(-1 * var(--right-safe-area)) 1em
+  margin: 0 calc(-1 * var(--right-safe-area)) var(--hours-gutter)
     calc(-1 * var(--left-safe-area));
   padding: 0 var(--right-safe-area) 0 var(--left-safe-area);
 
@@ -76,15 +67,15 @@ const HourContainer = styled.section`
     padding-right: var(--right-safe-area);
 
     > div {
-      margin-right: 1em;
+      margin-right: var(--hours-gutter);
     }
   }
 `;
 
 const StyledHour = styled(Hour)`
-  margin-left: 1em;
+  margin-left: var(--hours-gutter);
 
-  width: calc(100vw - 4em);
+  width: calc(100vw - calc(var(--hours-gutter) * 4));
 
   ${() => {
     let css = "";
@@ -92,7 +83,9 @@ const StyledHour = styled(Hour)`
     for (let i = 1; i <= 10; i++) {
       css += `
         @media (min-width: ${i * minHourWidth}px) {
-          width: calc(${100 / i}vw - ${1 + 1 / i}em - calc(${
+          width: calc(${100 / i}vw - var(--hours-gutter) - calc(${
+        1 / i
+      } * var(--hours-gutter)) - calc(${
         1 / i
       } * var(--right-safe-area)) - calc(${1 / i} * var(--left-safe-area)));
         }
@@ -116,9 +109,21 @@ export default function Hours({ rap }: TableProps) {
   // Each report can have a different # of rows. This normalizes that
   const rows = rap.data[0].data.filter(({ height }) => height < 5800).length;
 
+  const data = useMemo(
+    () =>
+      rap.data.map((rap) => (
+        <HourContainer key={rap.date}>
+          <StyledHour rap={rap} rows={rows} />
+        </HourContainer>
+      )),
+    [rap, rows]
+  );
+
   useEffect(() => {
-    // Safari behaves strangely
-    if (browser?.name === "safari") return;
+    // Safari 14 and less are broke af
+    // TODO: Remove once Safari 16 is released (~ September 2022)
+    if (browser?.name === "safari" && +browser?.version.split(".")[0] <= 14)
+      return;
 
     onScroll();
 
@@ -168,16 +173,6 @@ export default function Hours({ rap }: TableProps) {
     return () => scrollView.removeEventListener("scroll", onScroll);
   }, [scrollViewRef]);
 
-  const data = useMemo(
-    () =>
-      rap.data.map((rap) => (
-        <HourContainer key={rap.date}>
-          <StyledHour rap={rap} rows={rows} />
-        </HourContainer>
-      )),
-    [rap, rows]
-  );
-
   function scroll(direction: Direction) {
     if (!scrollViewRef.current) throw new Error("Scrollview not found");
 
@@ -187,11 +182,11 @@ export default function Hours({ rap }: TableProps) {
 
     switch (direction) {
       case Direction.Back: {
-        scrollViewRef.current.scrollBy(-section.clientWidth, 0);
+        scrollViewRef.current.scrollBy(-(section.clientWidth / 2), 0);
         return;
       }
       case Direction.Forward: {
-        scrollViewRef.current.scrollBy(section.clientWidth, 0);
+        scrollViewRef.current.scrollBy(section.clientWidth / 2, 0);
       }
     }
   }

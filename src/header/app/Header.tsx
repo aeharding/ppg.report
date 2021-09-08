@@ -1,23 +1,16 @@
 import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
-import { ReactComponent as Icon } from "../icon.svg";
 import HeaderRoutes from "./HeaderRoutes";
-import { useLocation } from "react-router";
-import { css } from "@emotion/react/macro";
 
 const height = "50px";
 
-const Container = styled.div`
+const Push = styled.div`
   height: ${height};
 
   margin-bottom: 1em;
-
-  @media (orientation: landscape) {
-    display: none;
-  }
 `;
 
-const Content = styled.div<{ center: boolean }>`
+const Fixed = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -25,61 +18,40 @@ const Content = styled.div<{ center: boolean }>`
   z-index: 1;
   height: calc(${height} + env(safe-area-inset-top));
 
+  // Allow header to be scrolled out of way on height contrained devices
+  @media (orientation: landscape) and (max-height: 500px) {
+    position: relative;
+  }
+
   display: flex;
-  align-items: center;
 
-  ${({ center }) =>
-    center &&
-    css`
-      justify-content: center;
-    `}
-
-  padding: env(safe-area-inset-top) 0.8em 0;
+  padding: env(safe-area-inset-top) var(--left-safe-area) 0
+    var(--right-safe-area);
 
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
 `;
 
-const StyledIcon = styled(Icon)`
-  height: 25px;
+const Container = styled.div`
+  position: relative;
 
-  transform: translateY(-1px);
-`;
+  width: 100%;
+  height: 100%;
 
-const Title = styled.h1`
-  margin: 0 0 0 0.6em;
-  font-size: 1.5em;
-`;
-
-const RouteContainer = styled.div`
-  font-size: 0.7em;
-  margin: 0 auto;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-
-  text-align: center;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 `;
 
 export default function Header() {
-  const location = useLocation();
-
   return (
     <Link to="/">
-      <Container>
-        <Content center={location.pathname === "/"}>
-          <StyledIcon />{" "}
-          {location.pathname === "/" && <Title>PPG.report</Title>}
-          <RouteContainer>
+      <Push>
+        <Fixed>
+          <Container>
             <HeaderRoutes />
-          </RouteContainer>
-        </Content>
-      </Container>
+          </Container>
+        </Fixed>
+      </Push>
     </Link>
   );
 }

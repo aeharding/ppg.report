@@ -52,7 +52,7 @@ function App() {
     <Router>
       <Global
         styles={css`
-          html {
+          :root {
             ${writeVariables()}
           }
         `}

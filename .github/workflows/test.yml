@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [16.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i -g yarn
+      - run: corepack enable
       - run: |
           npm config set '@fortawesome:registry' '${{ secrets.FONTAWESOME_REGISTRY }}'
           npm config set '//harding.dev:23435/:_authToken' '${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}'
