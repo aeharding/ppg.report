@@ -7,6 +7,7 @@ import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
+import { throttle } from "lodash";
 
 const browser = detect();
 
@@ -149,9 +150,10 @@ export default function Hours({ rap }: TableProps) {
 
     document.addEventListener("keydown", callback);
     return () => document.removeEventListener("keydown", callback);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function onScroll() {
+  const onScroll = throttle(() => {
     const scrollView = scrollViewRef.current;
     if (!scrollView) return;
 
@@ -165,7 +167,7 @@ export default function Hours({ rap }: TableProps) {
       position = ScrollPosition.End;
     }
     setScrollPosition(position);
-  }
+  }, 250);
 
   useEffect(() => {
     const scrollView = scrollViewRef.current;
@@ -175,6 +177,7 @@ export default function Hours({ rap }: TableProps) {
 
     scrollView.addEventListener("scroll", onScroll);
     return () => scrollView.removeEventListener("scroll", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollViewRef]);
 
   function scroll(direction: Direction) {
