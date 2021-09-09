@@ -114,6 +114,7 @@ export default function Search({ ...rest }) {
         <Input
           type="text"
           enterKeyHint="go"
+          spellCheck={false}
           placeholder="Search locations"
           autoFocus={locationsLength === 0 || !isTouchDevice()}
           value={query}
