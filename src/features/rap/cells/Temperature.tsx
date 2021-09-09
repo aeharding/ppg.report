@@ -1,5 +1,6 @@
 import styled from "@emotion/styled/macro";
 import chroma from "chroma-js";
+import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { Aside } from "./Height";
 
 const colorScale = chroma
@@ -7,7 +8,7 @@ const colorScale = chroma
   .domain([25, 73, 82, 87, 95]);
 
 const TemperatureContainer = styled.div<{ temperature: number }>`
-  color: ${({ temperature }) => colorScale(temperature).css()};
+  ${({ temperature }) => outputP3ColorFromRGB(colorScale(temperature).rgb())}
 `;
 
 interface TemperatureProps {

@@ -2,6 +2,7 @@ import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { outputP3ColorFromRGB } from "../../../helpers/colors";
 
 export const shearIndicator = css`
   content: "";
@@ -13,7 +14,7 @@ export const shearIndicator = css`
 
   height: 1px;
 
-  background: red;
+  ${outputP3ColorFromRGB([255, 0, 0], "background")}
 
   mask-image: linear-gradient(
     90deg,

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled/macro";
+import { outputP3ColorFromRGB } from "../helpers/colors";
 import { ReactComponent as Email } from "./email.svg";
 
 const TermsContainer = styled.div`
@@ -9,7 +10,7 @@ const TermsContainer = styled.div`
 `;
 
 const Warning = styled.strong`
-  color: yellow;
+  ${outputP3ColorFromRGB([255, 255, 0])}
 `;
 
 export default function Terms() {

@@ -2,6 +2,9 @@ import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
 import { isInstalled } from "./helpers/device";
+import { outputP3ColorFromRGB } from "./helpers/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/pro-regular-svg-icons";
 
 const FancyFooter = styled.footer`
   padding: 1em;
@@ -14,7 +17,7 @@ const FancyFooter = styled.footer`
 `;
 
 const Warning = styled.span`
-  color: yellow;
+  ${outputP3ColorFromRGB([255, 255, 0])}
 `;
 
 export default function Footer() {
@@ -29,7 +32,7 @@ export default function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        ⭐️ on Github
+        <FontAwesomeIcon icon={faStar} /> on Github
       </a>{" "}
       — <Link to="/terms">Terms &amp; Privacy</Link> —{" "}
       <Warning>⚠️ Warning! Fly at your own risk.</Warning>

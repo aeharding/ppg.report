@@ -2,6 +2,7 @@ import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
+import { outputP3ColorFromLab } from "../../helpers/colors";
 
 export const headerText = css`
   text-transform: uppercase;
@@ -45,7 +46,7 @@ const cinColorScale = chroma
   .domain([0, -20, -50, -90]);
 
 const Cin = styled.span<{ cin: number }>`
-  color: ${({ cin }) => cinColorScale(cin).css()};
+  ${({ cin }) => outputP3ColorFromLab(cinColorScale(cin).lab())};
 `;
 
 const capeColorScale = chroma
@@ -53,7 +54,7 @@ const capeColorScale = chroma
   .domain([0, 1250, 3000]);
 
 const Cape = styled.span<{ cape: number }>`
-  color: ${({ cape }) => capeColorScale(cape).css()};
+  ${({ cape }) => outputP3ColorFromLab(capeColorScale(cape).lab())};
 `;
 
 interface CinCapeProps {
