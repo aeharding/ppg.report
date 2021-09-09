@@ -35,7 +35,8 @@ const StyledLink = styled(Link)`
   height: 4rem;
   transition: background-color 100ms ease-out;
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: none;
     background-color: rgba(0, 0, 0, 0.1);
 

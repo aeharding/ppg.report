@@ -103,9 +103,14 @@ type NavProps = React.HTMLAttributes<HTMLDivElement> & {
   visible: boolean;
 } & ({ left: true } | { right: true });
 
+// Safari 14 and less are broke af
+// TODO: Remove once Safari 16 is released (~ September 2022)
+const shitIsBroke =
+  browser?.name === "safari" && +browser?.version.split(".")[0] <= 14;
+
 export default function Nav(props: NavProps) {
   // Safari scrolling snap views is super messed up
-  if (browser?.name === "safari" || isTouchDevice()) return null;
+  if (shitIsBroke || isTouchDevice()) return null;
 
   return (
     <Container flip={"right" in props} {...props}>

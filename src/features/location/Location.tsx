@@ -51,7 +51,7 @@ export default function Location({ ...rest }) {
   }, [dispatch, history]);
 
   return (
-    <Button onClick={locate} {...rest}>
+    <Button onClick={locate} aria-label="Use current location" {...rest}>
       <FontAwesomeIcon icon={faLocationArrow} />
     </Button>
   );

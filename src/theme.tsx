@@ -9,7 +9,9 @@ export function writeVariables(): SerializedStyles {
     --softText: rgba(255, 255, 255, 0.3);
     --overscroll-background: #111;
 
-    --left-safe-area: max(1rem, env(safe-area-inset-left));
-    --right-safe-area: max(1rem, env(safe-area-inset-right));
+    --edge-padding: 1rem;
+
+    --left-safe-area: max(var(--edge-padding), env(safe-area-inset-left));
+    --right-safe-area: max(var(--edge-padding), env(safe-area-inset-right));
   `;
 }

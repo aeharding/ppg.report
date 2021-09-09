@@ -1,5 +1,7 @@
 import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router";
+import { isInstalled } from "./helpers/device";
 
 const FancyFooter = styled.footer`
   padding: 1em;
@@ -16,6 +18,10 @@ const Warning = styled.span`
 `;
 
 export default function Footer() {
+  const location = useLocation();
+
+  if (location.pathname !== "/" && isInstalled()) return null;
+
   return (
     <FancyFooter>
       <a

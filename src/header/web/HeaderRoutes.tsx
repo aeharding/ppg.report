@@ -1,6 +1,5 @@
-import React from "react";
 import { Switch, Route } from "react-router-dom";
-import ReportHeader from "./header/ReportHeader";
+import ReportHeader from "./ReportHeader";
 
 export default function HeaderRoutes() {
   return (
