@@ -22,6 +22,17 @@ enum Direction {
   Back,
 }
 
+enum Distance {
+  // Forward/back one step
+  Hour,
+
+  // Forward/back multiple steps
+  Page,
+
+  // Forward/back to end of list
+  End,
+}
+
 const minHourWidth = 350;
 
 const ScrollContainer = styled.div`
@@ -135,16 +146,34 @@ export default function Hours({ rap }: TableProps) {
     const callback = (e: KeyboardEvent) => {
       if (!scrollViewRef.current) return;
 
+      let distance = Distance.Hour;
+      if (e.metaKey) distance = Distance.End;
+      if (e.altKey) distance = Distance.Page;
+
       switch (e.key) {
-        case "ArrowLeft": {
+        case "ArrowLeft":
           e.preventDefault();
-          scroll(Direction.Back);
-          return;
-        }
-        case "ArrowRight": {
+          scroll(Direction.Back, distance);
+          break;
+        case "ArrowRight":
           e.preventDefault();
-          scroll(Direction.Forward);
-        }
+          scroll(Direction.Forward, distance);
+          break;
+        case "End":
+          e.preventDefault();
+          scroll(Direction.Forward, Distance.End);
+          break;
+        case "Home":
+          e.preventDefault();
+          scroll(Direction.Back, Distance.End);
+          break;
+        case "PageDown":
+          e.preventDefault();
+          scroll(Direction.Forward, Distance.Page);
+          break;
+        case "PageUp":
+          e.preventDefault();
+          scroll(Direction.Back, Distance.Page);
       }
     };
 
@@ -180,20 +209,60 @@ export default function Hours({ rap }: TableProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollViewRef]);
 
-  function scroll(direction: Direction) {
+  function scroll(direction: Direction, distance = Distance.Hour) {
     if (!scrollViewRef.current) throw new Error("Scrollview not found");
 
-    const section = scrollViewRef.current.querySelector("section");
+    switch (distance) {
+      case Distance.Hour: {
+        const section = scrollViewRef.current.querySelector("section");
 
-    if (!section) throw new Error("Section not found");
+        if (!section) throw new Error("Section not found");
 
-    switch (direction) {
-      case Direction.Back: {
-        scrollViewRef.current.scrollBy(-(section.clientWidth / 2), 0);
-        return;
+        switch (direction) {
+          case Direction.Back: {
+            scrollViewRef.current.scrollBy(-(section.clientWidth / 2), 0);
+            break;
+          }
+          case Direction.Forward: {
+            scrollViewRef.current.scrollBy(section.clientWidth / 2, 0);
+          }
+        }
+        break;
       }
-      case Direction.Forward: {
-        scrollViewRef.current.scrollBy(section.clientWidth / 2, 0);
+      case Distance.End: {
+        switch (direction) {
+          case Direction.Back:
+            scrollViewRef.current.scrollLeft = 0;
+            break;
+          case Direction.Forward:
+            scrollViewRef.current.scrollLeft =
+              scrollViewRef.current.scrollWidth;
+        }
+        break;
+      }
+      case Distance.Page: {
+        // TODO - skip to sunset/sunrise?
+
+        // If I go exactly to clientWidth, the browser snap
+        //  overshoots by 1 in Safari
+        const HACKY_OFFSET = 100;
+
+        switch (direction) {
+          case Direction.Back: {
+            scrollViewRef.current.scrollBy(
+              -scrollViewRef.current.clientWidth + HACKY_OFFSET,
+              0
+            );
+            break;
+          }
+          case Direction.Forward: {
+            scrollViewRef.current.scrollBy(
+              scrollViewRef.current.clientWidth - HACKY_OFFSET,
+              0
+            );
+          }
+        }
+        break;
       }
     }
   }

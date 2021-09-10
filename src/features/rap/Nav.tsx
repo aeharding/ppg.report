@@ -37,6 +37,19 @@ const Button = styled.div<{ flip: boolean; visible: boolean }>`
     font-size: 0.7em;
   }
 
+  z-index: 1;
+
+  box-sizing: content-box;
+
+  stroke-width: 0.3px;
+  cursor: pointer;
+
+  opacity: 0;
+
+  transform-origin: right center;
+  transition: 100ms ease-out;
+  transition-property: opacity, transform;
+
   ${({ visible }) =>
     !visible &&
     css`
@@ -47,7 +60,6 @@ const Button = styled.div<{ flip: boolean; visible: boolean }>`
     flip
       ? css`
           right: 0;
-          transform-origin: right center;
 
           transform: translate(calc(-100% - 0.25em), -50%) scale(0.95)
             rotate(180deg);
@@ -58,7 +70,6 @@ const Button = styled.div<{ flip: boolean; visible: boolean }>`
         `
       : css`
           left: 0;
-          transform-origin: left center;
 
           transform: translate(0.25em, -50%) scale(0.95);
 
@@ -66,18 +77,6 @@ const Button = styled.div<{ flip: boolean; visible: boolean }>`
             transform: translate(0, -50%) scale(1);
           }
         `}
-
-  z-index: 1;
-
-  box-sizing: content-box;
-
-  stroke-width: 0.3px;
-  cursor: pointer;
-
-  opacity: 0;
-
-  transition: 100ms ease-out;
-  transition-property: opacity, transform;
 
   &:before {
     content: "";
