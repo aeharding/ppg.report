@@ -7,7 +7,7 @@ import { outputP3ColorFromLab } from "../../../helpers/colors";
 
 const colorScale = chroma
   .scale(["#00FF00", "#00FF00", "white", "white", "orange", "red", "purple"])
-  .domain([0, 4, 5.8, 10, 14, 30, 50])
+  .domain([0, 3, 9.5, 10, 14, 30, 50])
   .mode("lab");
 
 const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`
