@@ -1,5 +1,5 @@
 export function getTrimmedCoordinates(lat: number, lon: number): string {
-  return `${lat.toPrecision(6)},${lon.toPrecision(6)}`;
+  return `${lat.toFixed(3)},${lon.toFixed(3)}`;
 }
 
 export function isLatLonTrimmed(lat: string, lon: string): boolean {

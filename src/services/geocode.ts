@@ -2,13 +2,25 @@ import Geocode from "../models/Geocode";
 import axiosCached from "./axiosCached";
 
 export async function reverse(lat: number, lon: number): Promise<Geocode> {
-  const { data } = await axiosCached.get("/api/position/reverse", {
-    params: {
-      format: "jsonv2",
-      lat,
-      lon,
-    },
-  });
+  // TODO type response (it's weird)
+  let data: any;
+
+  try {
+    data = (
+      await axiosCached.get("/api/position/reverse", {
+        params: {
+          format: "jsonv2",
+          lat,
+          lon,
+        },
+      })
+    ).data;
+  } catch (e) {
+    data = {};
+  }
+
+  // Coordinates in ocean? API down?
+  if (!data.address) return { lat, lon, label: `${lat}, ${lon}` };
 
   const subject =
     data.address.aeroway ||
