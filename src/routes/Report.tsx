@@ -8,11 +8,20 @@ import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
 import Error from "../shared/Error";
 import { ReactComponent as Map } from "../assets/map.svg";
 import { ReactComponent as ErrorSvg } from "../assets/error.svg";
+import NotFound from "./NotFound";
 
 interface ReportProps
   extends RouteComponentProps<{ lat: string; lon: string }> {}
 
 export default function Report(props: ReportProps) {
+  const { lat, lon } = props.match.params;
+
+  if (isNaN(+lat) || isNaN(+lon)) return <NotFound />;
+
+  return <ValidParamsReport {...props} />;
+}
+
+function ValidParamsReport(props: ReportProps) {
   const { lat, lon } = props.match.params;
 
   const dispatch = useAppDispatch();
