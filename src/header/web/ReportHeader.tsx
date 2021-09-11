@@ -32,6 +32,14 @@ interface ReportHeaderProps
 export default function ReportHeader(props: ReportHeaderProps) {
   const { lat, lon } = props.match.params;
 
+  if (isNaN(+lat) || isNaN(+lon)) return null;
+
+  return <ReportHeaderValidProps {...props} />;
+}
+
+function ReportHeaderValidProps(props: ReportHeaderProps) {
+  const { lat, lon } = props.match.params;
+
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
 
   return (

@@ -2,13 +2,16 @@ import styled from "@emotion/styled/macro";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Location from "./features/location/Location";
-import { getTrimmedCoordinates } from "./helpers/coordinates";
-import { useAppSelector } from "./hooks";
-import { search } from "./services/geocode";
-import { isTouchDevice } from "./helpers/device";
+import { getTrimmedCoordinates } from "../helpers/coordinates";
+import { useAppSelector } from "../hooks";
+import { search } from "../services/geocode";
+import { isTouchDevice } from "../helpers/device";
+import { outputP3ColorFromRGB } from "../helpers/colors";
+import SubmitButton from "./SubmitButton";
 
 const Container = styled.div`
+  position: relative;
+
   display: flex;
 
   align-items: center;
@@ -24,6 +27,8 @@ const Form = styled.form`
 
   display: flex;
   position: relative;
+
+  padding-right: 4em;
 `;
 
 const Input = styled.input`
@@ -36,6 +41,8 @@ const Input = styled.input`
   outline: 0;
   padding: 0 2rem;
   color: var(--text);
+
+  backdrop-filter: blur(5px);
 
   width: 100%;
 
@@ -72,14 +79,14 @@ const Error = styled.div`
     left: 0;
     right: 0;
 
-    transform: translateY(calc(100% + 1em));
+    transform: translateY(calc(100% + 0.5em));
   }
 
   text-align: center;
   font-size: 0.9em;
   margin-top: 1em;
 
-  color: red;
+  ${outputP3ColorFromRGB([255, 0, 0])};
 `;
 
 export default function Search({ ...rest }) {
@@ -121,8 +128,8 @@ export default function Search({ ...rest }) {
           onChange={(e) => setQuery(e.target.value)}
         />
         {error && <Error>{error}</Error>}
+        <SubmitButton shouldSubmit={!!query} />
       </Form>
-      <Location />
     </Container>
   );
 }

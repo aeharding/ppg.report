@@ -1,5 +1,5 @@
 import Wind from "../features/wind/Wind";
-import Search from "../Search";
+import Search from "../search/Search";
 import styled from "@emotion/styled/macro";
 import Locations from "../features/user/Locations";
 import { useAppSelector } from "../hooks";

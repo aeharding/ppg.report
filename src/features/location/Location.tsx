@@ -8,7 +8,7 @@ import { useAppDispatch } from "../../hooks";
 import * as storage from "../user/storage";
 import { getLocation } from "./locationSlice";
 
-const Button = styled.button`
+export const Button = styled.button`
   font-size: 1.7em;
   width: 2.5em;
   height: 2.5em;
