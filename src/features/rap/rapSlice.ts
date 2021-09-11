@@ -4,7 +4,7 @@ import { AppDispatch } from "../../store";
 import * as rapidRefresh from "../../services/rapidRefresh";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
-import { Rap } from "gsl-parser";
+import { CoordinatesGslError, GslError, Rap } from "gsl-parser";
 
 export type RapResult =
   // component has requested a book, to be batched in next bulk request
@@ -14,7 +14,10 @@ export type RapResult =
   | RapPayload
 
   // API request failed
-  | "failed";
+  | "failed"
+
+  // Unsupported coordinates provided
+  | "coordinates-error";
 
 export interface RapPayload {
   updated: string;
@@ -49,6 +52,7 @@ export const rapReducer = createSlice({
 
       switch (payload) {
         case "failed":
+        case "coordinates-error":
         case undefined:
           state.rapByLocation[action.payload] = "pending";
           return;
@@ -97,10 +101,20 @@ export const rapReducer = createSlice({
         state.rapByLocation[action.payload] = "failed";
       }
     },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    rapBadCoordinates: (state, action: PayloadAction<string>) => {
+      if (state.rapByLocation[action.payload] === "pending") {
+        state.rapByLocation[action.payload] = "coordinates-error";
+      }
+    },
   },
 });
 
-export const { rapLoading, rapReceived, rapFailed } = rapReducer.actions;
+export const { rapLoading, rapReceived, rapFailed, rapBadCoordinates } =
+  rapReducer.actions;
 
 export const getRap =
   (lat: number, lon: number) =>
@@ -117,9 +131,14 @@ export const getRap =
       const rap = await rapidRefresh.getRap(lat, lon);
 
       dispatch(rapReceived({ rap, lat, lon }));
-    } catch (e) {
-      dispatch(rapFailed(getTrimmedCoordinates(lat, lon)));
-      throw e;
+    } catch (error) {
+      dispatch(
+        error instanceof CoordinatesGslError
+          ? rapBadCoordinates(getTrimmedCoordinates(lat, lon))
+          : rapFailed(getTrimmedCoordinates(lat, lon))
+      );
+
+      if (!(error instanceof GslError)) throw error;
     }
   };
 
