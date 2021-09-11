@@ -5,9 +5,9 @@ import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
-import Error from "../Error";
-import { ReactComponent as Map } from "../icons/map.svg";
-import { ReactComponent as ErrorSvg } from "../icons/error.svg";
+import Error from "../shared/Error";
+import { ReactComponent as Map } from "../assets/map.svg";
+import { ReactComponent as ErrorSvg } from "../assets/error.svg";
 
 interface ReportProps
   extends RouteComponentProps<{ lat: string; lon: string }> {}
