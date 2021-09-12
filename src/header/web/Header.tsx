@@ -16,6 +16,7 @@ const HeaderContainer = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
     justify-content: center;
+    text-align: center;
   }
 `;
 
