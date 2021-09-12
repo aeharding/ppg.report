@@ -26,7 +26,11 @@ const Fixed = styled.div`
 
   // Allow header to be scrolled out of way on height contrained devices
   @media (orientation: landscape) and (max-height: 500px) {
-    position: relative;
+    position: sticky;
+    left: 0;
+    right: 0;
+
+    width: 100vw;
   }
 
   display: flex;

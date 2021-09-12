@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { tippyStyles } from "./tippy";
+import { canScrollSnapBody } from "./helpers/device";
 
 import "./setupViewport";
 
@@ -14,6 +15,9 @@ const globalStyles = css`
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
     background-color: var(--overscroll-background);
+
+    // Needed on html (instead of body) on Chrome
+    scroll-snap-type: x mandatory;
   }
 
   body {
@@ -34,6 +38,12 @@ const globalStyles = css`
     line-height: 1.4;
 
     box-sizing: border-box;
+
+    ${canScrollSnapBody() &&
+    css`
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    `}
 
     @media (any-hover: none) {
       user-select: none;

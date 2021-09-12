@@ -7,14 +7,11 @@ import Routes from "./Routes";
 import HeaderRoutes from "./header/web/HeaderRoutes";
 import { css, Global } from "@emotion/react/macro";
 import { writeVariables } from "./theme";
-import { isInstalled } from "./helpers/device";
+import { canScrollSnapBody, isInstalled } from "./helpers/device";
 
 const Background = styled.div`
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: -1;
 
   background: linear-gradient(
@@ -38,6 +35,14 @@ const AppContents = styled.div`
 
   display: flex;
   flex-direction: column;
+
+  min-width: 100vw;
+
+  ${() =>
+    canScrollSnapBody() &&
+    css`
+      width: min-content;
+    `}
 `;
 
 const Main = styled.main`

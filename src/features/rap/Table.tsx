@@ -9,7 +9,6 @@ import { headerText } from "./CinCape";
 const TableEl = styled.table`
   width: 100%;
   text-align: center;
-  overflow: hidden;
 
   th {
     ${headerText}

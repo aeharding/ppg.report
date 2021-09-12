@@ -10,7 +10,11 @@ import styled from "@emotion/styled/macro";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 
 const Container = styled.div`
-  width: 100%;
+  position: sticky;
+  left: 0;
+  right: 0;
+
+  width: 100vw;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;

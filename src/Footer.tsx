@@ -11,6 +11,12 @@ const FancyFooter = styled.footer`
   text-align: center;
   color: var(--softText);
 
+  width: 100vw;
+
+  position: sticky;
+  left: 0;
+  right: 0;
+
   a:hover {
     color: var(--text);
   }

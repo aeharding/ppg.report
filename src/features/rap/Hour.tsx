@@ -26,7 +26,15 @@ const Header = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
-  margin: 0 1em;
+  padding: 0 1em;
+
+  @media (orientation: landscape) {
+    position: sticky;
+    top: 0;
+  }
+
+  backdrop-filter: blur(10px);
+  z-index: 1;
 `;
 
 const HourContainer = styled.h3`

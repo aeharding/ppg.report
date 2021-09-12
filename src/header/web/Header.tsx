@@ -2,6 +2,13 @@ import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
+const Sticky = styled.div`
+  position: sticky;
+  left: 0;
+  right: 0;
+  width: 100vw;
+`;
+
 const HeaderContainer = styled.div`
   width: 100%;
   max-width: 1200px;
@@ -36,12 +43,14 @@ interface HeaderProps {
 
 export default function Header({ children }: HeaderProps) {
   return (
-    <HeaderContainer>
-      <StyledLink to="/">
-        <Logo />
-      </StyledLink>
+    <Sticky>
+      <HeaderContainer>
+        <StyledLink to="/">
+          <Logo />
+        </StyledLink>
 
-      <aside>{children}</aside>
-    </HeaderContainer>
+        <aside>{children}</aside>
+      </HeaderContainer>
+    </Sticky>
   );
 }
