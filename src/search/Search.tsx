@@ -7,7 +7,7 @@ import { useAppSelector } from "../hooks";
 import { search } from "../services/geocode";
 import { isTouchDevice } from "../helpers/device";
 import { outputP3ColorFromRGB } from "../helpers/colors";
-import SubmitButton from "./SubmitButton";
+import SubmitButton, { State } from "./SubmitButton";
 
 const Container = styled.div`
   position: relative;
@@ -20,6 +20,10 @@ const Container = styled.div`
 
   max-width: 500px;
   width: 100%;
+
+  @media (display-mode: standalone) {
+    padding-top: 1em;
+  }
 `;
 
 const Form = styled.form`
@@ -57,7 +61,13 @@ const Input = styled.input`
 
   &:focus,
   &:hover {
-    border-color: #00b7ff;
+    &:not(:disabled) {
+      border-color: #00b7ff;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.75;
   }
 
   &::placeholder {
@@ -73,15 +83,6 @@ const Input = styled.input`
 `;
 
 const Error = styled.div`
-  @media (min-width: 500px) {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    transform: translateY(calc(100% + 0.5em));
-  }
-
   text-align: center;
   font-size: 0.9em;
   margin-top: 1em;
@@ -96,6 +97,7 @@ export default function Search({ ...rest }) {
   const history = useHistory();
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setError("");
@@ -103,6 +105,8 @@ export default function Search({ ...rest }) {
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    setLoading(true);
 
     if (!query.trim()) return;
 
@@ -112,24 +116,40 @@ export default function Search({ ...rest }) {
       history.push(`/${getTrimmedCoordinates(lat, lon)}`);
     } catch (e) {
       setError("Nothing found, please try again.");
+      setLoading(false);
     }
   }
 
+  let state = State.Location;
+  if (!!query) state = State.Submit;
+  if (loading) state = State.Loading;
+
   return (
-    <Container {...rest}>
-      <Form onSubmit={submit} action="#">
-        <Input
-          type="text"
-          enterKeyHint="go"
-          spellCheck={false}
-          placeholder="Search locations"
-          autoFocus={locationsLength === 0 || !isTouchDevice()}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        {error && <Error>{error}</Error>}
-        <SubmitButton shouldSubmit={!!query} />
-      </Form>
-    </Container>
+    <>
+      <Container {...rest}>
+        <Form onSubmit={submit} action="#">
+          <Input
+            type="text"
+            enterKeyHint="go"
+            autoCorrect="off"
+            placeholder="Search locations"
+            autoFocus={locationsLength === 0 || !isTouchDevice()}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            disabled={loading}
+          />
+          <SubmitButton
+            state={state}
+            onLocationFail={() =>
+              setError(
+                "Fetching current location failed. Please check app permissions."
+              )
+            }
+          />
+        </Form>
+      </Container>
+
+      {error && <Error>{error}</Error>}
+    </>
   );
 }

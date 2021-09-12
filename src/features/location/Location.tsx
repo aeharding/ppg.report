@@ -4,14 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
-import { useAppDispatch } from "../../hooks";
+import { getPosition } from "../../services/position";
 import * as storage from "../user/storage";
-import { getLocation } from "./locationSlice";
 
 export const Button = styled.button`
   font-size: 1.7em;
   width: 2.5em;
   height: 2.5em;
+  padding: 0;
 
   appearance: none;
   border: 0;
@@ -29,29 +29,45 @@ export const Button = styled.button`
   }
 `;
 
-export default function Location({ ...rest }) {
-  const dispatch = useAppDispatch();
+interface LocationProps {
+  onLocationFail: () => void;
+  className?: string;
+}
+
+export default function Location({ onLocationFail, ...rest }: LocationProps) {
   const history = useHistory();
 
   const locate = useCallback(async () => {
-    const location = await dispatch(getLocation());
+    let position: GeolocationPosition;
 
-    const matchedLocation = storage.findLocation(location.coords);
+    try {
+      position = await getPosition();
+    } catch (e) {
+      onLocationFail();
+      throw e;
+    }
+
+    const matchedLocation = storage.findLocation(position.coords);
 
     if (matchedLocation) {
       history.push(`${matchedLocation.lat},${matchedLocation.lon}`);
     } else {
       history.push(
         `/${getTrimmedCoordinates(
-          location.coords.latitude,
-          location.coords.longitude
+          position.coords.latitude,
+          position.coords.longitude
         )}`
       );
     }
-  }, [dispatch, history]);
+  }, [history, onLocationFail]);
 
   return (
-    <Button onClick={locate} aria-label="Use current location" {...rest}>
+    <Button
+      type="button"
+      onClick={locate}
+      aria-label="Use current location"
+      {...rest}
+    >
       <FontAwesomeIcon icon={faLocationArrow} />
     </Button>
   );

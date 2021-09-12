@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { css } from "@emotion/react/macro";
+import Spinner from "../shared/Spinner";
+import styled from "@emotion/styled/macro";
 
 const transitionName = "transition";
 
@@ -49,30 +51,57 @@ const transitionStyles = css`
   }
 `;
 
+const SpinnerContainer = styled.div`
+  width: 2.5em;
+  height: 2.5em;
+  font-size: 1.7em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export enum State {
+  Loading,
+  Submit,
+  Location,
+}
+
 interface AsideButtonProps {
-  shouldSubmit: boolean;
+  state: State;
+  onLocationFail: () => void;
 }
 
 export default function SubmitButton({
-  shouldSubmit,
+  state,
+  onLocationFail,
   ...props
 }: AsideButtonProps) {
   const contents = (() => {
-    if (shouldSubmit) {
-      return (
-        <Button css={transitionStyles} type="submit">
-          <FontAwesomeIcon icon={faChevronRight} />
-        </Button>
-      );
+    switch (state) {
+      case State.Location:
+        return (
+          <Location css={transitionStyles} onLocationFail={onLocationFail} />
+        );
+      case State.Submit:
+        return (
+          <Button css={transitionStyles} type="submit">
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Button>
+        );
+      case State.Loading:
+        return (
+          <SpinnerContainer css={transitionStyles}>
+            <Spinner />
+          </SpinnerContainer>
+        );
     }
-
-    return <Location css={transitionStyles} />;
   })();
 
   return (
     <TransitionGroup>
       <CSSTransition
-        key={`${shouldSubmit}`}
+        key={`${state === State.Location}`}
         timeout={150}
         classNames={transitionName}
       >
