@@ -14,6 +14,8 @@ const globalStyles = css`
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
     background-color: var(--overscroll-background);
+
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
