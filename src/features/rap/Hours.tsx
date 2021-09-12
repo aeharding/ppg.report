@@ -45,14 +45,16 @@ const Container = styled.div`
   --hours-gutter: 1.4em;
 
   display: flex;
-  margin-right: var(--right-safe-area);
 
   ${() =>
-    !canScrollSnapBody() &&
-    css`
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-    `}
+    !canScrollSnapBody()
+      ? css`
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+        `
+      : css`
+          margin-right: var(--right-safe-area);
+        `}
 
   min-height: 0;
 
