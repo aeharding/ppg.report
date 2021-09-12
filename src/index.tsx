@@ -14,6 +14,11 @@ const globalStyles = css`
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
     background-color: var(--overscroll-background);
+
+    // Needed for scroll-snap
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
   }
 
   body {
@@ -55,6 +60,8 @@ const globalStyles = css`
 
     display: flex;
     flex-direction: column;
+
+    width: max-content;
   }
 
   a {

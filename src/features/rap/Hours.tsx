@@ -45,10 +45,7 @@ const Container = styled.div`
 
   display: flex;
 
-  overflow: auto;
   min-height: 0;
-
-  scroll-snap-type: x mandatory;
 
   ${browser?.os !== "Mac OS" &&
   css`

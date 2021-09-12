@@ -35,7 +35,7 @@ const Fixed = styled.div`
     var(--right-safe-area);
 
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px) saturate(200%) brightness(80%);
 `;
 
 const Container = styled.div`

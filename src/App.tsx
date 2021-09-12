@@ -26,7 +26,6 @@ const Background = styled.div`
 const AppContainer = styled.div`
   flex: 1;
 
-  width: 100%;
   margin: 0 auto;
 
   display: flex;

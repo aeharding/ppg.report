@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
 const HeaderContainer = styled.div`
-  width: 100%;
+  width: 100vw;
   max-width: 1200px;
   margin: 1em auto;
   padding: 0 calc(1em + var(--right-safe-area)) 0
@@ -12,6 +12,10 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  position: sticky;
+  left: 0;
+  right: 0;
 
   @media (max-width: 600px) {
     flex-direction: column;

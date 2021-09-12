@@ -5,7 +5,7 @@ export const tippyStyles = css`
     position: relative;
     background-color: #000;
     color: #fff;
-    border-radius: 4px;
+    border-radius: 0.5em;
     font-size: 14px;
     line-height: 1.4;
     outline: 0;

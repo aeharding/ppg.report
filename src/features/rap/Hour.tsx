@@ -27,6 +27,11 @@ const Header = styled.div`
   align-items: flex-end;
   justify-content: space-around;
   margin: 0 1em;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 1;
 `;
 
 const HourContainer = styled.h3`
