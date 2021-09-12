@@ -23,7 +23,7 @@ const TransitionContainer = styled.div`
 
   &.${pageTransition}-enter {
     opacity: 0;
-    transform: scale(1.015);
+    transform: scale(1.001);
   }
 
   &.${pageTransition}-enter-active {
@@ -39,7 +39,7 @@ const TransitionContainer = styled.div`
 
   &.${pageTransition}-exit-active {
     opacity: 0;
-    transform: scale(0.985);
+    transform: scale(0.999);
     transition: opacity 150ms, transform 150ms;
   }
 `;
