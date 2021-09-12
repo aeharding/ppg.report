@@ -44,11 +44,16 @@ const Container = styled.div`
   --hours-gutter: 1.4em;
 
   display: flex;
+  margin-right: var(--right-safe-area);
 
-  overflow: auto;
+  ${() =>
+    browser?.name === "firefox" &&
+    css`
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    `}
+
   min-height: 0;
-
-  scroll-snap-type: x mandatory;
 
   ${browser?.os !== "Mac OS" &&
   css`

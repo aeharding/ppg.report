@@ -6,8 +6,11 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { tippyStyles } from "./tippy";
+import { detect } from "detect-browser";
 
 import "./setupViewport";
+
+const browser = detect();
 
 const globalStyles = css`
   html {
@@ -34,6 +37,12 @@ const globalStyles = css`
     line-height: 1.4;
 
     box-sizing: border-box;
+
+    ${browser?.name !== "firefox" &&
+    css`
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    `}
 
     @media (any-hover: none) {
       user-select: none;
