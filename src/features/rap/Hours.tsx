@@ -8,6 +8,7 @@ import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
 import { throttle } from "lodash";
+import { canScrollSnapBody } from "../../helpers/device";
 
 const browser = detect();
 
@@ -47,7 +48,7 @@ const Container = styled.div`
   margin-right: var(--right-safe-area);
 
   ${() =>
-    browser?.name === "firefox" &&
+    !canScrollSnapBody() &&
     css`
       overflow-x: auto;
       scroll-snap-type: x mandatory;
@@ -217,6 +218,17 @@ export default function Hours({ rap }: TableProps) {
   function scroll(direction: Direction, distance = Distance.Hour) {
     if (!scrollViewRef.current) throw new Error("Scrollview not found");
 
+    const scrollView = canScrollSnapBody() ? window : scrollViewRef.current;
+    const scrollWidth = (
+      canScrollSnapBody() ? document.body : scrollViewRef.current
+    ).scrollWidth;
+    const clientWidth = (
+      canScrollSnapBody() ? document.body : scrollViewRef.current
+    ).clientWidth;
+
+    if (!scrollView || !scrollViewRef.current)
+      throw new Error("Scrollview not found");
+
     switch (distance) {
       case Distance.Hour: {
         const section = scrollViewRef.current.querySelector("section");
@@ -225,11 +237,11 @@ export default function Hours({ rap }: TableProps) {
 
         switch (direction) {
           case Direction.Back: {
-            scrollViewRef.current.scrollBy(-(section.clientWidth / 2), 0);
+            scrollView.scrollBy(-(section.clientWidth / 2), 0);
             break;
           }
           case Direction.Forward: {
-            scrollViewRef.current.scrollBy(section.clientWidth / 2, 0);
+            scrollView.scrollBy(section.clientWidth / 2, 0);
           }
         }
         break;
@@ -237,11 +249,10 @@ export default function Hours({ rap }: TableProps) {
       case Distance.End: {
         switch (direction) {
           case Direction.Back:
-            scrollViewRef.current.scrollLeft = 0;
+            scrollView.scrollTo(0, 0);
             break;
           case Direction.Forward:
-            scrollViewRef.current.scrollLeft =
-              scrollViewRef.current.scrollWidth;
+            scrollView.scrollTo(scrollWidth, 0);
         }
         break;
       }
@@ -254,17 +265,11 @@ export default function Hours({ rap }: TableProps) {
 
         switch (direction) {
           case Direction.Back: {
-            scrollViewRef.current.scrollBy(
-              -scrollViewRef.current.clientWidth + HACKY_OFFSET,
-              0
-            );
+            scrollView.scrollBy(-clientWidth + HACKY_OFFSET, 0);
             break;
           }
           case Direction.Forward: {
-            scrollViewRef.current.scrollBy(
-              scrollViewRef.current.clientWidth - HACKY_OFFSET,
-              0
-            );
+            scrollView.scrollBy(clientWidth - HACKY_OFFSET, 0);
           }
         }
         break;

@@ -7,10 +7,7 @@ import Routes from "./Routes";
 import HeaderRoutes from "./header/web/HeaderRoutes";
 import { css, Global } from "@emotion/react/macro";
 import { writeVariables } from "./theme";
-import { isInstalled } from "./helpers/device";
-import { detect } from "detect-browser";
-
-const browser = detect();
+import { canScrollSnapBody, isInstalled } from "./helpers/device";
 
 const Background = styled.div`
   position: fixed;
@@ -42,7 +39,7 @@ const AppContents = styled.div`
   min-width: 100vw;
 
   ${() =>
-    browser?.name !== "firefox" &&
+    canScrollSnapBody() &&
     css`
       width: min-content;
     `}
