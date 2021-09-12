@@ -13,7 +13,8 @@ const Container = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 calc(var(--left-safe-area) + 1rem) 0
+    calc(var(--right-safe-area) + 1rem);
 
   color: var(--softText);
   font-size: 0.8em;
