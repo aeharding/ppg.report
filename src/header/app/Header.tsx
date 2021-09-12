@@ -4,6 +4,12 @@ import HeaderRoutes from "./HeaderRoutes";
 
 const height = "50px";
 
+const StyledLink = styled(Link)`
+  &:hover {
+    text-decoration: none;
+  }
+}`;
+
 const Push = styled.div`
   height: ${height};
 
@@ -44,7 +50,7 @@ const Container = styled.div`
 
 export default function Header() {
   return (
-    <Link to="/">
+    <StyledLink to="/">
       <Push>
         <Fixed>
           <Container>
@@ -52,6 +58,6 @@ export default function Header() {
           </Container>
         </Fixed>
       </Push>
-    </Link>
+    </StyledLink>
   );
 }
