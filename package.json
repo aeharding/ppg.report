@@ -60,7 +60,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "format": "prettier --check src/",
     "lint": "eslint --max-warnings=0 src/",
-    "splash": "pwa-asset-generator --type png --index public/index.html --splash-only --path-override '%PUBLIC_URL%/splash' public/splash.png ./public/splash --padding '30vh 20vw 50vh' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html"
+    "splash": "pwa-asset-generator --type png --index public/index.html --splash-only --path-override '%PUBLIC_URL%/splash' public/splash.png ./public/splash --padding '30vh 20vw 50vh' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html",
+    "icon": "pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --favicon --opaque false --path-override '%PUBLIC_URL%' public/favicon.html ./public && pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --path-override '' public/icon.svg ./public --padding '15%' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html"
   },
   "eslintConfig": {
     "extends": [
