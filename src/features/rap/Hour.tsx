@@ -1,5 +1,5 @@
 import styled from "@emotion/styled/macro";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
@@ -8,6 +8,7 @@ import subDays from "date-fns/subDays";
 import format from "date-fns/format";
 import { Rap } from "gsl-parser";
 import Table from "./Table";
+import html2canvas from "html2canvas";
 
 const Column = styled.div`
   position: relative;
@@ -47,6 +48,7 @@ interface HourProps {
 }
 
 export default function Hour({ rap, rows, ...rest }: HourProps) {
+  const ref = useRef<HTMLDivElement>(null);
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
   );
@@ -89,7 +91,30 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
     ]);
 
   return (
-    <Column {...rest}>
+    <Column
+      ref={ref}
+      {...rest}
+      onClick={async () => {
+        if (!ref.current) throw new Error("ref.current not found");
+
+        const canvas = await html2canvas(ref.current, {
+          backgroundColor: "#001120",
+        });
+
+        const dataUrl = canvas.toDataURL();
+        const blob = await (await fetch(dataUrl)).blob();
+        const filesArray = [
+          new File([blob], "hour.png", {
+            type: blob.type,
+            lastModified: new Date().getTime(),
+          }),
+        ];
+        const shareData = {
+          files: filesArray,
+        };
+        navigator.share(shareData);
+      }}
+    >
       <Header>
         <HourContainer>
           {format(new Date(rap.date), "h:mmaaaaa")}
