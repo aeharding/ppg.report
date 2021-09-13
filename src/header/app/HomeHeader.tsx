@@ -11,7 +11,7 @@ const Container = styled.div`
 const StyledIcon = styled(Icon)`
   height: 25px;
 
-  transform: translateY(-1px);
+  transform: translateY(-1px) scaleX(-1);
 `;
 
 const Title = styled.h1`
