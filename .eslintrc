@@ -3,10 +3,12 @@
   "rules": {
     // use @emotion/styled/macro and @emotion/react/macro for better debugging
     // (will add the component name to the css class in dev)
+    //
+    // Use "lodash/component" instead of "lodash" for tree shaking
     "no-restricted-imports": [
       "warn",
       {
-        "paths": ["@emotion/styled", "@emotion/react"]
+        "paths": ["@emotion/styled", "@emotion/react", "lodash"]
       }
     ]
   }

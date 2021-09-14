@@ -7,7 +7,7 @@ import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
-import { throttle } from "lodash";
+import throttle from "lodash/throttle";
 
 const browser = detect();
 
