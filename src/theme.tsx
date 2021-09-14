@@ -11,6 +11,10 @@ export function writeVariables(): SerializedStyles {
 
     --edge-padding: 1rem;
 
+    @media (max-width: 360px) {
+      --edge-padding: 0.75em;
+    }
+
     --left-safe-area: max(var(--edge-padding), env(safe-area-inset-left));
     --right-safe-area: max(var(--edge-padding), env(safe-area-inset-right));
   `;
