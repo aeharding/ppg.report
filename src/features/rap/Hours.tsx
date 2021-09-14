@@ -43,6 +43,10 @@ const ScrollContainer = styled.div`
 const Container = styled.div`
   --hours-gutter: 1.4em;
 
+  @media (max-width: 360px) {
+    --hours-gutter: 0.75em;
+  }
+
   display: flex;
 
   overflow: auto;
