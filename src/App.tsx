@@ -11,17 +11,25 @@ import { isInstalled } from "./helpers/device";
 
 const Background = styled.div`
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: -1;
 
-  background: linear-gradient(
-    0deg,
-    var(--bg-gradient-from),
-    var(--bg-gradient-to)
-  );
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+
+    filter: sepia() hue-rotate(170deg) saturate(400%) brightness(17%);
+
+    background: linear-gradient(
+        139deg,
+        rgba(26, 23, 125, 1),
+        rgba(13, 214, 0, 0.7)
+      ),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 100vw 100vh' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: cover;
+  }
 `;
 const AppContainer = styled.div`
   flex: 1;

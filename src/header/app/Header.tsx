@@ -34,8 +34,7 @@ const Fixed = styled.div`
   padding: env(safe-area-inset-top) var(--left-safe-area) 0
     var(--right-safe-area);
 
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px) brightness(50%);
 `;
 
 const Container = styled.div`
