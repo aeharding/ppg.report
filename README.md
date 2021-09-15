@@ -2,6 +2,8 @@
 - ⚠️ Warning! Fly at your own risk.
 ```
 
+<img src="public/favicon-196.png" width="96" align="right">
+
 # [🪂 PPG.report](https://ppg.report)
 
 Weather report tailored for paramotor pilots. Uses the [NOAA rapid refresh Op40 analysis](https://rucsoundings.noaa.gov/).
