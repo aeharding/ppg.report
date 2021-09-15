@@ -22,7 +22,17 @@
     justify-content: center;
     height: 100vw;
     padding: 15%;
-    overflow: hidden;
+    border-radius: 25%;
+  }
+
+  div:before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: white;
+
+    border-radius: 26%;
   }
 
   div:after {
@@ -30,6 +40,8 @@
     position: absolute;
     inset: 0;
     backdrop-filter: sepia() hue-rotate(170deg) saturate(400%) brightness(50%);
+
+    border-radius: 24%;
   }
 
   svg {
