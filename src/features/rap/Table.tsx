@@ -1,6 +1,9 @@
 import styled from "@emotion/styled/macro";
+import Tippy from "@tippyjs/react";
 import { Rap } from "gsl-parser";
-import Height from "./cells/Height";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { toggle, toggleAltitude } from "../user/userSlice";
+import Altitude from "./cells/Altitude";
 import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
@@ -16,19 +19,34 @@ const TableEl = styled.table`
   }
 `;
 
+const InteractTh = styled.th`
+  cursor: pointer;
+`;
+
 interface TableProps {
   rap: Rap;
   rows: number; // number of altitudes/rows to render
 }
 
 export default function Table({ rap, rows }: TableProps) {
+  const dispatch = useAppDispatch();
+  const altitudeType = useAppSelector((state) => state.user.altitude);
+
   const surfaceLevel = rap.data[0].height;
 
   return (
     <TableEl>
       <thead>
         <tr>
-          <th>Altitude</th>
+          <Tippy
+            content={`Switch to ${toggle(altitudeType)}`}
+            placement="top"
+            hideOnClick={false}
+          >
+            <InteractTh onClick={() => dispatch(toggleAltitude())}>
+              Altitude
+            </InteractTh>
+          </Tippy>
           <th>Temp</th>
           <th>Direction</th>
           <th>Speed</th>
@@ -39,7 +57,7 @@ export default function Table({ rap, rows }: TableProps) {
         {rap.data.slice(0, rows).map((datum, index) => (
           <tr key={index}>
             <td>
-              <Height height={datum.height} surfaceLevel={surfaceLevel} />
+              <Altitude height={datum.height} surfaceLevel={surfaceLevel} />
             </td>
             <td>
               <Temperature temperature={datum.temp} />

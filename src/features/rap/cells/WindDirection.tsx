@@ -2,6 +2,7 @@ import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 
 export const shearIndicator = css`
@@ -47,16 +48,20 @@ interface WindDirectionProps {
 }
 
 export default function WindDirection({ curr, prev }: WindDirectionProps) {
-  return (
-    <Container
-      shear={
-        Math.abs(getAngleDifference(curr, prev === undefined ? curr : prev)) >
-        25
-      }
-    >
-      {curr} <TransformedIcon icon={faLongArrowDown} direction={curr} />
-    </Container>
-  );
+  const content = useMemo(() => {
+    return (
+      <Container
+        shear={
+          Math.abs(getAngleDifference(curr, prev === undefined ? curr : prev)) >
+          25
+        }
+      >
+        {curr} <TransformedIcon icon={faLongArrowDown} direction={curr} />
+      </Container>
+    );
+  }, [curr, prev]);
+
+  return content;
 }
 
 function getAngleDifference(angle1: number, angle2: number): number {

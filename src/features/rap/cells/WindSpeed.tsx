@@ -1,9 +1,10 @@
 import styled from "@emotion/styled/macro";
 import { css } from "@emotion/react/macro";
-import { Aside } from "./Height";
+import { Aside } from "./Altitude";
 import chroma from "chroma-js";
 import { shearIndicator } from "./WindDirection";
 import { outputP3ColorFromLab } from "../../../helpers/colors";
+import { useMemo } from "react";
 
 const colorScale = chroma
   .scale(["#00FF00", "#00FF00", "white", "white", "orange", "red", "purple"])
@@ -31,12 +32,16 @@ interface WindSpeedProps {
 }
 
 export default function WindSpeed({ curr, prev }: WindSpeedProps) {
-  return (
-    <WindSpeedContainer
-      speed={curr}
-      shear={Math.abs(curr - (prev === undefined ? curr : prev)) > 8}
-    >
-      {Math.round(curr * 1.15078)} <Aside>mph</Aside>
-    </WindSpeedContainer>
-  );
+  const content = useMemo(() => {
+    return (
+      <WindSpeedContainer
+        speed={curr}
+        shear={Math.abs(curr - (prev === undefined ? curr : prev)) > 8}
+      >
+        {Math.round(curr * 1.15078)} <Aside>mph</Aside>
+      </WindSpeedContainer>
+    );
+  }, [curr, prev]);
+
+  return content;
 }
