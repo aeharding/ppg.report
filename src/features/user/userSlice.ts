@@ -1,16 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Geocode from "../../models/Geocode";
-import { AppDispatch } from "../../store";
+import { AppDispatch, RootState } from "../../store";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
 
+export enum AltitudeType {
+  AGL = "AGL",
+  MSL = "MSL",
+}
+
+export function toggle(altitude: AltitudeType): AltitudeType {
+  switch (altitude) {
+    case AltitudeType.AGL:
+      return AltitudeType.MSL;
+    case AltitudeType.MSL:
+      return AltitudeType.AGL;
+  }
+}
+
 interface UserState {
   recentLocations: UserLocation[];
+  altitude: AltitudeType;
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
+  altitude: storage.getAltitude(),
 };
 
 /**
@@ -23,10 +39,20 @@ export const userReducer = createSlice({
     updateLocations(state, action: PayloadAction<UserLocation[]>) {
       state.recentLocations = action.payload;
     },
+    toggleAltitude(state) {
+      state.altitude = toggle(state.altitude);
+    },
   },
 });
 
 export const { updateLocations } = userReducer.actions;
+
+export const toggleAltitude =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.toggleAltitude());
+
+    storage.setAltitude(getState().user.altitude);
+  };
 
 export const visitedLocation =
   (geocode: Geocode) => async (dispatch: AppDispatch) => {

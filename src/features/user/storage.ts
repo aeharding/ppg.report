@@ -1,4 +1,5 @@
 import getDistance from "geolib/es/getDistance";
+import { AltitudeType } from "./userSlice";
 
 export interface UserLocation {
   lat: number;
@@ -8,6 +9,7 @@ export interface UserLocation {
 }
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
+const ALTITUDE_STORAGE_KEY = "user-altitude";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -71,4 +73,20 @@ export function findLocation(
   ) {
     return locations[0];
   }
+}
+
+export function getAltitude(): AltitudeType {
+  const savedValue = localStorage.getItem(ALTITUDE_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== AltitudeType.AGL && savedValue !== AltitudeType.MSL)
+  )
+    return AltitudeType.AGL;
+
+  return AltitudeType[savedValue];
+}
+
+export function setAltitude(altitude: AltitudeType): void {
+  localStorage.setItem(ALTITUDE_STORAGE_KEY, altitude);
 }

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled/macro";
 import chroma from "chroma-js";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
-import { Aside } from "./Height";
+import { Aside } from "./Altitude";
 
 const colorScale = chroma
   .scale(["rgb(176, 38, 255)", "blue", "white", "white", "yellow", "red"])
