@@ -1,8 +1,8 @@
 import styled from "@emotion/styled/macro";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
-import chroma, { Color, Scale } from "chroma-js";
+import chroma from "chroma-js";
 import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
 import format from "date-fns/format";
@@ -54,10 +54,8 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
     SunCalc.getTimes(new Date(rap.date), rap.lat, -rap.lon)
   );
 
-  const colorScale = useRef<Scale<Color>>();
-
-  useEffect(() => {
-    colorScale.current = chroma
+  const [colorScale] = useState(() =>
+    chroma
       .scale([
         "#0000004d",
         "#6666660e",
@@ -89,8 +87,8 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
         times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
         times.sunset.getTime() - 4 * 60 * 60 * 1000,
         times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
-      ]);
-  }, [times, yesterdayTimes]);
+      ])
+  );
 
   return (
     <Column {...rest}>
@@ -107,9 +105,7 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
 
       <TableContainer
         style={{
-          backgroundColor:
-            colorScale.current &&
-            colorScale.current(new Date(rap.date).getTime()).css(),
+          backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
         }}
       >
         <Table rap={rap} rows={rows} />
