@@ -47,8 +47,8 @@ function ValidParamsReport(props: ReportProps) {
       return (
         <Error
           icon={ErrorSvg}
-          title="shit broke"
-          description="It appears there was either a problem with your internet connection or the server. Please check your connection or try again later."
+          title="Connection error"
+          description="Please check your internet connection, and try again later if this error remains."
         />
       );
     case "coordinates-error":
