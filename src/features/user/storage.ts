@@ -37,7 +37,9 @@ export function visitedLocation(location: UserLocation): UserLocation[] {
       ...location,
 
       // If the API failed, don't update stored location with fallback label
-      label: location.isFallbackLabel ? locations[0].label : location.label,
+      label: location.isFallbackLabel
+        ? locations[0].label || location.label
+        : location.label,
     };
   }
 
