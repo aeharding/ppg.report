@@ -12,7 +12,11 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import {
+  NetworkFirst,
+  StaleWhileRevalidate,
+  CacheFirst,
+} from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -76,6 +80,34 @@ registerRoute(
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used images are removed.
       new ExpirationPlugin({ maxEntries: 50 }),
+    ],
+  })
+);
+
+// Cache API geocode response
+registerRoute(
+  new RegExp("/api/position.*"),
+  new CacheFirst({
+    cacheName: "apiPositionCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+      }),
+    ],
+  })
+);
+
+// Cache API RAP response
+registerRoute(
+  new RegExp("/api/rap.*"),
+  new NetworkFirst({
+    cacheName: "apiRapCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+      }),
     ],
   })
 );
