@@ -37,7 +37,13 @@ export const geocodeReducer = createSlice({
      * @param action Action containing payload as the URL of the rap resource
      */
     geocodeLoading: (state, action: PayloadAction<string>) => {
-      if (!state.geocodeByCoordinates[action.payload]) {
+      const geocode = state.geocodeByCoordinates[action.payload];
+      if (
+        !geocode ||
+        (geocode !== "failed" &&
+          geocode !== "pending" &&
+          geocode.isFallbackLabel)
+      ) {
         state.geocodeByCoordinates[action.payload] = "pending";
       }
     },
