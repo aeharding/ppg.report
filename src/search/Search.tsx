@@ -8,6 +8,7 @@ import { search } from "../services/geocode";
 import { isTouchDevice } from "../helpers/device";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 import SubmitButton, { State } from "./SubmitButton";
+import axios from "axios";
 
 const Container = styled.div`
   position: relative;
@@ -115,8 +116,13 @@ export default function Search({ ...rest }) {
 
       history.push(`/${getTrimmedCoordinates(lat, lon)}`);
     } catch (e) {
-      setError("Nothing found, please try again.");
+      if (axios.isAxiosError(e)) {
+        setError("Please check your internet connection and try again.");
+      } else {
+        setError("Nothing found, please try again.");
+      }
       setLoading(false);
+      throw e;
     }
   }
 
