@@ -11,8 +11,10 @@ function createAxiosCached() {
   return setup({
     cache: {
       maxAge: 15 * 60 * 1000, // invalidate after 15 minutes
-      exclude: { query: false }, // cache requests with ?page=x
+      exclude: { query: false }, // cache request query parameters
       store: forageStore,
+      clearOnStale: true,
+      readOnError: false,
     },
   });
 }

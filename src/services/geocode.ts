@@ -20,7 +20,8 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
   }
 
   // Coordinates in ocean? API down?
-  if (!data.address) return { lat, lon, label: `${lat}, ${lon}` };
+  if (!data.address)
+    return { lat, lon, label: `${lat}, ${lon}`, isFallbackLabel: true };
 
   const subject =
     data.address.aeroway ||

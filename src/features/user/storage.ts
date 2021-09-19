@@ -6,6 +6,7 @@ export interface UserLocation {
   lon: number;
   label: string;
   lastVisited: number;
+  isFallbackLabel?: boolean;
 }
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
@@ -32,7 +33,12 @@ export function visitedLocation(location: UserLocation): UserLocation[] {
   ) {
     locations.push(location);
   } else {
-    locations[0] = location;
+    locations[0] = {
+      ...location,
+
+      // If the API failed, don't update stored location with fallback label
+      label: location.isFallbackLabel ? locations[0].label : location.label,
+    };
   }
 
   const recentLocations = locations
