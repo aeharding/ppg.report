@@ -1,5 +1,5 @@
+import axios from "axios";
 import Geocode from "../models/Geocode";
-import axiosCached from "./axiosCached";
 
 export async function reverse(lat: number, lon: number): Promise<Geocode> {
   // TODO type response (it's weird)
@@ -7,7 +7,7 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
 
   try {
     data = (
-      await axiosCached.get("/api/position/reverse", {
+      await axios.get("/api/position/reverse", {
         params: {
           format: "jsonv2",
           lat,
@@ -20,7 +20,7 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
   }
 
   // Coordinates in ocean? API down?
-  if (!data.address)
+  if (!data.address || !data)
     return { lat, lon, label: `${lat}, ${lon}`, isFallbackLabel: true };
 
   const subject =
@@ -45,7 +45,7 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
 }
 
 export async function search(q: string): Promise<{ lat: number; lon: number }> {
-  let { data } = await axiosCached.get("/api/position/search", {
+  let { data } = await axios.get("/api/position/search", {
     params: {
       format: "jsonv2",
       countrycodes: "us",

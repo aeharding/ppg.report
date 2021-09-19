@@ -41,6 +41,11 @@ registerRoute(
       return false;
     }
 
+    // If API request, never cache
+    if (url.pathname.startsWith("/api/")) {
+      return false;
+    }
+
     // If this looks like a URL for a resource, because it contains
     // a file extension, skip.
     //
