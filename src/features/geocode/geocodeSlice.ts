@@ -16,7 +16,7 @@ type GeocodeResult =
   | "failed";
 
 interface GeocodeState {
-  geocodeByCoordinates: Record<string, GeocodeResult>;
+  geocodeByCoordinates: Record<string, GeocodeResult | undefined>;
 }
 
 // Define the initial state using that type

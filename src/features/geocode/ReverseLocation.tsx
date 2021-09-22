@@ -20,6 +20,16 @@ export default function ReverseLocation({ lat, lon }: ReverseLocationProps) {
   const geocode = geocodeByCoordinates[getTrimmedCoordinates(+lat, +lon)];
 
   useEffect(() => {
+    document.title = generatePageTitle(
+      geocode && typeof geocode !== "string" ? geocode.label : undefined
+    );
+
+    return () => {
+      document.title = generatePageTitle();
+    };
+  }, [geocode]);
+
+  useEffect(() => {
     switch (geocode) {
       case undefined:
       case "failed":
@@ -44,4 +54,12 @@ export default function ReverseLocation({ lat, lon }: ReverseLocationProps) {
     default:
       return <>{geocode.label}</>;
   }
+}
+
+function generatePageTitle(pageName?: string | undefined): string {
+  const appName = "PPG.report";
+
+  if (!pageName) return appName;
+
+  return `${pageName} - ${appName}`;
 }
