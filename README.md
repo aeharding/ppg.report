@@ -36,3 +36,17 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Deploying
+
+Using a reverse proxy such as Nginx, configure the following:
+
+- Serve `index.html` for 404 requests, no caching
+  - Aggressively cache `/static`
+- Create the following reverse proxy endpoints:
+  - GET `/api/position/search` ➡ `https://nominatim.openstreetmap.org/search`
+  - GET `/api/position/reverse` ➡ `https://nominatim.openstreetmap.org/reverse.php`
+  - GET `/api/rap` ➡ `https://rucsoundings.noaa.gov/get_soundings.cgi`
+- **IMPORTANT!** For each outgoing API request, make sure to:
+  - Attach a `User-Agent` header, as per [NOAA](https://www.weather.gov/documentation/services-web-api) and [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) usage policies.
+  - **Keep these free APIs free - be a good API consumer!** Add caching for each route - I recommend at least 10 minutes for `rucsoundings.noaa.gov`, and one week for `nominatim.openstreetmap.org`.
