@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { getRap } from "../features/rap/rapSlice";
 import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -10,20 +10,20 @@ import { ReactComponent as Map } from "../assets/map.svg";
 import { ReactComponent as ErrorSvg } from "../assets/error.svg";
 import NotFound from "./NotFound";
 
-interface ReportProps
-  extends RouteComponentProps<{ lat: string; lon: string }> {}
+export default function Report() {
+  const { lat, lon } = useParams<"lat" | "lon">();
 
-export default function Report(props: ReportProps) {
-  const { lat, lon } = props.match.params;
+  if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return <NotFound />;
 
-  if (isNaN(+lat) || isNaN(+lon)) return <NotFound />;
-
-  return <ValidParamsReport {...props} />;
+  return <ValidParamsReport lat={lat} lon={lon} />;
 }
 
-function ValidParamsReport(props: ReportProps) {
-  const { lat, lon } = props.match.params;
+interface ValidParamsReportProps {
+  lat: string;
+  lon: string;
+}
 
+function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const dispatch = useAppDispatch();
   const rap = useAppSelector(
     (state) => state.rap.rapByLocation[getTrimmedCoordinates(+lat, +lon)]
@@ -36,7 +36,7 @@ function ValidParamsReport(props: ReportProps) {
   }, [dispatch, lat, lon]);
 
   if (!isLatLonTrimmed(lat, lon)) {
-    return <Redirect to={getTrimmedCoordinates(+lat, +lon)} push={false} />;
+    return <Navigate to={getTrimmedCoordinates(+lat, +lon)} replace />;
   }
 
   switch (rap) {

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled/macro";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getTrimmedCoordinates } from "../helpers/coordinates";
 import { useAppSelector } from "../hooks";
 import { search } from "../services/geocode";
@@ -95,7 +95,7 @@ export default function Search({ ...rest }) {
   const locationsLength = useAppSelector(
     (state) => state.user.recentLocations.length
   );
-  const history = useHistory();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -114,7 +114,7 @@ export default function Search({ ...rest }) {
     try {
       const { lat, lon } = await search(query);
 
-      history.push(`/${getTrimmedCoordinates(lat, lon)}`);
+      navigate(`/${getTrimmedCoordinates(lat, lon)}`);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         setError("Please check your internet connection and try again.");

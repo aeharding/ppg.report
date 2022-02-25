@@ -2,11 +2,11 @@ import styled from "@emotion/styled/macro";
 import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { faSunrise, faSunset } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { RouteComponentProps } from "react-router";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
 import format from "date-fns/format";
 import { useState } from "react";
 import SunCalc from "suncalc";
+import { useParams } from "react-router-dom";
 
 const BackButton = styled.div`
   position: absolute;
@@ -47,20 +47,20 @@ const SunsetSunrise = styled.div`
   justify-content: center;
 `;
 
-interface ReportHeaderProps
-  extends RouteComponentProps<{ lat: string; lon: string }> {}
+export default function ReportHeader() {
+  const { lat, lon } = useParams<"lat" | "lon">();
 
-export default function ReportHeader(props: ReportHeaderProps) {
-  const { lat, lon } = props.match.params;
+  if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return null;
 
-  if (isNaN(+lat) || isNaN(+lon)) return null;
-
-  return <ReportHeaderValidProps {...props} />;
+  return <ReportHeaderValidProps lat={lat} lon={lon} />;
 }
 
-function ReportHeaderValidProps(props: ReportHeaderProps) {
-  const { lat, lon } = props.match.params;
+interface ReportHeaderProps {
+  lat: string;
+  lon: string;
+}
 
+function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
 
   return (

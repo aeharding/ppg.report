@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SunCalc from "suncalc";
 import styled from "@emotion/styled/macro";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
@@ -26,20 +26,20 @@ const SunLine = styled.div`
   }
 `;
 
-interface ReportHeaderProps
-  extends RouteComponentProps<{ lat: string; lon: string }> {}
+export default function ReportHeader() {
+  const { lat, lon } = useParams<"lat" | "lon">();
 
-export default function ReportHeader(props: ReportHeaderProps) {
-  const { lat, lon } = props.match.params;
+  if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return null;
 
-  if (isNaN(+lat) || isNaN(+lon)) return null;
-
-  return <ReportHeaderValidProps {...props} />;
+  return <ReportHeaderValidProps lat={lat} lon={lon} />;
 }
 
-function ReportHeaderValidProps(props: ReportHeaderProps) {
-  const { lat, lon } = props.match.params;
+interface ReportHeaderProps {
+  lat: string;
+  lon: string;
+}
 
+function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
 
   return (

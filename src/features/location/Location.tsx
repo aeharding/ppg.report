@@ -2,7 +2,7 @@ import styled from "@emotion/styled/macro";
 import { faLocationArrow } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { getPosition } from "../../services/position";
 import * as storage from "../user/storage";
@@ -35,7 +35,7 @@ interface LocationProps {
 }
 
 export default function Location({ onLocationFail, ...rest }: LocationProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const locate = useCallback(async () => {
     let position: GeolocationPosition;
@@ -50,16 +50,16 @@ export default function Location({ onLocationFail, ...rest }: LocationProps) {
     const matchedLocation = storage.findLocation(position.coords);
 
     if (matchedLocation) {
-      history.push(`${matchedLocation.lat},${matchedLocation.lon}`);
+      navigate(`${matchedLocation.lat},${matchedLocation.lon}`);
     } else {
-      history.push(
+      navigate(
         `/${getTrimmedCoordinates(
           position.coords.latitude,
           position.coords.longitude
         )}`
       );
     }
-  }, [history, onLocationFail]);
+  }, [navigate, onLocationFail]);
 
   return (
     <Button
