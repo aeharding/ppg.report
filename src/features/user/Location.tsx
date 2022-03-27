@@ -3,6 +3,7 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { UserLocation } from "./storage";
 import { removeLocation } from "./userSlice";
 
@@ -67,7 +68,7 @@ export default function Location({ location }: LocationProps) {
   }
 
   return (
-    <StyledLink to={`/${location.lat},${location.lon}`}>
+    <StyledLink to={`/${getTrimmedCoordinates(location.lat, location.lon)}`}>
       <Label>{location.label}</Label>{" "}
       <RemoveIcon icon={faTimes} onClick={(e) => remove(e, location)} />
     </StyledLink>
