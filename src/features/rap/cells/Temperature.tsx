@@ -4,8 +4,8 @@ import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { Aside } from "./Altitude";
 
 const colorScale = chroma
-  .scale(["rgb(176, 38, 255)", "#0084ff", "#00BB00", "yellow", "red"])
-  .domain([-10, 25, 55, 80, 100]);
+  .scale(["rgb(176, 38, 255)", "#0084ff", "#00ff00", "yellow", "red"])
+  .domain([-5, 32, 60, 86, 95]);
 
 const TemperatureContainer = styled.div<{ temperature: number }>`
   ${({ temperature }) => outputP3ColorFromRGB(colorScale(temperature).rgb())}

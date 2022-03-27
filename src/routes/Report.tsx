@@ -36,7 +36,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   }, [dispatch, lat, lon]);
 
   if (!isLatLonTrimmed(lat, lon)) {
-    return <Navigate to={getTrimmedCoordinates(+lat, +lon)} replace />;
+    return <Navigate to={`/${getTrimmedCoordinates(+lat, +lon)}`} replace />;
   }
 
   switch (rap) {
