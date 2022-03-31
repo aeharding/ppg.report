@@ -11,7 +11,7 @@ export default function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/:lat,:lon" element={<Report />} />
       <Route path="/terms" element={<Terms />} />
-      <Route element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
