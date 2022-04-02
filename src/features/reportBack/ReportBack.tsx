@@ -42,6 +42,21 @@ export default function ReportBack({ date }: ReportBackProps) {
 
   return (
     <Container>
+      <a
+        href={`https://www.windalert.com/windlist/${lat},${lon}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WindAlert.com
+      </a>
+      <a
+        href={`https://www.windfinder.com/#10/${lat}/${lon}/${date}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        WindFinder.com
+      </a>
+
       {relevantAlerts?.length ? <Alerts alerts={relevantAlerts} /> : ""}
     </Container>
   );

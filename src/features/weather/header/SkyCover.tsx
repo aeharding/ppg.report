@@ -1,36 +1,36 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faRaindrops } from "@fortawesome/pro-light-svg-icons";
-import { faRaindrops as faRaindropsSolid } from "@fortawesome/pro-regular-svg-icons";
+import { faCloud, faClouds } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { findValue } from "../../../services/weather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 
-const THRESHOLD = 25;
+const THRESHOLD = 75;
 
-const RainIcon = styled(FontAwesomeIcon)<{ chance: number }>`
+const SkyIcon = styled(FontAwesomeIcon)<{ chance: number }>`
   ${({ chance }) =>
-    chance > THRESHOLD &&
+    chance < THRESHOLD &&
     css`
-      color: #006affec;
+      opacity: 0.5;
+      transform: scale(0.7);
     `}
 `;
 
-interface PrecipitationProps {
+interface SkyCoverProps {
   date: string;
   weather: WeatherResult | undefined;
 }
 
-export default function Precipitation({ date, weather }: PrecipitationProps) {
+export default function SkyCover({ date, weather }: SkyCoverProps) {
   const chance = useMemo(
     () =>
       typeof weather === "object"
         ? findValue(
             new Date(date),
 
-            weather.properties.probabilityOfPrecipitation
+            weather.properties.skyCover
           )
         : undefined,
     [date, weather]
@@ -40,13 +40,11 @@ export default function Precipitation({ date, weather }: PrecipitationProps) {
 
   const body = <>{chance.value}%</>;
 
-  if (chance.value < 5) return <></>;
-
   return (
     <Micro
       icon={
-        <RainIcon
-          icon={chance.value > THRESHOLD ? faRaindropsSolid : faRaindrops}
+        <SkyIcon
+          icon={chance.value < THRESHOLD ? faCloud : faClouds}
           chance={chance.value}
         />
       }

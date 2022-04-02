@@ -19,7 +19,12 @@ const axiosRetry = axios.create();
  */
 axiosRetryEnhancer(axiosRetry, {
   retries: 5,
-  retryCondition: (error) => error.response?.status === 500,
+  retryCondition: (error) =>
+    !!(
+      error.response?.status &&
+      error.response?.status >= 500 &&
+      error.response?.status < 600
+    ),
 });
 
 export async function get({
@@ -29,11 +34,14 @@ export async function get({
   lat: number;
   lon: number;
 }): Promise<Weather> {
-  const { forecastGridDataUrl } = await getPointResources({ lat, lon });
+  const { forecastGridDataUrl, timeZone } = await getPointResources({
+    lat,
+    lon,
+  });
 
   let { data } = await axiosRetry.get(forecastGridDataUrl);
 
-  return data;
+  return { ...data, timeZone };
 }
 
 export async function getAlerts({
@@ -60,10 +68,13 @@ async function getPointResources({
 }: {
   lat: number;
   lon: number;
-}): Promise<{ forecastGridDataUrl: string }> {
+}): Promise<{ forecastGridDataUrl: string; timeZone: string }> {
   let { data } = await axios.get(`/api/weather/points/${lat},${lon}`);
 
-  return { forecastGridDataUrl: normalize(data.properties.forecastGridData) };
+  return {
+    forecastGridDataUrl: normalize(data.properties.forecastGridData),
+    timeZone: data.properties.timeZone,
+  };
 }
 
 /**
@@ -76,7 +87,10 @@ function normalize(url: string): string {
   return `/api/weather${pathname}`;
 }
 
-export function findValue(date: Date, property: Property): Value | undefined {
+export function findValue<T>(
+  date: Date,
+  property: Property<T>
+): Value<T> | undefined {
   return property.values.find(({ validTime }) =>
     isBetweenWxTime(validTime, date)
   );

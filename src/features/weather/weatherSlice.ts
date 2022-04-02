@@ -24,17 +24,75 @@ export type WeatherResult =
 export interface Weather extends Coordinates {
   properties: {
     probabilityOfPrecipitation: Property;
+    skyCover: Property;
+    weather: Property<WeatherObservation[]>;
   };
+  timeZone: string;
 }
 
-export interface Property {
+export interface WeatherObservation {
+  coverage?:
+    | "areas"
+    | "brief"
+    | "chance"
+    | "definite"
+    | "few"
+    | "frequent"
+    | "intermittent"
+    | "isolated"
+    | "likely"
+    | "numerous"
+    | "occasional"
+    | "patchy"
+    | "periods"
+    | "scattered"
+    | "slight_chance"
+    | "widespread";
+  weather?:
+    | "fog_mist"
+    | "dust_storm"
+    | "dust"
+    | "drizzle"
+    | "funnel_cloud"
+    | "fog"
+    | "smoke"
+    | "hail"
+    | "snow_pellets"
+    | "haze"
+    | "ice_crystals"
+    | "ice_pellets"
+    | "dust_whirls"
+    | "spray"
+    | "rain"
+    | "sand"
+    | "snow_grains"
+    | "snow"
+    | "squalls"
+    | "sand_storm"
+    | "thunderstorms"
+    | "unknown"
+    | "volcanic_ash";
+  intensity?: "light" | "very_light" | "moderate" | "heavy";
+  attributes: (
+    | "damaging_wind"
+    | "dry_thunderstorms"
+    | "flooding"
+    | "gusty_wind"
+    | "heavy_rain"
+    | "large_hail"
+    | "small_hail"
+    | "tornadoes"
+  )[];
+}
+
+export interface Property<T = number> {
   uom: string;
-  values: Value[];
+  values: Value<T>[];
 }
 
-export interface Value {
+export interface Value<T = unknown> {
   validTime: string;
-  value: number;
+  value: T;
 }
 
 export type AlertsResult =

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faBullhorn, faLongArrowRight } from "@fortawesome/pro-light-svg-icons";
+import { faLongArrowRight } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -10,18 +10,21 @@ import { useAppSelector } from "../../hooks";
 import Precipitation from "./header/Precipitation";
 import { isWithinInterval } from "../../helpers/date";
 import Airport from "./header/Airport";
+import SkyCover from "./header/SkyCover";
+import Weather from "./header/Weather";
+import Alerts from "./header/Alerts";
 
-enum Style {
+enum HeaderType {
   Normal,
   Warning,
   Danger,
 }
 
-const Container = styled.div<{ type: Style }>`
+const Container = styled.div<{ type: HeaderType }>`
   width: 100%;
   display: block;
   margin-top: -0.75rem;
-  padding: 0 1.75rem 0 2rem;
+  padding: 0 1.25rem;
   margin-bottom: 0.3rem;
   height: 3rem;
 
@@ -34,19 +37,19 @@ const Container = styled.div<{ type: Style }>`
 
   ${({ type }) => {
     switch (type) {
-      case Style.Danger:
+      case HeaderType.Danger:
         return css`
           ${outputP3ColorFromRGB([255, 0, 0])}
           background: #260101a3;
           border-color: #640000;
         `;
-      case Style.Warning:
+      case HeaderType.Warning:
         return css`
           ${outputP3ColorFromRGB([255, 255, 0])}
           background: #1c2601a2;
           border-color: #5f6400;
         `;
-      case Style.Normal:
+      case HeaderType.Normal:
         return css`
           color: #ffffff;
           background: rgba(255, 255, 255, 0.05);
@@ -125,28 +128,27 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   if (!alerts || alerts === "pending" || alerts === "failed" || !relevantAlerts)
     return <></>;
 
-  let type: Style = relevantAlerts.length ? Style.Warning : Style.Normal;
+  let type: HeaderType = relevantAlerts.length
+    ? HeaderType.Warning
+    : HeaderType.Normal;
 
   if (
     relevantAlerts.filter(
       (alert) =>
-        alert.properties.severity === "Extreme" ||
-        alert.properties.severity === "Severe"
+        !alert.properties.headline?.includes("Watch") &&
+        (alert.properties.severity === "Extreme" ||
+          alert.properties.severity === "Severe")
     ).length
   ) {
-    type = Style.Danger;
+    type = HeaderType.Danger;
   }
 
   return (
     <Container type={type}>
       <>
-        {relevantAlerts.length ? (
-          <Micro icon={<FontAwesomeIcon icon={faBullhorn} />}>
-            &nbsp;{relevantAlerts.length}
-          </Micro>
-        ) : (
-          ""
-        )}
+        <Alerts alerts={relevantAlerts} />
+        <Weather weather={weather} date={date} />{" "}
+        <SkyCover weather={weather} date={date} />{" "}
         <Precipitation weather={weather} date={date} />{" "}
         <Micro icon={<Airport fr="vfr">KMSN</Airport>}>SCT@4k </Micro>
       </>{" "}
