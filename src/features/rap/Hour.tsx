@@ -8,18 +8,53 @@ import subDays from "date-fns/subDays";
 import format from "date-fns/format";
 import { Rap } from "gsl-parser";
 import Table from "./Table";
+import WeatherHeader from "../weather/WeatherHeader";
+import { css } from "@emotion/react/macro";
+import ReportBack from "../reportBack/ReportBack";
 
 const Column = styled.div`
   position: relative;
 `;
 
-const TableContainer = styled.div`
-  padding: 0.75em 0;
-
+const Card = styled.div`
   position: relative;
+`;
+
+const CardInner = styled.div<{ flipped: boolean }>`
+  transform-style: preserve-3d;
+  transition: transform 80ms ease-out;
+
+  ${({ flipped }) =>
+    flipped
+      ? css`
+          transform: rotateY(180deg);
+        `
+      : css`
+          transform: rotateY(0);
+        `}
+`;
+
+const cardFaceStyles = css`
+  padding: 0.75em 0;
 
   border-radius: 1em;
   box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+
+  backface-visibility: hidden;
+`;
+
+const CardFace = styled.div`
+  ${cardFaceStyles}
+
+  transform: rotateY(0);
+`;
+
+const CardFaceBack = styled.div`
+  ${cardFaceStyles}
+
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
 `;
 
 const Header = styled.div`
@@ -47,6 +82,8 @@ interface HourProps {
 }
 
 export default function Hour({ rap, rows, ...rest }: HourProps) {
+  const [flipped, setFlipped] = useState(false);
+
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
   );
@@ -103,13 +140,28 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
         <CinCape cin={rap.cin} cape={rap.cape} />
       </Header>
 
-      <TableContainer
-        style={{
-          backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
-        }}
-      >
-        <Table rap={rap} rows={rows} />
-      </TableContainer>
+      <Card>
+        <CardInner flipped={flipped}>
+          <CardFace
+            style={{
+              backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
+            }}
+            onClick={() => setFlipped(!flipped)}
+          >
+            <WeatherHeader date={rap.date} />
+            <Table rap={rap} rows={rows} />
+          </CardFace>
+
+          <CardFaceBack
+            style={{
+              backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
+            }}
+            onClick={() => setFlipped(!flipped)}
+          >
+            <ReportBack date={rap.date} />
+          </CardFaceBack>
+        </CardInner>
+      </Card>
     </Column>
   );
 }

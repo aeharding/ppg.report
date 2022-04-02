@@ -9,6 +9,7 @@ import Error from "../shared/Error";
 import { ReactComponent as Map } from "../assets/map.svg";
 import { ReactComponent as ErrorSvg } from "../assets/error.svg";
 import NotFound from "./NotFound";
+import { getWeather } from "../features/weather/weatherSlice";
 
 export default function Report() {
   const { lat, lon } = useParams<"lat" | "lon">();
@@ -33,6 +34,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     if (!isLatLonTrimmed(lat, lon)) return;
 
     dispatch(getRap(+lat, +lon));
+    dispatch(getWeather(+lat, +lon));
   }, [dispatch, lat, lon]);
 
   if (!isLatLonTrimmed(lat, lon)) {

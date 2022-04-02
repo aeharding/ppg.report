@@ -8,6 +8,7 @@ import { getRap, RapPayload } from "./rapSlice";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import styled from "@emotion/styled/macro";
 import differenceInMinutes from "date-fns/differenceInMinutes";
+import { getWeather } from "../weather/weatherSlice";
 
 const Container = styled.div`
   width: 100%;
@@ -46,6 +47,7 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
     if (document.hidden) return;
 
     dispatch(getRap(rap.lat, rap.lon));
+    dispatch(getWeather(rap.lat, rap.lon));
   }, [lastUpdated, dispatch, rap]);
 
   return (
