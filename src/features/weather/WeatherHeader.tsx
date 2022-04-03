@@ -163,8 +163,8 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
       <>
         <Alerts alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}
-        <Precipitation weather={weather} date={date} />{" "}
-        <SkyCover header={type} weather={weather} date={date} />{" "}
+        <Precipitation headerType={type} weather={weather} date={date} />{" "}
+        <SkyCover weather={weather} date={date} />{" "}
         <Micro icon={<Airport fr="vfr">KMSN</Airport>}>SCT@4k </Micro>
       </>{" "}
       <GoIcon icon={faLongArrowRight} />
