@@ -1,11 +1,9 @@
-import { css } from "@emotion/react/macro";
+import { css, keyframes } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { faLongArrowRight } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
 import { outputP3ColorFromRGB } from "../../helpers/colors";
-import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { useAppSelector } from "../../hooks";
 import Precipitation from "./header/Precipitation";
 import { isWithinInterval } from "../../helpers/date";
@@ -14,7 +12,7 @@ import SkyCover from "./header/SkyCover";
 import Weather from "./header/Weather";
 import Alerts from "./header/Alerts";
 
-enum HeaderType {
+export enum HeaderType {
   Normal,
   Warning,
   Danger,
@@ -80,6 +78,22 @@ export const MicroContents = styled.div`
   }
 `;
 
+const pulse = keyframes`
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 0.6;
+  }
+`;
+
+const Loading = styled.div`
+  margin: auto;
+  animation: ${pulse} 1.5s ease-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+`;
+
 interface MicroProps {
   icon: React.ReactNode;
   children: React.ReactNode;
@@ -99,17 +113,8 @@ interface WeatherHeaderProps {
 }
 
 export default function WeatherHeader({ date }: WeatherHeaderProps) {
-  const { lat, lon } = useParams<"lat" | "lon">();
-  if (!lat || !lon) throw new Error("lat and lon should be defined");
-
-  const weather = useAppSelector(
-    (state) =>
-      state.weather.weatherByCoordinates[getTrimmedCoordinates(+lat, +lon)]
-  );
-  const alerts = useAppSelector(
-    (state) =>
-      state.weather.alertsByCoordinates[getTrimmedCoordinates(+lat, +lon)]
-  );
+  const weather = useAppSelector((state) => state.weather.weather);
+  const alerts = useAppSelector((state) => state.weather.alerts);
 
   const relevantAlerts = useMemo(
     () =>
@@ -124,9 +129,19 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     [alerts, date]
   );
 
-  if (!weather || weather === "pending" || weather === "failed") return <></>;
-  if (!alerts || alerts === "pending" || alerts === "failed" || !relevantAlerts)
-    return <></>;
+  if (weather === "failed" || alerts === "failed") return <></>;
+  if (
+    !weather ||
+    weather === "pending" ||
+    !alerts ||
+    alerts === "pending" ||
+    !relevantAlerts
+  )
+    return (
+      <Container type={HeaderType.Normal}>
+        <Loading>Loading...</Loading>
+      </Container>
+    );
 
   let type: HeaderType = relevantAlerts.length
     ? HeaderType.Warning
@@ -148,8 +163,8 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
       <>
         <Alerts alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}
-        <SkyCover weather={weather} date={date} />{" "}
         <Precipitation weather={weather} date={date} />{" "}
+        <SkyCover header={type} weather={weather} date={date} />{" "}
         <Micro icon={<Airport fr="vfr">KMSN</Airport>}>SCT@4k </Micro>
       </>{" "}
       <GoIcon icon={faLongArrowRight} />

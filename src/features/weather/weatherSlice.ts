@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as weather from "../../services/weather";
-import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { differenceInMinutes } from "date-fns";
+import axios from "axios";
+import * as timezoneService from "../../services/timezone";
 
 interface Coordinates {
   lat: number;
   lon: number;
-  updated: string;
 }
 
 export type WeatherResult =
@@ -27,7 +27,6 @@ export interface Weather extends Coordinates {
     skyCover: Property;
     weather: Property<WeatherObservation[]>;
   };
-  timeZone: string;
 }
 
 export interface WeatherObservation {
@@ -160,19 +159,24 @@ type AviationWeatherResult =
 export interface AviationWeather extends Coordinates {}
 
 interface WeatherState {
-  weatherByCoordinates: Record<string, WeatherResult | undefined>;
-  aviationWeatherByCoordinates: Record<
-    string,
-    AviationWeatherResult | undefined
-  >;
-  alertsByCoordinates: Record<string, AlertsResult | undefined>;
+  weather: WeatherResult | undefined;
+  weatherLastUpdated?: string;
+  aviationWeather: AviationWeatherResult | undefined;
+  alerts: AlertsResult | undefined;
+  alertsLastUpdated?: string;
+  timeZone: string | undefined;
+  timeZoneLoading: boolean;
 }
 
 // Define the initial state using that type
 const initialState: WeatherState = {
-  weatherByCoordinates: {},
-  aviationWeatherByCoordinates: {},
-  alertsByCoordinates: {},
+  weather: undefined,
+  weatherLastUpdated: undefined,
+  aviationWeather: undefined,
+  alerts: undefined,
+  alertsLastUpdated: undefined,
+  timeZone: undefined,
+  timeZoneLoading: true,
 };
 
 /**
@@ -187,23 +191,25 @@ export const weatherReducer = createSlice({
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
-    weatherLoading: (state, action: PayloadAction<string>) => {
-      const payload = state.weatherByCoordinates[action.payload];
-
-      switch (payload) {
+    weatherLoading: (state) => {
+      switch (state.weather) {
         case undefined:
-          state.weatherByCoordinates[action.payload] = "pending";
+          state.weather = "pending";
           return;
-        case "failed": // TODO on failure stop polling
         case "pending":
           return;
+        case "failed":
         default: {
           if (
+            !state.weatherLastUpdated ||
             Math.abs(
-              differenceInMinutes(new Date(payload.updated), new Date())
+              differenceInMinutes(
+                new Date(state.weatherLastUpdated),
+                new Date()
+              )
             ) > 30
           ) {
-            state.weatherByCoordinates[action.payload] = "pending";
+            state.weather = "pending";
           }
         }
       }
@@ -212,53 +218,50 @@ export const weatherReducer = createSlice({
     /**
      * @param action Action containing payload as the Rap
      */
-    weatherReceived: (
-      state,
-      action: PayloadAction<{ weather: Weather; lat: number; lon: number }>
-    ) => {
-      const coordinates = getTrimmedCoordinates(
-        action.payload.lat,
-        action.payload.lon
-      );
-
-      if (state.weatherByCoordinates[coordinates] === "pending") {
-        state.weatherByCoordinates[coordinates] = {
-          ...action.payload.weather,
-          lat: action.payload.lat,
-          lon: action.payload.lon,
-          updated: new Date().toISOString(),
-        };
+    weatherReceived: (state, action: PayloadAction<Weather>) => {
+      if (state.weather === "pending") {
+        state.weather = action.payload;
+        state.weatherLastUpdated = new Date().toISOString();
       }
+    },
+
+    timeZoneReceived: (state, action: PayloadAction<string>) => {
+      state.timeZone = action.payload;
+      state.timeZoneLoading = false;
+    },
+
+    timeZoneFailed: (state) => {
+      state.timeZoneLoading = false;
     },
 
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
-    weatherFailed: (state, action: PayloadAction<string>) => {
-      if (state.weatherByCoordinates[action.payload] === "pending") {
-        state.weatherByCoordinates[action.payload] = "failed";
+    weatherFailed: (state) => {
+      if (state.weather === "pending") {
+        state.weather = "failed";
+        state.weatherLastUpdated = new Date().toISOString();
       }
     },
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
-    alertsLoading: (state, action: PayloadAction<string>) => {
-      const payload = state.alertsByCoordinates[action.payload];
-
-      switch (payload) {
+    alertsLoading: (state) => {
+      switch (state.alerts) {
         case undefined:
-          state.alertsByCoordinates[action.payload] = "pending";
+          state.alerts = "pending";
           return;
-        case "failed": // TODO on failure stop polling
         case "pending":
           return;
+        case "failed":
         default: {
           if (
+            !state.alertsLastUpdated ||
             Math.abs(
-              differenceInMinutes(new Date(payload.updated), new Date())
+              differenceInMinutes(new Date(state.alertsLastUpdated), new Date())
             ) > 30
           ) {
-            state.alertsByCoordinates[action.payload] = "pending";
+            state.alerts = "pending";
           }
         }
       }
@@ -267,43 +270,37 @@ export const weatherReducer = createSlice({
     /**
      * @param action Action containing payload as the Rap
      */
-    alertsReceived: (
-      state,
-      action: PayloadAction<{ alerts: Alerts; lat: number; lon: number }>
-    ) => {
-      const coordinates = getTrimmedCoordinates(
-        action.payload.lat,
-        action.payload.lon
-      );
-
-      if (state.alertsByCoordinates[coordinates] === "pending") {
-        state.alertsByCoordinates[coordinates] = {
-          ...action.payload.alerts,
-          lat: action.payload.lat,
-          lon: action.payload.lon,
-          updated: new Date().toISOString(),
-        };
+    alertsReceived: (state, action: PayloadAction<Alerts>) => {
+      if (state.alerts === "pending") {
+        state.alerts = action.payload;
+        state.alertsLastUpdated = new Date().toISOString();
       }
     },
 
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
-    alertsFailed: (state, action: PayloadAction<string>) => {
-      if (state.alertsByCoordinates[action.payload] === "pending") {
-        state.alertsByCoordinates[action.payload] = "failed";
+    alertsFailed: (state) => {
+      if (state.alerts === "pending") {
+        state.alerts = "failed";
+        state.alertsLastUpdated = new Date().toISOString();
       }
     },
+
+    clear: () => initialState,
   },
 });
 
 export const {
   weatherLoading,
   weatherReceived,
+  timeZoneReceived,
+  timeZoneFailed,
   weatherFailed,
   alertsLoading,
   alertsReceived,
   alertsFailed,
+  clear,
 } = weatherReducer.actions;
 
 export const getWeather =
@@ -313,60 +310,69 @@ export const getWeather =
     loadAlerts();
 
     async function loadPointData() {
-      if (
-        getState().weather.weatherByCoordinates[
-          getTrimmedCoordinates(lat, lon)
-        ] === "pending"
-      )
-        return;
-
-      dispatch(weatherLoading(getTrimmedCoordinates(lat, lon)));
-
-      const isPending =
-        getState().weather.weatherByCoordinates[
-          getTrimmedCoordinates(lat, lon)
-        ] === "pending";
-
-      if (!isPending) return;
+      if (getState().weather.weather === "pending") return;
+      dispatch(weatherLoading());
+      if (getState().weather.weather !== "pending") return;
 
       try {
-        const result = await weather.get({ lat, lon });
-        dispatch(weatherReceived({ weather: result, lat, lon }));
-      } catch (e: unknown) {
-        dispatch(weatherFailed(getTrimmedCoordinates(lat, lon)));
+        let forecastGridDataUrl;
+        try {
+          const data = await weather.getPointResources({ lat, lon });
+
+          forecastGridDataUrl = data.forecastGridDataUrl;
+
+          dispatch(timeZoneReceived(data.timeZone));
+        } catch (e) {
+          if (!axios.isAxiosError(e)) throw e;
+          if (getState().weather.timeZone) throw e;
+
+          // Likely Mexico or Canada
+          // We still need the timezone, so try to fall back anyways
+          try {
+            let timeZone = await timezoneService.get({ lat, lon });
+            dispatch(timeZoneReceived(timeZone));
+          } catch (e) {
+            if (!axios.isAxiosError(e)) throw e;
+
+            dispatch(timeZoneFailed());
+
+            throw e;
+          }
+
+          throw e;
+        }
+
+        if (forecastGridDataUrl) {
+          const data = await weather.getGridData(forecastGridDataUrl);
+
+          dispatch(weatherReceived(data));
+        }
+      } catch (e) {
+        dispatch(weatherFailed());
         throw e;
       }
     }
 
     async function loadAlerts() {
-      if (
-        getState().weather.alertsByCoordinates[
-          getTrimmedCoordinates(lat, lon)
-        ] === "pending"
-      )
-        return;
-
-      dispatch(alertsLoading(getTrimmedCoordinates(lat, lon)));
-
-      const isPending =
-        getState().weather.alertsByCoordinates[
-          getTrimmedCoordinates(lat, lon)
-        ] === "pending";
-
-      if (!isPending) return;
+      if (getState().weather.alerts === "pending") return;
+      dispatch(alertsLoading());
+      if (getState().weather.alerts !== "pending") return;
 
       try {
         const alerts = await weather.getAlerts({ lat, lon });
-        dispatch(alertsReceived({ alerts, lat, lon }));
+        dispatch(alertsReceived(alerts));
       } catch (e: unknown) {
-        dispatch(alertsFailed(getTrimmedCoordinates(lat, lon)));
+        dispatch(alertsFailed());
         throw e;
       }
     }
   };
 
 // Other code such as selectors can use the imported `RootState` type
-export const weatherByCoordinates = (state: RootState) =>
-  state.weather.weatherByCoordinates;
+export const currentWeather = (state: RootState) => state.weather.weather;
+
+export const timeZoneSelector = (state: RootState) => {
+  return state.weather.timeZone;
+};
 
 export default weatherReducer.reducer;

@@ -19,8 +19,8 @@ export default function Alerts({ alerts }: AlertsProps) {
   return (
     <>
       <Section>{alerts.length} Alerts</Section>
-      {alerts?.map((alert) => (
-        <Alert alert={alert} />
+      {alerts?.map((alert, index) => (
+        <Alert alert={alert} key={index} />
       ))}
     </>
   );

@@ -2,12 +2,12 @@ import styled from "@emotion/styled/macro";
 import { detect } from "detect-browser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Hour from "./Hour";
-import { RapPayload } from "./rapSlice";
 import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
 import throttle from "lodash/throttle";
+import { Rap } from "gsl-parser";
 
 const browser = detect();
 
@@ -117,7 +117,7 @@ const StyledHour = styled(Hour)`
 `;
 
 interface TableProps {
-  rap: RapPayload;
+  rap: Rap[];
 }
 
 export default function Hours({ rap }: TableProps) {
@@ -127,11 +127,11 @@ export default function Hours({ rap }: TableProps) {
   );
 
   // Each report can have a different # of rows. This normalizes that
-  const rows = rap.data[0].data.filter(({ height }) => height < 5800).length;
+  const rows = rap[0].data.filter(({ height }) => height < 5800).length;
 
   const data = useMemo(
     () =>
-      rap.data.map((rap) => (
+      rap.map((rap) => (
         <HourContainer key={rap.date}>
           <StyledHour rap={rap} rows={rows} />
         </HourContainer>

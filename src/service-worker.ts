@@ -112,6 +112,20 @@ registerRoute(
   })
 );
 
+// Cache API RAP response
+registerRoute(
+  new RegExp("/api/weather.*"),
+  new NetworkFirst({
+    cacheName: "apiWeatherCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+      }),
+    ],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {

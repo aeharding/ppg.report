@@ -2,7 +2,6 @@ import styled from "@emotion/styled/macro";
 import { isWithinInterval } from "../../helpers/date";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { useAppSelector } from "../../hooks";
 import Alerts from "./Alerts";
 
@@ -22,10 +21,7 @@ export default function ReportBack({ date }: ReportBackProps) {
   const { lat, lon } = useParams<"lat" | "lon">();
   if (!lat || !lon) throw new Error("lat and lon should be defined");
 
-  const alerts = useAppSelector(
-    (state) =>
-      state.weather.alertsByCoordinates[getTrimmedCoordinates(+lat, +lon)]
-  );
+  const alerts = useAppSelector((state) => state.weather.alerts);
 
   const relevantAlerts = useMemo(
     () =>

@@ -27,21 +27,12 @@ axiosRetryEnhancer(axiosRetry, {
     ),
 });
 
-export async function get({
-  lat,
-  lon,
-}: {
-  lat: number;
-  lon: number;
-}): Promise<Weather> {
-  const { forecastGridDataUrl, timeZone } = await getPointResources({
-    lat,
-    lon,
-  });
+export async function getGridData(
+  forecastGridDataUrl: string
+): Promise<Weather> {
+  let { data } = await axios.get(forecastGridDataUrl);
 
-  let { data } = await axiosRetry.get(forecastGridDataUrl);
-
-  return { ...data, timeZone };
+  return data;
 }
 
 export async function getAlerts({
@@ -62,14 +53,14 @@ export async function getAlerts({
   return data;
 }
 
-async function getPointResources({
+export async function getPointResources({
   lat,
   lon,
 }: {
   lat: number;
   lon: number;
 }): Promise<{ forecastGridDataUrl: string; timeZone: string }> {
-  let { data } = await axios.get(`/api/weather/points/${lat},${lon}`);
+  let { data } = await axiosRetry.get(`/api/weather/points/${lat},${lon}`);
 
   return {
     forecastGridDataUrl: normalize(data.properties.forecastGridData),

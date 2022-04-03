@@ -9,7 +9,9 @@ import { useParams } from "react-router-dom";
 import SunCalc from "suncalc";
 import styled from "@emotion/styled/macro";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
-import format from "date-fns/format";
+import formatInTimeZone from "date-fns-tz/formatInTimeZone";
+import { useAppSelector } from "../../hooks";
+import { timeZoneSelector } from "../../features/weather/weatherSlice";
 
 const Icon = styled(FontAwesomeIcon)`
   && {
@@ -40,7 +42,11 @@ interface ReportHeaderProps {
 }
 
 function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
+  const timeZone = useAppSelector(timeZoneSelector);
+
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
+
+  if (!timeZone) return <></>;
 
   return (
     <>
@@ -55,11 +61,13 @@ function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
       <br />
       <SunLine>
         <span>
-          <Icon icon={faSunrise} /> {format(times.sunrise, "h:mmaaaaa")}
+          <Icon icon={faSunrise} />{" "}
+          {formatInTimeZone(times.sunrise, timeZone, "h:mmaaaaa")}
         </span>
         &nbsp;&nbsp;
         <span>
-          <Icon icon={faSunset} /> {format(times.sunsetStart, "h:mmaaaaa")}
+          <Icon icon={faSunset} />{" "}
+          {formatInTimeZone(times.sunsetStart, timeZone, "h:mmaaaaa")}
         </span>
       </SunLine>
     </>

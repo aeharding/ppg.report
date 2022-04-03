@@ -1,21 +1,20 @@
-import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faRaindrops } from "@fortawesome/pro-light-svg-icons";
-import { faRaindrops as faRaindropsSolid } from "@fortawesome/pro-regular-svg-icons";
+import { faRaindrops } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tippy from "@tippyjs/react";
+import chroma from "chroma-js";
 import { useMemo } from "react";
+import { outputP3ColorFromRGBA } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 
-const THRESHOLD = 25;
+const colorScale = chroma
+  .scale(["#ffffff88", "#ffffffff", "#006affff"])
+  .domain([0, 30, 80]);
 
 const RainIcon = styled(FontAwesomeIcon)<{ chance: number }>`
-  ${({ chance }) =>
-    chance > THRESHOLD &&
-    css`
-      color: #006affec;
-    `}
+  ${({ chance }) => outputP3ColorFromRGBA(colorScale(chance).rgba())}
 `;
 
 interface PrecipitationProps {
@@ -43,15 +42,12 @@ export default function Precipitation({ date, weather }: PrecipitationProps) {
   if (chance.value < 5) return <></>;
 
   return (
-    <Micro
-      icon={
-        <RainIcon
-          icon={chance.value > THRESHOLD ? faRaindropsSolid : faRaindrops}
-          chance={chance.value}
-        />
-      }
-    >
-      {body}
-    </Micro>
+    <Tippy content={`${chance.value}% chance precipitation`} placement="bottom">
+      <div>
+        <Micro icon={<RainIcon icon={faRaindrops} chance={chance.value} />}>
+          {body}
+        </Micro>
+      </div>
+    </Tippy>
   );
 }

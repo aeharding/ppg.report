@@ -12,8 +12,7 @@ import WeatherHeader from "../weather/WeatherHeader";
 import { css } from "@emotion/react/macro";
 import ReportBack from "../reportBack/ReportBack";
 import { useAppSelector } from "../../hooks";
-import { getTrimmedCoordinates } from "../../helpers/coordinates";
-import { useParams } from "react-router-dom";
+import { timeZoneSelector } from "../weather/weatherSlice";
 
 const Column = styled.div`
   position: relative;
@@ -85,20 +84,10 @@ interface HourProps {
 }
 
 export default function Hour({ rap, rows, ...rest }: HourProps) {
+  const timeZone = useAppSelector(timeZoneSelector);
+  if (!timeZone) throw new Error("Timezone not found");
+
   const [flipped, setFlipped] = useState(false);
-
-  const { lat, lon } = useParams();
-  const timeZone = useAppSelector((state) => {
-    if (!lat || !lon) return Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    const weather =
-      state.weather.weatherByCoordinates[getTrimmedCoordinates(+lat, +lon)];
-
-    if (typeof weather !== "object")
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    return weather.timeZone;
-  });
 
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)

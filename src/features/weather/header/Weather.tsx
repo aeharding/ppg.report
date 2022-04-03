@@ -54,9 +54,9 @@ export default function Weather({ date, weather }: WeatherProps) {
 
   if (!observations) return <></>;
 
-  const observation =
+  const observation: WeatherObservation | undefined =
     observations.find(({ weather }) => weather === "thunderstorms") ||
-    observations.at(0);
+    observations[0];
 
   if (!observation) return <></>;
 
