@@ -29,5 +29,10 @@ export async function getRap(lat: number, lon: number): Promise<Rap[]> {
     },
   });
 
-  return parse(asciiReports);
+  const report = parse(asciiReports);
+
+  // Sometimes rapid refresh returns status=200 with empty body
+  if (report.length === 0) throw new Error("Report is empty");
+
+  return report;
 }
