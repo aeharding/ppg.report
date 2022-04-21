@@ -14,7 +14,9 @@ const colorScale = chroma
   .scale(["#ffffff88", "#ffffffff", "#006affff"])
   .domain([0, 30, 80]);
 
-const RainIcon = styled(FontAwesomeIcon)<{
+const RainIcon = styled(FontAwesomeIcon, {
+  shouldForwardProp: (prop) => prop !== "headerType",
+})<{
   headerType: HeaderType;
   chance: number;
 }>`

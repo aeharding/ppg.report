@@ -11,6 +11,8 @@ import Airport from "./header/Airport";
 import SkyCover from "./header/SkyCover";
 import Weather from "./header/Weather";
 import Alerts from "./header/Alerts";
+import { tafReport as tafReportSelector } from "./weatherSlice";
+import Wind from "./header/Wind";
 
 export enum HeaderType {
   Normal,
@@ -115,6 +117,7 @@ interface WeatherHeaderProps {
 export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weather = useAppSelector((state) => state.weather.weather);
   const alerts = useAppSelector((state) => state.weather.alerts);
+  const tafReport = useAppSelector(tafReportSelector);
 
   const relevantAlerts = useMemo(
     () =>
@@ -165,7 +168,8 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         <Weather weather={weather} date={date} />{" "}
         <Precipitation headerType={type} weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
-        <Micro icon={<Airport fr="vfr">KMSN</Airport>}>SCT@4k </Micro>
+        {tafReport ? <Airport taf={tafReport} date={date} /> : ""}
+        <Wind headerType={type} weather={weather} date={date} />{" "}
       </>{" "}
       <GoIcon icon={faLongArrowRight} />
     </Container>

@@ -1,10 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as weather from "../../services/weather";
 import { differenceInMinutes } from "date-fns";
 import axios from "axios";
 import * as timezoneService from "../../services/timezone";
+import * as aviationWeatherService from "../../services/aviationWeather";
+import { ParseError, parseTAFAsForecast } from "metar-taf-parser";
 
 interface Coordinates {
   lat: number;
@@ -26,6 +28,8 @@ export interface Weather extends Coordinates {
     probabilityOfPrecipitation: Property;
     skyCover: Property;
     weather: Property<WeatherObservation[]>;
+    windSpeed: Property;
+    windGust: Property;
   };
 }
 
@@ -104,7 +108,7 @@ export type AlertsResult =
   // Request failed
   | "failed";
 
-export interface Alerts extends Coordinates {
+export interface Alerts {
   features: Feature[];
 }
 
@@ -151,17 +155,19 @@ type AviationWeatherResult =
   | "pending"
 
   // the weather data (finished resolving)
-  | AviationWeather
+  | aviationWeatherService.TAFReport
 
   // Request failed
-  | "failed";
+  | "failed"
 
-export interface AviationWeather extends Coordinates {}
+  // Nothing found for the coordinates
+  | "not-available";
 
 interface WeatherState {
   weather: WeatherResult | undefined;
   weatherLastUpdated?: string;
   aviationWeather: AviationWeatherResult | undefined;
+  aviationWeatherLastUpdated?: string;
   alerts: AlertsResult | undefined;
   alertsLastUpdated?: string;
   timeZone: string | undefined;
@@ -173,6 +179,7 @@ const initialState: WeatherState = {
   weather: undefined,
   weatherLastUpdated: undefined,
   aviationWeather: undefined,
+  aviationWeatherLastUpdated: undefined,
   alerts: undefined,
   alertsLastUpdated: undefined,
   timeZone: undefined,
@@ -243,6 +250,7 @@ export const weatherReducer = createSlice({
         state.weatherLastUpdated = new Date().toISOString();
       }
     },
+
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
@@ -287,6 +295,67 @@ export const weatherReducer = createSlice({
       }
     },
 
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    aviationWeatherLoading: (state) => {
+      switch (state.aviationWeather) {
+        case undefined:
+          state.aviationWeather = "pending";
+          return;
+        case "pending":
+        case "not-available":
+          return;
+        case "failed":
+        default: {
+          if (
+            !state.aviationWeatherLastUpdated ||
+            Math.abs(
+              differenceInMinutes(
+                new Date(state.aviationWeatherLastUpdated),
+                new Date()
+              )
+            ) > 30
+          ) {
+            state.aviationWeather = "pending";
+          }
+        }
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the Rap
+     */
+    aviationWeatherReceived: (
+      state,
+      action: PayloadAction<aviationWeatherService.TAFReport>
+    ) => {
+      if (state.aviationWeather === "pending") {
+        state.aviationWeather = action.payload;
+        state.aviationWeatherLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    aviationWeatherFailed: (state) => {
+      if (state.aviationWeather === "pending") {
+        state.aviationWeather = "failed";
+        state.aviationWeatherLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    aviationWeatherNotAvailable: (state) => {
+      if (state.aviationWeather === "pending") {
+        state.aviationWeather = "not-available";
+        state.aviationWeatherLastUpdated = new Date().toISOString();
+      }
+    },
+
     clear: () => initialState,
   },
 });
@@ -300,6 +369,10 @@ export const {
   alertsLoading,
   alertsReceived,
   alertsFailed,
+  aviationWeatherLoading,
+  aviationWeatherReceived,
+  aviationWeatherFailed,
+  aviationWeatherNotAvailable,
   clear,
 } = weatherReducer.actions;
 
@@ -308,6 +381,7 @@ export const getWeather =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     loadPointData();
     loadAlerts();
+    loadAviationWeather();
 
     async function loadPointData() {
       if (getState().weather.weather === "pending") return;
@@ -366,6 +440,24 @@ export const getWeather =
         throw e;
       }
     }
+
+    async function loadAviationWeather() {
+      if (getState().weather.aviationWeather === "pending") return;
+      dispatch(aviationWeatherLoading());
+      if (getState().weather.aviationWeather !== "pending") return;
+
+      try {
+        const rawTAF = await aviationWeatherService.getTAF({ lat, lon });
+        if (!rawTAF) {
+          dispatch(aviationWeatherNotAvailable());
+        } else {
+          dispatch(aviationWeatherReceived(rawTAF));
+        }
+      } catch (e: unknown) {
+        dispatch(aviationWeatherFailed());
+        throw e;
+      }
+    }
   };
 
 // Other code such as selectors can use the imported `RootState` type
@@ -374,5 +466,32 @@ export const currentWeather = (state: RootState) => state.weather.weather;
 export const timeZoneSelector = (state: RootState) => {
   return state.weather.timeZone;
 };
+
+const tafReportSelector = (state: RootState) => state.weather.aviationWeather;
+
+export const tafReport = createSelector(
+  [tafReportSelector],
+  (aviationWeather) => {
+    if (
+      !aviationWeather ||
+      aviationWeather === "pending" ||
+      aviationWeather === "failed" ||
+      aviationWeather === "not-available"
+    )
+      return;
+
+    try {
+      return parseTAFAsForecast(`TAF ${aviationWeather.raw}`, {
+        date: new Date(aviationWeather.date),
+      });
+    } catch (e) {
+      if (e instanceof ParseError) {
+        console.error(e);
+        return;
+      }
+      throw e;
+    }
+  }
+);
 
 export default weatherReducer.reducer;
