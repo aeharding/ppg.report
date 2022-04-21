@@ -52,7 +52,6 @@ const AirportContainer = styled.span<AirportContainerProps>`
       case FlightCategory.VFR:
         return css`
           ${outputP3ColorFromRGB([0, 255, 0])}
-          opacity: 0.8;
           border: 1px solid;
           ${outputP3ColorFromRGB([0, 255, 0], "border-color")}
         `;

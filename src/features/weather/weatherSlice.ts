@@ -481,7 +481,7 @@ export const tafReport = createSelector(
       return;
 
     try {
-      return parseTAFAsForecast(`TAF ${aviationWeather.raw}`, {
+      return parseTAFAsForecast(aviationWeather.raw, {
         date: new Date(aviationWeather.date),
       });
     } catch (e) {

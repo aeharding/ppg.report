@@ -1,6 +1,6 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faWind } from "@fortawesome/pro-duotone-svg-icons";
+import { faWindsock } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
@@ -28,12 +28,10 @@ const WindIcon = styled(FontAwesomeIcon, {
     headerType === HeaderType.Normal
       ? css`
           ${outputP3ColorFromRGBA(
-            colorScale(Math.max((gust - speed) * 2.5, speed, gust)).rgba()
+            colorScale(getCompositeWindValue(speed, gust)).rgba()
           )}
         `
-      : css`
-          /* opacity: {1 / 2 + chance / 200}; */
-        `}
+      : ""}
 `;
 
 interface WindProps {
@@ -54,12 +52,10 @@ export default function Wind({ headerType, date, weather }: WindProps) {
     [date, weather]
   );
 
-  if (!wind || !wind.speed || !wind.gust) return <></>;
+  if (!wind || wind.speed == null || wind.gust == null) return <></>;
 
   const speed = Math.round(toMph(wind.speed.value));
   const gust = Math.round(toMph(wind.gust.value));
-
-  if (speed < 5 && gust - speed < GUST_DELTA_THRESHOLD) return <></>;
 
   const body =
     gust - speed < GUST_DELTA_THRESHOLD ? (
@@ -69,14 +65,18 @@ export default function Wind({ headerType, date, weather }: WindProps) {
         {speed}G{gust}
       </>
     );
+
   return (
-    <Tippy content={`${speed}mph gusting to ${gust}mph`} placement="bottom">
+    <Tippy
+      content={`Wind ${speed}mph gusting to ${gust}mph`}
+      placement="bottom"
+    >
       <div>
         <Micro
           icon={
             <WindIcon
               headerType={headerType}
-              icon={faWind}
+              icon={faWindsock}
               speed={speed}
               gust={gust}
             />
@@ -91,4 +91,11 @@ export default function Wind({ headerType, date, weather }: WindProps) {
 
 function toMph(speed: number): number {
   return speed * 0.621371;
+}
+
+/**
+ * @returns A "composite" wind value for gusts+sustained, similar to temperature "real feel"
+ */
+function getCompositeWindValue(speed: number, gust: number): number {
+  return Math.max((gust - speed) * 2.5, speed, gust);
 }
