@@ -66,6 +66,7 @@ export interface WeatherObservation {
     | "ice_pellets"
     | "dust_whirls"
     | "spray"
+    | "rain_showers"
     | "rain"
     | "sand"
     | "snow_grains"

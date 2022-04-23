@@ -1,6 +1,11 @@
 import styled from "@emotion/styled/macro";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 import { ReactComponent as Email } from "./email.svg";
+import pJson from "../../package.json";
+
+const A = styled.a`
+  text-decoration: underline;
+`;
 
 const TermsContainer = styled.div`
   width: 100%;
@@ -16,6 +21,19 @@ const Warning = styled.strong`
 export default function Terms() {
   return (
     <TermsContainer>
+      <h1>About</h1>
+
+      <p>
+        Your device is currently using ppg.report version {pJson.version}. View
+        information about this release{" "}
+        <A
+          href={`https://github.com/aeharding/ppg.report/releases/tag/v${pJson.version}`}
+        >
+          on Github
+        </A>
+        .
+      </p>
+
       <h1>Reach Me</h1>
 
       <p>Have a question?</p>
@@ -24,7 +42,7 @@ export default function Terms() {
 
       <h1>Privacy Policy</h1>
 
-      <p>Last Updated: September 1st, 2021</p>
+      <p>Last Updated: April 22nd, 2022</p>
 
       <p>
         <strong>
@@ -56,7 +74,8 @@ export default function Terms() {
               https://rucsoundings.noaa.gov
             </a>
             <br />
-            <strong>Purpose:</strong> To show you weather information.
+            <strong>Purpose:</strong> To show you weather information,
+            especially as it relates to conditions aloft.
           </li>
           <br />
           <li>
@@ -71,6 +90,34 @@ export default function Terms() {
             <br />
             <strong>Purpose:</strong> To retrieve a human readable location for
             given coordinates, and to find coordinates for a given query.
+          </li>
+          <br />
+          <li>
+            <strong>NOAA Aviation Weather Center Text Data Server</strong> —{" "}
+            <a
+              href="https://aviationweather.gov/dataserver"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://aviationweather.gov/dataserver
+            </a>
+            <br />
+            <strong>Purpose:</strong> To retrieve nearby airport TAF reports to
+            enhance available weather information.
+          </li>
+          <br />
+          <li>
+            <strong>National Weather Service API</strong> —{" "}
+            <a
+              href="https://www.weather.gov/documentation/services-web-api"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://api.weather.gov
+            </a>
+            <br />
+            <strong>Purpose:</strong> To retrieve hourly weather information for
+            your location.
           </li>
         </ol>
       </section>

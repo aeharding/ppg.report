@@ -5,6 +5,7 @@ import { isInstalled } from "./helpers/device";
 import { outputP3ColorFromRGB } from "./helpers/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/pro-regular-svg-icons";
+import pJson from "../package.json";
 
 const FancyFooter = styled.footer`
   padding: 1em;
@@ -27,6 +28,12 @@ export default function Footer() {
 
   return (
     <FancyFooter>
+      <a
+        href={`https://github.com/aeharding/ppg.report/releases/tag/v${pJson.version}`}
+      >
+        v{pJson.version}
+      </a>{" "}
+      —{" "}
       <a
         href="https://github.com/aeharding/ppg.report"
         target="_blank"

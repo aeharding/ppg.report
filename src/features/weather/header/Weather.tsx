@@ -20,13 +20,68 @@ import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { WeatherObservation, WeatherResult } from "../weatherSlice";
+import { keyframes } from "@emotion/css";
+
+const thunderAnimate = keyframes`
+  0% {
+    opacity: 0.4;
+  }
+  23% {
+    opacity: 0.4;
+  }
+  23.5% {
+    opacity: 1;
+  }
+  24% {
+    opacity: 0;
+  }
+  24.5% {
+    opacity: 0.4;
+  }
+  
+  45% {
+    opacity: 0.4;
+  }
+  45.5% {
+    opacity: 0.4;
+  }
+  46% {
+    opacity: 1;
+  }
+  46.5% {
+    opacity: 0;
+  }
+  47% {
+    opacity: 0.4;
+  }
+  47.5% {
+    opacity: 0.4;
+  }
+  48% {
+    opacity: 1;
+  }
+  48.5% {
+    opacity: 0;
+  }
+  49% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+`;
 
 const WeatherIcon = styled(FontAwesomeIcon)`
   font-size: 1.4em;
   margin-right: 0.5rem;
 
   &.fa-thunderstorm {
-    ${outputP3ColorFromRGB([255, 255, 0])};
+    ${outputP3ColorFromRGB([255, 255, 0])}
+
+    .fa-secondary {
+      animation: ${thunderAnimate} 10s linear infinite;
+    }
   }
 `;
 
@@ -103,6 +158,7 @@ function findIconFor(observation: WeatherObservation): IconProp | undefined {
       return faCloudSleet;
     case "rain":
     case "spray":
+    case "rain_showers":
       return faCloudRain;
     case "smoke":
       return faSmoke;

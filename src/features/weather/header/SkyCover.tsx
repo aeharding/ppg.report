@@ -1,14 +1,30 @@
+import SunCalc from "suncalc";
 import styled from "@emotion/styled/macro";
-import { faClouds, faCloud } from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faClouds,
+  faCloudsSun,
+  faSun,
+  faCloudsMoon,
+  faMoon,
+} from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { findValue } from "../../../services/weather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 
 const SkyIcon = styled(FontAwesomeIcon)<{ chance: number }>`
-  opacity: ${({ chance }) => 1 / 2 + chance / 200};
+  &.fa-sun {
+    transform: scale(1.2);
+    color: yellow;
+  }
+
+  &.fa-clouds-sun {
+    --fa-secondary-color: yellow;
+    --fa-secondary-opacity: 0.8;
+  }
 `;
 
 interface SkyCoverProps {
@@ -16,9 +32,14 @@ interface SkyCoverProps {
   weather: WeatherResult | undefined;
 }
 
-const SHOW_SKY_COVER_THRESHOLD = 15;
-
 export default function SkyCover({ date, weather }: SkyCoverProps) {
+  const { lat, lon } = useParams();
+  const [isDay] = useState(
+    lat && lon
+      ? SunCalc.getPosition(new Date(date), +lat, +lon).altitude > 0
+      : true
+  );
+
   const chance = useMemo(
     () =>
       typeof weather === "object"
@@ -35,14 +56,15 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
 
   const icon = (() => {
     if (chance?.value > 75) return faClouds;
-    return faCloud;
+    else if (chance?.value > 35) return isDay ? faCloudsSun : faCloudsMoon;
+    return isDay ? faSun : faMoon;
   })();
 
   const body = <>{chance.value}%</>;
 
-  if (chance.value <= SHOW_SKY_COVER_THRESHOLD) {
-    return <></>;
-  }
+  // if (chance.value <= SHOW_SKY_COVER_THRESHOLD) {
+  //   return iconElement;
+  // }
 
   return (
     <Tippy content={`${chance.value}% sky cover`} placement="bottom">

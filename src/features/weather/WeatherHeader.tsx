@@ -166,8 +166,8 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
       <>
         <Alerts alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}
-        <Precipitation headerType={type} weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
+        <Precipitation headerType={type} weather={weather} date={date} />{" "}
         {tafReport ? <Airport taf={tafReport} date={date} /> : ""}
         <Wind headerType={type} weather={weather} date={date} />{" "}
       </>{" "}
