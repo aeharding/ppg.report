@@ -56,7 +56,7 @@
     "workbox-streams": "^6.5.0"
   },
   "scripts": {
-    "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "start": "react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
     "deploy": "aws s3 sync --exclude index.html build/ s3://ppg.report && aws s3 sync --include index.html build/ s3://ppg.report",

@@ -10,7 +10,7 @@ import { Rap } from "gsl-parser";
 import Table from "./Table";
 import WeatherHeader from "../weather/WeatherHeader";
 import { css } from "@emotion/react/macro";
-import ReportBack from "../reportBack/ReportBack";
+// import ReportBack from "../reportBack/ReportBack";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../weather/weatherSlice";
 
@@ -51,13 +51,13 @@ const CardFace = styled.div`
   transform: rotateY(0);
 `;
 
-const CardFaceBack = styled.div`
-  ${cardFaceStyles}
+// const CardFaceBack = styled.div`
+//   ${cardFaceStyles}
 
-  position: absolute;
-  inset: 0;
-  transform: rotateY(180deg);
-`;
+//   position: absolute;
+//   inset: 0;
+//   transform: rotateY(180deg);
+// `;
 
 const Header = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   if (!timeZone) throw new Error("Timezone not found");
 
-  const [flipped, setFlipped] = useState(false);
+  // const [flipped, setFlipped] = useState(false);
 
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
@@ -133,10 +133,11 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
   );
 
   function onClick(e: React.MouseEvent) {
-    if (e.target instanceof HTMLElement) {
-      if (e.target.tagName === "A") return;
-    }
-    setFlipped(!flipped);
+    // TODO: enable and implement backface of cards
+    // if (e.target instanceof HTMLElement) {
+    //   if (e.target.tagName === "A") return;
+    // }
+    // setFlipped(!flipped);
   }
 
   return (
@@ -153,7 +154,7 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
       </Header>
 
       <Card>
-        <CardInner flipped={flipped}>
+        <CardInner flipped={false}>
           <CardFace
             style={{
               backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
@@ -164,14 +165,14 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
             <Table rap={rap} rows={rows} />
           </CardFace>
 
-          <CardFaceBack
+          {/* <CardFaceBack
             style={{
               backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
             }}
             onClick={onClick}
           >
             <ReportBack date={rap.date} />
-          </CardFaceBack>
+          </CardFaceBack> */}
         </CardInner>
       </Card>
     </Column>
