@@ -1,9 +1,9 @@
 import styled from "@emotion/styled/macro";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
+import { useAppDispatch } from "../../hooks";
 import { UserLocation } from "./storage";
 import { removeLocation } from "./userSlice";
 
@@ -58,7 +58,7 @@ interface LocationProps {
 }
 
 export default function Location({ location }: LocationProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   function remove(e: React.MouseEvent, location: UserLocation) {
     e.stopPropagation();

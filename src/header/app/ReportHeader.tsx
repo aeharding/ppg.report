@@ -3,10 +3,12 @@ import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { faSunrise, faSunset } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
-import format from "date-fns/format";
 import { useState } from "react";
 import SunCalc from "suncalc";
 import { useParams } from "react-router-dom";
+import { useAppSelector } from "../../hooks";
+import { timeZoneSelector } from "../../features/weather/weatherSlice";
+import formatInTimeZone from "date-fns-tz/formatInTimeZone";
 
 const BackButton = styled.div`
   position: absolute;
@@ -62,6 +64,7 @@ interface ReportHeaderProps {
 
 function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
+  const timeZone = useAppSelector(timeZoneSelector);
 
   return (
     <>
@@ -71,16 +74,18 @@ function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
       <Location>
         <ReverseLocation lat={lat} lon={lon} />
       </Location>
-      <SunsetSunrise>
-        <div>
-          {format(times.sunrise, "h:mmaaaaa")}{" "}
-          <FontAwesomeIcon icon={faSunrise} />
-        </div>
-        <div>
-          {format(times.sunsetStart, "h:mmaaaaa")}{" "}
-          <FontAwesomeIcon icon={faSunset} />
-        </div>
-      </SunsetSunrise>
+      {timeZone && (
+        <SunsetSunrise>
+          <div>
+            {formatInTimeZone(times.sunrise, timeZone, "h:mmaaaaa")}{" "}
+            <FontAwesomeIcon icon={faSunrise} />
+          </div>
+          <div>
+            {formatInTimeZone(times.sunsetStart, timeZone, "h:mmaaaaa")}{" "}
+            <FontAwesomeIcon icon={faSunset} />
+          </div>
+        </SunsetSunrise>
+      )}
     </>
   );
 }

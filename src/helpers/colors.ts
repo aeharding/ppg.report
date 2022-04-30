@@ -26,3 +26,13 @@ export function outputP3ColorFromRGB(
     ${cssProperty}: color(display-p3 ${r / 255} ${g / 255} ${b / 255});
   `;
 }
+
+export function outputP3ColorFromRGBA(
+  [r, g, b, a]: [number, number, number, number],
+  cssProperty = "color"
+) {
+  return `
+    ${cssProperty}: rgba(${r}, ${g}, ${b}, ${a});
+    ${cssProperty}: color(display-p3 ${r / 255} ${g / 255} ${b / 255} / ${a});
+  `;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { css, Global } from "@emotion/react/macro";
 import App from "./App";
 import { Provider } from "react-redux";
@@ -72,14 +72,16 @@ const globalStyles = css`
   ${tippyStyles}
 `;
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container!);
+
+root.render(
   <React.StrictMode>
     <Global styles={globalStyles} />
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -5,22 +5,59 @@ import SunCalc from "suncalc";
 import chroma from "chroma-js";
 import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
-import format from "date-fns/format";
+import formatInTimeZone from "date-fns-tz/formatInTimeZone";
 import { Rap } from "gsl-parser";
 import Table from "./Table";
+import WeatherHeader from "../weather/WeatherHeader";
+import { css } from "@emotion/react/macro";
+// import ReportBack from "../reportBack/ReportBack";
+import { useAppSelector } from "../../hooks";
+import { timeZoneSelector } from "../weather/weatherSlice";
 
 const Column = styled.div`
   position: relative;
 `;
 
-const TableContainer = styled.div`
-  padding: 0.75em 0;
-
+const Card = styled.div`
   position: relative;
+`;
+
+const CardInner = styled.div<{ flipped: boolean }>`
+  transform-style: preserve-3d;
+  transition: transform 80ms ease-out;
+
+  ${({ flipped }) =>
+    flipped
+      ? css`
+          transform: rotateY(180deg);
+        `
+      : css`
+          transform: rotateY(0);
+        `}
+`;
+
+const cardFaceStyles = css`
+  padding: 0.75em 0;
 
   border-radius: 1em;
   box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+
+  backface-visibility: hidden;
 `;
+
+const CardFace = styled.div`
+  ${cardFaceStyles}
+
+  transform: rotateY(0);
+`;
+
+// const CardFaceBack = styled.div`
+//   ${cardFaceStyles}
+
+//   position: absolute;
+//   inset: 0;
+//   transform: rotateY(180deg);
+// `;
 
 const Header = styled.div`
   display: flex;
@@ -47,6 +84,11 @@ interface HourProps {
 }
 
 export default function Hour({ rap, rows, ...rest }: HourProps) {
+  const timeZone = useAppSelector(timeZoneSelector);
+  if (!timeZone) throw new Error("Timezone not found");
+
+  // const [flipped, setFlipped] = useState(false);
+
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
   );
@@ -90,11 +132,19 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
       ])
   );
 
+  function onClick(e: React.MouseEvent) {
+    // TODO: enable and implement backface of cards
+    // if (e.target instanceof HTMLElement) {
+    //   if (e.target.tagName === "A") return;
+    // }
+    // setFlipped(!flipped);
+  }
+
   return (
     <Column {...rest}>
       <Header>
         <HourContainer>
-          {format(new Date(rap.date), "h:mmaaaaa")}
+          {formatInTimeZone(new Date(rap.date), timeZone, "h:mmaaaaa")}
           {new Date(rap.date).getTime() >= startOfTomorrow().getTime() && (
             <sup>+1</sup>
           )}
@@ -103,13 +153,28 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
         <CinCape cin={rap.cin} cape={rap.cape} />
       </Header>
 
-      <TableContainer
-        style={{
-          backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
-        }}
-      >
-        <Table rap={rap} rows={rows} />
-      </TableContainer>
+      <Card>
+        <CardInner flipped={false}>
+          <CardFace
+            style={{
+              backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
+            }}
+            onClick={onClick}
+          >
+            <WeatherHeader date={rap.date} />
+            <Table rap={rap} rows={rows} />
+          </CardFace>
+
+          {/* <CardFaceBack
+            style={{
+              backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
+            }}
+            onClick={onClick}
+          >
+            <ReportBack date={rap.date} />
+          </CardFaceBack> */}
+        </CardInner>
+      </Card>
     </Column>
   );
 }
