@@ -47,6 +47,10 @@ Using a reverse proxy such as Nginx, configure the following:
   - GET `/api/position/search` ➡ `https://nominatim.openstreetmap.org/search`
   - GET `/api/position/reverse` ➡ `https://nominatim.openstreetmap.org/reverse.php`
   - GET `/api/rap` ➡ `https://rucsoundings.noaa.gov/get_soundings.cgi`
+  - GET `/api/rap` ➡ `https://rucsoundings.noaa.gov/get_soundings.cgi`
+  - GET `/api/timezone` ➡ `http://api.timezonedb.com/v2.1/get-time-zone` (You will need to attach an API key. Note: This API is only used as a fallback for when the `/api/weather` endpoint fails.)
+  - GET `/api/aviationweather` ➡ `https://www.aviationweather.gov/adds/dataserver_current/httpparam`
+  - GET `/api/weather/{proxy+}` ➡ `https://api.weather.gov/{proxy}` Greedy path capturing, forwards to api.weather.gov.
 - **IMPORTANT!** For each outgoing API request, make sure to:
   - Attach a `User-Agent` header, as per [NOAA](https://www.weather.gov/documentation/services-web-api) and [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) usage policies.
   - **Keep these free APIs free - be a good API consumer!** Add caching for each route - I recommend at least 10 minutes for `rucsoundings.noaa.gov`, and one week for `nominatim.openstreetmap.org`.

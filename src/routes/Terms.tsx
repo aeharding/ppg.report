@@ -119,6 +119,23 @@ export default function Terms() {
             <strong>Purpose:</strong> To retrieve hourly weather information for
             your location.
           </li>
+          <br />
+          <li>
+            <strong>TimeZoneDB</strong> —{" "}
+            <a
+              href="https://timezonedb.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://timezonedb.com
+            </a>
+            <br />
+            <strong>Purpose:</strong> To retrieve the time zone for a given
+            geolocation.
+            <br />
+            <strong>Note:</strong> This is a fallback API, and will only be
+            called when the National Weather Service API fails.
+          </li>
         </ol>
       </section>
 
