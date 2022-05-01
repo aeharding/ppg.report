@@ -30,6 +30,8 @@ export default function Footer() {
     <FancyFooter>
       <a
         href={`https://github.com/aeharding/ppg.report/releases/tag/v${pJson.version}`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         v{pJson.version}
       </a>{" "}
