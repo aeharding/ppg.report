@@ -21,6 +21,7 @@ import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { WeatherObservation, WeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
+import { css } from "@emotion/react/macro";
 
 const thunderAnimate = keyframes`
   0% {
@@ -72,16 +73,28 @@ const thunderAnimate = keyframes`
   }
 `;
 
-const WeatherIcon = styled(FontAwesomeIcon)`
+const WeatherIcon = styled(FontAwesomeIcon)<{
+  coverage: WeatherObservation["coverage"];
+}>`
   font-size: 1.4em;
   margin-right: 0.5rem;
 
   &.fa-thunderstorm {
     ${outputP3ColorFromRGB([255, 255, 0])}
 
-    .fa-secondary {
-      animation: ${thunderAnimate} 10s linear infinite;
-    }
+    ${({ coverage }) => {
+      switch (coverage) {
+        case "slight_chance":
+        case "chance":
+          return;
+        default:
+          return css`
+            .fa-secondary {
+              animation: ${thunderAnimate} 10s linear infinite;
+            }
+          `;
+      }
+    }}
   }
 `;
 
@@ -116,7 +129,11 @@ export default function Weather({ date, weather }: WeatherProps) {
   if (!observation) return <></>;
 
   let tooltip = capitalize(
-    [observation.coverage, observation.weather].map(lowerCase).join(" ")
+    observations
+      .map((observation) =>
+        [observation.coverage, observation.weather].map(lowerCase).join(" ")
+      )
+      .join(", ")
   );
 
   const icon = findIconFor(observation);
@@ -126,7 +143,7 @@ export default function Weather({ date, weather }: WeatherProps) {
   return (
     <Tippy content={tooltip} placement="bottom">
       <Flex>
-        <WeatherIcon icon={icon} />
+        <WeatherIcon icon={icon} coverage={observation.coverage} />
       </Flex>
     </Tippy>
   );
