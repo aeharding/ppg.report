@@ -33,7 +33,7 @@
     "gsl-parser": "^1.2.1",
     "iso8601-duration": "^2.1.1",
     "lodash": "^4.17.21",
-    "metar-taf-parser": "^3.0.0",
+    "metar-taf-parser": "^4.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-page-visibility": "^7.0.0",
