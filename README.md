@@ -6,9 +6,14 @@
 
 # [🪂 PPG.report](https://ppg.report)
 
-Weather report tailored for paramotor pilots. Uses the [NOAA rapid refresh Op40 analysis](https://rucsoundings.noaa.gov/).
+Weather report tailored for paramotor pilots. Consolidates data from multiple sources, including:
 
-![Screenshot of PPG.report website](preview.png)
+1. The [NOAA Rapid Refresh Op40 analysis](https://rucsoundings.noaa.gov/)
+2. Nearby [Terminal Aerodrome Forecasts](https://www.aviationweather.gov/taf), if available
+3. NOAA hourly weather forecast
+4. National Weather Service active alerts
+
+![Screenshot of PPG.report website](https://user-images.githubusercontent.com/2166114/166601608-42c74bed-7c87-41ef-bd55-0911b470a9c4.png)
 
 ## Available Scripts
 
