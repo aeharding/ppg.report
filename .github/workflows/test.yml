@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18]
+        node-version: [18.1]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       - run: |
           npm config set '@fortawesome:registry' '${{ secrets.FONTAWESOME_REGISTRY }}'
           npm config set '//harding.dev:23435/:_authToken' '${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}'
-          yarn install
+          yarn --frozen-lockfile
 
       # TODO: code coverage, reporting, break these steps up
       - run: yarn format
