@@ -62,6 +62,11 @@ export async function getPointResources({
 }): Promise<{ forecastGridDataUrl: string; timeZone: string }> {
   let { data } = await axios.get(`/api/weather/points/${lat},${lon}`);
 
+  const forecastGridDataUrl = data.properties.forecastGridData;
+
+  if (!forecastGridDataUrl)
+    throw new Error("forecastGridData not defined in response!");
+
   return {
     forecastGridDataUrl: normalize(data.properties.forecastGridData),
     timeZone: data.properties.timeZone,
