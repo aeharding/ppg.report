@@ -398,7 +398,6 @@ export const getWeather =
 
           dispatch(timeZoneReceived(data.timeZone));
         } catch (e) {
-          if (!axios.isAxiosError(e)) throw e;
           if (getState().weather.timeZone) throw e;
 
           // Likely Mexico or Canada
