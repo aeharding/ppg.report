@@ -13,6 +13,7 @@ import { css } from "@emotion/react/macro";
 // import ReportBack from "../reportBack/ReportBack";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../weather/weatherSlice";
+import { zonedTimeToUtc } from "date-fns-tz";
 
 const Column = styled.div`
   position: relative;
@@ -145,7 +146,8 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
       <Header>
         <HourContainer>
           {formatInTimeZone(new Date(rap.date), timeZone, "h:mmaaaaa")}
-          {new Date(rap.date).getTime() >= startOfTomorrow().getTime() && (
+          {new Date(rap.date).getTime() >=
+            zonedTimeToUtc(startOfTomorrow(), timeZone).getTime() && (
             <sup>+1</sup>
           )}
         </HourContainer>
