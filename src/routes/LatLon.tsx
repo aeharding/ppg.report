@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useMatch,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { getRap, clear as clearRap } from "../features/rap/rapSlice";
 import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -14,8 +20,9 @@ import {
   clear as clearWeather,
   timeZoneSelector,
 } from "../features/weather/weatherSlice";
+import { Outlook } from "../features/outlook/Outlook";
 
-export default function Report() {
+export default function LatLon() {
   const { lat, lon } = useParams<"lat" | "lon">();
 
   if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return <NotFound />;
@@ -35,6 +42,17 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const timeZoneLoading = useAppSelector(
     (state) => state.weather.timeZoneLoading
   );
+  const navigate = useNavigate();
+  const isBasePath = useMatch("/:lat,:lon");
+
+  useEffect(() => {
+    if (!isLatLonTrimmed(lat, lon)) {
+      navigate(`/${getTrimmedCoordinates(+lat, +lon)}`, { replace: true });
+    } else if (isBasePath) {
+      navigate(`aloft`, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!isLatLonTrimmed(lat, lon)) return;
@@ -56,10 +74,6 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     />
   );
 
-  if (!isLatLonTrimmed(lat, lon)) {
-    return <Navigate to={`/${getTrimmedCoordinates(+lat, +lon)}`} replace />;
-  }
-
   if (timeZoneLoading) return <Loading />;
 
   switch (rap) {
@@ -78,6 +92,12 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
       );
     default:
       if (!timeZone) return connectionError;
-      return <Hours rap={rap} />;
+      return (
+        <Routes>
+          <Route path="aloft" element={<Hours rap={rap} />} />
+          <Route path="outlook" element={<Outlook />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      );
   }
 }
