@@ -12,6 +12,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   grid-gap: 4rem;
+
+  margin-bottom: 1rem;
 `;
 
 export type TableData = {
@@ -57,7 +59,7 @@ export default function Hourly() {
 
     if (!detailTableEl) return;
 
-    detailTableEl.scrollLeft = (index - 12) * 32;
+    detailTableEl.scrollLeft = (index - window.innerWidth / 64) * 32;
   }
 
   return (

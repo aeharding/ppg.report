@@ -9,7 +9,7 @@ const colorScale = chroma
 
 const Bar = styled.div<{ windSpeed: number }>`
   max-height: 100%;
-  height: ${({ windSpeed }) => ((windSpeed + 4) / 38) * 100}%;
+  height: ${({ windSpeed }) => ((windSpeed + 4) / 38) * 1.5}rem;
   width: 100%;
 
   ${({ windSpeed }) =>

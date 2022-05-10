@@ -49,7 +49,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     if (!isLatLonTrimmed(lat, lon)) {
       navigate(`/${getTrimmedCoordinates(+lat, +lon)}`, { replace: true });
     } else if (isBasePath) {
-      navigate(`aloft`, { replace: true });
+      navigate(`outlook`, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,3 +1,4 @@
+import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import Tippy from "@tippyjs/react";
 import { formatInTimeZone, utcToZonedTime } from "date-fns-tz";
@@ -36,6 +37,7 @@ const Highlight = styled.div`
 const Table = styled.table`
   border-collapse: collapse;
   position: relative;
+  overflow: hidden;
 
   tr {
     height: 4rem;
@@ -50,11 +52,7 @@ const WindRow = styled.tr`
   filter: blur(2px);
 `;
 
-const WindCell = styled.td<{ date: Date }>`
-  height: 1rem;
-`;
-
-const Day = styled.div<{ offset: number; width: number }>`
+const Day = styled.div<{ offset: number; width: number; index: number }>`
   left: ${({ offset }) => offset}px;
   width: ${({ width }) => width}px;
   text-align: center;
@@ -69,14 +67,27 @@ const Day = styled.div<{ offset: number; width: number }>`
     text-overflow: ellipsis;
   }
 
-  &:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3rem;
-    height: 3.75rem;
-    border-left: 1px dashed rgba(255, 255, 255, 0.3);
-  }
+  ${({ index }) =>
+    index !== 0
+      ? css`
+          &:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3.25rem;
+            height: 4.25rem;
+            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+
+            mask: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0) 0%,
+              rgb(0, 0, 0) 25%,
+              rgb(0, 0, 0) 75%,
+              rgba(0, 0, 0, 0) 100%
+            );
+          }
+        `
+      : ""}
 `;
 
 interface SummaryTableProps {
@@ -136,20 +147,16 @@ export default function SummaryTable({
         <tbody>
           <WindRow>
             {tableData.map(({ date, windSpeed }, index) => (
-              <WindCell
-                date={date}
-                onClick={() => selectDate(date)}
-                key={index}
-              >
+              <td onClick={() => selectDate(date)} key={index}>
                 {windSpeed ? <MiniWindCell windSpeed={windSpeed.value} /> : ""}
-              </WindCell>
+              </td>
             ))}
           </WindRow>
         </tbody>
       </Table>
 
       {days.map(({ date, offset, width }, index) => (
-        <Day offset={offset} width={width} key={index}>
+        <Day offset={offset} width={width} key={index} index={index}>
           <Tippy
             content={formatInTimeZone(date, timeZone, "EEEE, MMM do yyyy")}
           >

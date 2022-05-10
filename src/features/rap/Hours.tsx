@@ -291,7 +291,7 @@ export default function Hours({ rap }: TableProps) {
         </ScrollContainer>
       </Container>
 
-      <ReportWatchdog rap={rap} />
+      <ReportWatchdog />
     </>
   );
 }

@@ -10,7 +10,6 @@ import styled from "@emotion/styled/macro";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import { getWeather } from "../weather/weatherSlice";
 import { useParams } from "react-router-dom";
-import { Rap } from "gsl-parser";
 
 const Container = styled.div`
   width: 100%;
@@ -28,11 +27,7 @@ const Container = styled.div`
   }
 `;
 
-interface ReportWatchdogProps {
-  rap: Rap[];
-}
-
-export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
+export default function ReportWatchdog() {
   const dispatch = useAppDispatch();
   const visibility = usePageVisibility();
   const rapUpdated = useAppSelector((state) => state.rap.rapUpdated);
@@ -53,7 +48,7 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
 
     dispatch(getRap(+lat, +lon));
     dispatch(getWeather(+lat, +lon));
-  }, [lastUpdated, dispatch, rap, lat, lon]);
+  }, [lastUpdated, dispatch, lat, lon]);
 
   return (
     <Container>

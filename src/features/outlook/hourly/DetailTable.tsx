@@ -22,6 +22,7 @@ const OutlookContainer = styled.div`
 const Table = styled.table`
   border-collapse: collapse;
   text-align: center;
+  overflow: hidden;
 
   td {
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -33,6 +34,25 @@ const Table = styled.table`
 
 const DayCell = styled.td`
   padding: 0 1rem;
+
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    right: -1.25px;
+    top: -1px;
+    height: 200px;
+    border-right: 1px dashed rgba(255, 255, 255, 0.6);
+
+    mask: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgb(0, 0, 0) 10%,
+      rgb(0, 0, 0) 90%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
 `;
 
 const StickyCellContents = styled.div`
@@ -81,8 +101,8 @@ export default function DetailTable({ tableData }: DetailTableProps) {
         <tbody>
           <tr>
             <td>Day</td>
-            {dayCells.map(({ date, colSpan }) => (
-              <DayCell colSpan={colSpan} key={date.getTime()}>
+            {dayCells.map(({ date, colSpan }, index) => (
+              <DayCell colSpan={colSpan} key={index}>
                 <StickyCellContents>
                   {formatInTimeZone(date, timeZone, "iiii, LLLL do")}
                 </StickyCellContents>
@@ -91,16 +111,14 @@ export default function DetailTable({ tableData }: DetailTableProps) {
           </tr>
           <tr>
             <td>Time</td>
-            {tableData.map(({ date }) => (
-              <td key={date.getTime()}>
-                {formatInTimeZone(date, timeZone, "haaaaa")}
-              </td>
+            {tableData.map(({ date }, index) => (
+              <td key={index}>{formatInTimeZone(date, timeZone, "haaaaa")}</td>
             ))}
           </tr>
           <tr>
             <td>Wind</td>
             {tableData.map(({ date, windSpeed, windDirection }, index) => (
-              <td key={date.getTime()}>
+              <td key={index}>
                 {windSpeed ? (
                   <WindCell
                     windSpeed={windSpeed.value}
@@ -114,16 +132,16 @@ export default function DetailTable({ tableData }: DetailTableProps) {
           </tr>
           <tr>
             <td>Gust</td>
-            {tableData.map(({ date, windGust }) => (
-              <td key={date.getTime()}>
+            {tableData.map(({ date, windGust }, index) => (
+              <td key={index}>
                 {windGust ? <GustCell windGust={windGust.value} /> : ""}
               </td>
             ))}
           </tr>
           <tr>
             <td>Temp</td>
-            {tableData.map(({ date, temperature }) => (
-              <td key={date.getTime()}>
+            {tableData.map(({ date, temperature }, index) => (
+              <td key={index}>
                 {temperature ? (
                   <TempCell temperature={temperature.value} />
                 ) : (

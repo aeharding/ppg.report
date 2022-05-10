@@ -31,7 +31,7 @@ export default function ScrollController() {
 
     if (!detailTableEl || !highlightEl) throw new Error("Could not setup");
 
-    const mouseMoveHandler = (e: MouseEvent) => {
+    const mouseMoveHandler = (e: MouseEvent | TouchEvent) => {
       const detailCellCount = summaryTableEl?.querySelectorAll("td").length;
       if (!detailCellCount) return;
 
@@ -40,7 +40,8 @@ export default function ScrollController() {
         (window.innerWidth / 32) * (window.innerWidth / detailCellCount);
 
       // How far the mouse has been moved
-      const dx = e.clientX - highlightDragState.current.x;
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const dx = clientX - highlightDragState.current.x;
       const offset = Math.min(
         Math.max(highlightDragState.current.left + dx, 0),
         maxOffset
@@ -58,7 +59,9 @@ export default function ScrollController() {
 
     const mouseUpHandler = () => {
       document.removeEventListener("mousemove", mouseMoveHandler);
+      document.removeEventListener("touchmove", mouseMoveHandler);
       document.removeEventListener("mouseup", mouseUpHandler);
+      document.removeEventListener("touchend", mouseUpHandler);
 
       document.body.style.cursor = "";
       document.body.style.removeProperty("user-select");
@@ -66,16 +69,18 @@ export default function ScrollController() {
       detailTableEl.addEventListener("scroll", updateHighlightPosition);
     };
 
-    const mouseDownHandler = (e: MouseEvent) => {
+    const mouseDownHandler = (e: MouseEvent | TouchEvent) => {
       const left = getOffsetFromTransform(highlightEl.style.transform);
 
       if (left == null) return;
+
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
 
       highlightDragState.current = {
         // The current scroll
         left,
         // Get the current mouse position
-        x: e.clientX,
+        x: clientX,
       };
 
       // Change the cursor and prevent user from selecting the text
@@ -83,11 +88,23 @@ export default function ScrollController() {
       document.body.style.userSelect = "none";
 
       document.addEventListener("mousemove", mouseMoveHandler);
+      document.addEventListener("touchmove", mouseMoveHandler);
       document.addEventListener("mouseup", mouseUpHandler);
+      document.addEventListener("touchend", mouseUpHandler);
       detailTableEl.removeEventListener("scroll", updateHighlightPosition);
     };
 
     highlightEl?.addEventListener("mousedown", mouseDownHandler);
+    highlightEl?.addEventListener("touchstart", mouseDownHandler);
+
+    return () => {
+      highlightEl?.removeEventListener("mousedown", mouseDownHandler);
+      highlightEl?.removeEventListener("touchstart", mouseDownHandler);
+      document.removeEventListener("mousemove", mouseMoveHandler);
+      document.removeEventListener("touchmove", mouseMoveHandler);
+      document.removeEventListener("mouseup", mouseUpHandler);
+      document.removeEventListener("touchend", mouseUpHandler);
+    };
   }, []);
 
   useLayoutEffect(() => {
