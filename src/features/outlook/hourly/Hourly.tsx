@@ -3,7 +3,11 @@ import { eachHourOfInterval } from "date-fns";
 import { useMemo } from "react";
 import { useAppSelector } from "../../../hooks";
 import { findValue, getInterval } from "../../../services/weather";
-import { currentWeather, Value } from "../../weather/weatherSlice";
+import {
+  currentWeather,
+  Value,
+  WeatherObservation,
+} from "../../weather/weatherSlice";
 import DetailTable from "./DetailTable";
 import ScrollController from "./ScrollController";
 import SummaryTable from "./SummaryTable";
@@ -22,6 +26,7 @@ export type TableData = {
   windGust: Value<number> | undefined;
   windDirection: Value<number> | undefined;
   temperature: Value<number> | undefined;
+  weather: Value<WeatherObservation[]> | undefined;
 }[];
 
 export default function Hourly() {
@@ -43,6 +48,7 @@ export default function Hourly() {
             windGust: findValue(date, weather.properties.windGust),
             windDirection: findValue(date, weather.properties.windDirection),
             temperature: findValue(date, weather.properties.temperature),
+            weather: findValue(date, weather.properties.weather),
           };
         });
     }

@@ -5,6 +5,7 @@ import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../../weather/weatherSlice";
 import GustCell from "./GustCell";
 import { TableData } from "./Hourly";
+import WeatherCell from "./WeatherCell";
 import TempCell from "./TempCell";
 import WindCell from "./WindCell";
 
@@ -116,8 +117,8 @@ export default function DetailTable({ tableData }: DetailTableProps) {
             ))}
           </tr>
           <tr>
-            <td>Wind</td>
-            {tableData.map(({ date, windSpeed, windDirection }, index) => (
+            <td>Wind (mph)</td>
+            {tableData.map(({ windSpeed, windDirection }, index) => (
               <td key={index}>
                 {windSpeed ? (
                   <WindCell
@@ -132,21 +133,29 @@ export default function DetailTable({ tableData }: DetailTableProps) {
           </tr>
           <tr>
             <td>Gust</td>
-            {tableData.map(({ date, windGust }, index) => (
+            {tableData.map(({ windGust }, index) => (
               <td key={index}>
                 {windGust ? <GustCell windGust={windGust.value} /> : ""}
               </td>
             ))}
           </tr>
           <tr>
-            <td>Temp</td>
-            {tableData.map(({ date, temperature }, index) => (
+            <td>°F</td>
+            {tableData.map(({ temperature }, index) => (
               <td key={index}>
                 {temperature ? (
                   <TempCell temperature={temperature.value} />
                 ) : (
                   ""
                 )}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <td>Wx</td>
+            {tableData.map(({ weather }, index) => (
+              <td key={index}>
+                {weather ? <WeatherCell weather={weather.value} /> : ""}
               </td>
             ))}
           </tr>

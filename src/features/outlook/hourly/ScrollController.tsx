@@ -14,10 +14,24 @@ export default function ScrollController() {
     if (!detailTableEl || !highlightEl || !summaryTableEl)
       throw new Error("Could not setup");
 
-    detailTableEl.addEventListener("scroll", updateHighlightPosition);
+    const detailCellCount = summaryTableEl.querySelectorAll("td").length;
+
+    if (!detailTableEl || !highlightEl || !summaryTableEl)
+      throw new Error("Could not setup");
+
+    const updateHighlightPositionCb = updateHighlightPosition(
+      summaryTableEl,
+      detailTableEl,
+      highlightEl,
+      detailCellCount
+    );
+
+    detailTableEl.addEventListener("scroll", updateHighlightPositionCb, {
+      passive: true,
+    });
 
     return () => {
-      detailTableEl.removeEventListener("scroll", updateHighlightPosition);
+      detailTableEl.removeEventListener("scroll", updateHighlightPositionCb);
     };
   }, []);
 
@@ -29,7 +43,17 @@ export default function ScrollController() {
     const highlightEl = document.getElementById("summary-table-highlight");
     const summaryTableEl = document.getElementById("summary-table");
 
-    if (!detailTableEl || !highlightEl) throw new Error("Could not setup");
+    if (!detailTableEl || !highlightEl || !summaryTableEl)
+      throw new Error("Could not setup");
+
+    const detailCellCount = summaryTableEl.querySelectorAll("td").length;
+
+    const updateHighlightPositionCb = updateHighlightPosition(
+      summaryTableEl,
+      detailTableEl,
+      highlightEl,
+      detailCellCount
+    );
 
     const mouseMoveHandler = (e: MouseEvent | TouchEvent) => {
       const detailCellCount = summaryTableEl?.querySelectorAll("td").length;
@@ -66,7 +90,9 @@ export default function ScrollController() {
       document.body.style.cursor = "";
       document.body.style.removeProperty("user-select");
 
-      detailTableEl.addEventListener("scroll", updateHighlightPosition);
+      detailTableEl.addEventListener("scroll", updateHighlightPositionCb, {
+        passive: true,
+      });
     };
 
     const mouseDownHandler = (e: MouseEvent | TouchEvent) => {
@@ -91,14 +117,18 @@ export default function ScrollController() {
       document.addEventListener("touchmove", mouseMoveHandler);
       document.addEventListener("mouseup", mouseUpHandler);
       document.addEventListener("touchend", mouseUpHandler);
-      detailTableEl.removeEventListener("scroll", updateHighlightPosition);
+      detailTableEl.removeEventListener("scroll", updateHighlightPositionCb);
     };
 
+    summaryTableEl?.addEventListener("mousedown", mouseDownHandler);
     highlightEl?.addEventListener("mousedown", mouseDownHandler);
+    summaryTableEl?.addEventListener("touchstart", mouseDownHandler);
     highlightEl?.addEventListener("touchstart", mouseDownHandler);
 
     return () => {
+      summaryTableEl?.removeEventListener("mousedown", mouseDownHandler);
       highlightEl?.removeEventListener("mousedown", mouseDownHandler);
+      summaryTableEl?.removeEventListener("touchstart", mouseDownHandler);
       highlightEl?.removeEventListener("touchstart", mouseDownHandler);
       document.removeEventListener("mousemove", mouseMoveHandler);
       document.removeEventListener("touchmove", mouseMoveHandler);
@@ -108,9 +138,25 @@ export default function ScrollController() {
   }, []);
 
   useLayoutEffect(() => {
+    const detailTableEl = document.getElementById("detail-table");
+    const highlightEl = document.getElementById("summary-table-highlight");
+    const summaryTableEl = document.getElementById("summary-table");
+
+    if (!detailTableEl || !highlightEl || !summaryTableEl)
+      throw new Error("Could not setup");
+
+    const detailCellCount = summaryTableEl.querySelectorAll("td").length;
+
+    const updateHighlightPositionCb = updateHighlightPosition(
+      summaryTableEl,
+      detailTableEl,
+      highlightEl,
+      detailCellCount
+    );
+
     function onResize() {
       updateHighlightWidth();
-      updateHighlightPosition();
+      updateHighlightPositionCb();
     }
 
     window.addEventListener("resize", onResize);
@@ -125,23 +171,39 @@ export default function ScrollController() {
   return <></>;
 }
 
-function updateHighlightPosition() {
-  const summaryTableEl = document.getElementById("summary-table");
-  const detailTableEl = document.getElementById("detail-table");
-  const highlightEl = document.getElementById("summary-table-highlight");
+function updateHighlightPosition(
+  summaryTableEl: HTMLElement,
+  detailTableEl: HTMLElement,
+  highlightEl: HTMLElement,
+  detailCellCount: number
+) {
+  let scrolledTime = 0;
+  let running = false;
 
-  if (!detailTableEl || !highlightEl || !summaryTableEl)
-    throw new Error("Could not setup");
+  return () => {
+    scrolledTime = Date.now();
+    if (running) return;
+    running = true;
+    requestAnimationFrame(loop);
+  };
 
-  const offset = getHorizontalScrollPercentage(detailTableEl);
-  const detailCellCount = summaryTableEl.querySelectorAll("td").length;
+  function loop() {
+    const offset = getHorizontalScrollPercentage(detailTableEl);
 
-  highlightEl.style.transform = `translateX(${
-    (offset / 100) *
-    (window.innerWidth -
-      (window.innerWidth / 32) * (window.innerWidth / detailCellCount))
-  }px)`;
+    highlightEl.style.transform = `translateX(${Math.round(
+      (offset / 100) *
+        (window.innerWidth -
+          (window.innerWidth / 32) * (window.innerWidth / detailCellCount))
+    )}px)`;
+
+    if (Date.now() - scrolledTime > 250) {
+      running = false;
+      return;
+    }
+    requestAnimationFrame(loop);
+  }
 }
+
 function updateHighlightWidth() {
   const summaryTableEl = document.getElementById("summary-table");
   const highlightEl = document.getElementById("summary-table-highlight");

@@ -44,7 +44,7 @@ const Description = styled.p`
 interface ErrorProps {
   icon: FunctionComponent<{ className?: string }>;
   title: string;
-  description: string;
+  description: React.ReactNode;
 }
 
 export default function Error({ icon: Icon, title, description }: ErrorProps) {
