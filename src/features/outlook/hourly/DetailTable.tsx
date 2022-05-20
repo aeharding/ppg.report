@@ -8,6 +8,8 @@ import { TableData } from "./Hourly";
 import WeatherCell from "./WeatherCell";
 import TempCell from "./TempCell";
 import WindCell from "./WindCell";
+import { endOfDay, isPast, isToday } from "date-fns";
+import { css } from "@emotion/react/macro";
 
 const OutlookContainer = styled.div`
   overflow: auto;
@@ -57,10 +59,49 @@ const DayCell = styled.td`
 `;
 
 const StickyCellContents = styled.div`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   position: sticky;
   left: var(--left-safe-area);
   right: var(--right-safe-area);
+`;
+
+const Today = styled.span`
+  font-size: 0.6em;
+  font-weight: 800;
+  background: #00ff00;
+  color: black;
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 0.5em;
+
+  &:after {
+    content: "TODAY";
+  }
+`;
+
+const Hour = styled.div<{ isPast: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${({ isPast }) =>
+    isPast
+      ? css`
+          opacity: 0.4;
+        `
+      : ""}
+`;
+
+const HourCell = styled.td<{ isPast: boolean }>`
+  ${({ isPast }) =>
+    isPast
+      ? css`
+          opacity: 0.4;
+        `
+      : ""}
 `;
 
 interface DetailTableProps {
@@ -105,7 +146,10 @@ export default function DetailTable({ tableData }: DetailTableProps) {
             {dayCells.map(({ date, colSpan }, index) => (
               <DayCell colSpan={colSpan} key={index}>
                 <StickyCellContents>
-                  {formatInTimeZone(date, timeZone, "iiii, LLLL do")}
+                  <Hour isPast={isPast(endOfDay(date))}>
+                    {formatInTimeZone(date, timeZone, "iiii, LLLL do")}{" "}
+                    {isToday(date) ? <Today /> : ""}
+                  </Hour>
                 </StickyCellContents>
               </DayCell>
             ))}
@@ -113,13 +157,15 @@ export default function DetailTable({ tableData }: DetailTableProps) {
           <tr>
             <td>Time</td>
             {tableData.map(({ date }, index) => (
-              <td key={index}>{formatInTimeZone(date, timeZone, "haaaaa")}</td>
+              <HourCell isPast={isPast(date)} key={index}>
+                {formatInTimeZone(date, timeZone, "haaaaa")}
+              </HourCell>
             ))}
           </tr>
           <tr>
             <td>Wind (mph)</td>
-            {tableData.map(({ windSpeed, windDirection }, index) => (
-              <td key={index}>
+            {tableData.map(({ windSpeed, windDirection, date }, index) => (
+              <HourCell isPast={isPast(date)} key={index}>
                 {windSpeed ? (
                   <WindCell
                     windSpeed={windSpeed.value}
@@ -128,35 +174,35 @@ export default function DetailTable({ tableData }: DetailTableProps) {
                 ) : (
                   ""
                 )}
-              </td>
+              </HourCell>
             ))}
           </tr>
           <tr>
             <td>Gust</td>
-            {tableData.map(({ windGust }, index) => (
-              <td key={index}>
+            {tableData.map(({ windGust, date }, index) => (
+              <HourCell isPast={isPast(date)} key={index}>
                 {windGust ? <GustCell windGust={windGust.value} /> : ""}
-              </td>
+              </HourCell>
             ))}
           </tr>
           <tr>
             <td>°F</td>
-            {tableData.map(({ temperature }, index) => (
-              <td key={index}>
+            {tableData.map(({ temperature, date }, index) => (
+              <HourCell isPast={isPast(date)} key={index}>
                 {temperature ? (
                   <TempCell temperature={temperature.value} />
                 ) : (
                   ""
                 )}
-              </td>
+              </HourCell>
             ))}
           </tr>
           <tr>
             <td>Wx</td>
-            {tableData.map(({ weather }, index) => (
-              <td key={index}>
+            {tableData.map(({ weather, date }, index) => (
+              <HourCell isPast={isPast(date)} key={index}>
                 {weather ? <WeatherCell weather={weather.value} /> : ""}
-              </td>
+              </HourCell>
             ))}
           </tr>
         </tbody>
