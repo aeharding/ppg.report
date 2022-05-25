@@ -3588,6 +3588,11 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
+css-animation-sync@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/css-animation-sync/-/css-animation-sync-0.5.0.tgz#0acba0d70dfe84990e8a270b63988729d4b312da"
+  integrity sha512-y8dinAMaDkK4XKn9Jhotww/oF3CQCYaovpnu6aYSFb3BT7dcIcHG+Fn1xgoqb5Qjzp0a0sTaud+uGkihxRplng==
+
 css-blank-pseudo@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/css-blank-pseudo/-/css-blank-pseudo-3.0.3.tgz#36523b01c12a25d812df343a32c322d2a2324561"

@@ -41,7 +41,7 @@ export default function Header({ children }: HeaderProps) {
         <Logo />
       </StyledLink>
 
-      <aside>{children}</aside>
+      {children}
     </HeaderContainer>
   );
 }

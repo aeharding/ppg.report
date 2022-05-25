@@ -19,18 +19,29 @@ const axiosRetry = axios.create();
  */
 axiosRetryEnhancer(axiosRetry, {
   retries: 5,
-  retryCondition: (error) =>
-    !!(
+  retryCondition: (error) => {
+    const isInvalid = !!(
       error.response?.status &&
-      error.response?.status >= 500 &&
-      error.response?.status < 600
-    ),
+      error.response.status >= 500 &&
+      error.response.status < 600
+    );
+
+    // Try again (API sometimes returns stale data)
+    const isStale = !!(
+      error.response?.status === 200 &&
+      !error.response.headers["x-sw-cache"] &&
+      error.response.headers["expires"] &&
+      new Date(error.response.headers["expires"]).getTime() <= Date.now()
+    );
+
+    return isInvalid || isStale;
+  },
 });
 
 export async function getGridData(
   forecastGridDataUrl: string
 ): Promise<Weather> {
-  let { data } = await axiosRetry.get(forecastGridDataUrl);
+  const { data } = await axiosRetry.get(forecastGridDataUrl);
 
   return data;
 }
