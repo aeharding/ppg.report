@@ -243,7 +243,7 @@ function determineCeilingFromClouds(clouds: ICloud[]): ICloud | undefined {
   clouds.forEach((cloud) => {
     if (
       cloud.height != null &&
-      cloud.height > (ceiling?.height || 0) &&
+      cloud.height < (ceiling?.height || Infinity) &&
       (cloud.quantity === CloudQuantity.OVC ||
         cloud.quantity === CloudQuantity.BKN)
     )
