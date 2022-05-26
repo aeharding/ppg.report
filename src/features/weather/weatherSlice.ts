@@ -30,6 +30,9 @@ export interface Weather extends Coordinates {
     weather: Property<WeatherObservation[]>;
     windSpeed: Property;
     windGust: Property;
+    validTimes: string;
+    windDirection: Property;
+    temperature: Property;
   };
 }
 

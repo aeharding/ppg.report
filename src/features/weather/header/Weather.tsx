@@ -1,6 +1,7 @@
 import styled from "@emotion/styled/macro";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
+  faCloudDrizzle,
   faCloudHail,
   faCloudRain,
   faCloudSleet,
@@ -149,7 +150,9 @@ export default function Weather({ date, weather }: WeatherProps) {
   );
 }
 
-function findIconFor(observation: WeatherObservation): IconProp | undefined {
+export function findIconFor(
+  observation: WeatherObservation
+): IconProp | undefined {
   switch (observation.weather) {
     case "drizzle":
       return faRaindrops;
@@ -176,7 +179,13 @@ function findIconFor(observation: WeatherObservation): IconProp | undefined {
     case "rain":
     case "spray":
     case "rain_showers":
-      return faCloudRain;
+      switch (observation.coverage) {
+        case "chance":
+        case "slight_chance":
+          return faCloudDrizzle;
+        default:
+          return faCloudRain;
+      }
     case "smoke":
       return faSmoke;
     case "snow":

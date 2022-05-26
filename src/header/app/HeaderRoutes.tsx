@@ -5,7 +5,7 @@ import HomeHeader from "./HomeHeader";
 export default function HeaderRoutes() {
   return (
     <Routes>
-      <Route path="/:lat,:lon" element={<ReportHeader />} />
+      <Route path="/:lat,:lon/*" element={<ReportHeader />} />
       <Route path="/" element={<HomeHeader />} />
     </Routes>
   );

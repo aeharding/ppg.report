@@ -122,6 +122,14 @@ registerRoute(
         maxEntries: 100,
         maxAgeSeconds: 60 * 60 * 4, // 4 Hours
       }),
+      {
+        cacheWillUpdate: async ({ response }) => {
+          return newResponse(response.clone(), (headers) => {
+            headers.set("x-sw-cache", "yes");
+            return headers;
+          });
+        },
+      },
     ],
   })
 );
@@ -135,3 +143,31 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+// Hack from https://stackoverflow.com/a/56204519/1319878
+const newResponse = (
+  res: Response,
+  headerFn: (headers: Headers) => Headers
+): Promise<Response> => {
+  const cloneHeaders = () => {
+    const headers = new Headers();
+    for (const kv of res.headers.entries()) {
+      headers.append(kv[0], kv[1]);
+    }
+    return headers;
+  };
+
+  const headers = headerFn ? headerFn(cloneHeaders()) : res.headers;
+
+  return new Promise((resolve) => {
+    return res.blob().then((blob) => {
+      resolve(
+        new Response(blob, {
+          status: res.status,
+          statusText: res.statusText,
+          headers: headers,
+        })
+      );
+    });
+  });
+};
