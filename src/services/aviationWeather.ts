@@ -24,6 +24,7 @@ export async function getTAF({
       radialDistance: `35;${lon},${lat}`,
       hoursBeforeNow: 3,
       mostRecent: true,
+      fields: ["raw_text", "issue_time"].join(","),
     },
   });
   const parsed = parser.parse(response.data);
