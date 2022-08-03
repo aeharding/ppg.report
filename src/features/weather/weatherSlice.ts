@@ -8,6 +8,7 @@ import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
 import { ParseError, parseTAFAsForecast } from "metar-taf-parser";
+import { GeoJsonObject } from "geojson";
 
 interface Coordinates {
   lat: number;
@@ -150,6 +151,7 @@ export interface Feature {
       "EAS-ORG": string[];
     };
   };
+  geometry: GeoJsonObject | null;
 }
 
 type AviationWeatherResult =

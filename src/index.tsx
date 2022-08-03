@@ -1,5 +1,4 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
 import { css, Global } from "@emotion/react/macro";
 import App from "./App";
 import { Provider } from "react-redux";
@@ -8,8 +7,23 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { tippyStyles } from "./tippy";
 
 import "./setupViewport";
+import { render } from "react-dom";
 
 const globalStyles = css`
+  :root {
+    /* --rsbs-backdrop-bg: rgba(0, 0, 0, 0.1); */
+    --rsbs-handle-bg: transparent;
+    --rsbs-bg: #111317;
+    --rsbs-max-w: 500px;
+
+    --rsbs-ml: auto;
+    --rsbs-mr: auto;
+  }
+
+  [data-rsbs-header] {
+    padding: 0 !important;
+  }
+
   html {
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
@@ -72,16 +86,15 @@ const globalStyles = css`
   ${tippyStyles}
 `;
 
-const container = document.getElementById("root");
-const root = createRoot(container!);
-
-root.render(
-  <React.StrictMode>
+const rootNode = document.getElementById("root");
+render(
+  <>
     <Global styles={globalStyles} />
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>
+  </>,
+  rootNode
 );
 
 // If you want your app to work offline and load faster, you can change

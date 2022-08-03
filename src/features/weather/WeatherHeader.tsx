@@ -13,6 +13,7 @@ import Weather from "./header/Weather";
 import Alerts from "./header/Alerts";
 import { tafReport as tafReportSelector } from "./weatherSlice";
 import Wind from "./header/Wind";
+import { isAlertDangerous } from "../../helpers/weather";
 
 export enum HeaderType {
   Normal,
@@ -150,14 +151,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     ? HeaderType.Warning
     : HeaderType.Normal;
 
-  if (
-    relevantAlerts.filter(
-      (alert) =>
-        !alert.properties.headline?.includes("Watch") &&
-        (alert.properties.severity === "Extreme" ||
-          alert.properties.severity === "Severe")
-    ).length
-  ) {
+  if (relevantAlerts.filter(isAlertDangerous).length) {
     type = HeaderType.Danger;
   }
 
@@ -170,8 +164,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         <Precipitation headerType={type} weather={weather} date={date} />{" "}
         {tafReport ? <Airport taf={tafReport} date={date} /> : ""}
         <Wind headerType={type} weather={weather} date={date} />{" "}
-      </>{" "}
-      <GoIcon icon={faLongArrowRight} />
+      </>
     </Container>
   );
 }
