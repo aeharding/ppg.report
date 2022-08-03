@@ -10,6 +10,25 @@ import { tippyStyles } from "./tippy";
 import "./setupViewport";
 
 const globalStyles = css`
+  :root {
+    /* --rsbs-backdrop-bg: rgba(0, 0, 0, 0.1); */
+    --rsbs-handle-bg: hsla(0, 0%, 100%, 0.14);
+    --rsbs-bg: #111317;
+    --rsbs-max-w: 500px;
+
+    --rsbs-ml: auto;
+    --rsbs-mr: auto;
+  }
+
+  [data-rsbs-content] {
+    overflow: initial;
+    display: flex;
+  }
+
+  [data-rsbs-scroll="true"] {
+    scroll-snap-type: x mandatory;
+  }
+
   html {
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
