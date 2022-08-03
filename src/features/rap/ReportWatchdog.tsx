@@ -6,27 +6,10 @@ import { usePageVisibility } from "react-page-visibility";
 import { useEffect, useState } from "react";
 import { getRap } from "./rapSlice";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import styled from "@emotion/styled/macro";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import { getWeather } from "../weather/weatherSlice";
 import { useParams } from "react-router-dom";
 import { Rap } from "gsl-parser";
-
-const Container = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 calc(var(--left-safe-area) + 1rem) 0
-    calc(var(--right-safe-area) + 1rem);
-
-  color: var(--softText);
-  font-size: 0.8em;
-  text-align: right;
-
-  @media (max-width: 700px) {
-    text-align: center;
-  }
-`;
 
 interface ReportWatchdogProps {
   rap: Rap[];
@@ -56,25 +39,28 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
   }, [lastUpdated, dispatch, rap, lat, lon]);
 
   return (
-    <Container>
-      <span
-        css={{
-          color:
-            rapUpdated &&
-            Math.abs(differenceInMinutes(new Date(rapUpdated), new Date())) > 30
-              ? "red"
-              : undefined,
-        }}
-      >
-        Last updated{" "}
-        {rapUpdated
-          ? formatDistanceToNow(new Date(rapUpdated), {
-              addSuffix: true,
-            })
-          : "never"}
-      </span>
-      <br />
-      Automatically updates every 30 minutes
-    </Container>
+    <>
+      <div>
+        <span
+          css={{
+            color:
+              rapUpdated &&
+              Math.abs(differenceInMinutes(new Date(rapUpdated), new Date())) >
+                30
+                ? "red"
+                : undefined,
+          }}
+        >
+          Last updated{" "}
+          {rapUpdated
+            ? formatDistanceToNow(new Date(rapUpdated), {
+                addSuffix: true,
+              })
+            : "never"}
+        </span>
+        <br />
+        Automatically updates every 30 minutes
+      </div>
+    </>
   );
 }

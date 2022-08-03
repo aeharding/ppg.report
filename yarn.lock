@@ -5055,9 +5055,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, 
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
 
 gsl-parser@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-2.0.0.tgz#5c6811fc579773af8a3346fb58dfe6f837f33e7a"
-  integrity sha512-25aDrdIGGYi1dy9z0t7jSCxBbnHHaSluSTAd8jedpC1jJVd8MphZYhnsnVvxC6LY1GyoTSZQ5K+3KVzM03ee5w==
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-2.0.2.tgz#2d08eb5666c91c653a3542466f388cc2d3f63207"
+  integrity sha512-WeQY0Wc1YrWHD3gn69O1nBhjNfaruYGss/V/zC+UTRyfrL6aOMbk4sFH+At/CIJtb2lva9LVGWASJmGy5fOfhg==
 
 gzip-size@^6.0.0:
   version "6.0.0"

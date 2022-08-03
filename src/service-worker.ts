@@ -126,6 +126,34 @@ registerRoute(
   })
 );
 
+// Cache API elevation response
+registerRoute(
+  new RegExp("/api/pqs.*"),
+  new NetworkFirst({
+    cacheName: "apiElevationCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+      }),
+    ],
+  })
+);
+
+// Cache backup API elevation response
+registerRoute(
+  new RegExp("/api/googleelevation.*"),
+  new NetworkFirst({
+    cacheName: "apiGoogleElevationCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+      }),
+    ],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {

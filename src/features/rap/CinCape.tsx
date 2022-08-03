@@ -92,6 +92,7 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
           </Description>
         }
         interactive
+        placement="bottom"
       >
         <Cin cin={cin}>
           <h4>CIN</h4>
@@ -129,6 +130,7 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
           </Description>
         }
         interactive
+        placement="bottom"
       >
         <Cape cape={cape}>
           <h4>CAPE</h4>

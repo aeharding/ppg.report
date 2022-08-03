@@ -35,6 +35,9 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const timeZoneLoading = useAppSelector(
     (state) => state.weather.timeZoneLoading
   );
+  const elevationLoading = useAppSelector(
+    (state) => state.weather.elevationLoading
+  );
 
   useEffect(() => {
     if (!isLatLonTrimmed(lat, lon)) return;
@@ -60,7 +63,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     return <Navigate to={`/${getTrimmedCoordinates(+lat, +lon)}`} replace />;
   }
 
-  if (timeZoneLoading) return <Loading />;
+  if (timeZoneLoading || elevationLoading) return <Loading />;
 
   switch (rap) {
     case "pending":
@@ -73,7 +76,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
         <Error
           icon={Map}
           title="That's an unknown place."
-          description="Contiguous United States locations are only supported."
+          description="There was a problem finding weather data for your location. Try again later."
         />
       );
     default:

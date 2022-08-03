@@ -1,13 +1,15 @@
+import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import Tippy from "@tippyjs/react";
-import { Rap } from "gsl-parser";
+import { Rap, RapDatum } from "gsl-parser";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { toggle, toggleAltitude } from "../user/userSlice";
+import { AltitudeType, toggle, toggleAltitude } from "../user/userSlice";
 import Altitude from "./cells/Altitude";
 import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
+import { ELEVATION_DISCREPANCY_THRESHOLD } from "./ReportElevationDiscrepancy";
 
 const TableEl = styled.table`
   width: 100%;
@@ -17,6 +19,14 @@ const TableEl = styled.table`
   th {
     ${headerText}
   }
+`;
+
+const Row = styled.tr<{ opaque: boolean }>`
+  ${({ opaque }) =>
+    opaque &&
+    css`
+      opacity: 0.5;
+    `}
 `;
 
 const InteractTh = styled.th`
@@ -31,20 +41,44 @@ interface TableProps {
 export default function Table({ rap, rows }: TableProps) {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const elevation = useAppSelector((state) => state.weather.elevation);
 
-  const surfaceLevel = rap.data[0].height;
+  const lowestReportedAltitude = rap.data[0].height;
+
+  if (!elevation) throw new Error("Altitude not defined!");
+
+  // If there is a discrepancy of less than 120 meters, it's negligible
+  const surfaceLevel =
+    Math.abs(elevation - lowestReportedAltitude) <
+    ELEVATION_DISCREPANCY_THRESHOLD
+      ? lowestReportedAltitude
+      : elevation;
+
+  const displayedRapData = rap.data
+    .slice(0, rows)
+    .filter((datum) => !hiddenAltitude(datum));
+
+  function hiddenAltitude(datum: RapDatum): boolean {
+    return (
+      altitudeType === AltitudeType.AGL && !!(datum.height - surfaceLevel < 0)
+    );
+  }
+
+  function negativeAltitude(datum: RapDatum): boolean {
+    return !!(datum.height - surfaceLevel < 0);
+  }
 
   return (
     <TableEl>
       <thead>
         <tr>
           <Tippy
-            content={`Switch to ${toggle(altitudeType)}`}
+            content={`Switch to altitude ${toggle(altitudeType)}`}
             placement="top"
             hideOnClick={false}
           >
             <InteractTh onClick={() => dispatch(toggleAltitude())}>
-              Altitude
+              Alt. ({altitudeType})
             </InteractTh>
           </Tippy>
           <th>Temp</th>
@@ -54,8 +88,8 @@ export default function Table({ rap, rows }: TableProps) {
       </thead>
 
       <tbody>
-        {rap.data.slice(0, rows).map((datum, index) => (
-          <tr key={index}>
+        {displayedRapData.map((datum, index) => (
+          <Row key={index} opaque={negativeAltitude(datum)}>
             <td>
               <Altitude height={datum.height} surfaceLevel={surfaceLevel} />
             </td>
@@ -65,16 +99,16 @@ export default function Table({ rap, rows }: TableProps) {
             <td>
               <WindDirection
                 curr={datum.windDir}
-                prev={rap.data[index - 1]?.windDir}
+                prev={displayedRapData[index - 1]?.windDir}
               />
             </td>
             <td>
               <WindSpeed
                 curr={datum.windSpd}
-                prev={rap.data[index - 1]?.windSpd}
+                prev={displayedRapData[index - 1]?.windSpd}
               />
             </td>
-          </tr>
+          </Row>
         ))}
       </tbody>
     </TableEl>

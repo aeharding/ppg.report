@@ -6,6 +6,7 @@ import { differenceInMinutes } from "date-fns";
 import axios from "axios";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
+import * as elevationService from "../../services/elevation";
 import { ParseError, parseTAFAsForecast } from "metar-taf-parser";
 
 interface Coordinates {
@@ -173,6 +174,8 @@ interface WeatherState {
   alertsLastUpdated?: string;
   timeZone: string | undefined;
   timeZoneLoading: boolean;
+  elevation: number | undefined;
+  elevationLoading: boolean;
 }
 
 // Define the initial state using that type
@@ -185,6 +188,8 @@ const initialState: WeatherState = {
   alertsLastUpdated: undefined,
   timeZone: undefined,
   timeZoneLoading: true,
+  elevation: undefined,
+  elevationLoading: false,
 };
 
 /**
@@ -240,6 +245,21 @@ export const weatherReducer = createSlice({
 
     timeZoneFailed: (state) => {
       state.timeZoneLoading = false;
+    },
+
+    elevationLoading: (state) => {
+      if (state.elevation != null) return;
+
+      state.elevationLoading = true;
+    },
+
+    elevationReceived: (state, action: PayloadAction<number>) => {
+      state.elevation = action.payload;
+      state.elevationLoading = false;
+    },
+
+    elevationFailed: (state) => {
+      state.elevationLoading = false;
     },
 
     /**
@@ -366,6 +386,9 @@ export const {
   weatherReceived,
   timeZoneReceived,
   timeZoneFailed,
+  elevationLoading,
+  elevationReceived,
+  elevationFailed,
   weatherFailed,
   alertsLoading,
   alertsReceived,
@@ -383,6 +406,7 @@ export const getWeather =
     loadPointData();
     loadAlerts();
     loadAviationWeather();
+    loadElevation();
 
     async function loadPointData() {
       if (getState().weather.weather === "pending") return;
@@ -455,6 +479,20 @@ export const getWeather =
         }
       } catch (e: unknown) {
         dispatch(aviationWeatherFailed());
+        throw e;
+      }
+    }
+
+    async function loadElevation() {
+      if (getState().weather.elevationLoading) return;
+      dispatch(elevationLoading());
+      if (!getState().weather.elevationLoading) return;
+
+      try {
+        const elevation = await elevationService.getElevation({ lat, lon });
+        dispatch(elevationReceived(elevation));
+      } catch (e: unknown) {
+        dispatch(elevationFailed());
         throw e;
       }
     }

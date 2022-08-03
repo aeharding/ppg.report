@@ -59,7 +59,7 @@ export default function ReverseLocation({ lat, lon }: ReverseLocationProps) {
 function generatePageTitle(pageName?: string | undefined): string {
   const appName = "PPG.report";
 
-  if (!pageName) return appName;
+  if (!pageName) return `${appName} — Weather Report for Paramotor Pilots`;
 
   return `${pageName} - ${appName}`;
 }

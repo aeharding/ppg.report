@@ -8,6 +8,8 @@ import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
 import throttle from "lodash/throttle";
 import { Rap } from "gsl-parser";
+import PointInfo from "./PointInfo";
+import ReportElevationDiscrepancy from "./ReportElevationDiscrepancy";
 
 const browser = detect();
 
@@ -114,6 +116,30 @@ const StyledHour = styled(Hour)`
 
     return css;
   }}
+`;
+
+const Footer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 calc(var(--left-safe-area) + 1rem) 0
+    calc(var(--right-safe-area) + 1rem);
+
+  color: var(--softText);
+  font-size: 0.8em;
+  text-align: right;
+
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 700px) {
+    text-align: center;
+
+    > *:not(:last-child):after {
+      content: "–";
+      display: block;
+    }
+  }
 `;
 
 interface TableProps {
@@ -273,6 +299,8 @@ export default function Hours({ rap }: TableProps) {
 
   return (
     <>
+      <ReportElevationDiscrepancy />
+
       <Container ref={scrollViewRef}>
         <ScrollContainer>
           <Nav
@@ -291,7 +319,10 @@ export default function Hours({ rap }: TableProps) {
         </ScrollContainer>
       </Container>
 
-      <ReportWatchdog rap={rap} />
+      <Footer>
+        <ReportWatchdog rap={rap} />
+        <PointInfo rap={rap} />
+      </Footer>
     </>
   );
 }
