@@ -1,6 +1,12 @@
 import styled from "@emotion/styled/macro";
 import { Feature } from "../weather/weatherSlice";
-import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  GeoJSON,
+  useMap,
+  WMSTileLayer,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import Header from "./Header";
@@ -39,8 +45,11 @@ const Pre = styled.pre`
 
 const DarkMapContainer = styled(MapContainer)`
   height: 350px;
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
   pointer-events: none;
+
+  .leaflet-layer:nth-child(1) {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
 `;
 
 interface AlertProps {
@@ -64,9 +73,14 @@ function Alert({ alert, index, total }: AlertProps) {
             doubleClickZoom={false}
             trackResize={false}
             boxZoom={false}
+            maxZoom={9}
           >
             <MapController alert={alert} />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <TileLayer
+              url="https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png"
+              opacity={0.4}
+            />
           </DarkMapContainer>
         )}
 
