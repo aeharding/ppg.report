@@ -10,7 +10,7 @@ import { BottomSheet } from "react-spring-bottom-sheet";
 import { useState } from "react";
 
 import "react-spring-bottom-sheet/dist/style.css";
-import AlertsBody from "../../reportBack/Alerts";
+import AlertsBody from "../../alerts/Alerts";
 import { isTouchDevice } from "../../../helpers/device";
 
 const Container = styled.div`
@@ -105,11 +105,11 @@ export default function Alerts({ alerts }: AlertsProps) {
             </CloseContainer>
           </Header>
         }
-        snapPoints={({ maxHeight }) => [
-          maxHeight - maxHeight / 10,
-          maxHeight / 2,
+        snapPoints={({ maxHeight, minHeight }) => [
+          Math.min(maxHeight - maxHeight / 10, minHeight),
         ]}
         expandOnContentDrag
+        initialFocusRef={false}
       >
         {alerts?.length ? <AlertsBody alerts={alerts} /> : ""}
       </BottomSheet>

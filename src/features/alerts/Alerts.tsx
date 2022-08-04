@@ -1,15 +1,14 @@
 import styled from "@emotion/styled/macro";
-import { faExclamationTriangle } from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { Feature } from "../weather/weatherSlice";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
+import Header from "./Header";
 
 const AlertsContainer = styled.div`
-  scroll-snap-type: x mandatory;
-  /* overflow-x: auto; */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 interface AlertsProps {
@@ -20,34 +19,22 @@ export default function Alerts({ alerts }: AlertsProps) {
   return (
     <AlertsContainer>
       {alerts?.map((alert, index) => (
-        <Alert alert={alert} key={index} />
+        <Alert alert={alert} key={index} index={index} total={alerts.length} />
       ))}
     </AlertsContainer>
   );
 }
 
-const AlertContainer = styled.div`
-  width: 100%;
-  max-width: 500px;
-  flex-shrink: 0;
-
-  scroll-snap-align: center;
-`;
-
-const Header = styled.div`
-  position: sticky;
-  top: 0;
-  padding: 1rem;
-  background: #2e0000;
-`;
+const AlertContainer = styled.div``;
 
 const Title = styled.div`
   font-size: 0.9em;
-  /* ${outputP3ColorFromRGB([255, 255, 0])} */
 `;
 
 const Pre = styled.pre`
   white-space: pre-line;
+
+  margin: 5px;
 `;
 
 const DarkMapContainer = styled(MapContainer)`
@@ -58,14 +45,11 @@ const DarkMapContainer = styled(MapContainer)`
 
 interface AlertProps {
   alert: Feature;
+  index: number;
+  total: number;
 }
 
-function Alert({ alert }: AlertProps) {
-  const awips = alert.properties.parameters.AWIPSidentifier[0];
-
-  const product = awips.substring(0, 3);
-  const site = awips.substring(3);
-
+function Alert({ alert, index, total }: AlertProps) {
   return (
     <AlertContainer>
       <Title>
@@ -77,26 +61,31 @@ function Alert({ alert }: AlertProps) {
             attributionControl={false}
             scrollWheelZoom={false}
             dragging={false}
+            doubleClickZoom={false}
+            trackResize={false}
+            boxZoom={false}
           >
             <MapController alert={alert} />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           </DarkMapContainer>
         )}
-        <Header
-        // href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}&format=txt`}
-        // target="_blank"
-        // rel="noopener noreferrer"
-        >
-          <FontAwesomeIcon icon={faExclamationTriangle} />{" "}
-          {alert.properties.headline}
-        </Header>
-        <Pre>{alert.properties.description}</Pre>
+
+        <Header alert={alert} aside={`${index + 1} of ${total}`} />
+
+        <Pre>{formatText(alert.properties.description)}</Pre>
+        {alert.properties.instruction && (
+          <Pre>{formatText(alert.properties.instruction)}</Pre>
+        )}
       </Title>
     </AlertContainer>
   );
 }
 
-const MapController = ({ alert }: AlertProps) => {
+interface MapControllerProps {
+  alert: Feature;
+}
+
+const MapController = ({ alert }: MapControllerProps) => {
   const map = useMap();
   const geoJsonRef = useRef<any>();
 
@@ -108,3 +97,14 @@ const MapController = ({ alert }: AlertProps) => {
 
   return alert.geometry && <GeoJSON data={alert.geometry} ref={geoJsonRef} />;
 };
+
+/**
+ * Try to format out some of the random line breaks the
+ * National Weather Service includes (for fixed width displays)
+ * that doesn't work well for mobile
+ *
+ * Try to preserve all sensible line breaks
+ */
+function formatText(text: string): string {
+  return text.replace(/([^\n\\.])(\n)([^\n])/g, "$1 $3");
+}

@@ -3,7 +3,7 @@ import { isWithinInterval } from "../../helpers/date";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
-import Alerts from "./Alerts";
+import Alerts from "../alerts/Alerts";
 
 const Container = styled.div`
   position: absolute;
