@@ -1,5 +1,8 @@
 import styled from "@emotion/styled/macro";
-import { faExclamationTriangle } from "@fortawesome/pro-light-svg-icons";
+import {
+  faExclamationTriangle,
+  faTimes,
+} from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
 import { Feature } from "../weatherSlice";
@@ -8,6 +11,7 @@ import { useState } from "react";
 
 import "react-spring-bottom-sheet/dist/style.css";
 import AlertsBody from "../../reportBack/Alerts";
+import { isTouchDevice } from "../../../helpers/device";
 
 const Container = styled.div`
   margin-right: 0.5rem;
@@ -20,13 +24,27 @@ const WarningIcon = styled(FontAwesomeIcon)`
 `;
 
 const Header = styled.div`
-  margin: 0 1rem;
+  margin: 0.75rem 1rem;
 
   display: flex;
   align-items: center;
   gap: 1rem;
   font-size: 1.1rem;
   font-weight: 300;
+`;
+
+const CloseContainer = styled.div`
+  width: 2rem;
+  height: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 2.5rem;
+
+  margin-left: auto;
 `;
 
 interface AlertsProps {
@@ -43,13 +61,18 @@ export default function Alerts({ alerts }: AlertsProps) {
         return <></>;
       case 1:
         return (
-          <Tippy content={alerts[0].properties.headline} placement="bottom">
+          <Tippy
+            disabled={isTouchDevice()}
+            content={alerts[0].properties.headline}
+            placement="bottom"
+          >
             <Container onClick={() => setOpen(true)}>{icon}</Container>
           </Tippy>
         );
       default:
         return (
           <Tippy
+            disabled={isTouchDevice()}
             content={
               <ol>
                 {alerts.map((alert, index) => (
@@ -74,7 +97,19 @@ export default function Alerts({ alerts }: AlertsProps) {
       <BottomSheet
         open={open}
         onDismiss={() => setOpen(false)}
-        header={<Header>National Weather Service Alerts</Header>}
+        header={
+          <Header>
+            Weather Service Alerts
+            <CloseContainer onClick={() => setOpen(false)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </CloseContainer>
+          </Header>
+        }
+        snapPoints={({ maxHeight }) => [
+          maxHeight - maxHeight / 10,
+          maxHeight / 2,
+        ]}
+        expandOnContentDrag
       >
         {alerts?.length ? <AlertsBody alerts={alerts} /> : ""}
       </BottomSheet>

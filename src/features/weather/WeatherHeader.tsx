@@ -170,8 +170,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         <Precipitation headerType={type} weather={weather} date={date} />{" "}
         {tafReport ? <Airport taf={tafReport} date={date} /> : ""}
         <Wind headerType={type} weather={weather} date={date} />{" "}
-      </>{" "}
-      <GoIcon icon={faLongArrowRight} />
+      </>
     </Container>
   );
 }

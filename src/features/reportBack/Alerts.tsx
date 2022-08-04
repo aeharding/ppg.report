@@ -5,8 +5,12 @@ import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { Feature } from "../weather/weatherSlice";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useLayoutEffect, useRef } from "react";
-import { center, multiPolygon, polygon } from "@turf/turf";
+import { useEffect, useRef } from "react";
+
+const AlertsContainer = styled.div`
+  scroll-snap-type: x mandatory;
+  /* overflow-x: auto; */
+`;
 
 interface AlertsProps {
   alerts: Feature[];
@@ -14,11 +18,11 @@ interface AlertsProps {
 
 export default function Alerts({ alerts }: AlertsProps) {
   return (
-    <>
+    <AlertsContainer>
       {alerts?.map((alert, index) => (
         <Alert alert={alert} key={index} />
       ))}
-    </>
+    </AlertsContainer>
   );
 }
 
@@ -49,6 +53,7 @@ const Pre = styled.pre`
 const DarkMapContainer = styled(MapContainer)`
   height: 350px;
   filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  pointer-events: none;
 `;
 
 interface AlertProps {
@@ -64,16 +69,19 @@ function Alert({ alert }: AlertProps) {
   return (
     <AlertContainer>
       <Title>
-        <DarkMapContainer
-          center={[41.683, -86.25]}
-          zoom={13}
-          zoomControl={false}
-          attributionControl={false}
-          scrollWheelZoom={false}
-        >
-          <MapController alert={alert} />
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        </DarkMapContainer>
+        {alert.geometry && (
+          <DarkMapContainer
+            center={[41.683, -86.25]}
+            zoom={13}
+            zoomControl={false}
+            attributionControl={false}
+            scrollWheelZoom={false}
+            dragging={false}
+          >
+            <MapController alert={alert} />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          </DarkMapContainer>
+        )}
         <Header
         // href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}&format=txt`}
         // target="_blank"
