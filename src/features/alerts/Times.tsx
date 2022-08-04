@@ -1,5 +1,5 @@
 import styled from "@emotion/styled/macro";
-import format from "date-fns-tz/format";
+import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
 import { Feature } from "../weather/weatherSlice";
@@ -45,11 +45,13 @@ interface TimeProps {
 function Time({ children, time }: TimeProps) {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
 
+  if (!timeZone) throw new Error("timezone must be defined");
+
   return (
     <div>
       <Label>{children}</Label>
-      <TimeLabel>{format(time, "p", { timeZone })}</TimeLabel>
-      <div>{format(time, "eeee, MMMM do", { timeZone })}</div>
+      <TimeLabel>{formatInTimeZone(time, timeZone, "p")}</TimeLabel>
+      <div>{formatInTimeZone(time, timeZone, "eeee, MMMM do")}</div>
     </div>
   );
 }

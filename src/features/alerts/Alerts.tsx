@@ -1,12 +1,6 @@
 import styled from "@emotion/styled/macro";
 import { Feature } from "../weather/weatherSlice";
-import {
-  MapContainer,
-  TileLayer,
-  GeoJSON,
-  useMap,
-  WMSTileLayer,
-} from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 import Header from "./Header";
