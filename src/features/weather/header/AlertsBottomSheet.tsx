@@ -6,6 +6,19 @@ import { BottomSheet } from "react-spring-bottom-sheet";
 import AlertsBody from "../../alerts/Alerts";
 import { Feature } from "../weatherSlice";
 
+const StyledBottomSheet = styled(BottomSheet)`
+  --rsbs-handle-bg: transparent;
+  --rsbs-bg: #111317;
+  --rsbs-max-w: 500px;
+
+  --rsbs-ml: auto;
+  --rsbs-mr: auto;
+
+  [data-rsbs-header] {
+    padding: 0 !important;
+  }
+`;
+
 const Header = styled.div`
   margin: 0.75rem 1rem;
 
@@ -42,7 +55,7 @@ export default function AlertsBottomSheet({
   setOpen,
 }: AlertsBottomSheetProps) {
   return (
-    <BottomSheet
+    <StyledBottomSheet
       open={open}
       onDismiss={() => setOpen(false)}
       header={
@@ -60,6 +73,6 @@ export default function AlertsBottomSheet({
       initialFocusRef={false}
     >
       {alerts?.length ? <AlertsBody alerts={alerts} /> : ""}
-    </BottomSheet>
+    </StyledBottomSheet>
   );
 }

@@ -48,9 +48,6 @@ export async function getAlerts({
       message_type: "alert",
       status: "actual",
     },
-    headers: {
-      accept: "application/geo+json",
-    },
   });
 
   return data;

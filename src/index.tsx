@@ -10,20 +10,6 @@ import "./setupViewport";
 import { render } from "react-dom";
 
 const globalStyles = css`
-  :root {
-    /* --rsbs-backdrop-bg: rgba(0, 0, 0, 0.1); */
-    --rsbs-handle-bg: transparent;
-    --rsbs-bg: #111317;
-    --rsbs-max-w: 500px;
-
-    --rsbs-ml: auto;
-    --rsbs-mr: auto;
-  }
-
-  [data-rsbs-header] {
-    padding: 0 !important;
-  }
-
   html {
     // Color for Safari overscroll
     // Has to be a solid color... because Safari
