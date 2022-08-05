@@ -104,5 +104,8 @@
     "pwa-asset-generator": "^6.0.6",
     "source-map-explorer": "^2.5.2",
     "ts-jest": "^28.0.1"
+  },
+  "resolutions": {
+    "autoprefixer": "10.4.5"
   }
 }

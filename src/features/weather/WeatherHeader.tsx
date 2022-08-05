@@ -1,7 +1,5 @@
 import { css, keyframes } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faLongArrowRight } from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { useAppSelector } from "../../hooks";
@@ -58,11 +56,6 @@ const Container = styled.div<{ type: HeaderType }>`
         `;
     }
   }}
-`;
-
-const GoIcon = styled(FontAwesomeIcon)`
-  margin-left: auto;
-  font-size: 1.4em;
 `;
 
 export const MicroContents = styled.div`
