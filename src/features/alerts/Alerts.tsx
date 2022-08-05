@@ -80,10 +80,17 @@ function Alert({ alert, index, total }: AlertProps) {
 
         <Header alert={alert} aside={`${index + 1} of ${total}`} />
 
-        <Pre>{formatText(alert.properties.description)}</Pre>
-        {alert.properties.instruction && (
-          <Pre>{formatText(alert.properties.instruction)}</Pre>
-        )}
+        <Pre>
+          {formatText(alert.properties.description)}
+          {alert.properties.instruction
+            ? `
+
+            PRECAUTIONARY/PREPAREDNESS ACTIONS...
+
+            ${formatText(alert.properties.instruction)}`
+            : ""}
+        </Pre>
+        {alert.properties.instruction && <Pre></Pre>}
       </Title>
     </AlertContainer>
   );
