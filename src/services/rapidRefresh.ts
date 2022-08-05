@@ -7,7 +7,6 @@ import { getTrimmedCoordinates } from "../helpers/coordinates";
 const API_PATH = "/api/rap";
 
 const BASE_PARAMS = {
-  data_source: "Op40",
   latest: "latest",
   // start_year: 2021,
   // start_month_name: "Aug",
@@ -21,10 +20,15 @@ const BASE_PARAMS = {
   start: "latest",
 };
 
-export async function getRap(lat: number, lon: number): Promise<Rap[]> {
+export async function getRap(
+  lat: number,
+  lon: number,
+  data_source: "Op40" | "GFS" = "Op40"
+): Promise<Rap[]> {
   const { data: asciiReports } = await axios.get<string>(API_PATH, {
     params: {
       ...BASE_PARAMS,
+      data_source,
       airport: getTrimmedCoordinates(+lat, +lon),
     },
   });

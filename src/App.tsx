@@ -1,7 +1,7 @@
 import styled from "@emotion/styled/macro";
 import Footer from "./Footer";
 import WebHeader from "./header/web/Header";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import AppHeader from "./header/app/Header";
 import Routes from "./Routes";
 import HeaderRoutes from "./header/web/HeaderRoutes";
@@ -48,6 +48,9 @@ const Main = styled.main`
 `;
 
 function App() {
+  // Disable iOS swipe navigation when installed
+  const Router = isInstalled() ? MemoryRouter : BrowserRouter;
+
   return (
     <Router>
       <Global

@@ -44,6 +44,6 @@ function AltitudeMSL({ height }: Pick<HeightProps, "height">) {
   );
 }
 
-function metersToFeet(meters: number): number {
+export function metersToFeet(meters: number): number {
   return meters * 3.28084;
 }

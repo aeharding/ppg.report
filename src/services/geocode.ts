@@ -48,7 +48,6 @@ export async function search(q: string): Promise<{ lat: number; lon: number }> {
   let { data } = await axios.get("/api/position/search", {
     params: {
       format: "jsonv2",
-      countrycodes: "us",
       limit: 1,
       q,
     },
