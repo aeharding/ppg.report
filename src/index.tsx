@@ -10,6 +10,14 @@ import "./setupViewport";
 import { render } from "react-dom";
 
 const globalStyles = css`
+  :root {
+    // https://stackoverflow.com/a/57708812
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+  }
+
   html {
     // Color for Safari overscroll
     // Has to be a solid color... because Safari

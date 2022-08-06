@@ -8,7 +8,7 @@ import { isTouchDevice } from "../../../helpers/device";
 
 import "react-spring-bottom-sheet/dist/style.css";
 
-const AlertBottomSheet = lazy(() => import("./AlertsBottomSheet"));
+const AlertsBottomSheet = lazy(() => import("./AlertsBottomSheet"));
 
 const Container = styled.div`
   margin-right: 0.5rem;
@@ -69,7 +69,7 @@ export default function Alerts({ alerts }: AlertsProps) {
       {renderAlertIcon()}
 
       <Suspense fallback>
-        <AlertBottomSheet alerts={alerts} open={open} setOpen={setOpen} />
+        <AlertsBottomSheet alerts={alerts} open={open} setOpen={setOpen} />
       </Suspense>
     </>
   );

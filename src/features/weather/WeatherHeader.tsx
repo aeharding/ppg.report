@@ -11,7 +11,10 @@ import Weather from "./header/Weather";
 import Alerts from "./header/Alerts";
 import { tafReport as tafReportSelector } from "./weatherSlice";
 import Wind from "./header/Wind";
-import { isAlertDangerous } from "../../helpers/weather";
+import {
+  alertsBySeveritySortFn,
+  isAlertDangerous,
+} from "../../helpers/weather";
 
 export enum HeaderType {
   Normal,
@@ -116,12 +119,14 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? alerts.features.filter((alert) =>
-            isWithinInterval(new Date(date), {
-              start: new Date(alert.properties.onset),
-              end: new Date(alert.properties.ends),
-            })
-          )
+        ? alerts.features
+            .filter((alert) =>
+              isWithinInterval(new Date(date), {
+                start: new Date(alert.properties.onset),
+                end: new Date(alert.properties.ends),
+              })
+            )
+            .sort(alertsBySeveritySortFn)
         : undefined,
     [alerts, date]
   );

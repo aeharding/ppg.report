@@ -17,6 +17,10 @@ const StyledBottomSheet = styled(BottomSheet)`
   [data-rsbs-header] {
     padding: 0 !important;
   }
+
+  [data-rsbs-content] {
+    overflow: initial;
+  }
 `;
 
 const Header = styled.div`
@@ -67,7 +71,13 @@ export default function AlertsBottomSheet({
         </Header>
       }
       snapPoints={({ maxHeight, minHeight }) => [
-        Math.min(maxHeight - maxHeight / 10, minHeight),
+        Math.min(
+          maxHeight -
+            (+getComputedStyle(document.documentElement)
+              .getPropertyValue("--sat")
+              .slice(0, -2) + 8 || 0),
+          minHeight
+        ),
       ]}
       expandOnContentDrag
       initialFocusRef={false}
