@@ -1,7 +1,5 @@
 import { css, keyframes } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faLongArrowRight } from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { useAppSelector } from "../../hooks";
@@ -13,6 +11,10 @@ import Weather from "./header/Weather";
 import Alerts from "./header/Alerts";
 import { tafReport as tafReportSelector } from "./weatherSlice";
 import Wind from "./header/Wind";
+import {
+  alertsBySeveritySortFn,
+  isAlertDangerous,
+} from "../../helpers/weather";
 
 export enum HeaderType {
   Normal,
@@ -57,11 +59,6 @@ const Container = styled.div<{ type: HeaderType }>`
         `;
     }
   }}
-`;
-
-const GoIcon = styled(FontAwesomeIcon)`
-  margin-left: auto;
-  font-size: 1.4em;
 `;
 
 export const MicroContents = styled.div`
@@ -122,12 +119,14 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? alerts.features.filter((alert) =>
-            isWithinInterval(new Date(date), {
-              start: new Date(alert.properties.onset),
-              end: new Date(alert.properties.ends),
-            })
-          )
+        ? alerts.features
+            .filter((alert) =>
+              isWithinInterval(new Date(date), {
+                start: new Date(alert.properties.onset),
+                end: new Date(alert.properties.ends),
+              })
+            )
+            .sort(alertsBySeveritySortFn)
         : undefined,
     [alerts, date]
   );
@@ -150,14 +149,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     ? HeaderType.Warning
     : HeaderType.Normal;
 
-  if (
-    relevantAlerts.filter(
-      (alert) =>
-        !alert.properties.headline?.includes("Watch") &&
-        (alert.properties.severity === "Extreme" ||
-          alert.properties.severity === "Severe")
-    ).length
-  ) {
+  if (relevantAlerts.filter(isAlertDangerous).length) {
     type = HeaderType.Danger;
   }
 
@@ -170,8 +162,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         <Precipitation headerType={type} weather={weather} date={date} />{" "}
         {tafReport ? <Airport taf={tafReport} date={date} /> : ""}
         <Wind headerType={type} weather={weather} date={date} />{" "}
-      </>{" "}
-      <GoIcon icon={faLongArrowRight} />
+      </>
     </Container>
   );
 }
