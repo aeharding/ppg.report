@@ -3,6 +3,7 @@ import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { BottomSheet } from "react-spring-bottom-sheet";
+import { isTouchDevice } from "../../../helpers/device";
 import AlertsBody from "../../alerts/Alerts";
 import { Feature } from "../weatherSlice";
 
@@ -72,10 +73,12 @@ export default function AlertsBottomSheet({
       }
       snapPoints={({ maxHeight, minHeight }) => [
         Math.min(
-          maxHeight -
-            (+getComputedStyle(document.documentElement)
-              .getPropertyValue("--sat")
-              .slice(0, -2) + 8 || 0),
+          isTouchDevice()
+            ? maxHeight -
+                (+getComputedStyle(document.documentElement)
+                  .getPropertyValue("--sat")
+                  .slice(0, -2) + 8 || 0)
+            : maxHeight - maxHeight / 15,
           minHeight
         ),
       ]}
