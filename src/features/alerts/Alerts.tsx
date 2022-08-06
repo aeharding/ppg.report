@@ -42,10 +42,10 @@ const Pre = styled.pre`
 const DarkMapContainer = styled(MapContainer)`
   height: 350px;
   pointer-events: none;
+`;
 
-  .leaflet-layer:nth-child(1) {
-    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-  }
+const InvertedTileLayer = styled(TileLayer)`
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 `;
 
 interface AlertProps {
@@ -72,7 +72,7 @@ function Alert({ alert, index, total }: AlertProps) {
             maxZoom={9}
           >
             <MapController alert={alert} />
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <InvertedTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <TileLayer
               url="https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png"
               opacity={0.4}

@@ -136,6 +136,64 @@ export default function Terms() {
             <strong>Note:</strong> This is a fallback API, and will only be
             called when the National Weather Service API fails.
           </li>
+          <br />
+          <li>
+            <strong>USGS Elevation Point Query Service</strong> —{" "}
+            <a
+              href="https://nationalmap.gov/epqs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://nationalmap.gov/epqs
+            </a>
+            <br />
+            <strong>Purpose:</strong> To retrieve elevation for a location
+          </li>
+          <br />
+          <li>
+            <strong>Google Elevation API</strong> —{" "}
+            <a
+              href="https://developers.google.com/maps/documentation/elevation/start"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://developers.google.com
+            </a>
+            <br />
+            <strong>Purpose:</strong> To retrieve elevation for a location,
+            worldwide
+            <br />
+            <strong>Note:</strong> This is a fallback API, and will only be
+            called when the USGS Elevation Point Query Service either fails or
+            the queried location is outside the United States.
+          </li>
+          <br />
+          <li>
+            <strong>OpenStreetMap Tile Server</strong> —{" "}
+            <a
+              href="https://operations.osmfoundation.org/policies/tiles/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://operations.osmfoundation.org
+            </a>
+            <br />
+            <strong>Purpose:</strong> To provide maps for weather alerts
+          </li>
+          <br />
+          <li>
+            <strong>OGC Web Services</strong> —{" "}
+            <a
+              href="https://mesonet.agron.iastate.edu/ogc"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://mesonet.agron.iastate.edu
+            </a>
+            <br />
+            <strong>Purpose:</strong> To provide radar overlays on maps for
+            weather alerts
+          </li>
         </ol>
       </section>
 
