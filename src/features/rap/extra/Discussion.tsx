@@ -46,7 +46,11 @@ export default function Discussion() {
                 );
               default:
                 return (
-                  <DiscussionPartContainer header={part.header} key={index}>
+                  <DiscussionPartContainer
+                    header={part.header}
+                    key={index}
+                    issuingOffice={discussion.issuingOffice.slice(1)}
+                  >
                     {part.body}
                   </DiscussionPartContainer>
                 );
@@ -93,15 +97,24 @@ function parseDiscussion(discussion: string): (string | DiscussionPart)[] {
 interface DiscussionPartContainerProps {
   header: string;
   children: React.ReactNode;
+  issuingOffice: string;
 }
 
 function DiscussionPartContainer({
   header,
   children,
+  issuingOffice,
 }: DiscussionPartContainerProps) {
+  const lowercaseHeader = header
+    .toLowerCase()
+    .replace(issuingOffice.toLowerCase(), issuingOffice.toUpperCase())
+    .replace(/(^|\s|\/)([a-z])/g, function (m, p1, p2) {
+      return p1 + p2.toUpperCase();
+    });
+
   return (
     <div>
-      <Header>{header}</Header>
+      <Header>{lowercaseHeader}</Header>
       <StyledLinkify tagName="div" options={linkifyOptions}>
         {children}
       </StyledLinkify>
@@ -120,11 +133,24 @@ const H2 = styled.h2<{ color: string }>`
 
   color: ${({ color }) => color};
 
+  &:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      transparent,
+      ${({ color }) => color}
+    );
+  }
+
   &:after {
     content: "";
     display: block;
     margin-top: 1rem;
-    margin: 1rem -0.5rem;
+    margin: 0.5rem -0.5rem 1rem;
     height: 1px;
     background: currentColor;
     opacity: 0.2;
@@ -137,7 +163,7 @@ interface HeaderProps {
 
 function Header({ children }: HeaderProps) {
   const color = (() => {
-    switch (children) {
+    switch (children.toUpperCase()) {
       case "FIRE":
       case "FIRE WEATHER":
         return "red";
