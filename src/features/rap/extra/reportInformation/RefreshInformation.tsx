@@ -14,7 +14,8 @@ export default function RefreshInformation() {
   return (
     <>
       <DataListItem>
-        <Label
+        <Label>Data last fetched</Label>
+        <div
           css={{
             color:
               rapUpdated &&
@@ -24,9 +25,6 @@ export default function RefreshInformation() {
                 : undefined,
           }}
         >
-          Data last fetched{" "}
-        </Label>
-        <div>
           {rapUpdated
             ? formatDistanceToNow(new Date(rapUpdated), {
                 addSuffix: true,

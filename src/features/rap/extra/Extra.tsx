@@ -14,6 +14,7 @@ import BottomSheet from "../../../bottomSheet/BottomSheet";
 import ReportInformation from "./reportInformation/ReportInformation";
 import Discussion from "./Discussion";
 import { useAppSelector } from "../../../hooks";
+import Settings from "./settings/Settings";
 
 const Container = styled.div`
   padding: 0.7rem 0;
@@ -61,9 +62,16 @@ export default function Extra() {
       >
         <Discussion />
       </BottomSheet>
-      <Item icon={faCog} iconBg={[20, 20, 20]}>
-        Settings
-      </Item>
+      <BottomSheet
+        openButton={
+          <Item icon={faCog} iconBg={[20, 20, 20]}>
+            Settings
+          </Item>
+        }
+        title="Settings"
+      >
+        <Settings />
+      </BottomSheet>
     </Container>
   );
 }
