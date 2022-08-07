@@ -32,7 +32,13 @@ export interface Weather extends Coordinates {
     weather: Property<WeatherObservation[]>;
     windSpeed: Property;
     windGust: Property;
+
+    /**
+     * The NWS office, like "MKX"
+     */
+    gridId: string;
   };
+  geometry: GeoJsonObject | null;
 }
 
 export interface WeatherObservation {
@@ -167,6 +173,29 @@ type AviationWeatherResult =
   // Nothing found for the coordinates
   | "not-available";
 
+type DiscussionResult =
+  // component has requested a weather, to be batched in next bulk request
+  | "pending"
+
+  // the weather data (finished resolving)
+  | Discussion
+
+  // Request failed
+  | "failed"
+
+  // Nothing found for the coordinates
+  | "not-available";
+
+interface Discussion {
+  id: string;
+  wmoCollectiveId: string;
+  issuingOffice: string;
+  issuanceDate: string;
+  productCode: string;
+  productName: string;
+  productText: string;
+}
+
 interface WeatherState {
   weather: WeatherResult | undefined;
   weatherLastUpdated?: string;
@@ -178,6 +207,8 @@ interface WeatherState {
   timeZoneLoading: boolean;
   elevation: number | undefined;
   elevationLoading: boolean;
+  discussion: DiscussionResult | undefined;
+  discussionLastUpdated?: string;
 }
 
 // Define the initial state using that type
@@ -192,6 +223,7 @@ const initialState: WeatherState = {
   timeZoneLoading: true,
   elevation: undefined,
   elevationLoading: false,
+  discussion: undefined,
 };
 
 /**
@@ -379,6 +411,63 @@ export const weatherReducer = createSlice({
       }
     },
 
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    discussionLoading: (state) => {
+      switch (state.discussion) {
+        case undefined:
+          state.discussion = "pending";
+          return;
+        case "pending":
+        case "not-available":
+          return;
+        case "failed":
+        default: {
+          if (
+            !state.discussionLastUpdated ||
+            Math.abs(
+              differenceInMinutes(
+                new Date(state.discussionLastUpdated),
+                new Date()
+              )
+            ) > 30
+          ) {
+            state.discussion = "pending";
+          }
+        }
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the Rap
+     */
+    discussionReceived: (state, action: PayloadAction<Discussion>) => {
+      if (state.discussion === "pending") {
+        state.discussion = action.payload;
+        state.discussionLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    discussionFailed: (state) => {
+      if (state.discussion === "pending") {
+        state.discussion = "failed";
+        state.discussionLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    discussionNotAvailable: (state) => {
+      if (state.discussion === "pending") {
+        state.discussion = "not-available";
+        state.discussionLastUpdated = new Date().toISOString();
+      }
+    },
     clear: () => initialState,
   },
 });
@@ -400,15 +489,25 @@ export const {
   aviationWeatherFailed,
   aviationWeatherNotAvailable,
   clear,
+  discussionLoading,
+  discussionReceived,
+  discussionFailed,
+  discussionNotAvailable,
 } = weatherReducer.actions;
 
 export const getWeather =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    loadPointData();
     loadAlerts();
-    loadAviationWeather();
     loadElevation();
+    loadAviationWeather();
+
+    if (getState().weather.discussion === "pending") return;
+    dispatch(discussionLoading());
+    if (getState().weather.discussion !== "pending") return;
+
+    const gridId = await loadPointData();
+    if (gridId) loadDiscussion(gridId);
 
     async function loadPointData() {
       if (getState().weather.weather === "pending") return;
@@ -446,6 +545,8 @@ export const getWeather =
           const data = await weather.getGridData(forecastGridDataUrl);
 
           dispatch(weatherReceived(data));
+
+          return data.properties.gridId;
         }
       } catch (e) {
         dispatch(weatherFailed());
@@ -495,6 +596,20 @@ export const getWeather =
         dispatch(elevationReceived(elevation));
       } catch (e: unknown) {
         dispatch(elevationFailed());
+        throw e;
+      }
+    }
+
+    async function loadDiscussion(gridId: string) {
+      try {
+        const discussion = await weather.getDiscussion(gridId);
+        if (!discussion) {
+          dispatch(discussionNotAvailable());
+        } else {
+          dispatch(discussionReceived(discussion));
+        }
+      } catch (e: unknown) {
+        dispatch(discussionFailed());
         throw e;
       }
     }

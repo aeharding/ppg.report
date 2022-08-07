@@ -1,11 +1,15 @@
 import styled from "@emotion/styled/macro";
 import { Feature } from "../weather/weatherSlice";
-import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
+import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import { useEffect, useRef } from "react";
 import Header from "./Header";
 
 // eslint-disable-next-line
 import "leaflet/dist/leaflet.css";
+import BaseLayer from "../../map/BaseLayer";
+import RadarLayer from "../../map/RadarLayer";
+import Linkify from "linkify-react";
+import { linkifyOptions } from "../rap/extra/Discussion";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -33,19 +37,15 @@ const Title = styled.div`
   font-size: 0.9em;
 `;
 
-const Pre = styled.pre`
+const StyledLinkify = styled(Linkify)`
   white-space: pre-line;
 
-  margin: 5px;
+  margin: 0.5rem;
 `;
 
-const DarkMapContainer = styled(MapContainer)`
+const StyledMapContainer = styled(MapContainer)`
   height: 350px;
   pointer-events: none;
-`;
-
-const InvertedTileLayer = styled(TileLayer)`
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 `;
 
 interface AlertProps {
@@ -59,7 +59,7 @@ function Alert({ alert, index, total }: AlertProps) {
     <AlertContainer>
       <Title>
         {alert.geometry && (
-          <DarkMapContainer
+          <StyledMapContainer
             center={[41.683, -86.25]}
             zoom={13}
             zoomControl={false}
@@ -72,27 +72,23 @@ function Alert({ alert, index, total }: AlertProps) {
             maxZoom={9}
           >
             <MapController alert={alert} />
-            <InvertedTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <TileLayer
-              url="https://mesonet.agron.iastate.edu/cache/tile.py/1.0.0/nexrad-n0q-900913/{z}/{x}/{y}.png"
-              opacity={0.4}
-            />
-          </DarkMapContainer>
+            <BaseLayer />
+            <RadarLayer />
+          </StyledMapContainer>
         )}
 
         <Header alert={alert} aside={`${index + 1} of ${total}`} />
 
-        <Pre>
-          {formatText(alert.properties.description)}
+        <StyledLinkify tagName="div" options={linkifyOptions}>
+          {undoFixedWidthText(alert.properties.description)}
           {alert.properties.instruction
             ? `
 
             PRECAUTIONARY/PREPAREDNESS ACTIONS...
 
-            ${formatText(alert.properties.instruction)}`
+            ${undoFixedWidthText(alert.properties.instruction)}`
             : ""}
-        </Pre>
-        {alert.properties.instruction && <Pre></Pre>}
+        </StyledLinkify>
       </Title>
     </AlertContainer>
   );
@@ -122,6 +118,6 @@ const MapController = ({ alert }: MapControllerProps) => {
  *
  * Try to preserve all sensible line breaks
  */
-function formatText(text: string): string {
+export function undoFixedWidthText(text: string): string {
   return text.replace(/([^\n\\.])(\n)([^\n])/g, "$1 $3");
 }

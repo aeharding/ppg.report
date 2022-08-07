@@ -20,45 +20,55 @@ const Container = styled.div`
 const WarningMessage = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
-  margin: 1rem;
-  gap: 1rem;
+  padding: 1em;
+  margin: 1em;
+  gap: 1em;
   position: relative;
 
   font-size: 0.9em;
 
   @media (max-width: 500px) {
-    flex-direction: column;
+    display: block;
     text-align: justify;
+
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+
+    font-size: 0.75em;
   }
 
   ${outputP3ColorFromRGB([0, 200, 200])}
   background: #010f26a0;
   border-color: #000064;
   border: 1px solid;
-  border-radius: 1rem;
+  border-radius: 1em;
 `;
 
 const MountainIcon = styled(FontAwesomeIcon)`
-  font-size: 1.5rem;
+  font-size: 1.5em;
+
+  @media (max-width: 500px) {
+    display: none;
+  }
 `;
 
 const CloseButton = styled.button`
   background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  width: 1rem;
-  height: 1rem;
+  padding: 1em;
+  width: 1em;
+  height: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 1rem;
+  border-radius: 1em;
   border: 0;
   color: inherit;
 
   @media (max-width: 500px) {
-    position: absolute;
-    top: 0.8rem;
-    right: 1rem;
+    float: right;
+    margin: 0 0 0 0.5em;
   }
 
   cursor: pointer;
@@ -93,18 +103,16 @@ export default function ReportElevationDiscrepancy() {
     <Container>
       <WarningMessage>
         <MountainIcon icon={faMountains} />
-        <div>
-          <strong>Notice</strong> The elevation of your location (
-          {Math.round(metersToFeet(elevation)).toLocaleString()}
-          ft) is significantly {diffType} than the forecast gridpoint (
-          {Math.round(metersToFeet(rapHeight)).toLocaleString()}ft). This often
-          occurs due to nearby hills/mountains. Please be aware that weather
-          data may be innacurate due to local atmospheric conditions that differ
-          from those in the surrounding areas.
-        </div>
         <CloseButton onClick={close}>
           <FontAwesomeIcon icon={faTimes} />
         </CloseButton>
+        <strong>Notice</strong> The elevation of your location (
+        {Math.round(metersToFeet(elevation)).toLocaleString()}
+        ft) is significantly {diffType} than the forecast gridpoint (
+        {Math.round(metersToFeet(rapHeight)).toLocaleString()}ft). This often
+        occurs due to nearby hills/mountains. Please be aware that weather data
+        may be innacurate due to local atmospheric conditions that differ from
+        those in the surrounding areas.
       </WarningMessage>
     </Container>
   );

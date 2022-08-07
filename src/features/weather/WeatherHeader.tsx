@@ -8,7 +8,7 @@ import { isWithinInterval } from "../../helpers/date";
 import Airport from "./header/Airport";
 import SkyCover from "./header/SkyCover";
 import Weather from "./header/Weather";
-import Alerts from "./header/Alerts";
+import AlertsIcon from "./header/AlertsIcon";
 import { tafReport as tafReportSelector } from "./weatherSlice";
 import Wind from "./header/Wind";
 import {
@@ -156,7 +156,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   return (
     <Container type={type}>
       <>
-        <Alerts alerts={relevantAlerts} />
+        <AlertsIcon alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
         <Precipitation headerType={type} weather={weather} date={date} />{" "}

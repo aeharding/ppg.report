@@ -73,6 +73,18 @@ export async function getPointResources({
   };
 }
 
+export async function getDiscussion(gridId: string) {
+  let { data: discussionsData } = await axios.get(
+    `/api/weather/products/types/AFD/locations/${gridId}`
+  );
+
+  const discussionUrl = discussionsData["@graph"][0]["@id"];
+
+  let { data } = await axios.get(discussionUrl);
+
+  return data;
+}
+
 /**
  * @param url NOAA url, like https://api.weather.gov/points
  * @returns Relative url, like /api/weather/points
