@@ -27,16 +27,16 @@ const WarningMessage = styled.div`
 
   font-size: 0.9em;
 
-  @media (max-width: 500px) {
+  @media (max-width: 660px) {
     display: block;
     text-align: justify;
 
-    margin: 0;
+    margin: 0 0 1rem;
     border-radius: 0;
     border-left: none;
     border-right: none;
 
-    font-size: 0.75em;
+    font-size: 0.8em;
   }
 
   ${outputP3ColorFromRGB([0, 200, 200])}
@@ -49,7 +49,7 @@ const WarningMessage = styled.div`
 const MountainIcon = styled(FontAwesomeIcon)`
   font-size: 1.5em;
 
-  @media (max-width: 500px) {
+  @media (max-width: 660px) {
     display: none;
   }
 `;
@@ -59,6 +59,8 @@ const CloseButton = styled.button`
   padding: 1em;
   width: 1em;
   height: 1em;
+  order: 1;
+  align-self: flex-start;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +68,7 @@ const CloseButton = styled.button`
   border: 0;
   color: inherit;
 
-  @media (max-width: 500px) {
+  @media (max-width: 660px) {
     float: right;
     margin: 0 0 0 0.5em;
   }
@@ -105,13 +107,20 @@ export default function ReportElevationDiscrepancy() {
         <CloseButton onClick={close}>
           <FontAwesomeIcon icon={faTimes} />
         </CloseButton>
-        <strong>Notice</strong> The elevation of your location (
-        {Math.round(metersToFeet(elevation)).toLocaleString()}
-        ft) is significantly {diffType} than the forecast gridpoint (
-        {Math.round(metersToFeet(rapHeight)).toLocaleString()}ft). This often
-        occurs due to nearby hills/mountains. Please be aware that weather data
-        may be innacurate due to local atmospheric conditions that differ from
-        those in the surrounding areas.
+        <div>
+          <strong>Notice</strong> The elevation of your location (
+          <strong>
+            {Math.round(metersToFeet(elevation)).toLocaleString()}
+            ft
+          </strong>
+          ) is significantly {diffType} than the forecast gridpoint (
+          <strong>
+            {Math.round(metersToFeet(rapHeight)).toLocaleString()}ft
+          </strong>
+          ). This often occurs due to nearby hills/mountains. Please be aware
+          that weather data may be innacurate due to local atmospheric
+          conditions that differ from those in the surrounding areas.
+        </div>
       </WarningMessage>
     </Container>
   );

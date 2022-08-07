@@ -9,6 +9,7 @@ import {
 import { parse, toSeconds } from "iso8601-duration";
 import axiosRetryEnhancer from "axios-retry";
 import { isWithinInterval } from "../helpers/date";
+import { groupBy, uniqBy } from "lodash";
 
 const axiosRetry = axios.create();
 
@@ -42,13 +43,29 @@ export async function getAlerts({
   lat: number;
   lon: number;
 }): Promise<Alerts> {
-  const { data } = await axios.get(`/api/weather/alerts/active`, {
+  const { data } = await axios.get<Alerts>(`/api/weather/alerts/active`, {
     params: {
       point: `${lat},${lon}`,
       message_type: "alert",
       status: "actual",
     },
   });
+
+  // For some reason the API doesn't dedupe alerts sometimes
+  data.features = Object.values(
+    groupBy(
+      data.features,
+      (feature) => feature.properties.parameters.AWIPSidentifier[0]
+    )
+  )
+    .map((group) =>
+      group.sort(
+        (a, b) =>
+          new Date(b.properties.sent).getTime() -
+          new Date(a.properties.sent).getTime()
+      )
+    )
+    .map((group) => group[0]);
 
   return data;
 }

@@ -40,7 +40,8 @@ const Title = styled.div`
 const StyledLinkify = styled(Linkify)`
   white-space: pre-line;
 
-  margin: 0.5rem;
+  margin: 1rem;
+  font-size: 1rem;
 `;
 
 const StyledMapContainer = styled(MapContainer)`

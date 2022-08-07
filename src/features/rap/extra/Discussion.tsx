@@ -1,5 +1,6 @@
 import styled from "@emotion/styled/macro";
 import Linkify from "linkify-react";
+import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { useAppSelector } from "../../../hooks";
 import Loading from "../../../shared/Loading";
 import { undoFixedWidthText } from "../../alerts/Alerts";
@@ -14,7 +15,7 @@ export const linkifyOptions = {
 const StyledLinkify = styled(Linkify)`
   font-family: inherit;
   white-space: pre-line;
-  margin: 0 0.5rem;
+  margin: 0 1rem;
   line-height: 1.5;
 `;
 
@@ -41,7 +42,7 @@ export default function Discussion() {
                     options={linkifyOptions}
                     tagName="div"
                   >
-                    {part}
+                    {part.trim()}
                   </StyledLinkify>
                 );
               default:
@@ -122,16 +123,17 @@ function DiscussionPartContainer({
   );
 }
 
-const H2 = styled.h2<{ color: string }>`
+const H2 = styled.h2<{ textColor: [number, number, number] }>`
   position: sticky;
   top: 0;
   background: #111317;
   font-size: 1.1em;
-  font-weight: 300;
+  font-weight: 800;
   margin: 0;
-  padding: 1rem 0.5rem 0;
+  padding: 1rem 1rem 0;
+  margin-top: 0.5rem;
 
-  color: ${({ color }) => color};
+  ${({ textColor }) => outputP3ColorFromRGB(textColor)};
 
   &:before {
     content: "";
@@ -142,7 +144,8 @@ const H2 = styled.h2<{ color: string }>`
       180deg,
       transparent,
       transparent,
-      ${({ color }) => color}
+      ${({ textColor }) =>
+        `rgb(${textColor[0]},${textColor[1]},${textColor[2]})`}
     );
   }
 
@@ -150,7 +153,7 @@ const H2 = styled.h2<{ color: string }>`
     content: "";
     display: block;
     margin-top: 1rem;
-    margin: 0.5rem -0.5rem 1rem;
+    margin: 0.5rem -1rem 1rem;
     height: 1px;
     background: currentColor;
     opacity: 0.2;
@@ -166,19 +169,26 @@ function Header({ children }: HeaderProps) {
     switch (children.toUpperCase()) {
       case "FIRE":
       case "FIRE WEATHER":
-        return "red";
+        return [255, 0, 0];
       case "SHORT TERM":
-        return "yellow";
+        return [255, 255, 0];
       case "LONG TERM":
-        return "orange";
+        return [255, 215, 0];
       case "AVIATION":
-        return "#00bbff";
+        return [0, 187, 255];
       case "MARINE":
-        return "#0800ed";
+        return [0, 0, 255];
+      case "UPDATE":
+      case "OUTLOOK":
+      case "OVERVIEW":
+      case "SYNOPSIS":
+        return [0, 255, 0];
+      case "DISCUSSION":
+        return [255, 100, 300];
 
       default:
-        return "white";
+        return [255, 255, 255];
     }
   })();
-  return <H2 color={color}>{children}</H2>;
+  return <H2 textColor={color as [number, number, number]}>{children}</H2>;
 }
