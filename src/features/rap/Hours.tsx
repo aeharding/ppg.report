@@ -317,7 +317,6 @@ export default function Hours({ rap }: TableProps) {
         <Extra />
 
         <ReportWatchdog rap={rap} />
-        {/* <PointInfo rap={rap} /> */}
       </Footer>
     </>
   );

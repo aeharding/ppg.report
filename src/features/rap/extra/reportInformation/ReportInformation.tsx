@@ -42,11 +42,6 @@ const StyledDataList = styled(DataList)`
   margin: 2rem 1rem 1rem;
 `;
 
-// const GreenCircle = styled(Circle)`
-//   ${outputP3ColorFromRGB([0, 255, 0], "fill")}
-//   ${outputP3ColorFromRGB([0, 255, 0], "stroke")}
-// `;
-
 export default function ReportInformation() {
   return (
     <Container>
