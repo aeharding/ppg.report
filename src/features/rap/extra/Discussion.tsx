@@ -135,6 +135,12 @@ const H2 = styled.h2<{ textColor: [number, number, number] }>`
 
   ${({ textColor }) => outputP3ColorFromRGB(textColor)};
 
+  aside {
+    display: inline;
+    font-size: 0.75em;
+    font-weight: normal;
+  }
+
   &:before {
     content: "";
     position: absolute;
@@ -164,13 +170,17 @@ interface HeaderProps {
   children: string;
 }
 
+// Matches "Near Term /Through Tonight/"
+const asideRegex = /\/.*\/$/;
+
 function Header({ children }: HeaderProps) {
   const color = (() => {
-    switch (children.toUpperCase()) {
+    switch (children.toUpperCase().trim().replace(asideRegex, "").trim()) {
       case "FIRE":
       case "FIRE WEATHER":
         return [255, 0, 0];
       case "SHORT TERM":
+      case "NEAR TERM":
         return [255, 255, 0];
       case "LONG TERM":
         return [255, 215, 0];
@@ -190,5 +200,16 @@ function Header({ children }: HeaderProps) {
         return [255, 255, 255];
     }
   })();
-  return <H2 textColor={color as [number, number, number]}>{children}</H2>;
+
+  const mainText = children.trim().replace(asideRegex, "").trim();
+  const asideText = children
+    .trim()
+    .match(asideRegex)?.[0]
+    ?.trim()
+    ?.slice(1, -1);
+  return (
+    <H2 textColor={color as [number, number, number]}>
+      {mainText} {asideText && <aside>({asideText})</aside>}
+    </H2>
+  );
 }

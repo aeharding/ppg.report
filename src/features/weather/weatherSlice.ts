@@ -123,6 +123,7 @@ export interface Alerts {
 
 export interface Feature {
   properties: {
+    id: string;
     sent: string;
     effective: string;
     onset: string;
@@ -155,6 +156,7 @@ export interface Feature {
       eventMotionDescription: string[];
       BLOCKCHANNEL: string[];
       "EAS-ORG": string[];
+      expiredReferences: string[];
     };
   };
   geometry: GeoJsonObject | null;

@@ -9,7 +9,6 @@ import {
 import { parse, toSeconds } from "iso8601-duration";
 import axiosRetryEnhancer from "axios-retry";
 import { isWithinInterval } from "../helpers/date";
-import groupBy from "lodash/groupBy";
 
 const axiosRetry = axios.create();
 
@@ -51,21 +50,15 @@ export async function getAlerts({
     },
   });
 
-  // For some reason the API doesn't dedupe alerts sometimes
-  data.features = Object.values(
-    groupBy(
-      data.features,
-      (feature) => feature.properties.parameters.AWIPSidentifier[0]
-    )
-  )
-    .map((group) =>
-      group.sort(
-        (a, b) =>
-          new Date(b.properties.sent).getTime() -
-          new Date(a.properties.sent).getTime()
+  // Hack for https://github.com/weather-gov/api/discussions/573
+  data.features = data.features.filter(
+    (feauture) =>
+      !data.features.find((potentialNewerFeature) =>
+        potentialNewerFeature.properties.parameters.expiredReferences?.find(
+          (reference) => reference.includes(feauture.properties.id)
+        )
       )
-    )
-    .map((group) => group[0]);
+  );
 
   return data;
 }
