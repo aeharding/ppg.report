@@ -9,7 +9,7 @@ import {
 import { parse, toSeconds } from "iso8601-duration";
 import axiosRetryEnhancer from "axios-retry";
 import { isWithinInterval } from "../helpers/date";
-import { groupBy, uniqBy } from "lodash";
+import groupBy from "lodash/groupBy";
 
 const axiosRetry = axios.create();
 

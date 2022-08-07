@@ -23,7 +23,7 @@ export default function Settings() {
         value={altitudeType}
         onChange={(value) => dispatch(updateAltitude(value))}
       />
-      <p>More settings coming soon!</p>
+      <p>More settings coming soon! 🚀</p>
       {/* <Radio label="Wind Speed" options={["mph", "km/h", "kts", "m/s"]} />
       <Radio label="Temperature" options={["°F", "°C"]} />
       <Radio label="Elevation" options={["ft", "m"]} /> */}

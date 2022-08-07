@@ -5,6 +5,7 @@ import differenceInMinutes from "date-fns/differenceInMinutes";
 import { useAppSelector } from "../../../../hooks";
 import styled from "@emotion/styled/macro";
 import { DataListItem } from "../../../../DataList";
+import capitalize from "lodash/capitalize";
 
 const Label = styled.div``;
 
@@ -26,10 +27,12 @@ export default function RefreshInformation() {
           }}
         >
           {rapUpdated
-            ? formatDistanceToNow(new Date(rapUpdated), {
-                addSuffix: true,
-              })
-            : "never"}
+            ? capitalize(
+                formatDistanceToNow(new Date(rapUpdated), {
+                  addSuffix: true,
+                })
+              )
+            : "Never"}
         </div>
       </DataListItem>
       <DataListItem>
