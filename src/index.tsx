@@ -54,6 +54,10 @@ const globalStyles = css`
     }
   }
 
+  *:focus {
+    outline: none;
+  }
+
   *,
   *:before,
   *:after {

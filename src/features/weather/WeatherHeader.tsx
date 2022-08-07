@@ -8,13 +8,14 @@ import { isWithinInterval } from "../../helpers/date";
 import Airport from "./header/Airport";
 import SkyCover from "./header/SkyCover";
 import Weather from "./header/Weather";
-import Alerts from "./header/Alerts";
+import AlertsIcon from "./header/AlertsIcon";
 import { tafReport as tafReportSelector } from "./weatherSlice";
 import Wind from "./header/Wind";
 import {
   alertsBySeveritySortFn,
   isAlertDangerous,
 } from "../../helpers/weather";
+import { startOfHour } from "date-fns";
 
 export enum HeaderType {
   Normal,
@@ -122,8 +123,10 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         ? alerts.features
             .filter((alert) =>
               isWithinInterval(new Date(date), {
-                start: new Date(alert.properties.onset),
-                end: new Date(alert.properties.ends),
+                start: startOfHour(new Date(alert.properties.onset)),
+                end: new Date(
+                  alert.properties.ends || alert.properties.expires
+                ),
               })
             )
             .sort(alertsBySeveritySortFn)
@@ -156,7 +159,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   return (
     <Container type={type}>
       <>
-        <Alerts alerts={relevantAlerts} />
+        <AlertsIcon alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
         <Precipitation headerType={type} weather={weather} date={date} />{" "}

@@ -42,14 +42,25 @@ export const userReducer = createSlice({
     toggleAltitude(state) {
       state.altitude = toggle(state.altitude);
     },
+    updateAltitude(state, action: PayloadAction<AltitudeType>) {
+      state.altitude = action.payload;
+    },
   },
 });
 
-export const { updateLocations } = userReducer.actions;
+export const { updateLocations, updateAltitude } = userReducer.actions;
 
 export const toggleAltitude =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(userReducer.actions.toggleAltitude());
+
+    storage.setAltitude(getState().user.altitude);
+  };
+
+export const setAltitude =
+  (altitude: AltitudeType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(updateAltitude(altitude));
 
     storage.setAltitude(getState().user.altitude);
   };

@@ -42,13 +42,23 @@ export async function getAlerts({
   lat: number;
   lon: number;
 }): Promise<Alerts> {
-  const { data } = await axios.get(`/api/weather/alerts/active`, {
+  const { data } = await axios.get<Alerts>(`/api/weather/alerts/active`, {
     params: {
       point: `${lat},${lon}`,
       message_type: "alert",
       status: "actual",
     },
   });
+
+  // Hack for https://github.com/weather-gov/api/discussions/573
+  data.features = data.features.filter(
+    (feauture) =>
+      !data.features.find((potentialNewerFeature) =>
+        potentialNewerFeature.properties.parameters.expiredReferences?.find(
+          (reference) => reference.includes(feauture.properties.id)
+        )
+      )
+  );
 
   return data;
 }
@@ -71,6 +81,18 @@ export async function getPointResources({
     forecastGridDataUrl: normalize(data.properties.forecastGridData),
     timeZone: data.properties.timeZone,
   };
+}
+
+export async function getDiscussion(gridId: string) {
+  let { data: discussionsData } = await axios.get(
+    `/api/weather/products/types/AFD/locations/${gridId}`
+  );
+
+  const discussionUrl = discussionsData["@graph"][0]["@id"];
+
+  let { data } = await axios.get(discussionUrl);
+
+  return data;
 }
 
 /**
