@@ -4,12 +4,11 @@ import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import { useEffect, useRef } from "react";
 import Header from "./Header";
 
-// eslint-disable-next-line
-import "leaflet/dist/leaflet.css";
 import BaseLayer from "../../map/BaseLayer";
 import RadarLayer from "../../map/RadarLayer";
 import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
+import { undoFixedWidthText } from "../../helpers/weather";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -111,14 +110,3 @@ const MapController = ({ alert }: MapControllerProps) => {
 
   return alert.geometry && <GeoJSON data={alert.geometry} ref={geoJsonRef} />;
 };
-
-/**
- * Try to format out some of the random line breaks the
- * National Weather Service includes (for fixed width displays)
- * that doesn't work well for mobile
- *
- * Try to preserve all sensible line breaks
- */
-export function undoFixedWidthText(text: string): string {
-  return text.replace(/([^\n\\.])(\n)([^\n])/g, "$1 $3");
-}

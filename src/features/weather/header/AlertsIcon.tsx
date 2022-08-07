@@ -4,8 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
 import { Feature } from "../weatherSlice";
 import { isTouchDevice } from "../../../helpers/device";
-import Alerts from "../../alerts/Alerts";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
+import { lazy, Suspense } from "react";
+import Loading from "../../../shared/Loading";
+
+const Alerts = lazy(() => import("../../alerts/Alerts"));
 
 const Container = styled.div`
   margin-right: 0.5rem;
@@ -63,7 +66,9 @@ export default function AlertsIcon({ alerts }: AlertsProps) {
 
   return (
     <BottomSheet openButton={renderAlertIcon()} title="Active Weather Alerts">
-      {alerts?.length ? <Alerts alerts={alerts} /> : ""}
+      <Suspense fallback={<Loading />}>
+        {alerts?.length ? <Alerts alerts={alerts} /> : ""}
+      </Suspense>
     </BottomSheet>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import styled from "@emotion/styled/macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,10 +11,14 @@ import { css } from "@emotion/react/macro";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { faSearch } from "@fortawesome/pro-regular-svg-icons";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
-import ReportInformation from "./reportInformation/ReportInformation";
 import Discussion from "./Discussion";
 import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
+import Loading from "../../../shared/Loading";
+
+const ReportInformation = lazy(
+  () => import("./reportInformation/ReportInformation")
+);
 
 const Container = styled.div`
   padding: 0.7rem 0;
@@ -49,7 +53,9 @@ export default function Extra() {
         }
         title="Report Metadata"
       >
-        <ReportInformation />
+        <Suspense fallback={<Loading />}>
+          <ReportInformation />
+        </Suspense>
       </BottomSheet>
 
       <BottomSheet

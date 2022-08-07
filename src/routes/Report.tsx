@@ -38,6 +38,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const elevationLoading = useAppSelector(
     (state) => state.weather.elevationLoading
   );
+  const elevation = useAppSelector((state) => state.weather.elevation);
 
   useEffect(() => {
     if (!isLatLonTrimmed(lat, lon)) return;
@@ -80,7 +81,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
         />
       );
     default:
-      if (!timeZone) return connectionError;
+      if (!timeZone || elevation == null) return connectionError;
       return <Hours rap={rap} />;
   }
 }

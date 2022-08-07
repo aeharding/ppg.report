@@ -1,9 +1,9 @@
 import styled from "@emotion/styled/macro";
 import Linkify from "linkify-react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
+import { undoFixedWidthText } from "../../../helpers/weather";
 import { useAppSelector } from "../../../hooks";
 import Loading from "../../../shared/Loading";
-import { undoFixedWidthText } from "../../alerts/Alerts";
 
 export const linkifyOptions = {
   nl2br: true,
