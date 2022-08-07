@@ -88,7 +88,7 @@ export async function getDiscussion(gridId: string) {
     `/api/weather/products/types/AFD/locations/${gridId}`
   );
 
-  const discussionUrl = discussionsData["@graph"][0]["@id"];
+  const discussionUrl = normalize(discussionsData["@graph"][0]["@id"]);
 
   let { data } = await axios.get(discussionUrl);
 
