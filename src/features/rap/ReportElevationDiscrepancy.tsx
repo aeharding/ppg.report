@@ -84,7 +84,6 @@ export default function ReportElevationDiscrepancy() {
   function close() {
     localStorage.setItem(storageKey, "1");
     setClosed(true);
-    console.log("close");
   }
 
   if (closed) return <></>;

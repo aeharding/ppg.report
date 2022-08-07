@@ -15,6 +15,7 @@ import {
   alertsBySeveritySortFn,
   isAlertDangerous,
 } from "../../helpers/weather";
+import { startOfHour } from "date-fns";
 
 export enum HeaderType {
   Normal,
@@ -122,8 +123,10 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         ? alerts.features
             .filter((alert) =>
               isWithinInterval(new Date(date), {
-                start: new Date(alert.properties.onset),
-                end: new Date(alert.properties.ends),
+                start: startOfHour(new Date(alert.properties.onset)),
+                end: new Date(
+                  alert.properties.ends || alert.properties.expires
+                ),
               })
             )
             .sort(alertsBySeveritySortFn)

@@ -21,7 +21,9 @@ export default function Times({ alert }: TimesProps) {
   return (
     <Container>
       <Time time={new Date(alert.properties.onset)}>Start</Time>
-      <Time time={new Date(alert.properties.ends)}>End</Time>
+      <Time time={new Date(alert.properties.ends || alert.properties.expires)}>
+        End
+      </Time>
     </Container>
   );
 }
