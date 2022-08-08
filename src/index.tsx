@@ -64,6 +64,10 @@ const globalStyles = css`
     z-index: 100;
   }
 
+  .leaflet-container {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
   *:focus {
     outline: none;
   }
