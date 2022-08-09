@@ -1,6 +1,6 @@
 import styled from "@emotion/styled/macro";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import { AltitudeType, updateAltitude } from "../../../user/userSlice";
+import { AltitudeType, setAltitude } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
 const Container = styled.div`
@@ -21,7 +21,7 @@ export default function Settings() {
         label="Altitude"
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
-        onChange={(value) => dispatch(updateAltitude(value))}
+        onChange={(value) => dispatch(setAltitude(value))}
       />
       <p>More settings coming soon! 🚀</p>
       {/* <Radio label="Wind Speed" options={["mph", "km/h", "kts", "m/s"]} />
