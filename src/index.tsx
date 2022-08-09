@@ -54,16 +54,6 @@ const globalStyles = css`
     }
   }
 
-  // Hack for https://github.com/stipsan/react-spring-bottom-sheet/issues/180#issuecomment-1144537142
-  reach-portal {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-  }
-
   .leaflet-container {
     background: rgba(255, 255, 255, 0.05) !important;
   }
