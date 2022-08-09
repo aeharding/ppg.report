@@ -15,6 +15,7 @@ import Discussion from "./Discussion";
 import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
 import Loading from "../../../shared/Loading";
+import InstallPrompt from "../../../install/InstallPrompt";
 
 const ReportInformation = lazy(
   () => import("./reportInformation/ReportInformation")
@@ -45,6 +46,7 @@ export default function Extra() {
 
   return (
     <Container>
+      <InstallPrompt />
       <BottomSheet
         openButton={
           <Item icon={faSearch} iconBg={[255, 0, 0]}>
