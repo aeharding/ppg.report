@@ -12,7 +12,9 @@ import { outputP3ColorFromRGB } from "../helpers/colors";
 const PromoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: linear-gradient(140deg, rgb(0 51 0), rgb(0 153 0));
   background: linear-gradient(
     140deg,
     color(display-p3 0 0.2 0),
@@ -28,6 +30,8 @@ const PromoButton = styled.div`
   padding: 0.5rem 1rem;
   border-radius: 0.75rem;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+
+  align-self: flex-end;
 `;
 
 const InstallInstructions = styled.div`
@@ -97,7 +101,9 @@ export default function InstallPrompt() {
         title="Install the app"
       >
         <InstallInstructions>
-          Installing the app on your iPhone is free and easy
+          <div>
+            Installing the app on your iPhone is easy and <strong>free</strong>
+          </div>
           <ol>
             <li>
               Tap the <StyledShareIcon /> icon in the Safari toolbar
@@ -113,7 +119,7 @@ export default function InstallPrompt() {
             <IconWrapper>
               <StyledArrowIcon />
             </IconWrapper>{" "}
-            <div>Install Now</div>
+            <div>Install now</div>
           </InstallNow>
         </InstallInstructions>
       </BottomSheet>
