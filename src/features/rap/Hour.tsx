@@ -23,19 +23,18 @@ const Card = styled.div`
   position: relative;
 `;
 
-const CardInner = styled.div<{ flipped: boolean }>`
-  transform-style: preserve-3d;
-  transition: transform 80ms ease-out;
+const CardInner = styled.div<{ flipped: boolean }>``;
+/* transform-style: preserve-3d;
+transition: transform 80ms ease-out;
 
-  ${({ flipped }) =>
-    flipped
-      ? css`
-          transform: rotateY(180deg);
-        `
-      : css`
-          transform: rotateY(0);
-        `}
-`;
+${({ flipped }) =>
+  flipped
+    ? css`
+        transform: rotateY(180deg);
+      `
+    : css`
+        transform: rotateY(0);
+      `} */
 
 const cardFaceStyles = css`
   padding: 0.75em 0;
@@ -47,9 +46,7 @@ const cardFaceStyles = css`
 `;
 
 const CardFace = styled.div`
-  ${cardFaceStyles}
-
-  transform: rotateY(0);
+  ${cardFaceStyles}/* transform: rotateY(0); */
 `;
 
 // const CardFaceBack = styled.div`
