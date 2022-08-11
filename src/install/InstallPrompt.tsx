@@ -1,6 +1,4 @@
 import styled from "@emotion/styled/macro";
-import { faDownload } from "@fortawesome/pro-duotone-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import BottomSheet from "../bottomSheet/BottomSheet";
 import { isInstalled } from "../helpers/device";
@@ -8,17 +6,18 @@ import { ReactComponent as ShareIcon } from "./share.svg";
 import { ReactComponent as ArrowIcon } from "./arrow.svg";
 import { keyframes } from "@emotion/css";
 import { outputP3ColorFromRGB } from "../helpers/colors";
+import { useAddToHomescreenPrompt } from "../helpers/useAddToHomescreenPrompt";
 
 const PromoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  background: linear-gradient(140deg, rgb(0 51 0), rgb(0 153 0));
+  background: linear-gradient(140deg, rgb(0 25 51), rgb(0 25 255));
   background: linear-gradient(
     140deg,
-    color(display-p3 0 0.2 0),
-    color(display-p3 0 0.6 0)
+    color(display-p3 0 0.1 0.2),
+    color(display-p3 0 0.1 1)
   );
   padding: 1rem;
   margin: 0 1rem;
@@ -26,12 +25,19 @@ const PromoContainer = styled.div`
 `;
 
 const PromoButton = styled.div`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 0.75rem;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+  font-size: 1.1em;
 
   align-self: flex-end;
+
+  span {
+    font-size: 1.1em;
+  }
 `;
 
 const InstallInstructions = styled.div`
@@ -57,7 +63,7 @@ const InstallNow = styled.div`
   justify-content: center;
   font-size: 1.2rem;
 
-  ${outputP3ColorFromRGB([0, 255, 0])}
+  ${outputP3ColorFromRGB([255, 255, 0])}
 `;
 
 const bounce = keyframes`
@@ -84,45 +90,71 @@ const StyledArrowIcon = styled(ArrowIcon)`
 `;
 
 export default function InstallPrompt() {
+  const [prompt, promptToInstall] = useAddToHomescreenPrompt();
+  const [isVisible, setVisibleState] = React.useState(false);
+  const hide = () => setVisibleState(false);
+
+  React.useEffect(() => {
+    if (prompt) {
+      setVisibleState(true);
+    }
+  }, [prompt]);
+
+  function renderiPhonePromo() {
+    return (
+      <>
+        <BottomSheet openButton={<Promo />} title="Install the app">
+          <InstallInstructions>
+            <div>Installing the app on your iPhone is easy and free</div>
+            <ol>
+              <li>
+                Tap the <StyledShareIcon /> icon in the Safari toolbar
+              </li>
+              <li>
+                Tap “<Blue>Add to Home Screen</Blue>” near the bottom
+              </li>
+              <li>
+                Tap “<Blue>Add</Blue>”
+              </li>
+            </ol>
+            <InstallNow>
+              <IconWrapper>
+                <StyledArrowIcon />
+              </IconWrapper>{" "}
+              <div>Install now</div>
+            </InstallNow>
+          </InstallInstructions>
+        </BottomSheet>
+      </>
+    );
+  }
+
   if (isInstalled()) return <></>;
+  if (navigator.userAgent.match(/iPhone/i)) return renderiPhonePromo();
+  if (!isVisible) return <></>;
 
   return (
-    <>
-      <BottomSheet
-        openButton={
-          <PromoContainer>
-            Like PPG.report so far? Install it to your homescreen for a better
-            experience.
-            <PromoButton>
-              Get the app <FontAwesomeIcon icon={faDownload} />
-            </PromoButton>
-          </PromoContainer>
-        }
-        title="Install the app"
-      >
-        <InstallInstructions>
-          <div>
-            Installing the app on your iPhone is easy and <strong>free</strong>
-          </div>
-          <ol>
-            <li>
-              Tap the <StyledShareIcon /> icon in the Safari toolbar
-            </li>
-            <li>
-              Tap “<Blue>Add to Home Screen</Blue>” near the bottom
-            </li>
-            <li>
-              Tap “<Blue>Add</Blue>”
-            </li>
-          </ol>
-          <InstallNow>
-            <IconWrapper>
-              <StyledArrowIcon />
-            </IconWrapper>{" "}
-            <div>Install now</div>
-          </InstallNow>
-        </InstallInstructions>
-      </BottomSheet>
-    </>
+    <Promo
+      onClick={() => {
+        promptToInstall();
+        hide();
+      }}
+    />
+  );
+}
+
+function Promo({
+  onClick,
+}: {
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+}) {
+  return (
+    <PromoContainer onClick={onClick}>
+      Obsessed about weather? For a better experience, get the app installed on
+      your homescreen.
+      <PromoButton>
+        Install app <span>🚀</span>
+      </PromoButton>
+    </PromoContainer>
   );
 }
