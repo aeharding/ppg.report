@@ -1,6 +1,7 @@
 import styled from "@emotion/styled/macro";
 import React from "react";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
+import { ReactComponent as PlaneSvg } from "./plane.svg";
 
 const Container = styled.div`
   margin: 0.5rem 1rem 1rem;
@@ -41,7 +42,16 @@ const NWS = styled.div`
   ${outputP3ColorFromRGB([255, 0, 0], "border-color")}
 `;
 
-export default function Legend() {
+const StyledPlaneSvg = styled(PlaneSvg)`
+  ${outputP3ColorFromRGB([255, 180, 0])}
+  width: 1rem;
+`;
+
+interface LegendProps {
+  showTaf: boolean;
+}
+
+export default function Legend({ showTaf }: LegendProps) {
   return (
     <Container>
       <LegendItem>
@@ -56,6 +66,12 @@ export default function Legend() {
         <NWS />
         NWS Hourly Forecast Gridpoint
       </LegendItem>
+      {showTaf && (
+        <LegendItem>
+          <StyledPlaneSvg />
+          Terminal Aerodrome Forecast (TAF) location
+        </LegendItem>
+      )}
     </Container>
   );
 }

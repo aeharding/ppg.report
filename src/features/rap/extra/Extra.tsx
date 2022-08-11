@@ -16,9 +16,7 @@ import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
 import Loading from "../../../shared/Loading";
 
-const ReportInformation = lazy(
-  () => import("./reportInformation/ReportInformation")
-);
+const ReportMetadata = lazy(() => import("./reportMetadata/ReportMetadata"));
 
 const Container = styled.div`
   padding: 0.7rem 0;
@@ -54,7 +52,7 @@ export default function Extra() {
         title="Report Metadata"
       >
         <Suspense fallback={<Loading />}>
-          <ReportInformation />
+          <ReportMetadata />
         </Suspense>
       </BottomSheet>
 
