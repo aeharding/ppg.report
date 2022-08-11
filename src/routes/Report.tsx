@@ -14,6 +14,7 @@ import {
   clear as clearWeather,
   timeZoneSelector,
 } from "../features/weather/weatherSlice";
+import { differenceInHours } from "date-fns";
 
 export default function Report() {
   const { lat, lon } = useParams<"lat" | "lon">();
@@ -82,6 +83,10 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
       );
     default:
       if (!timeZone || elevation == null) return connectionError;
+
+      if (differenceInHours(new Date(), new Date(rap[0].date)) > 12)
+        return connectionError;
+
       return <Hours rap={rap} />;
   }
 }

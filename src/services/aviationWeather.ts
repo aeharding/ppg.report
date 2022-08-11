@@ -6,6 +6,8 @@ const parser = new XMLParser();
 export interface TAFReport {
   raw: string;
   date: string;
+  lat: number;
+  lon: number;
 }
 
 // Proxy to https://www.aviationweather.gov/adds/dataserver_current/httpparam
@@ -24,7 +26,7 @@ export async function getTAF({
       radialDistance: `35;${lon},${lat}`,
       hoursBeforeNow: 3,
       mostRecent: true,
-      fields: ["raw_text", "issue_time"].join(","),
+      fields: ["raw_text", "issue_time", "latitude", "longitude"].join(","),
     },
   });
   const parsed = parser.parse(response.data);
@@ -34,5 +36,7 @@ export async function getTAF({
   return {
     raw: parsed.response.data.TAF.raw_text,
     date: parsed.response.data.TAF.issue_time,
+    lat: +parsed.response.data.TAF.latitude,
+    lon: +parsed.response.data.TAF.longitude,
   };
 }
