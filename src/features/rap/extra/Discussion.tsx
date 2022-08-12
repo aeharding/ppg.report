@@ -67,10 +67,11 @@ interface DiscussionPart {
   body: string;
 }
 
-const headerRegex = /(\.(?:(?:[A-Z0-9]| |\/)+)\.{3})/;
+const headerRegex = /(\.(?:(?:[A-Za-z0-9]| |\/|\[|\])+)\.{3})/;
 
 function parseDiscussion(discussion: string): (string | DiscussionPart)[] {
   const splits = discussion.split(headerRegex);
+  console.log(splits);
 
   const result: (string | DiscussionPart)[] = [];
 
@@ -171,7 +172,8 @@ interface HeaderProps {
 }
 
 // Matches "Near Term /Through Tonight/"
-const asideRegex = /\/.*\/$/;
+// or "Near Term [Through Tonight]"
+const asideRegex = /(\/|\[).*(\/|\])$/;
 
 function Header({ children }: HeaderProps) {
   const color = (() => {
