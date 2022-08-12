@@ -52,7 +52,7 @@ const OpenIcon = styled(FontAwesomeIcon)`
   font-size: 0.7rem;
   opacity: 0.8;
   margin-bottom: 5px;
-  margin-left: 0.5rem;
+  margin-left: 0.25rem;
 `;
 
 const Aside = styled.div`
@@ -87,7 +87,7 @@ export default function Header({ alert, aside }: HeaderProps) {
           rel="noopener noreferrer"
         >
           <Name>
-            <EventName>{alert.properties.event}</EventName>
+            <EventName>{alert.properties.event}</EventName>&nbsp;
             <OpenIcon icon={faExternalLink} />
           </Name>
         </Link>
