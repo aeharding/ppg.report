@@ -5,7 +5,7 @@ const parser = new XMLParser();
 
 export interface TAFReport {
   raw: string;
-  date: string;
+  issued: string;
   lat: number;
   lon: number;
 }
@@ -35,7 +35,7 @@ export async function getTAF({
 
   return {
     raw: parsed.response.data.TAF.raw_text,
-    date: parsed.response.data.TAF.issue_time,
+    issued: parsed.response.data.TAF.issue_time,
     lat: +parsed.response.data.TAF.latitude,
     lon: +parsed.response.data.TAF.longitude,
   };

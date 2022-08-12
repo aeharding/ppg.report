@@ -639,7 +639,7 @@ export const tafReport = createSelector(
 
     try {
       return parseTAFAsForecast(aviationWeather.raw, {
-        date: new Date(aviationWeather.date),
+        issued: new Date(aviationWeather.issued),
       });
     } catch (e) {
       if (e instanceof ParseError) {

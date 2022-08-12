@@ -36,7 +36,7 @@
     "linkify-react": "^3.0.4",
     "linkifyjs": "^3.0.5",
     "lodash": "^4.17.21",
-    "metar-taf-parser": "^4.0.0",
+    "metar-taf-parser": "^5.0.0",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-leaflet": "^4.0.1",
