@@ -107,9 +107,9 @@ export default function Search({ ...rest }) {
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    setLoading(true);
-
     if (!query.trim()) return;
+
+    setLoading(true);
 
     try {
       const { lat, lon } = await search(query);
