@@ -90,16 +90,18 @@ export default function InstallInstructions() {
     );
   }
 
-  <Container>
-    <AppSummary>
-      <AppIcon src="/manifest-icon-512.png" />
-      <div>
-        <AppTitle>PPG.report</AppTitle>
-        <AppAuthor>by Alexander Harding</AppAuthor>
-      </div>
-    </AppSummary>
-    {isSafari
-      ? renderSafariInstallInstructions()
-      : renderInAppBrowserInstallInstructions()}
-  </Container>;
+  return (
+    <Container>
+      <AppSummary>
+        <AppIcon src="/manifest-icon-512.png" />
+        <div>
+          <AppTitle>PPG.report</AppTitle>
+          <AppAuthor>by Alexander Harding</AppAuthor>
+        </div>
+      </AppSummary>
+      {isSafari
+        ? renderSafariInstallInstructions()
+        : renderInAppBrowserInstallInstructions()}
+    </Container>
+  );
 }

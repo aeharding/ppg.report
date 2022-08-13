@@ -2,6 +2,7 @@ import React from "react";
 import BottomSheet from "../../bottomSheet/BottomSheet";
 import { isInstalled } from "../../helpers/device";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import InstallInstructions from "./InstallInstructions";
 import { promptToAddToHomeScreen } from "./installSlice";
 import Promo from "./Promo";
 
@@ -26,11 +27,9 @@ export default function InstallPrompt() {
   function renderiPhonePromo() {
     return (
       <>
-        <BottomSheet
-          openButton={<Promo />}
-          title="Install the app"
-          open={open}
-        ></BottomSheet>
+        <BottomSheet openButton={<Promo />} title="Install the app" open={open}>
+          <InstallInstructions />
+        </BottomSheet>
       </>
     );
   }
