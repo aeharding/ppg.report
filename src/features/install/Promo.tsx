@@ -39,8 +39,8 @@ interface PromoProps {
 export default function Promo({ onClick }: PromoProps) {
   return (
     <PromoContainer onClick={onClick}>
-      Obsessed about weather? For a better experience, get the app installed on
-      your homescreen.
+      Check regularly? For a better experience, get the app installed on your
+      homescreen.
       <PromoButton>
         Install app <span>🚀</span>
       </PromoButton>
