@@ -15,7 +15,7 @@ import Discussion from "./Discussion";
 import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
 import Loading from "../../../shared/Loading";
-import InstallPrompt from "../../../install/InstallPrompt";
+import InstallPrompt from "../../install/InstallPrompt";
 
 const ReportInformation = lazy(
   () => import("./reportInformation/ReportInformation")

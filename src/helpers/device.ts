@@ -16,3 +16,9 @@ export function isInstalled(): boolean {
     pwaBuilderCookie === "iOS App Store"
   );
 }
+
+export function isInApp(): boolean {
+  const rules = ["WebView", "(iPhone|iPod|iPad)(?!.*Safari/)", "Android.*(wv)"];
+  const regex = new RegExp(`(${rules.join("|")})`, "ig");
+  return Boolean(navigator.userAgent.match(regex));
+}
