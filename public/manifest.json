@@ -1,0 +1,55 @@
+{
+  "name": "PPG.report",
+  "short_name": "PPG.report",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "manifest-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "manifest-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "theme_color": "#001931",
+  "background_color": "#001931",
+  "display": "standalone",
+  "orientation": "any",
+  "description": "Weather report tailored for paramotor pilots. Combines NOAA rapid refresh Op40 analysis, nearby Terminal Aerodrome Forecasts, NWS hourly forecast for 2.5km grid areas and NWS active alerts.",
+  "categories": ["weather"],
+  "screenshots": [
+    {
+      "src": "/screenshots/android/1.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Winds aloft for your favorite flying sites"
+    },
+    {
+      "src": "/screenshots/android/2.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "NWS hourly forecast and nearby TAF seamlessly integrated"
+    },
+    {
+      "src": "/screenshots/android/3.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Why. Not just what."
+    },
+    {
+      "src": "/screenshots/android/4.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Weather alerts, font and center"
+    }
+  ]
+}

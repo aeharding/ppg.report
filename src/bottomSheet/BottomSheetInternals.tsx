@@ -52,14 +52,16 @@ export interface BottomSheetProps {
   title?: React.ReactNode;
   openButton?: React.ReactNode;
   children?: React.ReactNode;
+  open?: boolean;
 }
 
 export default function BottomSheetInternals({
   title,
   openButton,
   children,
+  open: _open,
 }: BottomSheetProps) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(_open || false);
 
   return (
     <>
