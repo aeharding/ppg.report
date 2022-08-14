@@ -52,6 +52,7 @@ export default function ReportMetadata() {
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather
   );
+  const weather = useAppSelector((state) => state.weather.weather);
 
   return (
     <Container>
@@ -72,6 +73,7 @@ export default function ReportMetadata() {
 
       <Legend
         showTaf={!!(aviationWeather && typeof aviationWeather === "object")}
+        showNws={!!(weather && typeof weather === "object")}
       />
 
       <StyledDataList>
@@ -115,8 +117,6 @@ const MapController = () => {
     if (groupRef.current) map.fitBounds(groupRef.current.getBounds());
   }, [map, groupRef]);
 
-  // do something with map, in a useEffect hook, for example.
-
   const bounds = latLng(rapPosition).toBounds(40000); // 13km for op40 analysis
 
   return (
@@ -139,15 +139,7 @@ const MapController = () => {
       />
 
       {airportPosition && (
-        <Marker
-          position={airportPosition}
-          icon={planeIcon}
-          // css={css`
-          //   ${outputP3ColorFromRGB([100, 255, 100], "fill")}
-          //   ${outputP3ColorFromRGB([100, 255, 100], "stroke")}
-          // `}
-          pane="markerPane"
-        />
+        <Marker position={airportPosition} icon={planeIcon} pane="markerPane" />
       )}
 
       {weather && typeof weather === "object" && weather.geometry && (

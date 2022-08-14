@@ -49,6 +49,7 @@ export async function search(q: string): Promise<{ lat: number; lon: number }> {
     params: {
       format: "jsonv2",
       limit: 1,
+      countrycodes: "us",
       q,
     },
   });

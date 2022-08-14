@@ -113,25 +113,11 @@ export const getRap =
     } catch (error) {
       if (!(error instanceof GslError)) throw error;
 
-      if (error instanceof CoordinatesGslError) return tryGFSRap();
+      if (error instanceof CoordinatesGslError) dispatch(rapBadCoordinates());
 
       dispatch(rapFailed());
-    }
 
-    async function tryGFSRap() {
-      try {
-        const rap = await rapidRefresh.getRap(lat, lon, "GFS");
-
-        dispatch(rapReceived(rap));
-      } catch (error) {
-        if (!(error instanceof GslError)) throw error;
-
-        dispatch(
-          error instanceof CoordinatesGslError
-            ? rapBadCoordinates()
-            : rapFailed()
-        );
-      }
+      throw error;
     }
   };
 
