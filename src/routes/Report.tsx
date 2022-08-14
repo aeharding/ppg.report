@@ -78,7 +78,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
         <Error
           icon={Map}
           title="That's an unknown place."
-          description="There was a problem finding weather data for your location. Try again later."
+          description="At this time, only United States locations are supported."
         />
       );
     default:

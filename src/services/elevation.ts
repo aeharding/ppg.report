@@ -28,10 +28,10 @@ export async function getElevation({
   if (typeof potentialElevation === "number" && potentialElevation !== -1000000)
     return potentialElevation;
 
-  return await getBackupElevation({ lat, lon });
+  throw new Error("Invalid elevation returned");
 }
 
-async function getBackupElevation({
+export async function getBackupElevation({
   lat,
   lon,
 }: {

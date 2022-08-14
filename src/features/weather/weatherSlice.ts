@@ -508,8 +508,13 @@ export const getWeather =
     dispatch(discussionLoading());
     if (getState().weather.discussion !== "pending") return;
 
-    const gridId = await loadPointData();
-    if (gridId) loadDiscussion(gridId);
+    try {
+      const gridId = await loadPointData();
+      if (gridId) loadDiscussion(gridId);
+    } catch (error) {
+      dispatch(discussionFailed());
+      throw error;
+    }
 
     async function loadPointData() {
       if (getState().weather.weather === "pending") return;
@@ -597,7 +602,17 @@ export const getWeather =
         const elevation = await elevationService.getElevation({ lat, lon });
         dispatch(elevationReceived(elevation));
       } catch (e: unknown) {
-        dispatch(elevationFailed());
+        try {
+          const elevation = await elevationService.getBackupElevation({
+            lat,
+            lon,
+          });
+          dispatch(elevationReceived(elevation));
+        } catch (e) {
+          dispatch(elevationFailed());
+          throw e;
+        }
+
         throw e;
       }
     }

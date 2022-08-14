@@ -45,6 +45,18 @@ export default function Extra() {
   return (
     <Container>
       <InstallPrompt />
+
+      <BottomSheet
+        openButton={
+          <Item icon={faFileAlt} iconBg={[0, 255, 0]} iconColor="black">
+            Discussion
+          </Item>
+        }
+        title={`${gridId}Area Forecast Discussion`}
+      >
+        <Discussion />
+      </BottomSheet>
+
       <BottomSheet
         openButton={
           <Item icon={faSearch} iconBg={[255, 0, 0]}>
@@ -58,16 +70,6 @@ export default function Extra() {
         </Suspense>
       </BottomSheet>
 
-      <BottomSheet
-        openButton={
-          <Item icon={faFileAlt} iconBg={[0, 255, 0]} iconColor="black">
-            Discussion
-          </Item>
-        }
-        title={`${gridId}Area Forecast Discussion`}
-      >
-        <Discussion />
-      </BottomSheet>
       <BottomSheet
         openButton={
           <Item icon={faCog} iconBg={[20, 20, 20]}>

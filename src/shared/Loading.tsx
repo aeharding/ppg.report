@@ -1,14 +1,19 @@
 import styled from "@emotion/styled/macro";
 import { keyframes } from "@emotion/css/macro";
+import { css } from "@emotion/react/macro";
 
-const Container = styled.div`
+const Container = styled.div<{ center: boolean }>`
   position: relative;
   min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-top: 20vh;
+  ${({ center }) =>
+    center &&
+    css`
+      margin-top: 20vh;
+    `}
 
   @media (max-height: 500px) {
     margin-top: 0;
@@ -66,9 +71,13 @@ const Line = styled.div`
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 `;
 
-export default function Loading() {
+interface LoadingProps {
+  center?: boolean;
+}
+
+export default function Loading({ center }: LoadingProps) {
   return (
-    <Container>
+    <Container center={center ?? true}>
       <Outline>
         <LineMask>
           <Line />

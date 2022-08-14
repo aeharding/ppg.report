@@ -12,6 +12,12 @@ export const linkifyOptions = {
   defaultProtocol: "https",
 };
 
+const Overflow = styled.div`
+  overflow: hidden;
+  padding: 3rem 0;
+  text-align: center;
+`;
+
 const StyledLinkify = styled(Linkify)`
   font-family: inherit;
   white-space: pre-line;
@@ -25,9 +31,19 @@ export default function Discussion() {
   switch (discussion) {
     case undefined:
     case "failed":
+      return <Overflow>Discussion failed to load. Try again later.</Overflow>;
     case "not-available":
+      return (
+        <Overflow>
+          Discussion not currently available. Try again later.
+        </Overflow>
+      );
     case "pending":
-      return <Loading />;
+      return (
+        <Overflow>
+          <Loading center={false} />
+        </Overflow>
+      );
     default:
       return (
         <>
