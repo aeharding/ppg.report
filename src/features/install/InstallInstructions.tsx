@@ -1,5 +1,5 @@
 import styled from "@emotion/styled/macro";
-import { isInApp } from "../../helpers/device";
+import { isInApp, isThirdPartyIosBrowser } from "../../helpers/device";
 import { ReactComponent as ShareIcon } from "./share.svg";
 import { ReactComponent as AddIcon } from "./add.svg";
 import CopyLink from "./CopyLink";
@@ -59,8 +59,19 @@ const AddToHomescreenContainer = styled.span`
   border-radius: 6px;
 `;
 
+const Description = styled.p`
+  margin: 1rem;
+`;
+
 export default function InstallInstructions() {
-  const isSafari = !isInApp();
+  const thirdPartyIosBrowser = isThirdPartyIosBrowser();
+  const isSafari = !(isInApp() || thirdPartyIosBrowser);
+
+  const browserType = (() => {
+    if (thirdPartyIosBrowser) return "not using Safari";
+
+    return "using an in-app browser";
+  })();
 
   function renderSafariInstallInstructions() {
     return (
@@ -81,10 +92,10 @@ export default function InstallInstructions() {
   function renderInAppBrowserInstallInstructions() {
     return (
       <>
-        <p>
-          It looks like you're using an in-app browser. To install PPG.report,
-          open this link in Safari.
-        </p>
+        <Description>
+          It looks like you're {browserType}. To install PPG.report, open this
+          link in <strong>Safari</strong>.
+        </Description>
         <CopyLink />
       </>
     );

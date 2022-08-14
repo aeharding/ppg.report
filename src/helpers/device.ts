@@ -27,6 +27,13 @@ export function isInApp(): boolean {
   );
 }
 
+export function isThirdPartyIosBrowser() {
+  return (
+    navigator.userAgent.includes("CriOS") ||
+    navigator.userAgent.includes("FxiOS")
+  );
+}
+
 /**
  * Important: Must check to make sure UA is Safari first
  */
