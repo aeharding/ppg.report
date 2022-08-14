@@ -1,3 +1,5 @@
+import { doesFontExist } from "./fontDetect";
+
 export function isTouchDevice(): boolean {
   return window.matchMedia("(any-hover: none)").matches;
 }
@@ -20,5 +22,16 @@ export function isInstalled(): boolean {
 export function isInApp(): boolean {
   const rules = ["WebView", "(iPhone|iPod|iPad)(?!.*Safari/)", "Android.*(wv)"];
   const regex = new RegExp(`(${rules.join("|")})`, "ig");
-  return Boolean(navigator.userAgent.match(regex));
+  return (
+    Boolean(navigator.userAgent.match(regex)) || isSFSafariViewController()
+  );
+}
+
+/**
+ * Important: Must check to make sure UA is Safari first
+ */
+export function isSFSafariViewController(): boolean {
+  // In SFSafariViewController, this is a valid font.
+  // This might break in future iOS versions...
+  return doesFontExist(".Helvetica LT MM");
 }
