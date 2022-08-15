@@ -38,7 +38,20 @@ export function isThirdPartyIosBrowser() {
  * Important: Must check to make sure UA is Safari first
  */
 export function isSFSafariViewController(): boolean {
+  const iosVersion = getIosVersion();
+
+  if (!iosVersion || iosVersion[0] < 15) return false;
+
   // In SFSafariViewController, this is a valid font.
   // This might break in future iOS versions...
   return doesFontExist(".Helvetica LT MM");
+}
+
+function getIosVersion() {
+  if (/iP(hone|od|ad)/.test(navigator.platform)) {
+    // supports iOS 2.0 and later: <http://bit.ly/TJjs1V>
+    const v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/);
+    if (!v) return;
+    return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] ?? 0, 10)];
+  }
 }
