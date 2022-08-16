@@ -11,8 +11,6 @@ const Link = styled.a`
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
 
-  transform: translate3d(0, 0, 0);
-
   && {
     color: rgba(255, 255, 255, 0.7);
     pointer-events: auto;
