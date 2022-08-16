@@ -21,7 +21,7 @@ const Warning = styled.strong`
 export default function Terms() {
   return (
     <TermsContainer>
-      <h1>About</h1>
+      <h2>About</h2>
 
       <p>
         Your device is currently using ppg.report version {pJson.version}. View
@@ -34,13 +34,22 @@ export default function Terms() {
         .
       </p>
 
-      <h1>Reach Me</h1>
+      <h2>Attribution</h2>
+
+      <p>
+        Geocoding, reverse geocoding, and map tiles{" "}
+        <a href="https://www.openstreetmap.org/copyright">
+          &copy; OpenStreetMap contributors
+        </a>
+      </p>
+
+      <h2>Reach Me</h2>
 
       <p>Have a question?</p>
 
       <Email />
 
-      <h1>Privacy Policy</h1>
+      <h2>Privacy Policy</h2>
 
       <p>Last Updated: April 22nd, 2022</p>
 
@@ -197,7 +206,7 @@ export default function Terms() {
         </ol>
       </section>
 
-      <h1>Terms of Use</h1>
+      <h2>Terms of Use</h2>
 
       <p>Last Updated: September 1st, 2021</p>
 
