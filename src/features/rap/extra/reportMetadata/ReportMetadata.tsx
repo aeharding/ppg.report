@@ -21,6 +21,7 @@ import RefreshInformation from "./RefreshInformation";
 import { DataList } from "../../../../DataList";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
 import { css } from "@emotion/react/macro";
+import OSMAttribution from "../../../../map/OSMAttribution";
 
 const Container = styled.div`
   overflow: hidden;
@@ -65,8 +66,11 @@ export default function ReportMetadata() {
         doubleClickZoom={false}
         trackResize={false}
         boxZoom={false}
-        zoom={10}
+        maxZoom={9.25}
+        zoom={9}
+        zoomSnap={undefined}
       >
+        <OSMAttribution />
         <BaseLayer />
         <MapController />
       </StyledMapContainer>
@@ -114,7 +118,10 @@ const MapController = () => {
       : undefined;
 
   useEffect(() => {
-    if (groupRef.current) map.fitBounds(groupRef.current.getBounds());
+    if (groupRef.current)
+      map.fitBounds(groupRef.current.getBounds(), {
+        padding: [25, 25],
+      });
   }, [map, groupRef]);
 
   const bounds = latLng(rapPosition).toBounds(40000); // 13km for op40 analysis

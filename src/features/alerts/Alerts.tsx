@@ -9,6 +9,7 @@ import RadarLayer from "../../map/RadarLayer";
 import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
 import { undoFixedWidthText } from "../../helpers/weather";
+import OSMAttribution from "../../map/OSMAttribution";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -70,8 +71,10 @@ function Alert({ alert, index, total }: AlertProps) {
             trackResize={false}
             boxZoom={false}
             maxZoom={9}
+            zoomSnap={undefined}
           >
             <MapController alert={alert} />
+            <OSMAttribution />
             <BaseLayer />
             <RadarLayer />
           </StyledMapContainer>
@@ -103,7 +106,10 @@ const MapController = ({ alert }: MapControllerProps) => {
   const geoJsonRef = useRef<any>();
 
   useEffect(() => {
-    if (geoJsonRef.current) map.fitBounds(geoJsonRef.current.getBounds());
+    if (geoJsonRef.current)
+      map.fitBounds(geoJsonRef.current.getBounds(), {
+        padding: [25, 25],
+      });
   }, [map, geoJsonRef]);
 
   // do something with map, in a useEffect hook, for example.
