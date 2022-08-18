@@ -9,7 +9,7 @@ import Airport from "./header/Airport";
 import SkyCover from "./header/SkyCover";
 import Weather from "./header/Weather";
 import AlertsIcon from "./header/AlertsIcon";
-import { tafReport as tafReportSelector } from "./weatherSlice";
+import { tafReport as tafReportSelector } from "./weatherSliceLazy";
 import Wind from "./header/Wind";
 import {
   alertsBySeveritySortFn,
