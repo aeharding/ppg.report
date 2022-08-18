@@ -1,3 +1,4 @@
+import { differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
 import { AltitudeType } from "./userSlice";
 
@@ -11,6 +12,7 @@ export interface UserLocation {
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
+const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -97,4 +99,33 @@ export function getAltitude(): AltitudeType {
 
 export function setAltitude(altitude: AltitudeType): void {
   localStorage.setItem(ALTITUDE_STORAGE_KEY, altitude);
+}
+
+export function discussionLastViewedByStation(): Record<string, string> {
+  const savedValue = localStorage.getItem(DISCUSSION_LAST_VIEWED_STORAGE_KEY);
+
+  if (typeof savedValue !== "string") return {};
+
+  return JSON.parse(savedValue);
+}
+
+export function setDiscussionViewed(stationId: string, date: string) {
+  const discussionsLastViewed = discussionLastViewedByStation();
+
+  Object.keys(discussionsLastViewed).forEach((stationId) => {
+    if (
+      differenceInHours(
+        new Date(discussionsLastViewed[stationId]),
+        new Date()
+      ) > 24
+    )
+      delete discussionsLastViewed[stationId];
+  });
+
+  discussionsLastViewed[stationId] = date;
+
+  localStorage.setItem(
+    DISCUSSION_LAST_VIEWED_STORAGE_KEY,
+    JSON.stringify(discussionsLastViewed)
+  );
 }

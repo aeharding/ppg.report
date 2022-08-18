@@ -2,6 +2,7 @@ import axios from "axios";
 import { addSeconds } from "date-fns";
 import {
   Alerts,
+  Discussion,
   Property,
   Value,
   Weather,
@@ -83,7 +84,7 @@ export async function getPointResources({
   };
 }
 
-export async function getDiscussion(gridId: string) {
+export async function getDiscussion(gridId: string): Promise<Discussion> {
   let { data: discussionsData } = await axios.get(
     `/api/weather/products/types/AFD/locations/${gridId}`
   );

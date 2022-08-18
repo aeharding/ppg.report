@@ -16,6 +16,8 @@ import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
 import Loading from "../../../shared/Loading";
 import InstallPrompt from "../../install/InstallPrompt";
+import { isAfter } from "date-fns";
+import Spinner from "../../../shared/Spinner";
 
 const ReportMetadata = lazy(() => import("./reportMetadata/ReportMetadata"));
 
@@ -36,6 +38,19 @@ const Container = styled.div`
 
 export default function Extra() {
   const weather = useAppSelector((state) => state.weather.weather);
+  const discussionLastViewed = useAppSelector(
+    (state) => state.weather.discussionLastViewed
+  );
+  const discussion = useAppSelector((state) => state.weather.discussion);
+
+  const unviewed =
+    discussion && typeof discussion === "object"
+      ? !discussionLastViewed ||
+        isAfter(
+          new Date(discussion.issuanceTime),
+          new Date(discussionLastViewed)
+        )
+      : false;
 
   const gridId =
     weather && typeof weather === "object"
@@ -48,7 +63,13 @@ export default function Extra() {
 
       <BottomSheet
         openButton={
-          <Item icon={faFileAlt} iconBg={[0, 255, 0]} iconColor="black">
+          <Item
+            icon={faFileAlt}
+            iconBg={[0, 255, 0]}
+            iconColor="black"
+            flag={unviewed}
+            loading={!discussion || typeof discussion !== "object"}
+          >
             Discussion
           </Item>
         }
@@ -84,7 +105,7 @@ export default function Extra() {
   );
 }
 
-const ItemContainer = styled.div<{ selected?: boolean }>`
+const ItemContainer = styled.div<{ selected?: boolean; loading?: boolean }>`
   display: flex;
   align-items: center;
   margin: 0 1rem;
@@ -95,11 +116,23 @@ const ItemContainer = styled.div<{ selected?: boolean }>`
   font-size: 1.1rem;
   font-weight: 300;
   cursor: pointer;
+
+  transition: 100ms linear;
+  transition-property: opacity, filter;
+
+  ${({ loading }) =>
+    loading &&
+    css`
+      filter: grayscale(1) brightness(60%);
+      opacity: 0.5;
+    `}
 `;
 
 const IconContainer = styled.div<{
   iconBg: [number, number, number];
   iconColor?: string;
+  flag?: boolean;
+  loading?: boolean;
 }>`
   font-size: 1.1rem;
   display: flex;
@@ -107,13 +140,48 @@ const IconContainer = styled.div<{
   justify-content: center;
   width: 1.85rem;
   height: 1.85rem;
+  position: relative;
   margin-right: 1rem;
-  border-radius: 5px;
-  ${({ iconBg }) => outputP3ColorFromRGB(iconBg, "background")};
+
+  &::before {
+    content: "";
+    inset: 0;
+    position: absolute;
+    z-index: -1;
+    ${({ iconBg }) => outputP3ColorFromRGB(iconBg, "background")};
+    border-radius: 5px;
+
+    transition: background-color 100ms linear;
+  }
+
   ${({ iconColor }) =>
     iconColor &&
     css`
       color: ${iconColor};
+    `}
+
+  ${({ flag }) =>
+    flag &&
+    css`
+      &::before {
+        mask: radial-gradient(
+            circle at calc(100% - 1px) 1px,
+            transparent 7.5px,
+            #000 8.5px 100%
+          )
+          50% 50%/100% 100% no-repeat;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        ${outputP3ColorFromRGB([255, 0, 0], "background")}
+      }
     `}
 `;
 
@@ -127,13 +195,26 @@ interface IconProps {
   iconBg: [number, number, number];
   iconColor?: string;
   children?: React.ReactNode;
+  flag?: boolean;
+  loading?: boolean;
+  className?: string;
 }
 
-function Item({ icon, iconBg, iconColor, children }: IconProps) {
+function Item({
+  icon,
+  iconBg,
+  iconColor,
+  children,
+  flag,
+  loading,
+  className,
+}: IconProps) {
+  if (loading) iconBg = [100, 100, 100];
+
   return (
-    <ItemContainer>
-      <IconContainer iconBg={iconBg} iconColor={iconColor}>
-        <FontAwesomeIcon icon={icon} />
+    <ItemContainer className={className} loading={loading}>
+      <IconContainer iconBg={iconBg} iconColor={iconColor} flag={flag}>
+        {!loading ? <FontAwesomeIcon icon={icon} /> : <Spinner />}
       </IconContainer>
       {children}
       <RightArrow icon={faLongArrowRight} />
