@@ -9,6 +9,7 @@ import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
 import { ParseError, parseTAFAsForecast } from "metar-taf-parser";
 import { GeoJsonObject } from "geojson";
+import * as storage from "../user/storage";
 
 interface Coordinates {
   lat: number;
@@ -188,11 +189,11 @@ type DiscussionResult =
   // Nothing found for the coordinates
   | "not-available";
 
-interface Discussion {
+export interface Discussion {
   id: string;
   wmoCollectiveId: string;
   issuingOffice: string;
-  issuanceDate: string;
+  issuanceTime: string;
   productCode: string;
   productName: string;
   productText: string;
@@ -211,6 +212,7 @@ interface WeatherState {
   elevationLoading: boolean;
   discussion: DiscussionResult | undefined;
   discussionLastUpdated?: string;
+  discussionLastViewed: string | undefined;
 }
 
 // Define the initial state using that type
@@ -226,6 +228,7 @@ const initialState: WeatherState = {
   elevation: undefined,
   elevationLoading: false,
   discussion: undefined,
+  discussionLastViewed: undefined,
 };
 
 /**
@@ -448,6 +451,9 @@ export const weatherReducer = createSlice({
       if (state.discussion === "pending") {
         state.discussion = action.payload;
         state.discussionLastUpdated = new Date().toISOString();
+        state.discussionLastViewed = getDiscussionLastViewed(
+          action.payload.issuingOffice
+        );
       }
     },
 
@@ -470,6 +476,11 @@ export const weatherReducer = createSlice({
         state.discussionLastUpdated = new Date().toISOString();
       }
     },
+
+    setDiscussionViewed(state, action: PayloadAction<string>) {
+      state.discussionLastViewed = action.payload;
+    },
+
     clear: () => initialState,
   },
 });
@@ -495,6 +506,7 @@ export const {
   discussionReceived,
   discussionFailed,
   discussionNotAvailable,
+  setDiscussionViewed,
 } = weatherReducer.actions;
 
 export const getWeather =
@@ -667,3 +679,9 @@ export const tafReport = createSelector(
 );
 
 export default weatherReducer.reducer;
+
+function getDiscussionLastViewed(issuingOffice: string): string {
+  const discussionLastViewedByStation = storage.discussionLastViewedByStation();
+
+  return discussionLastViewedByStation[issuingOffice];
+}

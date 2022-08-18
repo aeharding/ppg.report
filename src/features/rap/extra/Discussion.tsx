@@ -1,9 +1,12 @@
 import styled from "@emotion/styled/macro";
 import Linkify from "linkify-react";
+import { useEffect } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { undoFixedWidthText } from "../../../helpers/weather";
-import { useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import Loading from "../../../shared/Loading";
+import { setDiscussionViewed } from "../../weather/weatherSlice";
+import * as storage from "../../user/storage";
 
 export const linkifyOptions = {
   nl2br: true,
@@ -27,6 +30,17 @@ const StyledLinkify = styled(Linkify)`
 
 export default function Discussion() {
   const discussion = useAppSelector((state) => state.weather.discussion);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!discussion || typeof discussion !== "object") return;
+
+    dispatch(setDiscussionViewed(discussion.issuanceTime));
+    storage.setDiscussionViewed(
+      discussion.issuingOffice,
+      discussion.issuanceTime
+    );
+  }, [dispatch, discussion]);
 
   switch (discussion) {
     case undefined:
@@ -83,11 +97,10 @@ interface DiscussionPart {
   body: string;
 }
 
-const headerRegex = /(\.(?:(?:[A-Za-z0-9]| |\/|\[|\])+)\.{3})/;
+const headerRegex = /(\n\.(?:[^\n.])+\.{3})/;
 
 function parseDiscussion(discussion: string): (string | DiscussionPart)[] {
   const splits = discussion.split(headerRegex);
-  console.log(splits);
 
   const result: (string | DiscussionPart)[] = [];
 
@@ -100,7 +113,7 @@ function parseDiscussion(discussion: string): (string | DiscussionPart)[] {
       const body = splits.shift();
       if (!body) continue;
       result.push({
-        header: potentialHeader.slice(1, -3),
+        header: potentialHeader.trim().slice(1, -3),
         body: body.trim().replace(/&&$/, "").trim(),
       });
     } else {
@@ -156,6 +169,7 @@ const H2 = styled.h2<{ textColor: [number, number, number] }>`
     display: inline;
     font-size: 0.75em;
     font-weight: normal;
+    text-transform: capitalize;
   }
 
   &:before {
@@ -189,7 +203,8 @@ interface HeaderProps {
 
 // Matches "Near Term /Through Tonight/"
 // or "Near Term [Through Tonight]"
-const asideRegex = /(\/|\[).*(\/|\])$/;
+// or "Near Term (Through Tonight)"
+const asideRegex = /(\/|\[|\().*(\/|\]|\))$/;
 
 function Header({ children }: HeaderProps) {
   const color = (() => {
@@ -224,7 +239,8 @@ function Header({ children }: HeaderProps) {
     .trim()
     .match(asideRegex)?.[0]
     ?.trim()
-    ?.slice(1, -1);
+    ?.slice(1, -1)
+    .toLocaleLowerCase();
   return (
     <H2 textColor={color as [number, number, number]}>
       {mainText} {asideText && <aside>({asideText})</aside>}
