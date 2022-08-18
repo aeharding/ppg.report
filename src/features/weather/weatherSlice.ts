@@ -1,4 +1,4 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as weather from "../../services/weather";
@@ -7,7 +7,6 @@ import axios from "axios";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
-import { ParseError, parseTAFAsForecast } from "metar-taf-parser";
 import { GeoJsonObject } from "geojson";
 import * as storage from "../user/storage";
 
@@ -650,33 +649,6 @@ export const currentWeather = (state: RootState) => state.weather.weather;
 export const timeZoneSelector = (state: RootState) => {
   return state.weather.timeZone;
 };
-
-const tafReportSelector = (state: RootState) => state.weather.aviationWeather;
-
-export const tafReport = createSelector(
-  [tafReportSelector],
-  (aviationWeather) => {
-    if (
-      !aviationWeather ||
-      aviationWeather === "pending" ||
-      aviationWeather === "failed" ||
-      aviationWeather === "not-available"
-    )
-      return;
-
-    try {
-      return parseTAFAsForecast(aviationWeather.raw, {
-        issued: new Date(aviationWeather.issued),
-      });
-    } catch (e) {
-      if (e instanceof ParseError) {
-        console.error(e);
-        return;
-      }
-      throw e;
-    }
-  }
-);
 
 export default weatherReducer.reducer;
 
