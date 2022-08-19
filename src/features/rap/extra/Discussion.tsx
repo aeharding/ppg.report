@@ -24,6 +24,7 @@ const Overflow = styled.div`
 const StyledLinkify = styled(Linkify)`
   font-family: inherit;
   white-space: pre-line;
+  overflow-wrap: break-word;
   margin: 0 1rem;
   line-height: 1.5;
 `;
