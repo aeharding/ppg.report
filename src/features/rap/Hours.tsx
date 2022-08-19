@@ -233,6 +233,31 @@ export default function Hours({ rap }: TableProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollViewRef]);
 
+  useEffect(() => {
+    const scrollView = scrollViewRef.current;
+    if (!scrollView) return;
+
+    let initialX = 0;
+    let initialScrollOffset = 0;
+
+    scrollView.addEventListener("touchstart", (e) => {
+      initialX = e.touches[0]?.pageX;
+      initialScrollOffset = scrollView.scrollLeft;
+    });
+
+    scrollView.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+
+      if (e.touches[0]?.pageX == null) return;
+
+      const percentageScrolled =
+        (e.touches[0].pageX - initialX) / (window.innerWidth * 0.65);
+
+      scrollView.scrollLeft =
+        initialScrollOffset - scrollView.scrollWidth * percentageScrolled;
+    });
+  }, [scrollViewRef]);
+
   function scroll(direction: Direction, distance = Distance.Hour) {
     if (!scrollViewRef.current) throw new Error("Scrollview not found");
 
