@@ -185,7 +185,8 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       const percentageScrolled =
         (e.touches[0].pageX - (x + margin)) / (width - margin * 2);
 
-      scrollView.scrollLeft = scrollView.scrollWidth * percentageScrolled;
+      scrollView.scrollLeft =
+        (scrollView.scrollWidth - scrollView.clientWidth) * percentageScrolled;
 
       interactionCount++;
     }
