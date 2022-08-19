@@ -38,6 +38,7 @@ const Title = styled.div`
 
 const StyledLinkify = styled(Linkify)`
   white-space: pre-line;
+  overflow-wrap: break-word;
 
   margin: 1rem;
   font-size: 1rem;
