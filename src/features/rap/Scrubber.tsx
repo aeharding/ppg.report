@@ -33,7 +33,7 @@ const ScrubberTarget = styled.div`
   height: 4rem;
   backdrop-filter: blur(16px) brightness(90%) saturate(120%);
   border-radius: 3rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1;
 
   display: flex;
@@ -223,7 +223,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       onTouchMove={enabled ? () => setEnabled(false) : undefined}
     >
       {children}
-      <HowTo>Tap to {enabled ? "close" : ""} quick scrub</HowTo>
+      <HowTo>Tap to {enabled ? "close" : ""} scrub</HowTo>
       <CSSTransition
         timeout={150}
         classNames={transitionName}
