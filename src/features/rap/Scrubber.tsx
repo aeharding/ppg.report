@@ -1,6 +1,6 @@
 import { keyframes } from "@emotion/css";
 import styled from "@emotion/styled/macro";
-import { faHandPointUp } from "@fortawesome/pro-solid-svg-icons";
+import { faHandPointUp, faBolt } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
@@ -223,7 +223,10 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       onTouchMove={enabled ? () => setEnabled(false) : undefined}
     >
       {children}
-      <HowTo>Tap to {enabled ? "close" : ""} scrub</HowTo>
+      <HowTo>
+        {!enabled && <FontAwesomeIcon icon={faBolt} />} Tap report to{" "}
+        {enabled ? "close" : "open"} scrub
+      </HowTo>
       <CSSTransition
         timeout={150}
         classNames={transitionName}
