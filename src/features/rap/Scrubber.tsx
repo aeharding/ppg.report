@@ -4,7 +4,11 @@ import { faHandPointUp, faBolt } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
-import { headerIsFixed, isTouchDevice } from "../../helpers/device";
+import {
+  headerIsFixed,
+  isLandscape,
+  isTouchDevice,
+} from "../../helpers/device";
 import { smoothScrollBodyTo } from "../../helpers/scroll";
 
 const HowTo = styled.div`
@@ -209,7 +213,8 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
 
     (async () => {
       if (enabled) {
-        if (headerIsFixed()) {
+        if (isLandscape()) {
+        } else if (headerIsFixed()) {
           await smoothScrollBodyTo(0);
         } else if (
           document.documentElement.scrollTop >
@@ -221,9 +226,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
               0) + document.documentElement.scrollTop
           );
 
-        setTimeout(() => {
-          document.addEventListener("scroll", onDocumentScroll);
-        });
+        document.addEventListener("scroll", onDocumentScroll);
       } else {
         document.removeEventListener("scroll", onDocumentScroll);
       }

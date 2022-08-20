@@ -4,6 +4,10 @@ export function isTouchDevice(): boolean {
   return window.matchMedia("(any-hover: none)").matches;
 }
 
+export function isLandscape(): boolean {
+  return window.matchMedia("(orientation: landscape)").matches;
+}
+
 export const FIXED_HEADER_MEDIAQUERY =
   "(orientation: landscape) and (max-height: 500px)";
 
