@@ -1,5 +1,6 @@
 import styled from "@emotion/styled/macro";
 import { Link } from "react-router-dom";
+import { FIXED_HEADER_MEDIAQUERY } from "../../helpers/device";
 import HeaderRoutes from "./HeaderRoutes";
 
 const height = "50px";
@@ -25,7 +26,7 @@ const Fixed = styled.div`
   height: calc(${height} + env(safe-area-inset-top));
 
   // Allow header to be scrolled out of way on height contrained devices
-  @media (orientation: landscape) and (max-height: 500px) {
+  @media ${FIXED_HEADER_MEDIAQUERY} {
     position: relative;
   }
 

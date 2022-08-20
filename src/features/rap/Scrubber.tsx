@@ -4,7 +4,8 @@ import { faHandPointUp, faBolt } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
-import { isTouchDevice } from "../../helpers/device";
+import { headerIsFixed, isTouchDevice } from "../../helpers/device";
+import { smoothScrollBodyTo } from "../../helpers/scroll";
 
 const HowTo = styled.div`
   opacity: 0.3;
@@ -206,11 +207,27 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       setEnabled(false);
     }
 
-    if (enabled) {
-      document.addEventListener("scroll", onDocumentScroll);
-    } else {
-      document.removeEventListener("scroll", onDocumentScroll);
-    }
+    (async () => {
+      if (enabled) {
+        if (headerIsFixed()) {
+          await smoothScrollBodyTo(0);
+        } else if (
+          document.documentElement.scrollTop >
+          (document.querySelector("main")?.getBoundingClientRect()?.top || 0) +
+            document.documentElement.scrollTop
+        )
+          await smoothScrollBodyTo(
+            (document.querySelector("main")?.getBoundingClientRect()?.top ||
+              0) + document.documentElement.scrollTop
+          );
+
+        setTimeout(() => {
+          document.addEventListener("scroll", onDocumentScroll);
+        });
+      } else {
+        document.removeEventListener("scroll", onDocumentScroll);
+      }
+    })();
 
     return () => document.removeEventListener("scroll", onDocumentScroll);
   }, [enabled]);
