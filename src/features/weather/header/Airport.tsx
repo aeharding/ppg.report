@@ -31,32 +31,25 @@ const AirportContainer = styled.span<AirportContainerProps>`
   font-size: 0.7em;
   border-radius: 3px;
   padding: 0 1px;
+  border: 1px solid;
 
   ${({ category }) => {
     switch (category) {
       case FlightCategory.LIFR:
         return css`
           ${outputP3ColorFromRGB([255, 0, 255])}
-          border: 1px solid;
-          ${outputP3ColorFromRGB([255, 0, 255], "border-color")}
         `;
       case FlightCategory.IFR:
         return css`
           ${outputP3ColorFromRGB([255, 0, 0])}
-          border: 1px solid;
-          ${outputP3ColorFromRGB([255, 0, 0], "border-color")}
         `;
       case FlightCategory.MVFR:
         return css`
           ${outputP3ColorFromRGB([0, 150, 255])}
-          border: 1px solid;
-          ${outputP3ColorFromRGB([0, 150, 255], "border-color")}
         `;
       case FlightCategory.VFR:
         return css`
           ${outputP3ColorFromRGB([0, 255, 0])}
-          border: 1px solid;
-          ${outputP3ColorFromRGB([0, 255, 0], "border-color")}
         `;
     }
   }}
