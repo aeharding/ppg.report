@@ -152,6 +152,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
 
     scrubberTarget.addEventListener("touchstart", onScrubStart);
     scrubberTarget.addEventListener("touchmove", onScrubMove);
+    document.body.addEventListener("touchmove", onBodyMove);
 
     let interactionCount = 0;
 
@@ -180,6 +181,10 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       onScrub(e);
     }
 
+    function onBodyMove() {
+      setEnabled(false);
+    }
+
     function onScrub(e: TouchEvent) {
       e.stopPropagation();
 
@@ -201,46 +206,40 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
 
       scrubberTarget.removeEventListener("touchstart", onScrubStart);
       scrubberTarget.removeEventListener("touchmove", onScrubMove);
+      document.body.removeEventListener("touchmove", onBodyMove);
     }
 
     return unmount;
   }, [scrollViewRef, scrubberTargetRef, enabled]);
 
   useEffect(() => {
-    function onDocumentScroll() {
-      setEnabled(false);
-    }
-
     (async () => {
-      if (enabled) {
-        if (isLandscape()) {
-        } else if (headerIsFixed()) {
-          await smoothScrollBodyTo(0);
-        } else if (
-          document.documentElement.scrollTop >
+      if (!enabled) return;
+
+      if (isLandscape()) {
+      } else if (headerIsFixed()) {
+        await smoothScrollBodyTo(0);
+      } else if (
+        document.documentElement.scrollTop >
+        (document.querySelector("main")?.getBoundingClientRect()?.top || 0) +
+          document.documentElement.scrollTop
+      )
+        await smoothScrollBodyTo(
           (document.querySelector("main")?.getBoundingClientRect()?.top || 0) +
             document.documentElement.scrollTop
-        )
-          await smoothScrollBodyTo(
-            (document.querySelector("main")?.getBoundingClientRect()?.top ||
-              0) + document.documentElement.scrollTop
-          );
-
-        document.addEventListener("scroll", onDocumentScroll);
-      } else {
-        document.removeEventListener("scroll", onDocumentScroll);
-      }
+        );
     })();
-
-    return () => document.removeEventListener("scroll", onDocumentScroll);
   }, [enabled]);
 
   if (!isTouchDevice()) return <>{children}</>;
 
   return (
     <div
-      onClick={() => setEnabled(!enabled)}
-      onTouchMove={enabled ? () => setEnabled(false) : undefined}
+      onClick={() => {
+        if (!enabled && document.querySelector(".tippy-content")) return;
+
+        setEnabled(!enabled);
+      }}
     >
       {children}
       <HowTo>
