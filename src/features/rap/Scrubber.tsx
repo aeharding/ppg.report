@@ -244,7 +244,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       {children}
       <HowTo>
         {!enabled && <FontAwesomeIcon icon={faBolt} />} Tap report to{" "}
-        {enabled ? "close" : "open"} scrub
+        {enabled ? "close " : ""}scrub
       </HowTo>
       <CSSTransition
         timeout={150}
