@@ -77,7 +77,12 @@ export default function Table({ rap, rows }: TableProps) {
             placement="top"
             hideOnClick={false}
           >
-            <InteractTh onClick={() => dispatch(toggleAltitude())}>
+            <InteractTh
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(toggleAltitude());
+              }}
+            >
               Alt. ({altitudeType})
             </InteractTh>
           </Tippy>

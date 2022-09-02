@@ -1318,6 +1318,13 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.36"
 
+"@fortawesome/pro-solid-svg-icons@^5.15.4":
+  version "5.15.4"
+  resolved "https://harding.dev:23435/@fortawesome%2fpro-solid-svg-icons/-/pro-solid-svg-icons-5.15.4.tgz#bf0f54b5920e8a779684bc9e69617ef5259c00c9"
+  integrity sha512-ZlSg/RyAlwYJcsJlw2WfZSeOJ8GMKwIQ3ZY+GNFRZ+7pF+RRXxyZp2WIgUKhPK/M43SfSou6R6XdKZyz2xVVEQ==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.36"
+
 "@fortawesome/react-fontawesome@^0.1.15":
   version "0.1.15"
   resolved "https://harding.dev:23435/@fortawesome%2freact-fontawesome/-/react-fontawesome-0.1.15.tgz#1450b838f905981d721bf07e14e3b52c0e9a91ed"

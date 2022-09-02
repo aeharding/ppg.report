@@ -158,7 +158,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   }
 
   return (
-    <Container type={type}>
+    <Container type={type} onClick={(e) => e.stopPropagation()}>
       <>
         <AlertsIcon alerts={relevantAlerts} />
         <Weather weather={weather} date={date} />{" "}

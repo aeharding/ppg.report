@@ -9,7 +9,7 @@ import { css } from "@emotion/react/macro";
 import Spinner from "../shared/Spinner";
 import styled from "@emotion/styled/macro";
 
-const transitionName = "transition";
+const transitionName = "submit-loading";
 
 const transitionStyles = css`
   position: absolute;

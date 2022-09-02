@@ -10,6 +10,7 @@ import throttle from "lodash/throttle";
 import { Rap } from "gsl-parser";
 import ReportElevationDiscrepancy from "./ReportElevationDiscrepancy";
 import Extra from "./extra/Extra";
+import Scrubber from "./Scrubber";
 
 const browser = detect();
 
@@ -67,6 +68,12 @@ const Container = styled.div`
       }
     }
   `}
+
+  @media (any-hover: none) {
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
 
   scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.15);
 
@@ -295,23 +302,25 @@ export default function Hours({ rap }: TableProps) {
     <>
       <ReportElevationDiscrepancy />
 
-      <Container ref={scrollViewRef}>
-        <ScrollContainer>
-          <Nav
-            left
-            visible={scrollPosition !== ScrollPosition.Beginning}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => scroll(Direction.Back)}
-          />
-          {data}
-          <Nav
-            right
-            visible={scrollPosition !== ScrollPosition.End}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => scroll(Direction.Forward)}
-          />
-        </ScrollContainer>
-      </Container>
+      <Scrubber scrollViewRef={scrollViewRef}>
+        <Container ref={scrollViewRef}>
+          <ScrollContainer>
+            <Nav
+              left
+              visible={scrollPosition !== ScrollPosition.Beginning}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => scroll(Direction.Back)}
+            />
+            {data}
+            <Nav
+              right
+              visible={scrollPosition !== ScrollPosition.End}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => scroll(Direction.Forward)}
+            />
+          </ScrollContainer>
+        </Container>
+      </Scrubber>
 
       <Footer>
         <Extra />

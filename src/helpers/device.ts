@@ -4,6 +4,17 @@ export function isTouchDevice(): boolean {
   return window.matchMedia("(any-hover: none)").matches;
 }
 
+export function isLandscape(): boolean {
+  return window.matchMedia("(orientation: landscape)").matches;
+}
+
+export const FIXED_HEADER_MEDIAQUERY =
+  "(orientation: landscape) and (max-height: 500px)";
+
+export function headerIsFixed(): boolean {
+  return isInstalled() && !window.matchMedia(FIXED_HEADER_MEDIAQUERY).matches;
+}
+
 function parseCookies(): Record<string, string | undefined> {
   return Object.fromEntries(
     document.cookie.split("; ").map((x) => x.split("="))
