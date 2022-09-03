@@ -68,7 +68,7 @@ export default function Extra() {
             iconBg={[0, 255, 0]}
             iconColor="black"
             flag={unviewed}
-            loading={!discussion || typeof discussion !== "object"}
+            loading={discussion === "pending"}
           >
             Discussion
           </Item>
