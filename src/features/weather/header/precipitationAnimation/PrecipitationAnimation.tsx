@@ -15,16 +15,18 @@ const animation = keyframes`
 
 export default styled.div<{ chance: number; isSnow: boolean }>`
   position: absolute;
-  height: 100%;
-  width: 100%;
+  inset: 0;
   overflow: hidden;
   background-image: ${({ chance }) =>
     chance > 0.75
       ? `url(${snow1}), url(${snow2}), url(${snow3})`
       : `url(${snow1})`};
   background-size: ${({ isSnow }) => (isSnow ? "400px" : "150px")};
-  opacity: ${({ chance }) => (chance * 2 - 1) * 0.7};
+  opacity: ${({ chance }) => (chance * 2 - 0.6) * 0.8};
   z-index: -1;
+
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
 
   animation: ${animation} ${({ chance }) => (chance > 0.75 ? "8s" : "12s")}
     linear infinite;
