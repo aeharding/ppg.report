@@ -11,6 +11,7 @@ import { Rap } from "gsl-parser";
 import ReportElevationDiscrepancy from "./ReportElevationDiscrepancy";
 import Extra from "./extra/Extra";
 import Scrubber from "./Scrubber";
+import { hideAllTippy } from "../../helpers/tippy";
 
 const browser = detect();
 
@@ -227,6 +228,8 @@ export default function Hours({ rap }: TableProps) {
       position = ScrollPosition.End;
     }
     setScrollPosition(position);
+
+    hideAllTippy();
   }, 250);
 
   useEffect(() => {
