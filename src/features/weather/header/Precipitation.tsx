@@ -63,7 +63,11 @@ export default function Precipitation({
   return (
     <>
       {chance.value > 50 && (
-        <PrecipitationAnimation chance={chance.value / 100} isSnow={false} />
+        <PrecipitationAnimation
+          chance={chance.value / 100}
+          isSnow={false}
+          hasOverlay={headerType !== HeaderType.Normal}
+        />
       )}
 
       <Tippy
