@@ -9,6 +9,7 @@ import { outputP3ColorFromRGBA } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
+import PrecipitationAnimation from "./precipitationAnimation/PrecipitationAnimation";
 
 const colorScale = chroma
   .scale(["#ffffff88", "#ffffffff", "#006affff"])
@@ -60,20 +61,29 @@ export default function Precipitation({
   if (chance.value < 5) return <></>;
 
   return (
-    <Tippy content={`${chance.value}% chance precipitation`} placement="bottom">
-      <div>
-        <Micro
-          icon={
-            <RainIcon
-              headerType={headerType}
-              icon={faRaindrops}
-              chance={chance.value}
-            />
-          }
-        >
-          {body}
-        </Micro>
-      </div>
-    </Tippy>
+    <>
+      {chance.value > 50 && (
+        <PrecipitationAnimation chance={chance.value / 100} isSnow={false} />
+      )}
+
+      <Tippy
+        content={`${chance.value}% chance precipitation`}
+        placement="bottom"
+      >
+        <div>
+          <Micro
+            icon={
+              <RainIcon
+                headerType={headerType}
+                icon={faRaindrops}
+                chance={chance.value}
+              />
+            }
+          >
+            {body}
+          </Micro>
+        </div>
+      </Tippy>
+    </>
   );
 }

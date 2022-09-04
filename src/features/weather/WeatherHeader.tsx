@@ -25,11 +25,12 @@ export enum HeaderType {
 
 const Container = styled.div<{ type: HeaderType }>`
   width: 100%;
-  display: block;
   margin-top: -0.75rem;
   padding: 0 1.25rem;
   margin-bottom: 0.3rem;
   height: 3rem;
+  overflow: hidden;
+  position: relative;
 
   display: flex;
   align-items: center;
