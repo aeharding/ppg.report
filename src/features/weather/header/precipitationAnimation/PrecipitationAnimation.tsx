@@ -13,7 +13,11 @@ const animation = keyframes`
   }
 `;
 
-export default styled.div<{ chance: number; isSnow: boolean }>`
+export default styled.div<{
+  chance: number;
+  isSnow: boolean;
+  hasOverlay: boolean;
+}>`
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -22,7 +26,8 @@ export default styled.div<{ chance: number; isSnow: boolean }>`
       ? `url(${snow1}), url(${snow2}), url(${snow3})`
       : `url(${snow1})`};
   background-size: ${({ isSnow }) => (isSnow ? "400px" : "150px")};
-  opacity: ${({ chance }) => (chance * 2 - 0.6) * 0.8};
+  opacity: ${({ chance, hasOverlay }) =>
+    hasOverlay ? chance * 2 - 0.7 : (chance * 2 - 0.8) * 0.5};
   z-index: -1;
 
   border-top-left-radius: 1rem;
