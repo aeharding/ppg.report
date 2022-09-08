@@ -192,9 +192,10 @@ function getFlightCategory(
 
   let flightCategory = FlightCategory.VFR;
 
+  // according to https://aviationweather.gov/taf/help?page=plot
   if (height <= 3000 || distance <= 5) flightCategory = FlightCategory.MVFR;
-  if (height <= 1000 || distance <= 3) flightCategory = FlightCategory.IFR;
-  if (height <= 500 || distance <= 1) flightCategory = FlightCategory.LIFR;
+  if (height < 1000 || distance < 3) flightCategory = FlightCategory.IFR;
+  if (height < 500 || distance < 1) flightCategory = FlightCategory.LIFR;
 
   return flightCategory;
 }

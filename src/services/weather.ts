@@ -118,7 +118,8 @@ export function findValue<T>(
 function isBetweenWxTime(weatherInterval: string, date: Date): boolean {
   const [start, duration] = weatherInterval.split("/");
 
-  const end = addSeconds(new Date(start), toSeconds(parse(duration)));
+  // End should be exclusive, so minus 1 second
+  const end = addSeconds(new Date(start), toSeconds(parse(duration)) - 1);
 
   return isWithinInterval(date, { start: new Date(start), end });
 }

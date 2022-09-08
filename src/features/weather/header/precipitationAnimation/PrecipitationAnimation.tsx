@@ -33,7 +33,7 @@ export default styled.div<{
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 
-  animation: ${animation} ${({ chance }) => (chance > 0.75 ? "8s" : "12s")}
+  animation: ${animation} ${({ chance }) => (chance > 0.75 ? "6s" : "8s")}
     linear infinite;
   animation-delay: -${() => Math.random() * 5}s;
 
