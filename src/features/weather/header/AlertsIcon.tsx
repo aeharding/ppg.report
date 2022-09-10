@@ -2,11 +2,13 @@ import styled from "@emotion/styled/macro";
 import { faExclamationTriangle } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
-import { Feature } from "../weatherSlice";
+import { WeatherAlertFeature } from "../weatherSlice";
 import { isTouchDevice } from "../../../helpers/device";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
 import { lazy, Suspense } from "react";
 import Loading from "../../../shared/Loading";
+import { TFRFeature } from "../../../services/faa";
+import { isWeatherAlert } from "../../alerts/alertsSlice";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -22,7 +24,7 @@ const WarningIcon = styled(FontAwesomeIcon)`
 `;
 
 interface AlertsProps {
-  alerts: Feature[];
+  alerts: (WeatherAlertFeature | TFRFeature)[];
 }
 
 export default function AlertsIcon({ alerts }: AlertsProps) {
@@ -36,7 +38,7 @@ export default function AlertsIcon({ alerts }: AlertsProps) {
         return (
           <Tippy
             disabled={isTouchDevice()}
-            content={alerts[0].properties.headline}
+            content={getAlertName(alerts[0])}
             placement="bottom"
           >
             <Container>{icon}</Container>
@@ -49,7 +51,7 @@ export default function AlertsIcon({ alerts }: AlertsProps) {
             content={
               <ol>
                 {alerts.map((alert, index) => (
-                  <li key={index}>{alert.properties.headline}</li>
+                  <li key={index}>{getAlertName(alert)}</li>
                 ))}
               </ol>
             }
@@ -65,10 +67,21 @@ export default function AlertsIcon({ alerts }: AlertsProps) {
   }
 
   return (
-    <BottomSheet openButton={renderAlertIcon()} title="Active Weather Alerts">
+    <BottomSheet
+      openButton={renderAlertIcon()}
+      title="Active Weather Alerts &amp; TFRs"
+    >
       <Suspense fallback={<Loading />}>
         {alerts?.length ? <Alerts alerts={alerts} /> : ""}
       </Suspense>
     </BottomSheet>
   );
+}
+
+function getAlertName(
+  alert: WeatherAlertFeature | TFRFeature
+): string | undefined {
+  return isWeatherAlert(alert)
+    ? alert.properties.headline
+    : `TFR ${alert.properties.coreNOTAMData.notam.number}`;
 }

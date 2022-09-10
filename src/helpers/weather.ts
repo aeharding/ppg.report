@@ -1,17 +1,24 @@
-import { Feature } from "../features/weather/weatherSlice";
+import { isWeatherAlert } from "../features/alerts/alertsSlice";
+import { WeatherAlertFeature } from "../features/weather/weatherSlice";
+import { TFRFeature } from "../services/faa";
 
-export function isAlertDangerous(alert: Feature): boolean {
-  return (
-    !alert.properties.headline?.includes("Watch") &&
-    (alert.properties.severity === "Extreme" ||
-      alert.properties.severity === "Severe")
-  );
+export function isAlertDangerous(
+  alert: WeatherAlertFeature | TFRFeature
+): boolean {
+  return isWeatherAlert(alert)
+    ? !alert.properties.headline?.includes("Watch") &&
+        (alert.properties.severity === "Extreme" ||
+          alert.properties.severity === "Severe")
+    : true; // TODO not dangerous if not inside coordinates
 }
 
 /**
  * Most severe first
  */
-export function alertsBySeveritySortFn(a: Feature, b: Feature): number {
+export function alertsBySeveritySortFn(
+  a: WeatherAlertFeature | TFRFeature,
+  b: WeatherAlertFeature | TFRFeature
+): number {
   return (isAlertDangerous(b) ? 1 : 0) - (isAlertDangerous(a) ? 1 : 0);
 }
 

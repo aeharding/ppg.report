@@ -2,7 +2,9 @@ import styled from "@emotion/styled/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { Feature } from "../weather/weatherSlice";
+import { TFRFeature } from "../../services/faa";
+import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { isWeatherAlert } from "./alertsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -14,14 +16,32 @@ const Container = styled.div`
 `;
 
 interface TimesProps {
-  alert: Feature;
+  alert: WeatherAlertFeature | TFRFeature;
 }
 
 export default function Times({ alert }: TimesProps) {
   return (
     <Container>
-      <Time time={new Date(alert.properties.onset)}>Start</Time>
-      <Time time={new Date(alert.properties.ends || alert.properties.expires)}>
+      <Time
+        time={
+          new Date(
+            isWeatherAlert(alert)
+              ? alert.properties.onset
+              : alert.properties.coreNOTAMData.notam.effectiveStart
+          )
+        }
+      >
+        Start
+      </Time>
+      <Time
+        time={
+          isWeatherAlert(alert)
+            ? new Date(alert.properties.ends || alert.properties.expires)
+            : alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
+            ? undefined
+            : new Date(alert.properties.coreNOTAMData.notam.effectiveEnd)
+        }
+      >
         End
       </Time>
     </Container>
@@ -41,7 +61,7 @@ const TimeLabel = styled.div`
 
 interface TimeProps {
   children: React.ReactNode;
-  time: Date;
+  time?: Date;
 }
 
 function Time({ children, time }: TimeProps) {
@@ -52,8 +72,14 @@ function Time({ children, time }: TimeProps) {
   return (
     <div>
       <Label>{children}</Label>
-      <TimeLabel>{formatInTimeZone(time, timeZone, "p")}</TimeLabel>
-      <div>{formatInTimeZone(time, timeZone, "eeee, MMMM do")}</div>
+      <TimeLabel>
+        {time ? formatInTimeZone(time, timeZone, "p") : "Permanent"}
+      </TimeLabel>
+      {time ? (
+        <div>{formatInTimeZone(time, timeZone, "eeee, MMMM do")}</div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

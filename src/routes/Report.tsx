@@ -15,6 +15,7 @@ import {
   timeZoneSelector,
 } from "../features/weather/weatherSlice";
 import { differenceInHours, isPast } from "date-fns";
+import { getTFRs, clear as clearFaa } from "../features/faa/faaSlice";
 
 export default function Report() {
   const { lat, lon } = useParams<"lat" | "lon">();
@@ -46,10 +47,12 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
 
     dispatch(getRap(+lat, +lon));
     dispatch(getWeather(+lat, +lon));
+    dispatch(getTFRs(+lat, +lon));
 
     return () => {
       dispatch(clearWeather());
       dispatch(clearRap());
+      dispatch(clearFaa());
     };
   }, [dispatch, lat, lon]);
 

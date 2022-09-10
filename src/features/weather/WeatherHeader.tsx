@@ -15,7 +15,10 @@ import {
   alertsBySeveritySortFn,
   isAlertDangerous,
 } from "../../helpers/weather";
-import { addMinutes, startOfHour } from "date-fns";
+import { addMinutes, addYears, startOfHour } from "date-fns";
+import { alertsSelector, isWeatherAlert } from "../alerts/alertsSlice";
+import { WeatherAlertFeature } from "./weatherSlice";
+import { TFRFeature } from "../../services/faa";
 
 export enum HeaderType {
   Normal,
@@ -115,35 +118,21 @@ interface WeatherHeaderProps {
 
 export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weather = useAppSelector((state) => state.weather.weather);
-  const alerts = useAppSelector((state) => state.weather.alerts);
+  const alerts = useAppSelector(alertsSelector);
   const tafReport = useAppSelector(tafReportSelector);
 
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? alerts.features
-            .filter((alert) =>
-              isWithinInterval(new Date(date), {
-                start: startOfHour(new Date(alert.properties.onset)),
-                end: addMinutes(
-                  new Date(alert.properties.ends || alert.properties.expires),
-                  -1
-                ),
-              })
-            )
+        ? alerts
+            .filter((alert) => isAlertActive(alert, date))
             .sort(alertsBySeveritySortFn)
         : undefined,
     [alerts, date]
   );
 
-  if (weather === "failed" || alerts === "failed") return <></>;
-  if (
-    !weather ||
-    weather === "pending" ||
-    !alerts ||
-    alerts === "pending" ||
-    !relevantAlerts
-  )
+  if (weather === "failed") return <></>;
+  if (!weather || weather === "pending" || !relevantAlerts)
     return (
       <Container type={HeaderType.Normal}>
         <Loading>Loading...</Loading>
@@ -170,4 +159,31 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
       </>
     </Container>
   );
+}
+
+function isAlertActive(
+  alert: WeatherAlertFeature | TFRFeature,
+  date: string
+): boolean {
+  if (isWeatherAlert(alert))
+    return isWithinInterval(new Date(date), {
+      start: startOfHour(new Date(alert.properties.onset)),
+      end: addMinutes(
+        new Date(alert.properties.ends || alert.properties.expires),
+        -1
+      ),
+    });
+
+  return isWithinInterval(new Date(date), {
+    start: startOfHour(
+      new Date(alert.properties.coreNOTAMData.notam.effectiveStart)
+    ),
+    end:
+      alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
+        ? addYears(new Date(), 10)
+        : addMinutes(
+            new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
+            -1
+          ),
+  });
 }

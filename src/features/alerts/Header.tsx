@@ -6,7 +6,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { isAlertDangerous } from "../../helpers/weather";
-import { Feature } from "../weather/weatherSlice";
+import { TFRFeature } from "../../services/faa";
+import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { isWeatherAlert } from "./alertsSlice";
 import Times from "./Times";
 
 const Container = styled.div<{ warning: boolean }>`
@@ -67,34 +69,71 @@ const Aside = styled.div`
 `;
 
 interface HeaderProps {
-  alert: Feature;
+  alert: WeatherAlertFeature | TFRFeature;
   aside: React.ReactNode;
 }
 
 export default function Header({ alert, aside }: HeaderProps) {
+  return (
+    <Container warning={isAlertDangerous(alert)}>
+      <Headline>
+        {isWeatherAlert(alert) ? (
+          <WeatherHeadline alert={alert} />
+        ) : (
+          <TFRHeadline alert={alert} />
+        )}
+        <Aside>{aside}</Aside>
+      </Headline>
+
+      <Times alert={alert} />
+    </Container>
+  );
+}
+
+function WeatherHeadline({ alert }: { alert: WeatherAlertFeature }) {
   const awips = alert.properties.parameters.AWIPSidentifier[0];
 
   const product = awips.substring(0, 3);
   const site = awips.substring(3);
 
   return (
-    <Container warning={isAlertDangerous(alert)}>
-      <Headline>
-        <WarningIcon icon={faExclamationTriangle} />{" "}
-        <Link
-          href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Name>
-            <EventName>{alert.properties.event}</EventName>&nbsp;
-            <OpenIcon icon={faExternalLink} />
-          </Name>
-        </Link>
-        <Aside>{aside}</Aside>
-      </Headline>
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link
+        href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Name>
+          <EventName>{alert.properties.event}</EventName>&nbsp;
+          <OpenIcon icon={faExternalLink} />
+        </Name>
+      </Link>
+    </>
+  );
+}
 
-      <Times alert={alert} />
-    </Container>
+function TFRHeadline({ alert }: { alert: TFRFeature }) {
+  return (
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link
+        href={`https://tfr.faa.gov/save_pages/detail_${alert.properties.coreNOTAMData.notam.number.replace(
+          /\//g,
+          "_"
+        )}.html`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Name>
+          <EventName>
+            TFR {alert.properties.coreNOTAMData.notam.classification}{" "}
+            {alert.properties.coreNOTAMData.notam.number}
+          </EventName>
+          &nbsp;
+          <OpenIcon icon={faExternalLink} />
+        </Name>
+      </Link>
+    </>
   );
 }

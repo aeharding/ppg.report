@@ -118,10 +118,10 @@ export type AlertsResult =
   | "failed";
 
 export interface Alerts {
-  features: Feature[];
+  features: WeatherAlertFeature[];
 }
 
-export interface Feature {
+export interface WeatherAlertFeature {
   properties: {
     id: string;
     sent: string;
