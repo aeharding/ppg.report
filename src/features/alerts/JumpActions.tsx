@@ -25,8 +25,9 @@ export default function JumpActions() {
   const [scrollState, setScrollState] = useState(ScrollState.Start);
 
   function jumpTo(offset: number) {
-    const scrollView =
-      document.querySelector<HTMLDivElement>("[data-rsbs-scroll]");
+    const scrollView = [
+      ...document.querySelectorAll<HTMLDivElement>("[data-rsbs-scroll]"),
+    ].pop();
     const sections = [...scrollView!.querySelectorAll("section")];
 
     let currentSectionIndex = sections.findIndex(
@@ -54,8 +55,9 @@ export default function JumpActions() {
   }
 
   useLayoutEffect(() => {
-    const scrollView =
-      document.querySelector<HTMLDivElement>("[data-rsbs-scroll]");
+    const scrollView = [
+      ...document.querySelectorAll<HTMLDivElement>("[data-rsbs-scroll]"),
+    ].pop();
 
     const onScroll = throttle(() => {
       const sections = [...scrollView!.querySelectorAll("section")];

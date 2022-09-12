@@ -31,7 +31,7 @@ const Container = styled.div`
   justify-content: space-around;
   gap: 1rem;
 
-  max-width: 560px;
+  max-width: 570px;
   width: 100%;
   margin: 0 auto;
 `;
