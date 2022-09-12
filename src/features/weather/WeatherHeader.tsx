@@ -135,6 +135,10 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     [alerts, date]
   );
 
+  const unreadAlerts = relevantAlerts.filter(
+    (alert) => !readAlerts[getReadAlertKey(alert)]
+  );
+
   if (weather === "failed") return <></>;
   if (
     !weather ||
@@ -152,7 +156,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     ? HeaderType.Warning
     : HeaderType.Normal;
 
-  if (relevantAlerts.filter(isAlertDangerous).length) {
+  if (unreadAlerts.filter(isAlertDangerous).length) {
     type = HeaderType.Danger;
   }
 
