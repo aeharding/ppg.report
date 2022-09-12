@@ -13,6 +13,7 @@ import Extra from "./extra/Extra";
 import Scrubber from "./Scrubber";
 import { isEqual, startOfHour } from "date-fns";
 import ReportStale from "./warnings/ReportStale";
+import Errors from "./Errors";
 
 const browser = detect();
 
@@ -135,7 +136,7 @@ const Footer = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  padding: 0 var(--right-safe-area) 0 var(--left-safe-area);
 
   color: var(--softText);
   font-size: 0.8em;
@@ -145,7 +146,7 @@ const Footer = styled.div`
   flex-direction: column;
 
   @media (max-width: 700px) {
-    text-align: left;
+    text-align: center;
   }
 `;
 
@@ -360,6 +361,8 @@ export default function Hours({ rap }: TableProps) {
       </Scrubber>
 
       <Footer>
+        <Errors />
+
         <Extra />
 
         <ReportWatchdog rap={rap} />

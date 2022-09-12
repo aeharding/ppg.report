@@ -31,7 +31,7 @@ const Container = styled.div`
   justify-content: space-around;
   gap: 1rem;
 
-  max-width: 600px;
+  max-width: 560px;
   width: 100%;
   margin: 0 auto;
 `;
@@ -108,7 +108,6 @@ export default function Extra() {
 const ItemContainer = styled.div<{ selected?: boolean; loading?: boolean }>`
   display: flex;
   align-items: center;
-  margin: 0 1rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.08);
   text-align: center;

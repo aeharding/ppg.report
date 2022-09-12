@@ -120,6 +120,8 @@ interface WeatherHeaderProps {
 export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weather = useAppSelector((state) => state.weather.weather);
   const alerts = useAppSelector(alertsSelector);
+  const weatherAlerts = useAppSelector((state) => state.weather.alerts);
+  const tfrs = useAppSelector((state) => state.faa.tfrs);
   const tafReport = useAppSelector(tafReportSelector);
   const readAlerts = useAppSelector((state) => state.user.readAlerts);
 
@@ -129,12 +131,17 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         ? alerts
             .filter((alert) => isAlertActive(alert, date))
             .sort(alertsBySeveritySortFn)
-        : undefined,
+        : [],
     [alerts, date]
   );
 
   if (weather === "failed") return <></>;
-  if (!weather || weather === "pending" || !relevantAlerts)
+  if (
+    !weather ||
+    weather === "pending" ||
+    weatherAlerts === "pending" ||
+    tfrs === "pending"
+  )
     return (
       <Container type={HeaderType.Normal}>
         <Loading>Loading...</Loading>
