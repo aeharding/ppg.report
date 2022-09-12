@@ -111,9 +111,17 @@ export const getRap =
 
       dispatch(rapReceived(rap));
     } catch (error) {
-      if (!(error instanceof GslError)) throw error;
+      if (!(error instanceof GslError)) {
+        dispatch(rapFailed());
 
-      if (error instanceof CoordinatesGslError) dispatch(rapBadCoordinates());
+        throw error;
+      }
+
+      if (error instanceof CoordinatesGslError) {
+        dispatch(rapBadCoordinates());
+
+        throw error;
+      }
 
       dispatch(rapFailed());
 
