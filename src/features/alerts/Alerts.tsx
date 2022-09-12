@@ -19,21 +19,11 @@ export default function Alerts({ alerts }: AlertsProps) {
   return (
     <AlertsContainer>
       {alerts?.map((alert, index) => (
-        <section>
+        <section key={index}>
           {isWeatherAlert(alert) ? (
-            <WeatherAlert
-              alert={alert}
-              key={index}
-              index={index}
-              total={alerts.length}
-            />
+            <WeatherAlert alert={alert} index={index} total={alerts.length} />
           ) : (
-            <TFRAlert
-              alert={alert}
-              key={index}
-              index={index}
-              total={alerts.length}
-            />
+            <TFRAlert alert={alert} index={index} total={alerts.length} />
           )}
         </section>
       ))}

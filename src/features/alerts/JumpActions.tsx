@@ -96,6 +96,7 @@ export default function JumpActions() {
     }, 100);
 
     onScroll();
+    setTimeout(() => onScroll(), 0);
     scrollView?.addEventListener("scroll", onScroll);
 
     return () => scrollView?.removeEventListener("scroll", onScroll);
