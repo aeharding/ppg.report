@@ -18,23 +18,25 @@ interface AlertsProps {
 export default function Alerts({ alerts }: AlertsProps) {
   return (
     <AlertsContainer>
-      {alerts?.map((alert, index) =>
-        isWeatherAlert(alert) ? (
-          <WeatherAlert
-            alert={alert}
-            key={index}
-            index={index}
-            total={alerts.length}
-          />
-        ) : (
-          <TFRAlert
-            alert={alert}
-            key={index}
-            index={index}
-            total={alerts.length}
-          />
-        )
-      )}
+      {alerts?.map((alert, index) => (
+        <section>
+          {isWeatherAlert(alert) ? (
+            <WeatherAlert
+              alert={alert}
+              key={index}
+              index={index}
+              total={alerts.length}
+            />
+          ) : (
+            <TFRAlert
+              alert={alert}
+              key={index}
+              index={index}
+              total={alerts.length}
+            />
+          )}
+        </section>
+      ))}
     </AlertsContainer>
   );
 }

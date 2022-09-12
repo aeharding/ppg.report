@@ -17,9 +17,10 @@ const Container = styled.div`
 
 interface TimesProps {
   alert: WeatherAlertFeature | TFRFeature;
+  includeYear: boolean;
 }
 
-export default function Times({ alert }: TimesProps) {
+export default function Times({ alert, includeYear }: TimesProps) {
   return (
     <Container>
       <Time
@@ -30,6 +31,7 @@ export default function Times({ alert }: TimesProps) {
               : alert.properties.coreNOTAMData.notam.effectiveStart
           )
         }
+        includeYear={includeYear}
       >
         Start
       </Time>
@@ -41,6 +43,7 @@ export default function Times({ alert }: TimesProps) {
             ? undefined
             : new Date(alert.properties.coreNOTAMData.notam.effectiveEnd)
         }
+        includeYear={includeYear}
       >
         End
       </Time>
@@ -62,9 +65,10 @@ const TimeLabel = styled.div`
 interface TimeProps {
   children: React.ReactNode;
   time?: Date;
+  includeYear: boolean;
 }
 
-function Time({ children, time }: TimeProps) {
+function Time({ children, time, includeYear }: TimeProps) {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
 
   if (!timeZone) throw new Error("timezone must be defined");
@@ -76,7 +80,13 @@ function Time({ children, time }: TimeProps) {
         {time ? formatInTimeZone(time, timeZone, "p") : "Permanent"}
       </TimeLabel>
       {time ? (
-        <div>{formatInTimeZone(time, timeZone, "eeee, MMMM do")}</div>
+        <div>
+          {formatInTimeZone(
+            time,
+            timeZone,
+            includeYear ? "eeee, MMMM do yyyy" : "eeee, MMMM do"
+          )}
+        </div>
       ) : (
         ""
       )}

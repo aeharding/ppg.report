@@ -19,6 +19,7 @@ import { addMinutes, addYears, startOfHour } from "date-fns";
 import { alertsSelector, isWeatherAlert } from "../alerts/alertsSlice";
 import { WeatherAlertFeature } from "./weatherSlice";
 import { TFRFeature } from "../../services/faa";
+import { getReadAlertKey } from "../user/storage";
 
 export enum HeaderType {
   Normal,
@@ -120,6 +121,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weather = useAppSelector((state) => state.weather.weather);
   const alerts = useAppSelector(alertsSelector);
   const tafReport = useAppSelector(tafReportSelector);
+  const readAlerts = useAppSelector((state) => state.user.readAlerts);
 
   const relevantAlerts = useMemo(
     () =>
@@ -147,10 +149,13 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     type = HeaderType.Danger;
   }
 
+  if (relevantAlerts.every((alert) => readAlerts[getReadAlertKey(alert)]))
+    type = HeaderType.Normal;
+
   return (
     <Container type={type} onClick={(e) => e.stopPropagation()}>
       <>
-        <AlertsIcon alerts={relevantAlerts} />
+        <AlertsIcon alerts={relevantAlerts} date={date} />
         <Weather weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
         <Precipitation headerType={type} weather={weather} date={date} />{" "}

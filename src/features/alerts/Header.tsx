@@ -4,12 +4,17 @@ import {
   faExternalLink,
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import useDebounce from "../../helpers/useDebounce";
 import { isAlertDangerous } from "../../helpers/weather";
+import { useAppDispatch } from "../../hooks";
 import { TFRFeature } from "../../services/faa";
+import { readAlert } from "../user/userSlice";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
 import { isWeatherAlert } from "./alertsSlice";
 import Times from "./Times";
+import UnreadIndicator from "./UnreadIndicator";
 
 const Container = styled.div<{ warning: boolean }>`
   position: sticky;
@@ -59,6 +64,13 @@ const OpenIcon = styled(FontAwesomeIcon)`
 
 const Aside = styled.div`
   margin-left: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const AlertOrderContainer = styled.div`
   font-size: 0.8em;
   padding: 2px 4px;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -70,22 +82,46 @@ const Aside = styled.div`
 
 interface HeaderProps {
   alert: WeatherAlertFeature | TFRFeature;
-  aside: React.ReactNode;
+  index: number;
+  total: number;
+  includeYear?: boolean;
 }
 
-export default function Header({ alert, aside }: HeaderProps) {
+export default function Header({
+  alert,
+  index,
+  total,
+  includeYear,
+}: HeaderProps) {
+  const dispatch = useAppDispatch();
+  const { ref, inView } = useInView({ threshold: 1 });
+  const inViewDebounced = useDebounce(inView, 1000);
+
+  useEffect(() => {
+    if (!inViewDebounced) return;
+
+    dispatch(readAlert(alert));
+  }, [inViewDebounced, dispatch, alert]);
+
   return (
-    <Container warning={isAlertDangerous(alert)}>
+    <Container warning={isAlertDangerous(alert)} ref={ref}>
       <Headline>
         {isWeatherAlert(alert) ? (
           <WeatherHeadline alert={alert} />
         ) : (
           <TFRHeadline alert={alert} />
         )}
-        <Aside>{aside}</Aside>
+
+        <Aside>
+          <UnreadIndicator alert={alert} />
+
+          <AlertOrderContainer>
+            {index + 1} of {total}
+          </AlertOrderContainer>
+        </Aside>
       </Headline>
 
-      <Times alert={alert} />
+      <Times alert={alert} includeYear={!!includeYear} />
     </Container>
   );
 }

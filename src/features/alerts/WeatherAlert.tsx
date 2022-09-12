@@ -62,16 +62,16 @@ export default function WeatherAlert({ alert, index, total }: AlertProps) {
           </StyledMapContainer>
         )}
 
-        <Header alert={alert} aside={`${index + 1} of ${total}`} />
+        <Header alert={alert} index={index} total={total} />
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
           {undoFixedWidthText(alert.properties.description)}
           {alert.properties.instruction
             ? `
 
-            PRECAUTIONARY/PREPAREDNESS ACTIONS...
+          PRECAUTIONARY/PREPAREDNESS ACTIONS...
 
-            ${undoFixedWidthText(alert.properties.instruction)}`
+          ${undoFixedWidthText(alert.properties.instruction)}`
             : ""}
         </StyledLinkify>
       </Title>
