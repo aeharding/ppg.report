@@ -11,10 +11,7 @@ import Weather from "./header/Weather";
 import AlertsIcon from "./header/AlertsIcon";
 import { tafReport as tafReportSelector } from "./weatherSliceLazy";
 import Wind from "./header/Wind";
-import {
-  alertsBySeveritySortFn,
-  isAlertDangerous,
-} from "../../helpers/weather";
+import { isAlertDangerous, sortAlerts } from "../../helpers/weather";
 import { addMinutes, addYears, startOfHour } from "date-fns";
 import { alertsSelector, isWeatherAlert } from "../alerts/alertsSlice";
 import { WeatherAlertFeature } from "./weatherSlice";
@@ -128,9 +125,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? alerts
-            .filter((alert) => isAlertActive(alert, date))
-            .sort(alertsBySeveritySortFn)
+        ? sortAlerts(alerts.filter((alert) => isAlertActive(alert, date)))
         : [],
     [alerts, date]
   );

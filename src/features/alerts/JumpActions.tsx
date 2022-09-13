@@ -6,6 +6,9 @@ import throttle from "lodash/throttle";
 import { useLayoutEffect, useState } from "react";
 
 const Button = styled(FontAwesomeIcon)<{ disabled: boolean }>`
+  padding: 0 1rem;
+  box-sizing: content-box;
+
   ${({ disabled }) =>
     disabled &&
     css`

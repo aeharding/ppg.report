@@ -65,10 +65,9 @@ const Unread = styled.div`
 
 const Actions = styled.div`
   margin-left: auto;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 
   display: flex;
-  gap: 1.5rem;
   align-items: center;
 
   color: #0080ff;

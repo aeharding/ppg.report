@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy";
 import { isWeatherAlert } from "../features/alerts/alertsSlice";
 import { WeatherAlertFeature } from "../features/weather/weatherSlice";
 import { TFRFeature } from "../services/faa";
@@ -15,11 +16,14 @@ export function isAlertDangerous(
 /**
  * Most severe first
  */
-export function alertsBySeveritySortFn(
-  a: WeatherAlertFeature | TFRFeature,
-  b: WeatherAlertFeature | TFRFeature
-): number {
-  return (isAlertDangerous(b) ? 1 : 0) - (isAlertDangerous(a) ? 1 : 0);
+export function sortAlerts(
+  alerts: (WeatherAlertFeature | TFRFeature)[]
+): (WeatherAlertFeature | TFRFeature)[] {
+  return sortBy(alerts, (alert) =>
+    isWeatherAlert(alert)
+      ? -new Date(alert.properties.sent).getTime()
+      : -new Date(alert.properties.coreNOTAMData.notam.issued).getTime()
+  );
 }
 
 /**
