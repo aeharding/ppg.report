@@ -1,8 +1,6 @@
 import styled from "@emotion/styled/macro";
-import {
-  faExclamationTriangle,
-  faExternalLink,
-} from "@fortawesome/pro-light-svg-icons";
+import { faExternalLink } from "@fortawesome/pro-regular-svg-icons";
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
@@ -19,6 +17,7 @@ import UnreadIndicator from "./UnreadIndicator";
 const Container = styled.div<{ warning: boolean }>`
   position: sticky;
   top: 0;
+  z-index: 1;
 
   padding: 1rem;
   background: ${({ warning }) => (warning ? "#6e0101" : "#6e6701")};

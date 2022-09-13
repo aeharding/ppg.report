@@ -30,6 +30,11 @@ const StyledMapContainer = styled(MapContainer)`
   pointer-events: none;
 `;
 
+const Disclaimer = styled.p`
+  font-size: 0.9rem;
+  opacity: 0.8;
+`;
+
 interface AlertProps {
   alert: TFRFeature;
   index: number;
@@ -63,6 +68,21 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
         <Header alert={alert} index={index} total={total} includeYear />
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
+          <Disclaimer>
+            <strong>Important:</strong>{" "}
+            <i>
+              PPG.report may not show all active TFRs, and does not show
+              sporting event TFRs. It is the pilot’s responsibility to check{" "}
+              <a
+                href="https://tfr.faa.gov"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                tfr.faa.gov
+              </a>{" "}
+              before flying.
+            </i>
+          </Disclaimer>
           {undoFixedWidthText(alert.properties.coreNOTAMData.notam.text)}
         </StyledLinkify>
       </Title>
