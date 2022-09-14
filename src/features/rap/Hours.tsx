@@ -1,6 +1,6 @@
 import styled from "@emotion/styled/macro";
 import { detect } from "detect-browser";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Hour from "./Hour";
 import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
@@ -8,9 +8,11 @@ import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
 import throttle from "lodash/throttle";
 import { Rap } from "gsl-parser";
-import ReportElevationDiscrepancy from "./ReportElevationDiscrepancy";
+import ReportElevationDiscrepancy from "./warnings/ReportElevationDiscrepancy";
 import Extra from "./extra/Extra";
 import Scrubber from "./Scrubber";
+import { isEqual, startOfHour } from "date-fns";
+import ReportStale from "./warnings/ReportStale";
 
 const browser = detect();
 
@@ -18,6 +20,7 @@ enum ScrollPosition {
   Beginning,
   Middle,
   End,
+  None,
 }
 
 enum Direction {
@@ -41,6 +44,9 @@ const minHourWidth = 350;
 const ScrollContainer = styled.div`
   position: relative;
   display: flex;
+
+  flex: 1;
+  justify-content: center;
 `;
 
 const Container = styled.div`
@@ -218,7 +224,9 @@ export default function Hours({ rap }: TableProps) {
     if (!scrollView) return;
 
     let position: ScrollPosition = ScrollPosition.Middle;
-    if (scrollView.scrollLeft <= 200) {
+    if (scrollView.scrollWidth <= scrollView.clientWidth + 5) {
+      position = ScrollPosition.None;
+    } else if (scrollView.scrollLeft <= 200) {
       position = ScrollPosition.Beginning;
     } else if (
       scrollView.scrollLeft >=
@@ -229,6 +237,26 @@ export default function Hours({ rap }: TableProps) {
     setScrollPosition(position);
   }, 250);
 
+  // Focus current time of day when opening the report
+  useLayoutEffect(() => {
+    const scrollView = scrollViewRef.current;
+    if (!scrollView) return;
+
+    const index = rap.findIndex((rapLine) =>
+      isEqual(new Date(rapLine.date), startOfHour(new Date()))
+    );
+
+    if (index === -1 || scrollView.scrollLeft) return;
+
+    scrollView.scrollTo({
+      left:
+        scrollView.querySelectorAll("section")[index].offsetLeft -
+        scrollView.offsetLeft,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const scrollView = scrollViewRef.current;
     if (!scrollView) return;
@@ -236,7 +264,11 @@ export default function Hours({ rap }: TableProps) {
     onScroll();
 
     scrollView.addEventListener("scroll", onScroll);
-    return () => scrollView.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      scrollView.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollViewRef]);
 
@@ -301,23 +333,28 @@ export default function Hours({ rap }: TableProps) {
   return (
     <>
       <ReportElevationDiscrepancy />
+      <ReportStale />
 
       <Scrubber scrollViewRef={scrollViewRef}>
         <Container ref={scrollViewRef}>
           <ScrollContainer>
-            <Nav
-              left
-              visible={scrollPosition !== ScrollPosition.Beginning}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => scroll(Direction.Back)}
-            />
+            {scrollPosition !== ScrollPosition.None && (
+              <Nav
+                left
+                visible={scrollPosition !== ScrollPosition.Beginning}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => scroll(Direction.Back)}
+              />
+            )}
             {data}
-            <Nav
-              right
-              visible={scrollPosition !== ScrollPosition.End}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => scroll(Direction.Forward)}
-            />
+            {scrollPosition !== ScrollPosition.None && (
+              <Nav
+                right
+                visible={scrollPosition !== ScrollPosition.End}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => scroll(Direction.Forward)}
+              />
+            )}
           </ScrollContainer>
         </Container>
       </Scrubber>
