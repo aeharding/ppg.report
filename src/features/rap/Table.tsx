@@ -9,7 +9,7 @@ import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
-import { ELEVATION_DISCREPANCY_THRESHOLD } from "./ReportElevationDiscrepancy";
+import { ELEVATION_DISCREPANCY_THRESHOLD } from "./warnings/ReportElevationDiscrepancy";
 
 const TableEl = styled.table`
   width: 100%;

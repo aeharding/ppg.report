@@ -3,55 +3,18 @@ import { faMountains, faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { outputP3ColorFromRGB } from "../../helpers/colors";
-import { useAppSelector } from "../../hooks";
-import { metersToFeet } from "./cells/Altitude";
+import { outputP3ColorFromRGB } from "../../../helpers/colors";
+import { useAppSelector } from "../../../hooks";
+import { metersToFeet } from "../cells/Altitude";
+import { Container, Icon, WarningMessage } from "./styles";
 
 /**
  * in meters
  */
 export const ELEVATION_DISCREPANCY_THRESHOLD = 160;
 
-const Container = styled.div`
-  margin: 0 auto;
-  max-width: 900px;
-`;
-
-const WarningMessage = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 1em;
-  margin: 1em;
-  gap: 1em;
-  position: relative;
-
-  font-size: 0.9em;
-
-  @media (max-width: 660px) {
-    display: block;
-    text-align: justify;
-
-    margin: 0 0 1rem;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-
-    font-size: 0.8em;
-  }
-
+const StyledWarningMessage = styled(WarningMessage)`
   ${outputP3ColorFromRGB([0, 200, 200])}
-  background: #010f26a0;
-  border-color: #000064;
-  border: 1px solid;
-  border-radius: 1em;
-`;
-
-const MountainIcon = styled(FontAwesomeIcon)`
-  font-size: 1.5em;
-
-  @media (max-width: 660px) {
-    display: none;
-  }
 `;
 
 const CloseButton = styled.button`
@@ -102,8 +65,8 @@ export default function ReportElevationDiscrepancy() {
 
   return (
     <Container>
-      <WarningMessage>
-        <MountainIcon icon={faMountains} />
+      <StyledWarningMessage>
+        <Icon icon={faMountains} />
         <CloseButton onClick={close}>
           <FontAwesomeIcon icon={faTimes} />
         </CloseButton>
@@ -121,7 +84,7 @@ export default function ReportElevationDiscrepancy() {
           that weather data may be innacurate due to local atmospheric
           conditions that differ from those in the surrounding areas.
         </div>
-      </WarningMessage>
+      </StyledWarningMessage>
     </Container>
   );
 }
