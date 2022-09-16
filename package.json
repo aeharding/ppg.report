@@ -1,6 +1,6 @@
 {
   "name": "ppg.report",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "proxy": "https://ppg.report",
   "license": "MIT",
   "private": true,
