@@ -57,6 +57,7 @@ Using a reverse proxy such as Nginx, configure the following:
   - GET `/api/weather/{proxy+}` ➡ `https://api.weather.gov/{proxy}` Greedy path capturing, forwards to api.weather.gov.
   - GET `/api/pqs` ➡ `https://nationalmap.gov/epqs/pqs.php` Get United States altitude information for a given geolocation.
   - GET `/api/googleelevation` ➡ `https://maps.googleapis.com/maps/api/elevation/json` Get global altitude information for a given geolocation (backup API).
+  - GET `/api/tfr` ➡ self-hosted [tfr-scraper](https://github.com/aeharding/tfr-scraper)
 - **IMPORTANT!** For each outgoing API request, make sure to:
   - Attach a `User-Agent` header, as per [NOAA](https://www.weather.gov/documentation/services-web-api) and [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) usage policies.
   - **Keep these free APIs free - be a good API consumer!** Add caching for each route - I recommend at least 10 minutes for `rucsoundings.noaa.gov`, and one week for `nominatim.openstreetmap.org`.

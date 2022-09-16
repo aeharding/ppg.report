@@ -1,18 +1,29 @@
-import { Feature } from "../features/weather/weatherSlice";
+import sortBy from "lodash/sortBy";
+import { isWeatherAlert } from "../features/alerts/alertsSlice";
+import { WeatherAlertFeature } from "../features/weather/weatherSlice";
+import { TFRFeature } from "../services/faa";
 
-export function isAlertDangerous(alert: Feature): boolean {
-  return (
-    !alert.properties.headline?.includes("Watch") &&
-    (alert.properties.severity === "Extreme" ||
-      alert.properties.severity === "Severe")
-  );
+export function isAlertDangerous(
+  alert: WeatherAlertFeature | TFRFeature
+): boolean {
+  return isWeatherAlert(alert)
+    ? !alert.properties.headline?.includes("Watch") &&
+        (alert.properties.severity === "Extreme" ||
+          alert.properties.severity === "Severe")
+    : true; // TODO not dangerous if not inside coordinates
 }
 
 /**
  * Most severe first
  */
-export function alertsBySeveritySortFn(a: Feature, b: Feature): number {
-  return (isAlertDangerous(b) ? 1 : 0) - (isAlertDangerous(a) ? 1 : 0);
+export function sortAlerts(
+  alerts: (WeatherAlertFeature | TFRFeature)[]
+): (WeatherAlertFeature | TFRFeature)[] {
+  return sortBy(alerts, (alert) =>
+    isWeatherAlert(alert)
+      ? -new Date(alert.properties.sent).getTime()
+      : -new Date(alert.properties.coreNOTAMData.notam.issued).getTime()
+  );
 }
 
 /**

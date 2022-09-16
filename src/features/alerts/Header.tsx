@@ -1,17 +1,23 @@
 import styled from "@emotion/styled/macro";
-import {
-  faExclamationTriangle,
-  faExternalLink,
-} from "@fortawesome/pro-light-svg-icons";
+import { faExternalLink } from "@fortawesome/pro-regular-svg-icons";
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import useDebounce from "../../helpers/useDebounce";
 import { isAlertDangerous } from "../../helpers/weather";
-import { Feature } from "../weather/weatherSlice";
+import { useAppDispatch } from "../../hooks";
+import { TFRFeature } from "../../services/faa";
+import { readAlert } from "../user/userSlice";
+import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { isWeatherAlert } from "./alertsSlice";
 import Times from "./Times";
+import UnreadIndicator from "./UnreadIndicator";
 
 const Container = styled.div<{ warning: boolean }>`
   position: sticky;
   top: 0;
+  z-index: 1;
 
   padding: 1rem;
   background: ${({ warning }) => (warning ? "#6e0101" : "#6e6701")};
@@ -57,6 +63,13 @@ const OpenIcon = styled(FontAwesomeIcon)`
 
 const Aside = styled.div`
   margin-left: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const AlertOrderContainer = styled.div`
   font-size: 0.8em;
   padding: 2px 4px;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -67,34 +80,95 @@ const Aside = styled.div`
 `;
 
 interface HeaderProps {
-  alert: Feature;
-  aside: React.ReactNode;
+  alert: WeatherAlertFeature | TFRFeature;
+  index: number;
+  total: number;
+  includeYear?: boolean;
 }
 
-export default function Header({ alert, aside }: HeaderProps) {
+export default function Header({
+  alert,
+  index,
+  total,
+  includeYear,
+}: HeaderProps) {
+  const dispatch = useAppDispatch();
+  const { ref, inView } = useInView({ threshold: 1 });
+  const inViewDebounced = useDebounce(inView, 1000);
+
+  useEffect(() => {
+    if (!inViewDebounced) return;
+
+    dispatch(readAlert(alert));
+  }, [inViewDebounced, dispatch, alert]);
+
+  return (
+    <Container warning={isAlertDangerous(alert)} ref={ref}>
+      <Headline>
+        {isWeatherAlert(alert) ? (
+          <WeatherHeadline alert={alert} />
+        ) : (
+          <TFRHeadline alert={alert} />
+        )}
+
+        <Aside>
+          <UnreadIndicator alert={alert} />
+
+          <AlertOrderContainer>
+            {index + 1} of {total}
+          </AlertOrderContainer>
+        </Aside>
+      </Headline>
+
+      <Times alert={alert} includeYear={!!includeYear} />
+    </Container>
+  );
+}
+
+function WeatherHeadline({ alert }: { alert: WeatherAlertFeature }) {
   const awips = alert.properties.parameters.AWIPSidentifier[0];
 
   const product = awips.substring(0, 3);
   const site = awips.substring(3);
 
   return (
-    <Container warning={isAlertDangerous(alert)}>
-      <Headline>
-        <WarningIcon icon={faExclamationTriangle} />{" "}
-        <Link
-          href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Name>
-            <EventName>{alert.properties.event}</EventName>&nbsp;
-            <OpenIcon icon={faExternalLink} />
-          </Name>
-        </Link>
-        <Aside>{aside}</Aside>
-      </Headline>
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link
+        href={`https://forecast.weather.gov/product.php?site=${site}&product=${product}&issuedby=${site}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Name>
+          <EventName>{alert.properties.event}</EventName>&nbsp;
+          <OpenIcon icon={faExternalLink} />
+        </Name>
+      </Link>
+    </>
+  );
+}
 
-      <Times alert={alert} />
-    </Container>
+function TFRHeadline({ alert }: { alert: TFRFeature }) {
+  return (
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link
+        href={`https://tfr.faa.gov/save_pages/detail_${alert.properties.coreNOTAMData.notam.number.replace(
+          /\//g,
+          "_"
+        )}.html`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Name>
+          <EventName>
+            TFR {alert.properties.coreNOTAMData.notam.classification}{" "}
+            {alert.properties.coreNOTAMData.notam.number}
+          </EventName>
+          &nbsp;
+          <OpenIcon icon={faExternalLink} />
+        </Name>
+      </Link>
+    </>
   );
 }

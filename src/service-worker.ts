@@ -126,6 +126,20 @@ registerRoute(
   })
 );
 
+// Cache API TFR response
+registerRoute(
+  new RegExp("/api/tfr.*"),
+  new NetworkFirst({
+    cacheName: "tfrCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+      }),
+    ],
+  })
+);
+
 // Cache API elevation response
 registerRoute(
   new RegExp("/api/pqs.*"),

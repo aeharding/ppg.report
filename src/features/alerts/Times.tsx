@@ -2,7 +2,9 @@ import styled from "@emotion/styled/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { Feature } from "../weather/weatherSlice";
+import { TFRFeature } from "../../services/faa";
+import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { isWeatherAlert } from "./alertsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -14,14 +16,35 @@ const Container = styled.div`
 `;
 
 interface TimesProps {
-  alert: Feature;
+  alert: WeatherAlertFeature | TFRFeature;
+  includeYear: boolean;
 }
 
-export default function Times({ alert }: TimesProps) {
+export default function Times({ alert, includeYear }: TimesProps) {
   return (
     <Container>
-      <Time time={new Date(alert.properties.onset)}>Start</Time>
-      <Time time={new Date(alert.properties.ends || alert.properties.expires)}>
+      <Time
+        time={
+          new Date(
+            isWeatherAlert(alert)
+              ? alert.properties.onset
+              : alert.properties.coreNOTAMData.notam.effectiveStart
+          )
+        }
+        includeYear={includeYear}
+      >
+        Start
+      </Time>
+      <Time
+        time={
+          isWeatherAlert(alert)
+            ? new Date(alert.properties.ends || alert.properties.expires)
+            : alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
+            ? undefined
+            : new Date(alert.properties.coreNOTAMData.notam.effectiveEnd)
+        }
+        includeYear={includeYear}
+      >
         End
       </Time>
     </Container>
@@ -41,10 +64,11 @@ const TimeLabel = styled.div`
 
 interface TimeProps {
   children: React.ReactNode;
-  time: Date;
+  time?: Date;
+  includeYear: boolean;
 }
 
-function Time({ children, time }: TimeProps) {
+function Time({ children, time, includeYear }: TimeProps) {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
 
   if (!timeZone) throw new Error("timezone must be defined");
@@ -52,8 +76,20 @@ function Time({ children, time }: TimeProps) {
   return (
     <div>
       <Label>{children}</Label>
-      <TimeLabel>{formatInTimeZone(time, timeZone, "p")}</TimeLabel>
-      <div>{formatInTimeZone(time, timeZone, "eeee, MMMM do")}</div>
+      <TimeLabel>
+        {time ? formatInTimeZone(time, timeZone, "p") : "Permanent"}
+      </TimeLabel>
+      {time ? (
+        <div>
+          {formatInTimeZone(
+            time,
+            timeZone,
+            includeYear ? "eeee, MMMM do yyyy" : "eeee, MMMM do"
+          )}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

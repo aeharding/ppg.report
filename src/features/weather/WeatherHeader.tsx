@@ -11,11 +11,12 @@ import Weather from "./header/Weather";
 import AlertsIcon from "./header/AlertsIcon";
 import { tafReport as tafReportSelector } from "./weatherSliceLazy";
 import Wind from "./header/Wind";
-import {
-  alertsBySeveritySortFn,
-  isAlertDangerous,
-} from "../../helpers/weather";
-import { addMinutes, startOfHour } from "date-fns";
+import { isAlertDangerous, sortAlerts } from "../../helpers/weather";
+import { addMinutes, addYears, startOfHour } from "date-fns";
+import { alertsSelector, isWeatherAlert } from "../alerts/alertsSlice";
+import { WeatherAlertFeature } from "./weatherSlice";
+import { TFRFeature } from "../../services/faa";
+import { getReadAlertKey } from "../user/storage";
 
 export enum HeaderType {
   Normal,
@@ -115,34 +116,30 @@ interface WeatherHeaderProps {
 
 export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weather = useAppSelector((state) => state.weather.weather);
-  const alerts = useAppSelector((state) => state.weather.alerts);
+  const alerts = useAppSelector(alertsSelector);
+  const weatherAlerts = useAppSelector((state) => state.weather.alerts);
+  const tfrs = useAppSelector((state) => state.faa.tfrs);
   const tafReport = useAppSelector(tafReportSelector);
+  const readAlerts = useAppSelector((state) => state.user.readAlerts);
 
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? alerts.features
-            .filter((alert) =>
-              isWithinInterval(new Date(date), {
-                start: startOfHour(new Date(alert.properties.onset)),
-                end: addMinutes(
-                  new Date(alert.properties.ends || alert.properties.expires),
-                  -1
-                ),
-              })
-            )
-            .sort(alertsBySeveritySortFn)
-        : undefined,
+        ? sortAlerts(alerts.filter((alert) => isAlertActive(alert, date)))
+        : [],
     [alerts, date]
   );
 
-  if (weather === "failed" || alerts === "failed") return <></>;
+  const unreadAlerts = relevantAlerts.filter(
+    (alert) => !readAlerts[getReadAlertKey(alert)]
+  );
+
+  if (weather === "failed") return <></>;
   if (
     !weather ||
     weather === "pending" ||
-    !alerts ||
-    alerts === "pending" ||
-    !relevantAlerts
+    weatherAlerts === "pending" ||
+    tfrs === "pending"
   )
     return (
       <Container type={HeaderType.Normal}>
@@ -154,14 +151,17 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     ? HeaderType.Warning
     : HeaderType.Normal;
 
-  if (relevantAlerts.filter(isAlertDangerous).length) {
+  if (unreadAlerts.filter(isAlertDangerous).length) {
     type = HeaderType.Danger;
   }
+
+  if (relevantAlerts.every((alert) => readAlerts[getReadAlertKey(alert)]))
+    type = HeaderType.Normal;
 
   return (
     <Container type={type} onClick={(e) => e.stopPropagation()}>
       <>
-        <AlertsIcon alerts={relevantAlerts} />
+        <AlertsIcon alerts={relevantAlerts} date={date} />
         <Weather weather={weather} date={date} />{" "}
         <SkyCover weather={weather} date={date} />{" "}
         <Precipitation headerType={type} weather={weather} date={date} />{" "}
@@ -170,4 +170,31 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
       </>
     </Container>
   );
+}
+
+function isAlertActive(
+  alert: WeatherAlertFeature | TFRFeature,
+  date: string
+): boolean {
+  if (isWeatherAlert(alert))
+    return isWithinInterval(new Date(date), {
+      start: startOfHour(new Date(alert.properties.onset)),
+      end: addMinutes(
+        new Date(alert.properties.ends || alert.properties.expires),
+        -1
+      ),
+    });
+
+  return isWithinInterval(new Date(date), {
+    start: startOfHour(
+      new Date(alert.properties.coreNOTAMData.notam.effectiveStart)
+    ),
+    end:
+      alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
+        ? addYears(new Date(), 10)
+        : addMinutes(
+            new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
+            -1
+          ),
+  });
 }

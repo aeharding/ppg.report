@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Geocode from "../../models/Geocode";
+import { TFRFeature } from "../../services/faa";
 import { AppDispatch, RootState } from "../../store";
+import { WeatherAlertFeature } from "../weather/weatherSlice";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
 
@@ -21,12 +23,14 @@ export function toggle(altitude: AltitudeType): AltitudeType {
 interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
+  readAlerts: Record<string, string>;
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
+  readAlerts: storage.getReadAlerts(),
 };
 
 /**
@@ -45,10 +49,13 @@ export const userReducer = createSlice({
     updateAltitude(state, action: PayloadAction<AltitudeType>) {
       state.altitude = action.payload;
     },
+    readAlert(state, action: PayloadAction<WeatherAlertFeature | TFRFeature>) {
+      state.readAlerts = storage.setReadAlert(action.payload);
+    },
   },
 });
 
-export const { updateLocations } = userReducer.actions;
+export const { updateLocations, readAlert } = userReducer.actions;
 
 export const toggleAltitude =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
