@@ -12,7 +12,6 @@ const PromoContainer = styled.div`
     color(display-p3 0 0.1 1)
   );
   padding: 1rem;
-  margin: 0 1rem;
   border-radius: 1rem;
 `;
 

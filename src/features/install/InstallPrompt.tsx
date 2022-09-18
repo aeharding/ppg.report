@@ -35,7 +35,7 @@ export default function InstallPrompt() {
   }
 
   if (isInstalled()) return <></>;
-  if (navigator.userAgent.match(/iPhone/i)) return renderiPhonePromo();
+  if (navigator.userAgent.match(/iPhone|iPad/i)) return renderiPhonePromo();
   if (!beforeInstallEvent) return <></>;
 
   return (

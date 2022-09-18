@@ -29,8 +29,12 @@ const Container = styled.div`
 
 const StyledMapContainer = styled(MapContainer)`
   height: 350px;
-  pointer-events: none;
   background: black; // suppress ios bottom sheet animation flicker
+
+  &,
+  .leaflet-pane * {
+    pointer-events: none !important;
+  }
 
   .plane-icon {
     background: none;
