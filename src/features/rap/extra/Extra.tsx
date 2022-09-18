@@ -105,7 +105,9 @@ export default function Extra() {
   );
 }
 
-const ItemContainer = styled.div<{ selected?: boolean; loading?: boolean }>`
+const ItemContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "loading",
+})<{ selected?: boolean; loading?: boolean }>`
   display: flex;
   align-items: center;
   padding: 1rem;

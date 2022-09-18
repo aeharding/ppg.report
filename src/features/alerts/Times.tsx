@@ -2,9 +2,7 @@ import styled from "@emotion/styled/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { TFRFeature } from "../../services/faa";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
-import { isWeatherAlert } from "./alertsSlice";
+import { Alert, getAlertEnd, getAlertStart } from "./alertsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -16,33 +14,18 @@ const Container = styled.div`
 `;
 
 interface TimesProps {
-  alert: WeatherAlertFeature | TFRFeature;
+  alert: Alert;
   includeYear: boolean;
 }
 
 export default function Times({ alert, includeYear }: TimesProps) {
   return (
     <Container>
-      <Time
-        time={
-          new Date(
-            isWeatherAlert(alert)
-              ? alert.properties.onset
-              : alert.properties.coreNOTAMData.notam.effectiveStart
-          )
-        }
-        includeYear={includeYear}
-      >
+      <Time time={new Date(getAlertStart(alert))} includeYear={includeYear}>
         Start
       </Time>
       <Time
-        time={
-          isWeatherAlert(alert)
-            ? new Date(alert.properties.ends || alert.properties.expires)
-            : alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
-            ? undefined
-            : new Date(alert.properties.coreNOTAMData.notam.effectiveEnd)
-        }
+        time={getAlertEnd(alert) ? new Date(getAlertEnd(alert)!) : undefined}
         includeYear={includeYear}
       >
         End

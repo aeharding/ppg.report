@@ -1,8 +1,6 @@
 import { differenceInDays, differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
-import { TFRFeature } from "../../services/faa";
-import { isWeatherAlert } from "../alerts/alertsSlice";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
 import { AltitudeType } from "./userSlice";
 
 export interface UserLocation {
@@ -142,9 +140,7 @@ export function getReadAlerts(): Record<string, string> {
   return JSON.parse(savedValue);
 }
 
-export function setReadAlert(
-  alert: TFRFeature | WeatherAlertFeature
-): Record<string, string> {
+export function setReadAlert(alert: Alert): Record<string, string> {
   const readAlerts = getReadAlerts();
 
   readAlerts[getReadAlertKey(alert)] = new Date().toISOString();
@@ -161,10 +157,10 @@ export function setReadAlert(
   return readAlerts;
 }
 
-export function getReadAlertKey(
-  alert: TFRFeature | WeatherAlertFeature
-): string {
-  return isWeatherAlert(alert)
-    ? alert.properties.id
-    : alert.properties.coreNOTAMData.notam.id;
+export function getReadAlertKey(alert: Alert): string {
+  if (isWeatherAlert(alert)) return alert.properties.id;
+
+  if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
+
+  return alert.properties.text.split("\n")[0];
 }

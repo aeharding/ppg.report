@@ -1,9 +1,8 @@
 import styled from "@emotion/styled/macro";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
-import { TFRFeature } from "../../services/faa";
 import WeatherAlert from "./WeatherAlert";
-import { isWeatherAlert } from "./alertsSlice";
+import { Alert, isTFRAlert, isWeatherAlert } from "./alertsSlice";
 import TFRAlert from "./TFRAlert";
+import AirSigmetAlert from "./AirSigmetAlert";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -12,20 +11,23 @@ const AlertsContainer = styled.div`
 `;
 
 interface AlertsProps {
-  alerts: (WeatherAlertFeature | TFRFeature)[];
+  alerts: Alert[];
 }
 
 export default function Alerts({ alerts }: AlertsProps) {
+  function renderAlert(alert: Alert, index: number) {
+    if (isWeatherAlert(alert))
+      return <WeatherAlert alert={alert} index={index} total={alerts.length} />;
+
+    if (isTFRAlert(alert))
+      return <TFRAlert alert={alert} index={index} total={alerts.length} />;
+
+    return <AirSigmetAlert alert={alert} index={index} total={alerts.length} />;
+  }
   return (
     <AlertsContainer>
       {alerts?.map((alert, index) => (
-        <section key={index}>
-          {isWeatherAlert(alert) ? (
-            <WeatherAlert alert={alert} index={index} total={alerts.length} />
-          ) : (
-            <TFRAlert alert={alert} index={index} total={alerts.length} />
-          )}
-        </section>
+        <section key={index}>{renderAlert(alert, index)}</section>
       ))}
     </AlertsContainer>
   );

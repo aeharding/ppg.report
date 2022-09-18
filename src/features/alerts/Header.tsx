@@ -7,10 +7,14 @@ import { useInView } from "react-intersection-observer";
 import useDebounce from "../../helpers/useDebounce";
 import { isAlertDangerous } from "../../helpers/weather";
 import { useAppDispatch } from "../../hooks";
+import {
+  AirSigmetFeature,
+  getAirSigmetName,
+} from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { readAlert } from "../user/userSlice";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
-import { isWeatherAlert } from "./alertsSlice";
+import { Alert, isTFRAlert, isWeatherAlert } from "./alertsSlice";
 import Times from "./Times";
 import UnreadIndicator from "./UnreadIndicator";
 
@@ -80,7 +84,7 @@ const AlertOrderContainer = styled.div`
 `;
 
 interface HeaderProps {
-  alert: WeatherAlertFeature | TFRFeature;
+  alert: Alert;
   index: number;
   total: number;
   includeYear?: boolean;
@@ -102,14 +106,18 @@ export default function Header({
     dispatch(readAlert(alert));
   }, [inViewDebounced, dispatch, alert]);
 
+  function renderHeadline(alert: Alert) {
+    if (isWeatherAlert(alert)) return <WeatherHeadline alert={alert} />;
+
+    if (isTFRAlert(alert)) return <TFRHeadline alert={alert} />;
+
+    return <AirSigmetHeadline alert={alert} />;
+  }
+
   return (
     <Container warning={isAlertDangerous(alert)} ref={ref}>
       <Headline>
-        {isWeatherAlert(alert) ? (
-          <WeatherHeadline alert={alert} />
-        ) : (
-          <TFRHeadline alert={alert} />
-        )}
+        {renderHeadline(alert)}
 
         <Aside>
           <UnreadIndicator alert={alert} />
@@ -165,6 +173,25 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
             TFR {alert.properties.coreNOTAMData.notam.classification}{" "}
             {alert.properties.coreNOTAMData.notam.number}
           </EventName>
+          &nbsp;
+          <OpenIcon icon={faExternalLink} />
+        </Name>
+      </Link>
+    </>
+  );
+}
+
+function AirSigmetHeadline({ alert }: { alert: AirSigmetFeature }) {
+  return (
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link
+        href="https://beta.aviationweather.gov/gfa"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Name>
+          <EventName>{getAirSigmetName(alert)}</EventName>
           &nbsp;
           <OpenIcon icon={faExternalLink} />
         </Name>

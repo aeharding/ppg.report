@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Geocode from "../../models/Geocode";
-import { TFRFeature } from "../../services/faa";
 import { AppDispatch, RootState } from "../../store";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { Alert } from "../alerts/alertsSlice";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
 
@@ -49,7 +48,7 @@ export const userReducer = createSlice({
     updateAltitude(state, action: PayloadAction<AltitudeType>) {
       state.altitude = action.payload;
     },
-    readAlert(state, action: PayloadAction<WeatherAlertFeature | TFRFeature>) {
+    readAlert(state, action: PayloadAction<Alert>) {
       state.readAlerts = storage.setReadAlert(action.payload);
     },
   },

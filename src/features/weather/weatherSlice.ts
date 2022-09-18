@@ -175,6 +175,19 @@ type AviationWeatherResult =
   // Nothing found for the coordinates
   | "not-available";
 
+type AirSigmetsResult =
+  // component has requested a weather, to be batched in next bulk request
+  | "pending"
+
+  // the weather data (finished resolving)
+  | aviationWeatherService.AirSigmetFeature[]
+
+  // Request failed
+  | "failed"
+
+  // Nothing found for the coordinates
+  | "not-available";
+
 type DiscussionResult =
   // component has requested a weather, to be batched in next bulk request
   | "pending"
@@ -205,6 +218,8 @@ interface WeatherState {
   aviationWeatherLastUpdated?: string;
   alerts: AlertsResult | undefined;
   alertsLastUpdated?: string;
+  airSigmets: AirSigmetsResult | undefined;
+  airSigmetsLastUpdated?: string;
   timeZone: string | undefined;
   timeZoneLoading: boolean;
   elevation: number | undefined;
@@ -222,6 +237,8 @@ const initialState: WeatherState = {
   aviationWeatherLastUpdated: undefined,
   alerts: undefined,
   alertsLastUpdated: undefined,
+  airSigmets: undefined,
+  airSigmetsLastUpdated: undefined,
   timeZone: undefined,
   timeZoneLoading: true,
   elevation: undefined,
@@ -418,6 +435,56 @@ export const weatherReducer = createSlice({
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
+    airSigmetsLoading: (state) => {
+      switch (state.airSigmets) {
+        case undefined:
+          state.airSigmets = "pending";
+          return;
+        case "pending":
+          return;
+        case "failed":
+        default: {
+          if (
+            !state.airSigmetsLastUpdated ||
+            Math.abs(
+              differenceInMinutes(
+                new Date(state.airSigmetsLastUpdated),
+                new Date()
+              )
+            ) > 30
+          ) {
+            state.airSigmets = "pending";
+          }
+        }
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the Rap
+     */
+    airSigmetsReceived: (
+      state,
+      action: PayloadAction<aviationWeatherService.AirSigmetFeature[]>
+    ) => {
+      if (state.airSigmets === "pending") {
+        state.airSigmets = action.payload;
+        state.airSigmetsLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    airSigmetsFailed: (state) => {
+      if (state.airSigmets === "pending") {
+        state.airSigmets = "failed";
+        state.airSigmetsLastUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
     discussionLoading: (state) => {
       switch (state.discussion) {
         case undefined:
@@ -500,6 +567,9 @@ export const {
   aviationWeatherReceived,
   aviationWeatherFailed,
   aviationWeatherNotAvailable,
+  airSigmetsLoading,
+  airSigmetsReceived,
+  airSigmetsFailed,
   clear,
   discussionLoading,
   discussionReceived,
@@ -514,6 +584,7 @@ export const getWeather =
     loadAlerts();
     loadElevation();
     loadAviationWeather();
+    loadAirSigmets();
 
     if (getState().weather.discussion === "pending") return;
     dispatch(discussionLoading());
@@ -600,6 +671,23 @@ export const getWeather =
         }
       } catch (e: unknown) {
         dispatch(aviationWeatherFailed());
+        throw e;
+      }
+    }
+
+    async function loadAirSigmets() {
+      if (getState().weather.airSigmets === "pending") return;
+      dispatch(airSigmetsLoading());
+      if (getState().weather.airSigmets !== "pending") return;
+
+      try {
+        const payload = await aviationWeatherService.getAirSigmets({
+          lat,
+          lon,
+        });
+        dispatch(airSigmetsReceived(payload));
+      } catch (e: unknown) {
+        dispatch(airSigmetsFailed());
         throw e;
       }
     }
