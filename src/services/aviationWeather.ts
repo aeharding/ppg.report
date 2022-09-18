@@ -1,11 +1,9 @@
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
 import { GeometryObject } from "geojson";
-import uniqWith from "lodash/uniqWith";
-import isEqual from "lodash/isEqual";
+import { isAirSigmetAlert } from "../features/alerts/alertsSlice";
 
 const parser = new XMLParser();
-const parserWithAttributes = new XMLParser({ ignoreAttributes: false });
 
 export interface TAFReport {
   raw: string;
@@ -45,27 +43,110 @@ export async function getTAF({
   };
 }
 
-export type AirSigmetType = "OUTLOOK" | "AIRMET" | "SIGMET";
-export type HazardType =
-  | "MTN OBSCN"
-  | "IFR"
-  | "TURB"
-  | "ICE"
-  | "CONVECTIVE"
-  | "ASH";
-export type HazardSeverity = "NONE" | "LT-MOD" | "MOD" | "MOD-SEV" | "SEV";
+// Docs https://www.aviationweather.gov/help/webservice
 
-export interface AirSigmetFeature {
+type AbstractAviationAlertFeature<Payload = {}> = {
+  id: string;
   properties: {
-    type: AirSigmetType;
-    from: string;
-    to: string;
-    text: string;
-    hazardType?: HazardType;
-    hazardSeverity?: HazardSeverity;
-  };
+    validTimeFrom: string;
+    validTimeTo: string;
+  } & Payload;
   geometry: GeometryObject | null;
-}
+};
+
+export type AirSigmetFeature = AbstractAviationAlertFeature<
+  | {
+      data: "SIGMET";
+
+      icaoId: string;
+      airSigmetType: "SIGMET" | "OUTLOOK";
+      hazard: "CONVECTIVE" | "TURB" | "ICING" | "IFR" | "MTN OBSCN" | "ASH";
+
+      /**
+       * typically 1 or 2, 0 for outlook
+       */
+      severity: 0 | 1 | 2;
+
+      /**
+       * Lowest level SIGMET is valid in feet
+       */
+      altitudeLow1: number;
+
+      /**
+       * Secondary lowest level SIGMET is valid in feet
+       */
+      altitudeLow2: number;
+
+      /**
+       * Highest level SIGMET is valid in feet
+       */
+      altitudeHi1: number;
+
+      /**
+       * Secondary highest level SIGMET is valid in feet
+       */
+      altitudeHi2: number;
+
+      rawAirSigmet: string;
+    }
+  | {
+      data: "AIRMET";
+
+      icaoId: string;
+      airSigmetType: "AIRMET";
+      hazard: "TURB" | "ICING" | "IFR" | "MTN OBSCN";
+      severity: 1 | 2 | 3 | 4;
+
+      /**
+       * Lowest level AIRMET is valid in feet
+       */
+      altitudeLow1: number;
+
+      /**
+       * Secondary lowest level AIRMET is valid in feet
+       */
+      altitudeLow2: number;
+
+      /**
+       * Highest level AIRMET is valid in feet
+       */
+      altitudeHi1: number;
+
+      /**
+       * Secondary highest level AIRMET is valid in feet
+       */
+      altitudeHi2: number;
+
+      rawAirSigmet: string;
+    }
+>;
+
+export type CwaFeature = AbstractAviationAlertFeature<{
+  data: "CWA";
+
+  /**
+   * ARTCC region identifier
+   */
+  cwsu: string;
+
+  /**
+   * Long name for the region
+   */
+  name: string;
+
+  /**
+   * Long name for the region
+   */
+  seriesId: string;
+
+  cwaText: string;
+  base: number;
+  top: number;
+  qualifier: "ISOL" | "SEV" | "EMBD" | "MOD"; // etc?
+  hazard: "TS" | "TURB" | "ICE" | "IFR" | "PCPN";
+}>;
+
+export type AviationAlertFeature = AirSigmetFeature | CwaFeature;
 
 export async function getAirSigmets({
   lat,
@@ -74,133 +155,86 @@ export async function getAirSigmets({
   lat: number;
   lon: number;
 }) {
-  const response = await axios.get("/api/aviationweather", {
+  const response = await axios.get("/api/query-wx", {
     params: {
-      dataSource: "airsigmets",
-      requestType: "retrieve",
-      format: "xml",
-      minLat: Math.round((lat - 0.01) * 1000) / 1000,
-      minLon: Math.round((lon - 0.01) * 1000) / 1000,
-      maxLat: Math.round((lat + 0.01) * 1000) / 1000,
-      maxLon: Math.round((lon + 0.01) * 1000) / 1000,
-      startTime: Math.round(Date.now() / 1000),
-      endTime: Math.round(Date.now() / 1000) + 60 * 60 * 10,
+      lat,
+      lon,
     },
   });
 
-  const parsed = parserWithAttributes.parse(response.data);
+  return response.data.features.filter((feature: any) => {
+    if (!feature.properties.altitudeLow1) return true;
 
-  const airsigmets = Array.isArray(parsed.response.data.AIRSIGMET)
-    ? parsed.response.data.AIRSIGMET
-    : [parsed.response.data.AIRSIGMET];
+    if (feature.properties.altitudeLow1 > 3000) return false;
 
-  const results: AirSigmetFeature[] = airsigmets
-    .filter((airsigmet: any) => {
-      if (!airsigmet) return undefined;
-
-      if (typeof airsigmet.altitude === "object") {
-        if (!airsigmet.altitude["@_min_ft_msl"]) return true;
-        if (+airsigmet.altitude["@_min_ft_msl"] <= 2000) return true;
-
-        return false;
-      }
-
-      return true;
-    })
-    .map(
-      (airsigmet: any): AirSigmetFeature => ({
-        properties: {
-          type: airsigmet.airsigmet_type,
-          from: airsigmet.valid_time_from,
-          to: airsigmet.valid_time_to,
-          text: airsigmet.raw_text,
-          hazardType: airsigmet.hazard["@_type"],
-          hazardSeverity: airsigmet.hazard["@_severity"],
-        },
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            airsigmet.area.point.map((point: any) => [
-              point.longitude,
-              point.latitude,
-            ]),
-          ],
-        },
-      })
-    );
-
-  return uniqWith(results, (a, b) => isEqual(a.geometry, b.geometry));
+    return true;
+  });
 }
 
-export function getAirSigmetName(alert: AirSigmetFeature): string {
-  const hazard = formatHazard(alert);
-
-  if (hazard) {
-    return capitalizeFirstLetter(
-      `${hazard} ${formatType(alert.properties.type)}`
-    );
+export function getAviationAlertName(alert: AviationAlertFeature): string {
+  if (isAirSigmetAlert(alert)) {
+    return getAirSigmetAlertName(alert);
   }
 
-  return capitalizeFirstLetter(formatType(alert.properties.type));
+  return getCwaAlertName(alert);
 }
 
-export function formatType(type: AirSigmetType): string {
-  switch (type) {
-    case "AIRMET":
-      return "AIRMET";
-    case "SIGMET":
-      return "Active SIGMET";
-    case "OUTLOOK":
-      return "SIGMET Outlook";
+function getAirSigmetAlertName(alert: AirSigmetFeature): string {
+  return [formatHazard(alert.properties.hazard), getAirSigmetAlertType(alert)]
+    .filter((a) => a)
+    .join(" ");
+}
+
+function getAirSigmetAlertType(alert: AirSigmetFeature): string {
+  if (alert.properties.airSigmetType === "OUTLOOK") {
+    return "CIGMET Outlook";
   }
+
+  return alert.properties.airSigmetType;
 }
 
-export function formatHazard(alert: AirSigmetFeature): string | undefined {
-  const words = [
-    alert.properties.hazardSeverity &&
-    alert.properties.hazardSeverity !== "NONE"
-      ? formatSeverity(alert.properties.hazardSeverity)
-      : "",
-    alert.properties.hazardType &&
-      formatHazardType(alert.properties.hazardType),
-  ].filter((word) => word);
-
-  if (!words.length) return undefined;
-
-  return words.join(" ");
+function getCwaAlertName(alert: CwaFeature): string {
+  return `${alert.properties.cwsu} ${alert.properties.data}: ${[
+    formatQualifier(alert.properties.qualifier),
+    formatHazard(alert.properties.hazard),
+  ].join(" ")}`;
 }
 
-export function formatSeverity(severity: HazardSeverity): string {
-  switch (severity) {
-    case "LT-MOD":
-      return "light-moderate";
-    case "MOD":
-      return "moderate";
-    case "MOD-SEV":
-      return "moderate-severe";
-    case "NONE":
-      return "none";
-    case "SEV":
-      return "severe";
-  }
-}
-export function formatHazardType(type: HazardType): string {
-  switch (type) {
+function formatHazard(
+  hazard: AviationAlertFeature["properties"]["hazard"]
+): string {
+  switch (hazard) {
     case "ASH":
-      return "ash";
+      return "Ash";
     case "CONVECTIVE":
-      return "convective";
+      return "Convective";
     case "ICE":
-      return "ice";
+    case "ICING":
+      return "Icing";
     case "IFR":
       return "IFR";
     case "MTN OBSCN":
-      return "mountain obstruction";
+      return "Mountain Obstruction";
     case "TURB":
-      return "turbulence";
+      return "Turbulence";
+    case "PCPN":
+      return "Precipitation";
+    case "TS":
+      return "Thunderstorms";
   }
 }
 
-function capitalizeFirstLetter(words: string) {
-  return words.charAt(0).toUpperCase() + words.slice(1);
+function formatQualifier(
+  qualifier: CwaFeature["properties"]["qualifier"]
+): string {
+  switch (qualifier) {
+    case "EMBD":
+      return "Embedded";
+    case "ISOL":
+      return "Isolated";
+    case "MOD":
+      return "Moderate";
+    case "SEV":
+      return "Severe";
+  }
 }

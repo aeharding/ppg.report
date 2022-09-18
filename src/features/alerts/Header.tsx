@@ -8,8 +8,8 @@ import useDebounce from "../../helpers/useDebounce";
 import { isAlertDangerous } from "../../helpers/weather";
 import { useAppDispatch } from "../../hooks";
 import {
-  AirSigmetFeature,
-  getAirSigmetName,
+  AviationAlertFeature,
+  getAviationAlertName,
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { readAlert } from "../user/userSlice";
@@ -181,7 +181,7 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
   );
 }
 
-function AirSigmetHeadline({ alert }: { alert: AirSigmetFeature }) {
+function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
   return (
     <>
       <WarningIcon icon={faExclamationTriangle} />{" "}
@@ -191,7 +191,7 @@ function AirSigmetHeadline({ alert }: { alert: AirSigmetFeature }) {
         rel="noopener noreferrer"
       >
         <Name>
-          <EventName>{getAirSigmetName(alert)}</EventName>
+          <EventName>{getAviationAlertName(alert)}</EventName>
           &nbsp;
           <OpenIcon icon={faExternalLink} />
         </Name>

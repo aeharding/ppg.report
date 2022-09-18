@@ -162,5 +162,5 @@ export function getReadAlertKey(alert: Alert): string {
 
   if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
 
-  return alert.properties.text.split("\n")[0];
+  return `aviationalert-${alert.id}`;
 }

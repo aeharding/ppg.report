@@ -180,7 +180,7 @@ type AirSigmetsResult =
   | "pending"
 
   // the weather data (finished resolving)
-  | aviationWeatherService.AirSigmetFeature[]
+  | aviationWeatherService.AviationAlertFeature[]
 
   // Request failed
   | "failed"
@@ -464,7 +464,7 @@ export const weatherReducer = createSlice({
      */
     airSigmetsReceived: (
       state,
-      action: PayloadAction<aviationWeatherService.AirSigmetFeature[]>
+      action: PayloadAction<aviationWeatherService.AviationAlertFeature[]>
     ) => {
       if (state.airSigmets === "pending") {
         state.airSigmets = action.payload;

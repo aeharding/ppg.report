@@ -16,7 +16,7 @@ import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { getReadAlertKey } from "../../user/storage";
 import JumpActions from "../../alerts/JumpActions";
-import { getAirSigmetName } from "../../../services/aviationWeather";
+import { getAviationAlertName } from "../../../services/aviationWeather";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -168,5 +168,5 @@ export function getAlertName(alert: Alert): string | undefined {
   if (isTFRAlert(alert))
     return `TFR ${alert.properties.coreNOTAMData.notam.classification} ${alert.properties.coreNOTAMData.notam.number}`;
 
-  return getAirSigmetName(alert);
+  return getAviationAlertName(alert);
 }

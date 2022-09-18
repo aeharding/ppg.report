@@ -5,16 +5,21 @@ import Header from "./Header";
 import BaseLayer from "../../map/BaseLayer";
 import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
-import { undoFixedWidthText } from "../../helpers/weather";
 import OSMAttribution from "../../map/OSMAttribution";
 import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
-import { TFRFeature } from "../../services/faa";
+import { CwaFeature } from "../../services/aviationWeather";
 
 const AlertContainer = styled.div``;
 
 const Title = styled.div`
   font-size: 0.9em;
+`;
+
+const Description = styled.p`
+  opacity: 0.8;
+  font-size: 0.9em;
+  font-style: italic;
 `;
 
 const StyledLinkify = styled(Linkify)`
@@ -27,25 +32,16 @@ const StyledLinkify = styled(Linkify)`
 
 const StyledMapContainer = styled(MapContainer)`
   height: 350px;
-
-  &,
-  .leaflet-pane * {
-    pointer-events: none !important;
-  }
-`;
-
-const Disclaimer = styled.p`
-  font-size: 0.9rem;
-  opacity: 0.8;
+  pointer-events: none;
 `;
 
 interface AlertProps {
-  alert: TFRFeature;
+  alert: CwaFeature;
   index: number;
   total: number;
 }
 
-export default function TFRAlert({ alert, index, total }: AlertProps) {
+export default function CwaAlert({ alert, index, total }: AlertProps) {
   return (
     <AlertContainer>
       <Title>
@@ -60,7 +56,7 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
             doubleClickZoom={false}
             trackResize={false}
             boxZoom={false}
-            maxZoom={9}
+            maxZoom={13}
             zoomSnap={undefined}
           >
             <MapController alert={alert} />
@@ -69,25 +65,18 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
           </StyledMapContainer>
         )}
 
-        <Header alert={alert} index={index} total={total} includeYear />
+        <Header alert={alert} index={index} total={total} />
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
-          <Disclaimer>
-            <strong>Important:</strong>{" "}
-            <i>
-              PPG.report may not show all active TFRs, and does not show
-              sporting event TFRs. It is the pilot’s responsibility to check{" "}
-              <a
-                href="https://tfr.faa.gov"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                tfr.faa.gov
-              </a>{" "}
-              before flying.
-            </i>
-          </Disclaimer>
-          {undoFixedWidthText(alert.properties.coreNOTAMData.notam.text)}
+          <Description>
+            A Center Weather Advisory (CWA) is an unscheduled weather advisory
+            for conditions meeting or approaching national in-flight advisory
+            (WA, WS, or WST) criteria. It is primarily used by aircrews to
+            anticipate and avoid adverse weather conditions in the en route and
+            terminal environments.{" "}
+          </Description>
+
+          {alert.properties.cwaText}
         </StyledLinkify>
       </Title>
     </AlertContainer>

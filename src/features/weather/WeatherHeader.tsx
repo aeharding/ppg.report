@@ -201,7 +201,7 @@ function isAlertActive(alert: Alert, date: string): boolean {
   }
 
   return isWithinInterval(new Date(date), {
-    start: startOfHour(new Date(alert.properties.from)),
-    end: addMinutes(new Date(alert.properties.to), -1),
+    start: startOfHour(new Date(alert.properties.validTimeFrom)),
+    end: addMinutes(new Date(alert.properties.validTimeTo), -1),
   });
 }

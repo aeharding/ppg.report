@@ -1,8 +1,14 @@
 import styled from "@emotion/styled/macro";
 import WeatherAlert from "./WeatherAlert";
-import { Alert, isTFRAlert, isWeatherAlert } from "./alertsSlice";
+import {
+  Alert,
+  isAirSigmetAlert,
+  isTFRAlert,
+  isWeatherAlert,
+} from "./alertsSlice";
 import TFRAlert from "./TFRAlert";
 import AirSigmetAlert from "./AirSigmetAlert";
+import CwaAlert from "./CwaAlert";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -22,7 +28,12 @@ export default function Alerts({ alerts }: AlertsProps) {
     if (isTFRAlert(alert))
       return <TFRAlert alert={alert} index={index} total={alerts.length} />;
 
-    return <AirSigmetAlert alert={alert} index={index} total={alerts.length} />;
+    if (isAirSigmetAlert(alert))
+      return (
+        <AirSigmetAlert alert={alert} index={index} total={alerts.length} />
+      );
+
+    return <CwaAlert alert={alert} index={index} total={alerts.length} />;
   }
   return (
     <AlertsContainer>

@@ -15,7 +15,10 @@ export function isAlertDangerous(alert: Alert): boolean {
 
   if (isTFRAlert(alert)) return true;
 
-  return alert.properties.type !== "OUTLOOK";
+  return (
+    alert.properties.data === "SIGMET" &&
+    alert.properties.airSigmetType !== "OUTLOOK"
+  );
 }
 
 /**
@@ -29,7 +32,7 @@ export function sortAlerts(alerts: Alert[]): Alert[] {
     if (isTFRAlert(alert))
       return -new Date(alert.properties.coreNOTAMData.notam.issued).getTime();
 
-    return -new Date(alert.properties.from);
+    return -new Date(alert.properties.validTimeFrom);
   });
 }
 

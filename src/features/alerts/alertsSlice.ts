@@ -1,5 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { AirSigmetFeature } from "../../services/aviationWeather";
+import {
+  AirSigmetFeature,
+  AviationAlertFeature,
+} from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { RootState } from "../../store";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
@@ -8,7 +11,7 @@ const weatherAlertsSelector = (state: RootState) => state.weather.alerts;
 const tfrsSelector = (state: RootState) => state.faa.tfrs;
 const airSigmetsSelector = (state: RootState) => state.weather.airSigmets;
 
-export type Alert = WeatherAlertFeature | TFRFeature | AirSigmetFeature;
+export type Alert = WeatherAlertFeature | TFRFeature | AviationAlertFeature;
 
 export const alertsSelector = createSelector(
   [weatherAlertsSelector, tfrsSelector, airSigmetsSelector],
@@ -32,11 +35,15 @@ export const alertsSelector = createSelector(
 );
 
 export function isWeatherAlert(alert: Alert): alert is WeatherAlertFeature {
-  return "severity" in alert.properties;
+  return "parameters" in alert.properties;
 }
 
 export function isTFRAlert(alert: Alert): alert is TFRFeature {
   return "coreNOTAMData" in alert.properties;
+}
+
+export function isAirSigmetAlert(alert: Alert): alert is AirSigmetFeature {
+  return "airSigmetType" in alert.properties;
 }
 
 export function getAlertStart(alert: Alert) {
@@ -45,7 +52,7 @@ export function getAlertStart(alert: Alert) {
   if (isTFRAlert(alert))
     return alert.properties.coreNOTAMData.notam.effectiveStart;
 
-  return alert.properties.from;
+  return alert.properties.validTimeFrom;
 }
 
 export function getAlertEnd(alert: Alert) {
@@ -60,5 +67,5 @@ export function getAlertEnd(alert: Alert) {
     return alert.properties.coreNOTAMData.notam.effectiveEnd;
   }
 
-  return alert.properties.to;
+  return alert.properties.validTimeTo;
 }
