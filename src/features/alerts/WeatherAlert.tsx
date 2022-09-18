@@ -28,7 +28,11 @@ const StyledLinkify = styled(Linkify)`
 
 const StyledMapContainer = styled(MapContainer)`
   height: 350px;
-  pointer-events: none;
+
+  &,
+  .leaflet-pane * {
+    pointer-events: none !important;
+  }
 `;
 
 interface AlertProps {
