@@ -45,7 +45,7 @@ export default function Table({ rap, rows }: TableProps) {
 
   const lowestReportedAltitude = rap.data[0].height;
 
-  if (!elevation) throw new Error("Altitude not defined!");
+  if (typeof elevation !== "number") throw new Error("Altitude not defined!");
 
   // If there is a discrepancy of less than 120 meters, it's negligible
   const surfaceLevel =
