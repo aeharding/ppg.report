@@ -9,6 +9,7 @@ import OSMAttribution from "../../map/OSMAttribution";
 import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
 import { CwaFeature } from "../../services/aviationWeather";
+import RadarLayer from "../../map/RadarLayer";
 
 const AlertContainer = styled.div``;
 
@@ -62,6 +63,7 @@ export default function CwaAlert({ alert, index, total }: AlertProps) {
             <MapController alert={alert} />
             <OSMAttribution />
             <BaseLayer />
+            <RadarLayer />
           </StyledMapContainer>
         )}
 
