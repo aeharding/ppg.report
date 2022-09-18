@@ -187,7 +187,7 @@ function getAirSigmetAlertName(alert: AirSigmetFeature): string {
 
 function getAirSigmetAlertType(alert: AirSigmetFeature): string {
   if (alert.properties.airSigmetType === "OUTLOOK") {
-    return "CIGMET Outlook";
+    return "SIGMET Outlook";
   }
 
   return alert.properties.airSigmetType;
