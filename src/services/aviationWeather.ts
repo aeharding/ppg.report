@@ -62,6 +62,8 @@ export type AirSigmetFeature = AbstractAviationAlertFeature<
       airSigmetType: "SIGMET" | "OUTLOOK";
       hazard: "CONVECTIVE" | "TURB" | "ICING" | "IFR" | "MTN OBSCN" | "ASH";
 
+      alphaChar?: string;
+
       /**
        * typically 1 or 2, 0 for outlook
        */
@@ -155,7 +157,7 @@ export async function getAirSigmets({
   lat: number;
   lon: number;
 }) {
-  const response = await axios.get("/api/query-wx", {
+  const response = await axios.get("/api/aviationalerts", {
     params: {
       lat,
       lon,
@@ -237,4 +239,40 @@ function formatQualifier(
     case "SEV":
       return "Severe";
   }
+}
+
+export function extractIssued(alert: AviationAlertFeature): string {
+  if (isAirSigmetAlert(alert)) {
+    const iss = alert.properties.rawAirSigmet.split("\n")[0].split(" ")[2];
+    if (!iss || iss.length !== 6) return alert.properties.validTimeFrom;
+
+    const day = +iss.slice(0, 2);
+    const hour = +iss.slice(2, 4);
+    const minute = +iss.slice(4, 6);
+
+    let year: number;
+    let month: number;
+
+    const from = new Date(alert.properties.validTimeFrom);
+
+    // Derive the year and month from the validTimeFrom
+
+    // May be issued on the 31st, but validity starts on 1st.
+    if (from.getUTCDate() > 25 && day < 3) {
+      // Start of new month (and maybe a new year)
+      year = from.getUTCFullYear() + (from.getUTCMonth() === 11 ? 1 : 0);
+      month = (from.getUTCMonth() + 1) % 12;
+    } else {
+      year = from.getUTCFullYear();
+      month = from.getUTCMonth() + 1;
+    }
+
+    return `${year.toString().padStart(2, "0")}-${month
+      .toString()
+      .padStart(2, "0")}-${day.toString().padStart(2, "0")}T${hour
+      .toString()
+      .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:00Z`;
+  }
+
+  return alert.properties.validTimeFrom;
 }

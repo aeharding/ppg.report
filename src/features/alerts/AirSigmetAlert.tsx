@@ -33,7 +33,11 @@ const StyledLinkify = styled(Linkify)`
 
 const StyledMapContainer = styled(MapContainer)`
   height: 350px;
-  pointer-events: none;
+
+  &,
+  .leaflet-pane * {
+    pointer-events: none !important;
+  }
 `;
 
 interface AlertProps {
@@ -80,22 +84,40 @@ export default function AirSigmetAlert({ alert, index, total }: AlertProps) {
 }
 
 export function formatAirSigmetDescription(alert: AirSigmetFeature) {
+  if (
+    alert.properties.hazard === "CONVECTIVE" &&
+    alert.properties.airSigmetType === "OUTLOOK"
+  ) {
+    return (
+      <>
+        A Convective SIGMET Outlook is a weather advisory issued by the Aviation
+        Weather Center concerning predicted and/or possible future widespread
+        convective weather (such as thunderstorms and/or tornadoes) significant
+        to the safety of all aircraft. Outlooks are valid for four hours, and
+        may be renewed. Before flying, pay special attention to radar and local
+        weather observations.
+      </>
+    );
+  }
+
   if (alert.properties.hazard === "CONVECTIVE")
     return (
       <>
-        A convective SIGMET (Significant Meteorological Information) is a
-        weather advisory concerning convective weather significant to the safety
-        of all aircraft. Convective SIGMETs are issued for tornadoes, lines of
-        thunderstorms, embedded thunderstorms of any intensity level, areas of
-        thunderstorms greater than or equal to VIP level 4 with an area coverage
-        of 4/10 (40%) or more, and hail 3/4 inch or greater.
+        A Convective SIGMET (Significant Meteorological Information) is a
+        weather advisory issued by the Aviation Weather Center concerning
+        convective weather significant to the safety of all aircraft. Convective
+        SIGMETs are issued for tornadoes, lines of thunderstorms, embedded
+        thunderstorms of any intensity level, areas of thunderstorms greater
+        than or equal to VIP level 4 with an area coverage of 4/10 (40%) or
+        more, and hail 3/4 inch or greater.
       </>
     );
   if (alert.properties.airSigmetType === "SIGMET")
     return (
       <>
         A SIGMET (Significant Meteorological Information) advises of weather
-        that is potentially hazardous to all aircraft.
+        that is potentially hazardous to all aircraft. It is issued by the
+        Aviation Weather Center.
       </>
     );
   if (alert.properties.airSigmetType === "AIRMET")

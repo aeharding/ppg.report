@@ -1,7 +1,9 @@
-import { differenceInDays, differenceInHours } from "date-fns";
+import { differenceInDays, differenceInHours, startOfDay } from "date-fns";
 import getDistance from "geolib/es/getDistance";
 import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
+import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { AltitudeType } from "./userSlice";
+import { extractIssued } from "../../services/aviationWeather";
 
 export interface UserLocation {
   lat: number;
@@ -161,6 +163,16 @@ export function getReadAlertKey(alert: Alert): string {
   if (isWeatherAlert(alert)) return alert.properties.id;
 
   if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
+
+  if ("alphaChar" in alert.properties && alert.properties.alphaChar) {
+    const timeZoneDate = utcToZonedTime(extractIssued(alert), "UTC");
+    const utcStartOfDay = startOfDay(timeZoneDate);
+    const dayStartUtc = zonedTimeToUtc(utcStartOfDay, "UTC");
+
+    return `aviationalert-${dayStartUtc.toISOString().slice(0, 10)}-${
+      alert.properties.alphaChar
+    }`;
+  }
 
   return `aviationalert-${alert.id}`;
 }

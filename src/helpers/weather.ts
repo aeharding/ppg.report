@@ -4,6 +4,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
+import { extractIssued } from "../services/aviationWeather";
 
 export function isAlertDangerous(alert: Alert): boolean {
   if (isWeatherAlert(alert))
@@ -32,7 +33,7 @@ export function sortAlerts(alerts: Alert[]): Alert[] {
     if (isTFRAlert(alert))
       return -new Date(alert.properties.coreNOTAMData.notam.issued).getTime();
 
-    return -new Date(alert.properties.validTimeFrom);
+    return -new Date(extractIssued(alert));
   });
 }
 
