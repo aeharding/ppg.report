@@ -51,7 +51,7 @@ export default function Terms() {
 
       <h2>Privacy Policy</h2>
 
-      <p>Last Updated: April 22nd, 2022</p>
+      <p>Last Updated: September 19th, 2022</p>
 
       <p>
         <strong>
@@ -112,7 +112,8 @@ export default function Terms() {
             </a>
             <br />
             <strong>Purpose:</strong> To retrieve nearby airport TAF reports,
-            G-AIRMET, SIGMET, and CWA to enhance available weather information.
+            G-AIRMETs, SIGMETs, and CWAs to enhance available weather
+            information.
           </li>
           <br />
           <li>

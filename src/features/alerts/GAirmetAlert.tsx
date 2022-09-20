@@ -9,8 +9,9 @@ import OSMAttribution from "../../map/OSMAttribution";
 import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";
-import { formatSeverity, GAirmetFeature } from "../../services/aviationWeather";
+import { GAirmetFeature } from "../../services/aviationWeather";
 import { capitalizeFirstLetter } from "../../helpers/string";
+import { formatSeverity } from "../../helpers/aviationAlerts";
 
 const AlertContainer = styled.div``;
 

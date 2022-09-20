@@ -3,7 +3,7 @@ import getDistance from "geolib/es/getDistance";
 import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
 import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { AltitudeType } from "./userSlice";
-import { extractIssued } from "../../services/aviationWeather";
+import { extractIssuedTimestamp } from "../../helpers/aviationAlerts";
 
 export interface UserLocation {
   lat: number;
@@ -165,7 +165,7 @@ export function getReadAlertKey(alert: Alert): string {
   if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
 
   if ("alphaChar" in alert.properties && alert.properties.alphaChar) {
-    const timeZoneDate = utcToZonedTime(extractIssued(alert), "UTC");
+    const timeZoneDate = utcToZonedTime(extractIssuedTimestamp(alert), "UTC");
     const utcStartOfDay = startOfDay(timeZoneDate);
     const dayStartUtc = zonedTimeToUtc(utcStartOfDay, "UTC");
 

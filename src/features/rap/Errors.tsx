@@ -11,7 +11,7 @@ const Failed = styled.div`
 export default function Errors() {
   const weatherAlerts = useAppSelector((state) => state.weather.alerts);
   const aviationAlerts = useAppSelector(
-    (state) => state.weather.aviationWeather
+    (state) => state.weather.aviationAlerts
   );
   const tfrs = useAppSelector((state) => state.faa.tfrs);
 
@@ -35,8 +35,8 @@ export default function Errors() {
       )}
       {aviationAlerts === "failed" ? (
         <Failed>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> SIGMET, G-AIRMET and
-          CWA failed to load.
+          <FontAwesomeIcon icon={faExclamationTriangle} /> SIGMETs, G-AIRMETs
+          and CWAs failed to load.
         </Failed>
       ) : (
         ""

@@ -5,7 +5,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
-import { extractIssued } from "../services/aviationWeather";
+import { extractIssuedTimestamp } from "./aviationAlerts";
 
 export function isAlertDangerous(alert: Alert): boolean {
   if (isWeatherAlert(alert))
@@ -34,7 +34,7 @@ export function sortAlerts(alerts: Alert[]): Alert[] {
     if (isTFRAlert(alert))
       return -new Date(alert.properties.coreNOTAMData.notam.issued).getTime();
 
-    return -new Date(extractIssued(alert));
+    return -new Date(extractIssuedTimestamp(alert));
   });
 }
 

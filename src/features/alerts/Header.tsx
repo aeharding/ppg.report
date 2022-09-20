@@ -5,13 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useParams } from "react-router-dom";
+import { getAviationAlertName } from "../../helpers/aviationAlerts";
 import useDebounce from "../../helpers/useDebounce";
 import { findRelatedAlerts, isAlertDangerous } from "../../helpers/weather";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  AviationAlertFeature,
-  getAviationAlertName,
-} from "../../services/aviationWeather";
+import { AviationAlertFeature } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { readAlert } from "../user/userSlice";
 import { WeatherAlertFeature } from "../weather/weatherSlice";

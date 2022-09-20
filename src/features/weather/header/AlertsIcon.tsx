@@ -16,7 +16,7 @@ import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { getReadAlertKey } from "../../user/storage";
 import JumpActions from "../../alerts/JumpActions";
-import { getAviationAlertName } from "../../../services/aviationWeather";
+import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
