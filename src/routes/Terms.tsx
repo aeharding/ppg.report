@@ -111,8 +111,8 @@ export default function Terms() {
               https://aviationweather.gov/dataserver
             </a>
             <br />
-            <strong>Purpose:</strong> To retrieve nearby airport TAF reports to
-            enhance available weather information.
+            <strong>Purpose:</strong> To retrieve nearby airport TAF reports,
+            G-AIRMET, SIGMET, and CWA to enhance available weather information.
           </li>
           <br />
           <li>

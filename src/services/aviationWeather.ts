@@ -1,7 +1,9 @@
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
 import { GeometryObject } from "geojson";
-import { isAirSigmetAlert } from "../features/alerts/alertsSlice";
+import { isGAirmetAlert, isSigmetAlert } from "../features/alerts/alertsSlice";
+import { notEmpty } from "../helpers/array";
+import { capitalizeFirstLetter } from "../helpers/string";
 
 const parser = new XMLParser();
 
@@ -47,84 +49,101 @@ export async function getTAF({
 
 type AbstractAviationAlertFeature<Payload = {}> = {
   id: string;
-  properties: {
-    validTimeFrom: string;
-    validTimeTo: string;
-  } & Payload;
+  properties: Payload;
   geometry: GeometryObject | null;
 };
 
-export type AirSigmetFeature = AbstractAviationAlertFeature<
-  | {
-      data: "SIGMET";
+export type SigmetFeature = AbstractAviationAlertFeature<{
+  data: "SIGMET";
 
-      icaoId: string;
-      airSigmetType: "SIGMET" | "OUTLOOK";
-      hazard: "CONVECTIVE" | "TURB" | "ICING" | "IFR" | "MTN OBSCN" | "ASH";
+  validTimeFrom: string;
+  validTimeTo: string;
 
-      alphaChar?: string;
+  icaoId: string;
+  airSigmetType: "SIGMET" | "OUTLOOK";
+  hazard: "CONVECTIVE" | "TURB" | "ICING" | "IFR" | "MTN OBSCN" | "ASH";
 
-      /**
-       * typically 1 or 2, 0 for outlook
-       */
-      severity: 0 | 1 | 2;
+  alphaChar?: string;
 
-      /**
-       * Lowest level SIGMET is valid in feet
-       */
-      altitudeLow1: number;
+  /**
+   * typically 1 or 2, 0 for outlook
+   */
+  severity: 0 | 1 | 2;
 
-      /**
-       * Secondary lowest level SIGMET is valid in feet
-       */
-      altitudeLow2: number;
+  /**
+   * Lowest level SIGMET is valid in feet
+   */
+  altitudeLow1: number;
 
-      /**
-       * Highest level SIGMET is valid in feet
-       */
-      altitudeHi1: number;
+  /**
+   * Secondary lowest level SIGMET is valid in feet
+   */
+  altitudeLow2: number;
 
-      /**
-       * Secondary highest level SIGMET is valid in feet
-       */
-      altitudeHi2: number;
+  /**
+   * Highest level SIGMET is valid in feet
+   */
+  altitudeHi1: number;
 
-      rawAirSigmet: string;
-    }
-  | {
-      data: "AIRMET";
+  /**
+   * Secondary highest level SIGMET is valid in feet
+   */
+  altitudeHi2: number;
 
-      icaoId: string;
-      airSigmetType: "AIRMET";
-      hazard: "TURB" | "ICING" | "IFR" | "MTN OBSCN";
-      severity: 1 | 2 | 3 | 4;
+  rawAirSigmet: string;
+}>;
 
-      /**
-       * Lowest level AIRMET is valid in feet
-       */
-      altitudeLow1: number;
+// https://www.aviationweather.gov/dataserver/fields?datatype=gairmet
+export type GAirmetFeature = AbstractAviationAlertFeature<{
+  data: "GAIRMET";
 
-      /**
-       * Secondary lowest level AIRMET is valid in feet
-       */
-      altitudeLow2: number;
+  /**
+   * ISO 8601 formatted date and time when G-AIRMET is issued
+   */
+  issueTime: string;
 
-      /**
-       * Highest level AIRMET is valid in feet
-       */
-      altitudeHi1: number;
+  forecast: string;
 
-      /**
-       * Secondary highest level AIRMET is valid in feet
-       */
-      altitudeHi2: number;
+  /**
+   * ISO 8601 formatted date and time when G-AIRMET is valid
+   */
+  validTime: string;
 
-      rawAirSigmet: string;
-    }
->;
+  product: "SIERRA" | "TANGO" | "ZULU";
+
+  hazard:
+    | "TURB-HI"
+    | "TURB-LO"
+    | "ICE"
+    | "IFR"
+    | "MT_OBSC"
+    | "SFC_WIND"
+    | "LLWS"
+    | "FZLVL";
+
+  severity?: "LGT" | "MOD" | "SVR";
+
+  /**
+   * Lowest level G-AIRMET is valid in 100s feet
+   */
+  base?: string;
+
+  /**
+   * Highest level G-AIRMET is valid in 100s feet
+   */
+  top?: string;
+
+  /**
+   * Additional information for advisory
+   */
+  dueTo?: string;
+}>;
 
 export type CwaFeature = AbstractAviationAlertFeature<{
   data: "CWA";
+
+  validTimeFrom: string;
+  validTimeTo: string;
 
   /**
    * ARTCC region identifier
@@ -148,9 +167,9 @@ export type CwaFeature = AbstractAviationAlertFeature<{
   hazard: "TS" | "TURB" | "ICE" | "IFR" | "PCPN";
 }>;
 
-export type AviationAlertFeature = AirSigmetFeature | CwaFeature;
+export type AviationAlertFeature = SigmetFeature | GAirmetFeature | CwaFeature;
 
-export async function getAirSigmets({
+export async function getAviationAlerts({
   lat,
   lon,
 }: {
@@ -174,25 +193,40 @@ export async function getAirSigmets({
 }
 
 export function getAviationAlertName(alert: AviationAlertFeature): string {
-  if (isAirSigmetAlert(alert)) {
-    return getAirSigmetAlertName(alert);
+  if (isSigmetAlert(alert)) {
+    return getSigmetAlertName(alert);
+  }
+
+  if (isGAirmetAlert(alert)) {
+    return getGAirmetAlertName(alert);
   }
 
   return getCwaAlertName(alert);
 }
 
-function getAirSigmetAlertName(alert: AirSigmetFeature): string {
-  return [formatHazard(alert.properties.hazard), getAirSigmetAlertType(alert)]
+function getSigmetAlertName(alert: SigmetFeature): string {
+  return [formatHazard(alert.properties.hazard), getSigmetAlertType(alert)]
     .filter((a) => a)
     .join(" ");
 }
 
-function getAirSigmetAlertType(alert: AirSigmetFeature): string {
+function getSigmetAlertType(alert: SigmetFeature): string {
   if (alert.properties.airSigmetType === "OUTLOOK") {
     return "SIGMET Outlook";
   }
 
   return alert.properties.airSigmetType;
+}
+
+function getGAirmetAlertName(alert: GAirmetFeature): string {
+  return [
+    formatSeverity(alert.properties.severity),
+    formatHazard(alert.properties.hazard),
+    "G-AIRMET",
+  ]
+    .filter(notEmpty)
+    .map(capitalizeFirstLetter)
+    .join(" ");
 }
 
 function getCwaAlertName(alert: CwaFeature): string {
@@ -216,13 +250,22 @@ function formatHazard(
     case "IFR":
       return "IFR";
     case "MTN OBSCN":
+    case "MT_OBSC":
       return "Mountain Obstruction";
     case "TURB":
+    case "TURB-LO":
+    case "TURB-HI":
       return "Turbulence";
     case "PCPN":
       return "Precipitation";
     case "TS":
       return "Thunderstorms";
+    case "LLWS":
+      return "Low-Level Wind Shear";
+    case "SFC_WIND":
+      return "Surface Wind";
+    case "FZLVL":
+      return "Freezing Level";
   }
 }
 
@@ -242,7 +285,7 @@ function formatQualifier(
 }
 
 export function extractIssued(alert: AviationAlertFeature): string {
-  if (isAirSigmetAlert(alert)) {
+  if (isSigmetAlert(alert)) {
     const iss = alert.properties.rawAirSigmet.split("\n")[0].split(" ")[2];
     if (!iss || iss.length !== 6) return alert.properties.validTimeFrom;
 
@@ -274,5 +317,22 @@ export function extractIssued(alert: AviationAlertFeature): string {
       .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:00Z`;
   }
 
+  if (isGAirmetAlert(alert)) {
+    return alert.properties.issueTime;
+  }
+
   return alert.properties.validTimeFrom;
+}
+
+export function formatSeverity(
+  severity: GAirmetFeature["properties"]["severity"]
+): string | undefined {
+  switch (severity) {
+    case "LGT":
+      return "light";
+    case "MOD":
+      return "moderate";
+    case "SVR":
+      return "severe";
+  }
 }

@@ -1,6 +1,7 @@
 import sortBy from "lodash/sortBy";
 import {
   Alert,
+  isGAirmetAlert,
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
@@ -46,4 +47,15 @@ export function sortAlerts(alerts: Alert[]): Alert[] {
  */
 export function undoFixedWidthText(text: string): string {
   return text.replace(/([^\n\\.])(\n)([^\n])/g, "$1 $3");
+}
+
+export function findRelatedAlerts(alert: Alert, alerts: Alert[]): Alert[] {
+  if (!isGAirmetAlert(alert)) return [];
+
+  return alerts.filter((potentialAlert) => {
+    if (!isGAirmetAlert(potentialAlert)) return false;
+    if (potentialAlert.id === alert.id) return false;
+
+    return potentialAlert.properties.hazard === alert.properties.hazard;
+  });
 }

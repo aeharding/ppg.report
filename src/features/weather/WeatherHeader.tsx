@@ -16,10 +16,12 @@ import { addMinutes, addYears, startOfHour } from "date-fns";
 import {
   Alert,
   alertsSelector,
+  isGAirmetAlert,
   isTFRAlert,
   isWeatherAlert,
 } from "../alerts/alertsSlice";
 import { getReadAlertKey } from "../user/storage";
+import { addHours } from "date-fns/esm";
 
 export enum HeaderType {
   Normal,
@@ -197,6 +199,13 @@ function isAlertActive(alert: Alert, date: string): boolean {
               new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
               -1
             ),
+    });
+  }
+
+  if (isGAirmetAlert(alert)) {
+    return isWithinInterval(new Date(date), {
+      start: new Date(alert.properties.validTime),
+      end: addMinutes(addHours(new Date(alert.properties.validTime), 3), -1),
     });
   }
 

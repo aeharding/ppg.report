@@ -1,7 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { addHours } from "date-fns";
 import {
-  AirSigmetFeature,
   AviationAlertFeature,
+  GAirmetFeature,
+  SigmetFeature,
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { RootState } from "../../store";
@@ -9,13 +11,14 @@ import { WeatherAlertFeature } from "../weather/weatherSlice";
 
 const weatherAlertsSelector = (state: RootState) => state.weather.alerts;
 const tfrsSelector = (state: RootState) => state.faa.tfrs;
-const airSigmetsSelector = (state: RootState) => state.weather.airSigmets;
+const aviationAlertsSelector = (state: RootState) =>
+  state.weather.aviationAlerts;
 
 export type Alert = WeatherAlertFeature | TFRFeature | AviationAlertFeature;
 
 export const alertsSelector = createSelector(
-  [weatherAlertsSelector, tfrsSelector, airSigmetsSelector],
-  (weatherAlerts, tfrs, airSigmets) => {
+  [weatherAlertsSelector, tfrsSelector, aviationAlertsSelector],
+  (weatherAlerts, tfrs, aviationAlerts) => {
     if (
       !weatherAlerts ||
       weatherAlerts === "pending" ||
@@ -23,14 +26,14 @@ export const alertsSelector = createSelector(
       !tfrs ||
       tfrs === "pending" ||
       tfrs === "failed" ||
-      !airSigmets ||
-      airSigmets === "pending" ||
-      airSigmets === "failed" ||
-      airSigmets === "not-available"
+      !aviationAlerts ||
+      aviationAlerts === "pending" ||
+      aviationAlerts === "failed" ||
+      aviationAlerts === "not-available"
     )
       return;
 
-    return [...weatherAlerts.features, ...tfrs, ...airSigmets];
+    return [...weatherAlerts.features, ...tfrs, ...aviationAlerts];
   }
 );
 
@@ -42,8 +45,12 @@ export function isTFRAlert(alert: Alert): alert is TFRFeature {
   return "coreNOTAMData" in alert.properties;
 }
 
-export function isAirSigmetAlert(alert: Alert): alert is AirSigmetFeature {
-  return "airSigmetType" in alert.properties;
+export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
+  return "data" in alert.properties && alert.properties.data === "SIGMET";
+}
+
+export function isGAirmetAlert(alert: Alert): alert is GAirmetFeature {
+  return "data" in alert.properties && alert.properties.data === "GAIRMET";
 }
 
 export function getAlertStart(alert: Alert) {
@@ -51,6 +58,8 @@ export function getAlertStart(alert: Alert) {
 
   if (isTFRAlert(alert))
     return alert.properties.coreNOTAMData.notam.effectiveStart;
+
+  if (isGAirmetAlert(alert)) return alert.properties.validTime;
 
   return alert.properties.validTimeFrom;
 }
@@ -66,6 +75,9 @@ export function getAlertEnd(alert: Alert) {
 
     return alert.properties.coreNOTAMData.notam.effectiveEnd;
   }
+
+  if (isGAirmetAlert(alert))
+    return addHours(new Date(alert.properties.validTime), 3).toISOString();
 
   return alert.properties.validTimeTo;
 }

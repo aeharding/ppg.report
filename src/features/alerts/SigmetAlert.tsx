@@ -8,8 +8,8 @@ import { linkifyOptions } from "../rap/extra/Discussion";
 import OSMAttribution from "../../map/OSMAttribution";
 import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
-import { AirSigmetFeature } from "../../services/aviationWeather";
 import RadarLayer from "../../map/RadarLayer";
+import { SigmetFeature } from "../../services/aviationWeather";
 
 const AlertContainer = styled.div``;
 
@@ -41,12 +41,12 @@ const StyledMapContainer = styled(MapContainer)`
 `;
 
 interface AlertProps {
-  alert: AirSigmetFeature;
+  alert: SigmetFeature;
   index: number;
   total: number;
 }
 
-export default function AirSigmetAlert({ alert, index, total }: AlertProps) {
+export default function SigmetAlert({ alert, index, total }: AlertProps) {
   return (
     <AlertContainer>
       <Title>
@@ -74,7 +74,7 @@ export default function AirSigmetAlert({ alert, index, total }: AlertProps) {
         <Header alert={alert} index={index} total={total} />
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
-          <Description>{formatAirSigmetDescription(alert)}</Description>
+          <Description>{formatSigmetDescription(alert)}</Description>
 
           {alert.properties.rawAirSigmet}
         </StyledLinkify>
@@ -83,19 +83,18 @@ export default function AirSigmetAlert({ alert, index, total }: AlertProps) {
   );
 }
 
-export function formatAirSigmetDescription(alert: AirSigmetFeature) {
+export function formatSigmetDescription(alert: SigmetFeature) {
   if (
     alert.properties.hazard === "CONVECTIVE" &&
     alert.properties.airSigmetType === "OUTLOOK"
   ) {
     return (
       <>
-        A Convective SIGMET Outlook is a weather advisory issued by the Aviation
-        Weather Center concerning predicted and/or possible future widespread
-        convective weather (such as thunderstorms and/or tornadoes) significant
-        to the safety of all aircraft. Outlooks are valid for four hours, and
-        may be renewed. Before flying, pay special attention to radar and local
-        weather observations.
+        A Convective SIGMET Outlook is a weather advisory concerning predicted
+        and/or possible future widespread convective weather (such as
+        thunderstorms and/or tornadoes) significant to the safety of all
+        aircraft. Outlooks are valid for four hours, and may be renewed. Before
+        flying, pay special attention to radar and local weather observations.
       </>
     );
   }
@@ -104,34 +103,18 @@ export function formatAirSigmetDescription(alert: AirSigmetFeature) {
     return (
       <>
         A Convective SIGMET (Significant Meteorological Information) is a
-        weather advisory issued by the Aviation Weather Center concerning
-        convective weather significant to the safety of all aircraft. Convective
-        SIGMETs are issued for tornadoes, lines of thunderstorms, embedded
-        thunderstorms of any intensity level, areas of thunderstorms greater
-        than or equal to VIP level 4 with an area coverage of 4/10 (40%) or
-        more, and hail 3/4 inch or greater.
+        weather advisory concerning convective weather significant to the safety
+        of all aircraft. Convective SIGMETs are issued for tornadoes, lines of
+        thunderstorms, embedded thunderstorms of any intensity level, areas of
+        thunderstorms greater than or equal to VIP level 4 with an area coverage
+        of 4/10 (40%) or more, and hail 3/4 inch or greater.
       </>
     );
   if (alert.properties.airSigmetType === "SIGMET")
     return (
       <>
         A SIGMET (Significant Meteorological Information) advises of weather
-        that is potentially hazardous to all aircraft. It is issued by the
-        Aviation Weather Center.
-      </>
-    );
-  if (alert.properties.airSigmetType === "AIRMET")
-    return (
-      <>
-        AIRMETS (Airmen's Meteorological Information) are in-flight weather
-        advisories issued only to amend the Aviation Surface Forecast, Aviation
-        Cloud Forecast, or area forecast concerning weather phenomena which are
-        of operational interest to all aircraft and especially hazardous to
-        paramotor pilots. AIRMETs concern weather of less severity than that
-        covered by SIGMETs or Convective SIGMETs. AIRMETs cover moderate icing,
-        moderate turbulence, sustained winds of 30 knots or more at the surface,
-        widespread areas of ceilings less than 1,000 feet and/or visibility less
-        than 3 miles, and extensive mountain obscurement.
+        that is potentially hazardous to all aircraft.
       </>
     );
 }
