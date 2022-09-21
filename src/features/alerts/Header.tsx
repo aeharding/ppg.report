@@ -220,7 +220,7 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
       return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
     }
     if (isGAirmetAlert(alert))
-      return `https://www.aviationweather.gov/gairmet?center=${lat},${lon}&zoom=5&level=sfc&basemap=dark`;
+      return `https://www.aviationweather.gov/gairmet?center=${lat},${lon}&zoom=5&level=sfc&basemap=dark&time=${alert.properties.forecast}`;
 
     return `https://www.aviationweather.gov/cwamis?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
   }

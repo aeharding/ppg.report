@@ -17,6 +17,8 @@ export function isAlertDangerous(alert: Alert): boolean {
 
   if (isTFRAlert(alert)) return true;
 
+  if (isGAirmetAlert(alert) && alert.properties.hazard === "LLWS") return true;
+
   return (
     alert.properties.data === "SIGMET" &&
     alert.properties.airSigmetType !== "OUTLOOK"

@@ -51,6 +51,8 @@ const WarningIcon = styled(FontAwesomeIcon)`
 const TitleBar = styled.div`
   flex: 1;
   display: flex;
+
+  align-items: center;
 `;
 
 const Title = styled.div`

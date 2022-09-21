@@ -1,49 +1,40 @@
-import { MapContainer } from "react-leaflet";
-
 import Header from "./Header";
 
 import BaseLayer from "../../map/BaseLayer";
-import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
 import OSMAttribution from "../../map/OSMAttribution";
-import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";
 import { SigmetFeature } from "../../services/aviationWeather";
-
-const AlertContainer = styled.div``;
-
-const Title = styled.div`
-  font-size: 0.9em;
-`;
-
-const Description = styled.p`
-  opacity: 0.8;
-  font-size: 0.9em;
-  font-style: italic;
-`;
-
-const StyledLinkify = styled(Linkify)`
-  white-space: pre-line;
-  overflow-wrap: break-word;
-
-  margin: 1rem;
-  font-size: 1rem;
-`;
-
-const StyledMapContainer = styled(MapContainer)`
-  height: 350px;
-
-  &,
-  .leaflet-pane * {
-    pointer-events: none !important;
-  }
-`;
+import reactStringReplace from "react-string-replace";
+import React from "react";
+import {
+  AlertContainer,
+  Description,
+  StyledLinkify,
+  StyledMapContainer,
+  Title,
+} from "./shared";
 
 interface AlertProps {
   alert: SigmetFeature;
   index: number;
   total: number;
+}
+
+const referToConvectiveOutlook =
+  "REFER TO MOST RECENT ACUS01 KWNS FROM STORM PREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.";
+
+function replaceOccurrence(
+  payload: string,
+  match: string,
+  to: React.ReactNode
+) {
+  return reactStringReplace(
+    payload,
+    new RegExp(`(${match.replaceAll(" ", "\\s+")})`),
+    () => to
+  );
 }
 
 export default function SigmetAlert({ alert, index, total }: AlertProps) {
@@ -76,7 +67,17 @@ export default function SigmetAlert({ alert, index, total }: AlertProps) {
         <StyledLinkify tagName="div" options={linkifyOptions}>
           <Description>{formatSigmetDescription(alert)}</Description>
 
-          {alert.properties.rawAirSigmet}
+          {replaceOccurrence(
+            alert.properties.rawAirSigmet,
+            referToConvectiveOutlook,
+            <a
+              href="https://www.spc.noaa.gov/products/outlook/day1otlk.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {referToConvectiveOutlook}
+            </a>
+          )}
         </StyledLinkify>
       </Title>
     </AlertContainer>
@@ -90,7 +91,7 @@ export function formatSigmetDescription(alert: SigmetFeature) {
   ) {
     return (
       <>
-        A Convective SIGMET Outlook is a weather advisory concerning predicted
+        A Convective Outlook SIGMET is a weather advisory concerning predicted
         and/or possible future widespread convective weather (such as
         thunderstorms and/or tornadoes) significant to the safety of all
         aircraft. Outlooks are valid for four hours, and may be renewed. Before

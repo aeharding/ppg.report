@@ -1,47 +1,20 @@
-import { MapContainer } from "react-leaflet";
-
 import Header from "./Header";
 
 import BaseLayer from "../../map/BaseLayer";
-import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
 import OSMAttribution from "../../map/OSMAttribution";
-import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";
 import { GAirmetFeature } from "../../services/aviationWeather";
 import { capitalizeFirstLetter } from "../../helpers/string";
 import { formatSeverity } from "../../helpers/aviationAlerts";
-
-const AlertContainer = styled.div``;
-
-const Title = styled.div`
-  font-size: 0.9em;
-`;
-
-const Description = styled.p`
-  opacity: 0.8;
-  font-size: 0.9em;
-  font-style: italic;
-`;
-
-const StyledLinkify = styled(Linkify)`
-  white-space: pre-line;
-  overflow-wrap: break-word;
-
-  margin: 1rem;
-  font-size: 1rem;
-`;
-
-const StyledMapContainer = styled(MapContainer)`
-  height: 350px;
-
-  &,
-  .leaflet-pane * {
-    pointer-events: none !important;
-  }
-`;
-
+import {
+  AlertContainer,
+  Description,
+  StyledLinkify,
+  StyledMapContainer,
+  Title,
+} from "./shared";
 interface AlertProps {
   alert: GAirmetFeature;
   index: number;
@@ -61,19 +34,44 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
     switch (alert.properties.hazard) {
       case "TURB-LO":
       case "TURB-HI":
-        return `${
-          alert.properties.severity
-            ? capitalizeFirstLetter(formatSeverity(alert.properties.severity)!)
-            : ""
-        } non-convective turbulence exists in the ${
-          alert.properties.hazard === "TURB-HI" ? "upper" : "lower"
-        } atmosphere ${
-          alert.properties.base && alert.properties.top
-            ? `(${formatFlightLevel(
-                alert.properties.base
-              )} to ${formatFlightLevel(alert.properties.top!)})`
-            : ""
-        }.`;
+        return (
+          <>
+            {alert.properties.severity
+              ? capitalizeFirstLetter(
+                  formatSeverity(alert.properties.severity)!
+                )
+              : ""}{" "}
+            non-convective turbulence exists in the{" "}
+            {alert.properties.hazard === "TURB-HI" ? "upper" : "lower"}{" "}
+            atmosphere{" "}
+            {alert.properties.base && alert.properties.top
+              ? `(${formatFlightLevel(
+                  alert.properties.base
+                )} to ${formatFlightLevel(alert.properties.top!)})`
+              : ""}
+            .
+          </>
+        );
+      case "LLWS":
+        return (
+          <>
+            <p>
+              Non-convective wind shear below 2000 feet AGL, resulting in an air
+              speed loss or gain of 20 knots or more.
+            </p>
+            <p>LLWS is particularly dangerous to paramotor pilots.</p>
+            <p>
+              {" "}
+              <a
+                href="https://www.weather.gov/zme/safety_llws"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more about LLWS on weather.gov.
+              </a>
+            </p>
+          </>
+        );
     }
   }
   return (

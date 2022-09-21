@@ -1,38 +1,18 @@
-import { MapContainer } from "react-leaflet";
-
 import Header from "./Header";
 
 import BaseLayer from "../../map/BaseLayer";
-import Linkify from "linkify-react";
 import { linkifyOptions } from "../rap/extra/Discussion";
 import { undoFixedWidthText } from "../../helpers/weather";
 import OSMAttribution from "../../map/OSMAttribution";
 import styled from "@emotion/styled/macro";
 import MapController from "./MapController";
 import { TFRFeature } from "../../services/faa";
-
-const AlertContainer = styled.div``;
-
-const Title = styled.div`
-  font-size: 0.9em;
-`;
-
-const StyledLinkify = styled(Linkify)`
-  white-space: pre-line;
-  overflow-wrap: break-word;
-
-  margin: 1rem;
-  font-size: 1rem;
-`;
-
-const StyledMapContainer = styled(MapContainer)`
-  height: 350px;
-
-  &,
-  .leaflet-pane * {
-    pointer-events: none !important;
-  }
-`;
+import {
+  AlertContainer,
+  StyledLinkify,
+  StyledMapContainer,
+  Title,
+} from "./shared";
 
 const Disclaimer = styled.p`
   font-size: 0.9rem;
