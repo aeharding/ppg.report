@@ -2,9 +2,14 @@ import styled from "@emotion/styled/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { TFRFeature } from "../../services/faa";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
-import { isWeatherAlert } from "./alertsSlice";
+import {
+  Alert,
+  getAlertEnd,
+  getAlertStart,
+  getGroupedGAirmetAlertEnd,
+  getGroupedGAirmetAlertStart,
+  isGAirmetAlert,
+} from "./alertsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -16,35 +21,32 @@ const Container = styled.div`
 `;
 
 interface TimesProps {
-  alert: WeatherAlertFeature | TFRFeature;
+  alert: Alert;
   includeYear: boolean;
 }
 
 export default function Times({ alert, includeYear }: TimesProps) {
+  const aviationAlertsResult = useAppSelector(
+    (state) => state.weather.aviationAlerts
+  );
+
+  const aviationAlerts =
+    typeof aviationAlertsResult === "object" ? aviationAlertsResult : [];
+
+  const start = isGAirmetAlert(alert)
+    ? new Date(getGroupedGAirmetAlertStart(alert, aviationAlerts))
+    : new Date(getAlertStart(alert));
+
+  const end = isGAirmetAlert(alert)
+    ? getGroupedGAirmetAlertEnd(alert, aviationAlerts)
+    : getAlertEnd(alert);
+
   return (
     <Container>
-      <Time
-        time={
-          new Date(
-            isWeatherAlert(alert)
-              ? alert.properties.onset
-              : alert.properties.coreNOTAMData.notam.effectiveStart
-          )
-        }
-        includeYear={includeYear}
-      >
+      <Time time={start} includeYear={includeYear}>
         Start
       </Time>
-      <Time
-        time={
-          isWeatherAlert(alert)
-            ? new Date(alert.properties.ends || alert.properties.expires)
-            : alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
-            ? undefined
-            : new Date(alert.properties.coreNOTAMData.notam.effectiveEnd)
-        }
-        includeYear={includeYear}
-      >
+      <Time time={end ? new Date(end) : undefined} includeYear={includeYear}>
         End
       </Time>
     </Container>

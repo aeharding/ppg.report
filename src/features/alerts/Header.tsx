@@ -4,13 +4,22 @@ import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import { useParams } from "react-router-dom";
+import { getAviationAlertName } from "../../helpers/aviationAlerts";
 import useDebounce from "../../helpers/useDebounce";
-import { isAlertDangerous } from "../../helpers/weather";
-import { useAppDispatch } from "../../hooks";
+import { findRelatedAlerts, isAlertDangerous } from "../../helpers/weather";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { AviationAlertFeature } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { readAlert } from "../user/userSlice";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
-import { isWeatherAlert } from "./alertsSlice";
+import {
+  Alert,
+  isGAirmetAlert,
+  isSigmetAlert,
+  isTFRAlert,
+  isWeatherAlert,
+} from "./alertsSlice";
 import Times from "./Times";
 import UnreadIndicator from "./UnreadIndicator";
 
@@ -33,13 +42,20 @@ const Headline = styled.div`
   margin-bottom: 1rem;
 `;
 
+const NameLine = styled.div`
+  margin-left: 0.75rem;
+  line-height: 1.1;
+`;
+
 const Name = styled.div`
   font-size: 1.2rem;
-  margin-left: 0.75rem;
   font-weight: 300;
   margin-right: 1.5rem;
-  line-height: 1.1;
   white-space: nowrap;
+`;
+
+const Issuer = styled.div`
+  font-size: 0.85em;
 `;
 
 const EventName = styled.span`
@@ -80,10 +96,11 @@ const AlertOrderContainer = styled.div`
 `;
 
 interface HeaderProps {
-  alert: WeatherAlertFeature | TFRFeature;
+  alert: Alert;
   index: number;
   total: number;
   includeYear?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function Header({
@@ -91,25 +108,39 @@ export default function Header({
   index,
   total,
   includeYear,
+  children,
 }: HeaderProps) {
   const dispatch = useAppDispatch();
   const { ref, inView } = useInView({ threshold: 1 });
   const inViewDebounced = useDebounce(inView, 1000);
+  const aviationAlerts = useAppSelector(
+    (state) => state.weather.aviationAlerts
+  );
 
   useEffect(() => {
     if (!inViewDebounced) return;
 
     dispatch(readAlert(alert));
-  }, [inViewDebounced, dispatch, alert]);
+
+    if (typeof aviationAlerts !== "object") return;
+
+    findRelatedAlerts(alert, aviationAlerts).forEach((relatedAlert) =>
+      dispatch(readAlert(relatedAlert))
+    );
+  }, [inViewDebounced, dispatch, alert, aviationAlerts]);
+
+  function renderHeadline(alert: Alert) {
+    if (isWeatherAlert(alert)) return <WeatherHeadline alert={alert} />;
+
+    if (isTFRAlert(alert)) return <TFRHeadline alert={alert} />;
+
+    return <AirSigmetHeadline alert={alert} />;
+  }
 
   return (
     <Container warning={isAlertDangerous(alert)} ref={ref}>
       <Headline>
-        {isWeatherAlert(alert) ? (
-          <WeatherHeadline alert={alert} />
-        ) : (
-          <TFRHeadline alert={alert} />
-        )}
+        {renderHeadline(alert)}
 
         <Aside>
           <UnreadIndicator alert={alert} />
@@ -121,6 +152,8 @@ export default function Header({
       </Headline>
 
       <Times alert={alert} includeYear={!!includeYear} />
+
+      {children}
     </Container>
   );
 }
@@ -139,10 +172,13 @@ function WeatherHeadline({ alert }: { alert: WeatherAlertFeature }) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Name>
-          <EventName>{alert.properties.event}</EventName>&nbsp;
-          <OpenIcon icon={faExternalLink} />
-        </Name>
+        <NameLine>
+          <Issuer>National Weather Service</Issuer>
+          <Name>
+            <EventName>{alert.properties.event}</EventName>&nbsp;
+            <OpenIcon icon={faExternalLink} />
+          </Name>
+        </NameLine>
       </Link>
     </>
   );
@@ -160,14 +196,51 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Name>
-          <EventName>
-            TFR {alert.properties.coreNOTAMData.notam.classification}{" "}
-            {alert.properties.coreNOTAMData.notam.number}
-          </EventName>
-          &nbsp;
-          <OpenIcon icon={faExternalLink} />
-        </Name>
+        <NameLine>
+          <Issuer>Federal Aviation Administration</Issuer>
+          <Name>
+            <EventName>
+              TFR {alert.properties.coreNOTAMData.notam.classification}{" "}
+              {alert.properties.coreNOTAMData.notam.number}
+            </EventName>
+            &nbsp;
+            <OpenIcon icon={faExternalLink} />
+          </Name>
+        </NameLine>
+      </Link>
+    </>
+  );
+}
+
+function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
+  const { lat, lon } = useParams<"lat" | "lon">();
+
+  // https://www.aviationweather.gov/cwamis/help?page=inter
+  function buildUrl() {
+    if (isSigmetAlert(alert)) {
+      if (alert.properties.airSigmetType === "OUTLOOK")
+        return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=5&time=2&level=sfc&basemap=dark`;
+
+      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+    }
+    if (isGAirmetAlert(alert))
+      return `https://www.aviationweather.gov/gairmet?center=${lat},${lon}&zoom=5&level=sfc&basemap=dark&time=${alert.properties.forecast}`;
+
+    return `https://www.aviationweather.gov/cwamis?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+  }
+
+  return (
+    <>
+      <WarningIcon icon={faExclamationTriangle} />{" "}
+      <Link href={buildUrl()} target="_blank" rel="noopener noreferrer">
+        <NameLine>
+          <Issuer>Aviation Weather Center</Issuer>
+          <Name>
+            <EventName>{getAviationAlertName(alert)}</EventName>
+            &nbsp;
+            <OpenIcon icon={faExternalLink} />
+          </Name>
+        </NameLine>
       </Link>
     </>
   );

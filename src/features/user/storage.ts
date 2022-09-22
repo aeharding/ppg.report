@@ -1,9 +1,9 @@
-import { differenceInDays, differenceInHours } from "date-fns";
+import { differenceInDays, differenceInHours, startOfDay } from "date-fns";
 import getDistance from "geolib/es/getDistance";
-import { TFRFeature } from "../../services/faa";
-import { isWeatherAlert } from "../alerts/alertsSlice";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
+import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { AltitudeType } from "./userSlice";
+import { extractIssuedTimestamp } from "../../helpers/aviationAlerts";
 
 export interface UserLocation {
   lat: number;
@@ -142,9 +142,7 @@ export function getReadAlerts(): Record<string, string> {
   return JSON.parse(savedValue);
 }
 
-export function setReadAlert(
-  alert: TFRFeature | WeatherAlertFeature
-): Record<string, string> {
+export function setReadAlert(alert: Alert): Record<string, string> {
   const readAlerts = getReadAlerts();
 
   readAlerts[getReadAlertKey(alert)] = new Date().toISOString();
@@ -161,10 +159,20 @@ export function setReadAlert(
   return readAlerts;
 }
 
-export function getReadAlertKey(
-  alert: TFRFeature | WeatherAlertFeature
-): string {
-  return isWeatherAlert(alert)
-    ? alert.properties.id
-    : alert.properties.coreNOTAMData.notam.id;
+export function getReadAlertKey(alert: Alert): string {
+  if (isWeatherAlert(alert)) return alert.properties.id;
+
+  if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
+
+  if ("alphaChar" in alert.properties && alert.properties.alphaChar) {
+    const timeZoneDate = utcToZonedTime(extractIssuedTimestamp(alert), "UTC");
+    const utcStartOfDay = startOfDay(timeZoneDate);
+    const dayStartUtc = zonedTimeToUtc(utcStartOfDay, "UTC");
+
+    return `aviationalert-${dayStartUtc.toISOString().slice(0, 10)}-${
+      alert.properties.alphaChar
+    }`;
+  }
+
+  return `aviationalert-${alert.id}`;
 }

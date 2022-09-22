@@ -13,10 +13,15 @@ import { tafReport as tafReportSelector } from "./weatherSliceLazy";
 import Wind from "./header/Wind";
 import { isAlertDangerous, sortAlerts } from "../../helpers/weather";
 import { addMinutes, addYears, startOfHour } from "date-fns";
-import { alertsSelector, isWeatherAlert } from "../alerts/alertsSlice";
-import { WeatherAlertFeature } from "./weatherSlice";
-import { TFRFeature } from "../../services/faa";
+import {
+  Alert,
+  alertsSelector,
+  isGAirmetAlert,
+  isTFRAlert,
+  isWeatherAlert,
+} from "../alerts/alertsSlice";
 import { getReadAlertKey } from "../user/storage";
+import { addHours } from "date-fns/esm";
 
 export enum HeaderType {
   Normal,
@@ -172,10 +177,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   );
 }
 
-function isAlertActive(
-  alert: WeatherAlertFeature | TFRFeature,
-  date: string
-): boolean {
+function isAlertActive(alert: Alert, date: string): boolean {
   if (isWeatherAlert(alert))
     return isWithinInterval(new Date(date), {
       start: startOfHour(new Date(alert.properties.onset)),
@@ -185,16 +187,30 @@ function isAlertActive(
       ),
     });
 
+  if (isTFRAlert(alert)) {
+    return isWithinInterval(new Date(date), {
+      start: startOfHour(
+        new Date(alert.properties.coreNOTAMData.notam.effectiveStart)
+      ),
+      end:
+        alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
+          ? addYears(new Date(), 10)
+          : addMinutes(
+              new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
+              -1
+            ),
+    });
+  }
+
+  if (isGAirmetAlert(alert)) {
+    return isWithinInterval(new Date(date), {
+      start: new Date(alert.properties.validTime),
+      end: addMinutes(addHours(new Date(alert.properties.validTime), 3), -1),
+    });
+  }
+
   return isWithinInterval(new Date(date), {
-    start: startOfHour(
-      new Date(alert.properties.coreNOTAMData.notam.effectiveStart)
-    ),
-    end:
-      alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
-        ? addYears(new Date(), 10)
-        : addMinutes(
-            new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
-            -1
-          ),
+    start: startOfHour(new Date(alert.properties.validTimeFrom)),
+    end: addMinutes(new Date(alert.properties.validTimeTo), -1),
   });
 }

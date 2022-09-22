@@ -2,13 +2,12 @@ import styled from "@emotion/styled/macro";
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
-import { timeZoneSelector, WeatherAlertFeature } from "../weatherSlice";
+import { timeZoneSelector } from "../weatherSlice";
 import { isTouchDevice } from "../../../helpers/device";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
 import { lazy, Suspense } from "react";
 import Loading from "../../../shared/Loading";
-import { TFRFeature } from "../../../services/faa";
-import { isWeatherAlert } from "../../alerts/alertsSlice";
+import { Alert, isTFRAlert, isWeatherAlert } from "../../alerts/alertsSlice";
 import { isAlertDangerous } from "../../../helpers/weather";
 import { HeaderType } from "../WeatherHeader";
 import { css } from "@emotion/react/macro";
@@ -17,6 +16,7 @@ import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { getReadAlertKey } from "../../user/storage";
 import JumpActions from "../../alerts/JumpActions";
+import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -51,6 +51,8 @@ const WarningIcon = styled(FontAwesomeIcon)`
 const TitleBar = styled.div`
   flex: 1;
   display: flex;
+
+  align-items: center;
 `;
 
 const Title = styled.div`
@@ -80,7 +82,7 @@ const Actions = styled.div`
 `;
 
 interface AlertsProps {
-  alerts: (WeatherAlertFeature | TFRFeature)[];
+  alerts: Alert[];
   date: string;
 }
 
@@ -162,10 +164,11 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
   );
 }
 
-function getAlertName(
-  alert: WeatherAlertFeature | TFRFeature
-): string | undefined {
-  return isWeatherAlert(alert)
-    ? alert.properties.headline
-    : `TFR ${alert.properties.coreNOTAMData.notam.classification} ${alert.properties.coreNOTAMData.notam.number}`;
+export function getAlertName(alert: Alert): string | undefined {
+  if (isWeatherAlert(alert)) return alert.properties.headline;
+
+  if (isTFRAlert(alert))
+    return `TFR ${alert.properties.coreNOTAMData.notam.classification} ${alert.properties.coreNOTAMData.notam.number}`;
+
+  return getAviationAlertName(alert);
 }

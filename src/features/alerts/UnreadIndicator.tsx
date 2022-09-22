@@ -1,9 +1,8 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { useAppSelector } from "../../hooks";
-import { TFRFeature } from "../../services/faa";
 import { getReadAlertKey } from "../user/storage";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
+import { Alert } from "./alertsSlice";
 
 const Bubble = styled.div<{ read: boolean }>`
   width: 10px;
@@ -19,7 +18,7 @@ const Bubble = styled.div<{ read: boolean }>`
 `;
 
 interface UnreadIndicatorProps {
-  alert: TFRFeature | WeatherAlertFeature;
+  alert: Alert;
 }
 
 export default function UnreadIndicator({ alert }: UnreadIndicatorProps) {

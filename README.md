@@ -10,8 +10,10 @@ Weather report tailored for paramotor pilots. Consolidates data from multiple so
 
 1. The [NOAA Rapid Refresh Op40 analysis](https://rucsoundings.noaa.gov/)
 2. Nearby [Terminal Aerodrome Forecasts](https://www.aviationweather.gov/taf), if available
-3. NOAA hourly weather forecast
-4. National Weather Service active alerts
+3. NWS hourly weather forecast
+4. National Weather Service [active alerts](https://alerts.weather.gov/cap/us.php?x=1)
+5. Aviation Weather Center [SIGMETs](https://www.aviationweather.gov/sigmet), [G-AIRMETs](https://www.aviationweather.gov/gairmet), and [CWAs](https://www.aviationweather.gov/cwamis)
+6. Federal Aviation Administration [TFRs](https://tfr.faa.gov)
 
 ![Screenshot of PPG.report website](https://user-images.githubusercontent.com/2166114/166601608-42c74bed-7c87-41ef-bd55-0911b470a9c4.png)
 
@@ -58,6 +60,7 @@ Using a reverse proxy such as Nginx, configure the following:
   - GET `/api/pqs` ➡ `https://nationalmap.gov/epqs/pqs.php` Get United States altitude information for a given geolocation.
   - GET `/api/googleelevation` ➡ `https://maps.googleapis.com/maps/api/elevation/json` Get global altitude information for a given geolocation (backup API).
   - GET `/api/tfr` ➡ self-hosted [tfr-scraper](https://github.com/aeharding/tfr-scraper)
+  - GET `/api/aviationalerts` ➡ self-hosted [aviation-wx](https://github.com/aeharding/aviation-wx)
 - **IMPORTANT!** For each outgoing API request, make sure to:
   - Attach a `User-Agent` header, as per [NOAA](https://www.weather.gov/documentation/services-web-api) and [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) usage policies.
   - **Keep these free APIs free - be a good API consumer!** Add caching for each route - I recommend at least 10 minutes for `rucsoundings.noaa.gov`, and one week for `nominatim.openstreetmap.org`.

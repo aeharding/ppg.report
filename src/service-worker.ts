@@ -168,6 +168,34 @@ registerRoute(
   })
 );
 
+// Cache aviation weather API response
+registerRoute(
+  new RegExp("/api/aviationweather.*"),
+  new NetworkFirst({
+    cacheName: "apiAviationWeatherCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+      }),
+    ],
+  })
+);
+
+// Cache aviation alerts API response
+registerRoute(
+  new RegExp("/api/aviationalerts.*"),
+  new NetworkFirst({
+    cacheName: "apiAviationAlertsCache",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+      }),
+    ],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {
