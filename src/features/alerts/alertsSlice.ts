@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { addHours } from "date-fns";
+import { findRelatedAlerts } from "../../helpers/weather";
 import {
   AviationAlertFeature,
   GAirmetFeature,
@@ -80,4 +81,22 @@ export function getAlertEnd(alert: Alert) {
     return addHours(new Date(alert.properties.validTime), 3).toISOString();
 
   return alert.properties.validTimeTo;
+}
+
+export function getGroupedGAirmetAlertStart(
+  alert: GAirmetFeature,
+  alerts: Alert[]
+) {
+  const related = findRelatedAlerts(alert, alerts);
+
+  return getAlertStart(related[0]);
+}
+
+export function getGroupedGAirmetAlertEnd(
+  alert: GAirmetFeature,
+  alerts: Alert[]
+) {
+  const related = findRelatedAlerts(alert, alerts);
+
+  return getAlertEnd(related[related.length - 1]);
 }

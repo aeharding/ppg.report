@@ -15,6 +15,7 @@ import {
   StyledMapContainer,
   Title,
 } from "./shared";
+import More from "../../shared/More";
 
 interface AlertProps {
   alert: SigmetFeature;
@@ -65,7 +66,9 @@ export default function SigmetAlert({ alert, index, total }: AlertProps) {
         <Header alert={alert} index={index} total={total} />
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
-          <Description>{formatSigmetDescription(alert)}</Description>
+          <Description>
+            <More>{formatSigmetDescription(alert)}</More>
+          </Description>
 
           {replaceOccurrence(
             alert.properties.rawAirSigmet,
@@ -91,31 +94,39 @@ export function formatSigmetDescription(alert: SigmetFeature) {
   ) {
     return (
       <>
-        A Convective Outlook SIGMET is a weather advisory concerning predicted
-        and/or possible future widespread convective weather (such as
-        thunderstorms and/or tornadoes) significant to the safety of all
-        aircraft. Outlooks are valid for four hours, and may be renewed. Before
-        flying, pay special attention to radar and local weather observations.
+        <p>
+          A Convective Outlook SIGMET is a weather advisory concerning predicted
+          and/or possible future widespread convective weather (such as
+          thunderstorms and/or tornadoes) significant to the safety of all
+          aircraft. Outlooks are valid for four hours, and may be renewed.
+          Before flying, pay special attention to radar and local weather
+          observations.
+        </p>
+        <p>
+          It doesn't preclude PPG — conditions may be great — but evaluate local
+          conditions carefully and be prepared for those conditions to
+          deteriorate.
+        </p>
       </>
     );
   }
 
   if (alert.properties.hazard === "CONVECTIVE")
     return (
-      <>
+      <p>
         A Convective SIGMET (Significant Meteorological Information) is a
         weather advisory concerning convective weather significant to the safety
         of all aircraft. Convective SIGMETs are issued for tornadoes, lines of
         thunderstorms, embedded thunderstorms of any intensity level, areas of
         thunderstorms greater than or equal to VIP level 4 with an area coverage
         of 4/10 (40%) or more, and hail 3/4 inch or greater.
-      </>
+      </p>
     );
   if (alert.properties.airSigmetType === "SIGMET")
     return (
-      <>
+      <p>
         A SIGMET (Significant Meteorological Information) advises of weather
         that is potentially hazardous to all aircraft.
-      </>
+      </p>
     );
 }

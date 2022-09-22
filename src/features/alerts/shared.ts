@@ -8,7 +8,7 @@ export const Title = styled.div`
   font-size: 0.9em;
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   opacity: 0.8;
   font-size: 0.9em;
   font-style: italic;

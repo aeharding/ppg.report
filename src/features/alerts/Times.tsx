@@ -2,7 +2,14 @@ import styled from "@emotion/styled/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { Alert, getAlertEnd, getAlertStart } from "./alertsSlice";
+import {
+  Alert,
+  getAlertEnd,
+  getAlertStart,
+  getGroupedGAirmetAlertEnd,
+  getGroupedGAirmetAlertStart,
+  isGAirmetAlert,
+} from "./alertsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -19,15 +26,27 @@ interface TimesProps {
 }
 
 export default function Times({ alert, includeYear }: TimesProps) {
+  const aviationAlertsResult = useAppSelector(
+    (state) => state.weather.aviationAlerts
+  );
+
+  const aviationAlerts =
+    typeof aviationAlertsResult === "object" ? aviationAlertsResult : [];
+
+  const start = isGAirmetAlert(alert)
+    ? new Date(getGroupedGAirmetAlertStart(alert, aviationAlerts))
+    : new Date(getAlertStart(alert));
+
+  const end = isGAirmetAlert(alert)
+    ? getGroupedGAirmetAlertEnd(alert, aviationAlerts)
+    : getAlertEnd(alert);
+
   return (
     <Container>
-      <Time time={new Date(getAlertStart(alert))} includeYear={includeYear}>
+      <Time time={start} includeYear={includeYear}>
         Start
       </Time>
-      <Time
-        time={getAlertEnd(alert) ? new Date(getAlertEnd(alert)!) : undefined}
-        includeYear={includeYear}
-      >
+      <Time time={end ? new Date(end) : undefined} includeYear={includeYear}>
         End
       </Time>
     </Container>

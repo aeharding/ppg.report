@@ -100,6 +100,7 @@ interface HeaderProps {
   index: number;
   total: number;
   includeYear?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function Header({
@@ -107,6 +108,7 @@ export default function Header({
   index,
   total,
   includeYear,
+  children,
 }: HeaderProps) {
   const dispatch = useAppDispatch();
   const { ref, inView } = useInView({ threshold: 1 });
@@ -150,6 +152,8 @@ export default function Header({
       </Headline>
 
       <Times alert={alert} includeYear={!!includeYear} />
+
+      {children}
     </Container>
   );
 }

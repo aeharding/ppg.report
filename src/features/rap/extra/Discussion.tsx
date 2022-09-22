@@ -13,6 +13,7 @@ export const linkifyOptions = {
   rel: "noopener noreferrer",
   target: "_blank",
   defaultProtocol: "https",
+  ignoreTags: ["a"],
 };
 
 const Overflow = styled.div`

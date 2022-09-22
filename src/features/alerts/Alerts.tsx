@@ -10,7 +10,7 @@ import {
 import TFRAlert from "./TFRAlert";
 import SigmetAlert from "./SigmetAlert";
 import CwaAlert from "./CwaAlert";
-import GAirmetAlert from "./GAirmetAlert";
+import GAirmetAlert from "./gairmet/GAirmetAlert";
 
 const AlertsContainer = styled.div`
   display: flex;
