@@ -67,6 +67,7 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
               before flying.
             </i>
           </Disclaimer>
+
           {undoFixedWidthText(alert.properties.coreNOTAMData.notam.text)}
         </StyledLinkify>
       </Title>
