@@ -57,6 +57,8 @@ export default function Description({ alerts }: DescriptionProps) {
             speed loss or gain of 20 knots or more.
           </p>
         );
+      case "SFC_WND":
+        return <p>AIR SPEED LOSS OR GAIN OF 30KTS OR MORE BELOW 2000 FT AGL</p>;
     }
   }
 

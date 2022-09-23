@@ -14,6 +14,7 @@ export const linkifyOptions = {
   target: "_blank",
   defaultProtocol: "https",
   ignoreTags: ["a"],
+  validate: (value: string) => value.toLowerCase().indexOf("ppg.report") === -1,
 };
 
 const Overflow = styled.div`

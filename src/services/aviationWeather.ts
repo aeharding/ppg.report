@@ -114,9 +114,10 @@ export type GAirmetFeature = AbstractAviationAlertFeature<{
     | "ICE"
     | "IFR"
     | "MT_OBSC"
-    | "SFC_WIND"
+    | "SFC_WND"
     | "LLWS"
-    | "FZLVL";
+    | "FZLVL"
+    | "M_FZLVL";
 
   severity?: "LGT" | "MOD" | "SVR";
 

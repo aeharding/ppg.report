@@ -14,6 +14,7 @@ import {
   Title,
 } from "./shared";
 import More from "../../shared/More";
+import MyPosition from "../../map/MyPosition";
 
 interface AlertProps {
   alert: CwaFeature;
@@ -43,6 +44,7 @@ export default function CwaAlert({ alert, index, total }: AlertProps) {
             <OSMAttribution />
             <BaseLayer />
             <RadarLayer />
+            <MyPosition />
           </StyledMapContainer>
         )}
 

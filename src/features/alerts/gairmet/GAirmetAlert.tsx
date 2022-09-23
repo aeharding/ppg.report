@@ -24,6 +24,7 @@ import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { timeZoneSelector } from "../../weather/weatherSlice";
 import { css } from "@emotion/react/macro";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
+import MyPosition from "../../../map/MyPosition";
 
 const MapGeometrySelector = styled.div`
   position: absolute;
@@ -119,6 +120,7 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
             ) : (
               ""
             )}
+            <MyPosition />
           </StyledMapContainer>
         )}
 
@@ -222,11 +224,12 @@ function getHazardHelp(
           including the vertical extent.
         </p>
       );
-    case "SFC_WIND":
+    case "SFC_WND":
       return (
         <p>
-          Areas of moderate turbulence, other than convectively induced,
-          including the vertical extent.
+          Areas of sustained surface winds greater than 30 knots. The direction
+          and speed of the wind are <strong>not</strong> depicted; only the area
+          where sustained surface winds greater than 30 knots will occur.
         </p>
       );
     case "MT_OBSC":

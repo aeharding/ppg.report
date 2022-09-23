@@ -32,6 +32,7 @@ export interface Weather extends Coordinates {
     weather: Property<WeatherObservation[]>;
     windSpeed: Property;
     windGust: Property;
+    windDirection: Property;
 
     /**
      * The NWS office, like "MKX"

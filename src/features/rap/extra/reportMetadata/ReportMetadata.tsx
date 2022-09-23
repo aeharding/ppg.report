@@ -12,7 +12,6 @@ import {
   Rectangle,
   Marker,
 } from "react-leaflet";
-import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../../hooks";
 import BaseLayer from "../../../../map/BaseLayer";
 import PointInfo from "./PointInfo";
@@ -22,6 +21,7 @@ import { DataList } from "../../../../DataList";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
 import { css } from "@emotion/react/macro";
 import OSMAttribution from "../../../../map/OSMAttribution";
+import MyPosition from "../../../../map/MyPosition";
 
 const Container = styled.div`
   overflow: hidden;
@@ -101,20 +101,17 @@ const planeIcon = divIcon({
 });
 
 const MapController = () => {
-  const { lat, lon } = useParams();
   const rap = useAppSelector((state) => state.rap.rap);
   const weather = useAppSelector((state) => state.weather.weather);
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather
   );
-  if (!lat || !lon) throw new Error("lat or lon not defined!");
   if (!rap || typeof rap !== "object")
     throw new Error("RAP report must be defined");
 
   const map = useMap();
   const groupRef = useRef<any>();
 
-  const myPosition: LatLngExpression = [+lat, +lon];
   const rapPosition: LatLngExpression = [rap[0].lat, -rap[0].lon];
   const airportPosition: LatLngExpression | undefined =
     aviationWeather && typeof aviationWeather === "object"
@@ -163,16 +160,7 @@ const MapController = () => {
         />
       )}
 
-      <Circle
-        center={myPosition}
-        fillOpacity={1}
-        radius={500}
-        css={css`
-          ${outputP3ColorFromRGB([0, 255, 0], "fill")}
-          ${outputP3ColorFromRGB([0, 255, 0], "stroke")}
-        `}
-        pane="tooltipPane"
-      />
+      <MyPosition />
     </FeatureGroup>
   );
 };
