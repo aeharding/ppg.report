@@ -11,8 +11,8 @@ import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../../weather/weatherSlice";
 
 const Label = styled.div`
-  margin: 1rem 0 -0.5rem;
-  font-size: 0.85rem;
+  margin: 1rem 0 -1rem;
+  font-size: 0.8rem;
   opacity: 0.8;
   text-transform: uppercase;
 `;
@@ -27,7 +27,7 @@ export default function Description({ alerts }: DescriptionProps) {
   if (!timeZone) throw new Error("timeZone not defined");
 
   function renderAlertDescription(alert: GAirmetFeature) {
-    if (alert.properties.dueTo) return alert.properties.dueTo;
+    if (alert.properties.dueTo) return <p>{alert.properties.dueTo}</p>;
 
     switch (alert.properties.hazard) {
       case "TURB-LO":
@@ -52,12 +52,10 @@ export default function Description({ alerts }: DescriptionProps) {
         );
       case "LLWS":
         return (
-          <>
-            <p>
-              Non-convective wind shear below 2,000 feet AGL, resulting in an
-              air speed loss or gain of 20 knots or more.
-            </p>
-          </>
+          <p>
+            Non-convective wind shear below 2,000 feet AGL, resulting in an air
+            speed loss or gain of 20 knots or more.
+          </p>
         );
     }
   }
