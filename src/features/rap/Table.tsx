@@ -105,6 +105,7 @@ export default function Table({ rap, rows }: TableProps) {
               <WindDirection
                 curr={datum.windDir}
                 prev={displayedRapData[index - 1]?.windDir}
+                date={rap.date}
               />
             </td>
             <td>
