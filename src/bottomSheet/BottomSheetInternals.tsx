@@ -34,7 +34,7 @@ const Header = styled.div`
   font-weight: 300;
 `;
 
-const CloseContainer = styled.div`
+const CloseContainer = styled.button`
   width: 2rem;
   height: 2rem;
   background: rgba(255, 255, 255, 0.05);
@@ -46,6 +46,11 @@ const CloseContainer = styled.div`
   border-radius: 2.5rem;
 
   margin-left: auto;
+
+  // Button reset
+  appearance: none;
+  border: 0;
+  color: inherit;
 `;
 
 export interface BottomSheetProps {

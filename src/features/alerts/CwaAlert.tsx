@@ -13,6 +13,7 @@ import {
   StyledMapContainer,
   Title,
 } from "./shared";
+import More from "../../shared/More";
 
 interface AlertProps {
   alert: CwaFeature;
@@ -49,11 +50,23 @@ export default function CwaAlert({ alert, index, total }: AlertProps) {
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
           <Description>
-            A Center Weather Advisory (CWA) is an unscheduled weather advisory
-            for conditions meeting or approaching national in-flight advisory
-            (WA, WS, or WST) criteria. It is primarily used by aircrews to
-            anticipate and avoid adverse weather conditions in the en route and
-            terminal environments.{" "}
+            <More>
+              <p>
+                A Center Weather Advisory (CWA) is an unscheduled weather
+                advisory for conditions meeting or approaching national
+                in-flight advisory (SIGMET or G-AIRMET) criteria. It is
+                primarily used by aircrews to anticipate and avoid adverse
+                weather conditions in the en route and terminal environments.
+              </p>
+              <p>
+                CWAs are valid for up to 2 hours and may include forecasts of
+                conditions expected to begin within 2 hours of issuance. If
+                conditions are expected to persist after the advisory's valid
+                period, a statement to that effect is included in the last line
+                of the text. Additional CWAs will subsequently be issued as
+                appropriate.
+              </p>
+            </More>
           </Description>
 
           {alert.properties.cwaText}
