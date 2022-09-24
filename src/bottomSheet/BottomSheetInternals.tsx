@@ -90,6 +90,7 @@ export default function BottomSheetInternals({
           ),
         ]}
         expandOnContentDrag
+        initialFocusRef={false}
       >
         {children}
       </StyledBottomSheet>
