@@ -78,10 +78,12 @@ function formatHazard(
       return "Thunderstorms";
     case "LLWS":
       return "Low-Level Wind Shear";
-    case "SFC_WIND":
-      return "Surface Wind";
+    case "SFC_WND":
+      return "Strong Surface Winds";
     case "FZLVL":
       return "Freezing Level";
+    case "M_FZLVL":
+      return "Multiple freezing levels";
   }
 }
 

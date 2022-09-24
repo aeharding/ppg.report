@@ -16,6 +16,7 @@ import {
   Title,
 } from "./shared";
 import More from "../../shared/More";
+import MyPosition from "../../map/MyPosition";
 
 interface AlertProps {
   alert: SigmetFeature;
@@ -60,6 +61,7 @@ export default function SigmetAlert({ alert, index, total }: AlertProps) {
             <OSMAttribution />
             <BaseLayer />
             <RadarLayer />
+            <MyPosition />
           </StyledMapContainer>
         )}
 

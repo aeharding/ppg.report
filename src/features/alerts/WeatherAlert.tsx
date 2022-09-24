@@ -13,6 +13,7 @@ import {
   StyledMapContainer,
   Title,
 } from "./shared";
+import MyPosition from "../../map/MyPosition";
 
 interface AlertProps {
   alert: WeatherAlertFeature;
@@ -42,6 +43,7 @@ export default function WeatherAlert({ alert, index, total }: AlertProps) {
             <OSMAttribution />
             <BaseLayer />
             <RadarLayer />
+            <MyPosition />
           </StyledMapContainer>
         )}
 

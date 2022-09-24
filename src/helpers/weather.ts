@@ -72,7 +72,10 @@ export function findRelatedAlerts(
   const potential = alerts.filter((potentialAlert) => {
     if (!isGAirmetAlert(potentialAlert)) return false;
 
-    return potentialAlert.properties.hazard === alert.properties.hazard;
+    return (
+      potentialAlert.properties.hazard === alert.properties.hazard &&
+      potentialAlert.properties.severity === alert.properties.severity
+    );
   }) as GAirmetFeature[];
 
   const baseAlertIndex = potential.findIndex(
