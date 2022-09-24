@@ -49,7 +49,9 @@ export function sortAlerts(alerts: Alert[]): Alert[] {
  * Try to preserve all sensible line breaks
  */
 export function undoFixedWidthText(text: string): string {
-  return text.replace(/([^\n\\.])(\n)([^\n])/g, "$1 $3");
+  return text
+    .replace(/([^\n\\.-])(\n)([^\n])/g, "$1 $3") // match newline where line not ending in "\", "-" or "."
+    .replace(/([^\n\\.])(\n)([^\n])/g, "$1$3"); // line ending in dash shouldn't have a space
 }
 
 /**
