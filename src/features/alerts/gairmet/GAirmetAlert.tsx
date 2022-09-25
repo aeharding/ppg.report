@@ -52,6 +52,10 @@ const GeometryTime = styled.div<{ selected: boolean }>`
     `}
 `;
 
+const Hr = styled.hr`
+  width: 50px;
+`;
+
 interface AlertProps {
   alert: GAirmetFeature;
   index: number;
@@ -130,6 +134,7 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
           <Description>
             <More>
               {getHazardHelp(alert.properties.hazard)}
+              <Hr />
               <p>
                 A G-AIRMET is a graphical advisory of weather that may be
                 hazardous to aircraft, but are less severe than SIGMETs. They
@@ -163,13 +168,29 @@ function getHazardHelp(
   switch (hazard) {
     case "IFR":
       return (
-        <p>
-          An IFR G-AIRMET is issued when there are areas of cloud ceilings with
-          bases less than 1000 feet AGL and/or areas of surface visibilities
-          below 3 statute miles, including the weather causing the visibility
-          restriction. The cause of the visibility restriction includes only
-          widespread sand/dust storm, PCPN, FU HZ, BR, FG, and/or BLSN.
-        </p>
+        <>
+          <p>
+            An IFR G-AIRMET is issued when there are areas of cloud ceilings
+            with bases less than 1,000 feet AGL and/or areas of surface
+            visibilities below 3 statute miles, including the weather causing
+            the visibility restriction. The cause of the visibility restriction
+            includes only widespread sand/dust storm, PCPN (precipitation), FU
+            HZ (smoke haze), BR (mist), FG (fog), and/or BLSN (blowing snow).
+          </p>
+
+          <p>
+            <a
+              href="https://www.ecfr.gov/current/title-14/chapter-I/subchapter-F/part-103/subpart-B/section-103.23"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ultralight visibility and cloud clearance requirements (FAR
+              103.23)
+            </a>{" "}
+            may restrict or forbid flying. Stay on the ground if conditions look
+            marginal.
+          </p>
+        </>
       );
     case "FZLVL":
       return (
