@@ -29,15 +29,22 @@ export async function getRap(
   const hoursStale = differenceInHours(new Date(), new Date(report[0].date));
 
   if (hoursStale > 4) {
-    const reportAdditional = await _getRap(
-      lat,
-      lon,
-      data_source,
-      hoursStale - 2,
-      addHours(new Date(report[report.length - 1].date), 1)
-    );
+    try {
+      const reportAdditional = await _getRap(
+        lat,
+        lon,
+        data_source,
+        hoursStale - 2,
+        addHours(new Date(report[report.length - 1].date), 1)
+      );
 
-    return [...report, ...reportAdditional];
+      return [...report, ...reportAdditional];
+    } catch (e) {
+      console.error(
+        "Error fetching additional rapidRefresh data (are you offline?)",
+        e
+      );
+    }
   }
 
   return report;

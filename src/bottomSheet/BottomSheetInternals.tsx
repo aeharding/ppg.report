@@ -43,7 +43,7 @@ const CloseContainer = styled.button`
   align-items: center;
   justify-content: center;
 
-  border-radius: 2.5rem;
+  border-radius: 1rem;
 
   margin-left: auto;
 
@@ -51,6 +51,13 @@ const CloseContainer = styled.button`
   appearance: none;
   border: 0;
   color: inherit;
+  font-size: inherit;
+  padding: 0;
+`;
+
+const CloseIcon = styled(FontAwesomeIcon)`
+  width: 16px;
+  height: 16px;
 `;
 
 export interface BottomSheetProps {
@@ -79,7 +86,7 @@ export default function BottomSheetInternals({
           <Header>
             {title}
             <CloseContainer onClick={() => setOpen(false)}>
-              <FontAwesomeIcon icon={faTimes} />
+              <CloseIcon icon={faTimes} />
             </CloseContainer>
           </Header>
         }
