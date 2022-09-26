@@ -136,14 +136,14 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
               {getHazardHelp(alert.properties.hazard)}
               <Hr />
               <p>
-                A G-AIRMET is a graphical advisory of weather that may be
+                A G‑AIRMET is a graphical advisory of weather that may be
                 hazardous to aircraft, but are less severe than SIGMETs. They
                 are only valid at specific time "snapshots". Forecasters create
                 graphical objects depicting the areas and attributes of AIRMET
                 hazards.
               </p>
               <p>
-                G-AIRMETs are issued at discrete times 3 hours apart for a
+                G‑AIRMETs are issued at discrete times 3 hours apart for a
                 period of up to 12 hours into the future (00, 03, 06, 09, and 12
                 hours). They are issued at 03:00, 09:00, 15:00 and 21:00 UTC
                 (with updates issued as necessary). AIRMET are issued by the AWC
@@ -170,7 +170,7 @@ function getHazardHelp(
       return (
         <>
           <p>
-            An IFR G-AIRMET is issued when there are areas of cloud ceilings
+            An IFR G‑AIRMET is issued when there are areas of cloud ceilings
             with bases less than 1,000 feet AGL and/or areas of surface
             visibilities below 3 statute miles, including the weather causing
             the visibility restriction. The cause of the visibility restriction

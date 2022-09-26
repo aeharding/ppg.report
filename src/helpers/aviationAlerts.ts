@@ -38,7 +38,7 @@ function getGAirmetAlertName(alert: GAirmetFeature): string {
   return [
     formatSeverity(alert.properties.severity),
     formatHazard(alert.properties.hazard),
-    "G-AIRMET",
+    "G‑AIRMET",
   ]
     .filter(notEmpty)
     .map(capitalizeFirstLetter)

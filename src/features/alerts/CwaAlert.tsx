@@ -56,7 +56,7 @@ export default function CwaAlert({ alert, index, total }: AlertProps) {
               <p>
                 A Center Weather Advisory (CWA) is an unscheduled weather
                 advisory for conditions meeting or approaching national
-                in-flight advisory (SIGMET or G-AIRMET) criteria. It is
+                in-flight advisory (SIGMET or G‑AIRMET) criteria. It is
                 primarily used by aircrews to anticipate and avoid adverse
                 weather conditions in the en route and terminal environments.
               </p>

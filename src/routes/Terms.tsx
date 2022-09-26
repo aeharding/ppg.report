@@ -112,7 +112,7 @@ export default function Terms() {
             </a>
             <br />
             <strong>Purpose:</strong> To retrieve nearby airport TAF reports,
-            G-AIRMETs, SIGMETs, and CWAs to enhance available weather
+            G‑AIRMETs, SIGMETs, and CWAs to enhance available weather
             information.
           </li>
           <br />

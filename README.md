@@ -12,7 +12,7 @@ Weather report tailored for paramotor pilots. Consolidates data from multiple so
 2. Nearby [Terminal Aerodrome Forecasts](https://www.aviationweather.gov/taf), if available
 3. NWS hourly weather forecast
 4. National Weather Service [active alerts](https://alerts.weather.gov/cap/us.php?x=1)
-5. Aviation Weather Center [SIGMETs](https://www.aviationweather.gov/sigmet), [G-AIRMETs](https://www.aviationweather.gov/gairmet), and [CWAs](https://www.aviationweather.gov/cwamis)
+5. Aviation Weather Center [SIGMETs](https://www.aviationweather.gov/sigmet), [G‑AIRMETs](https://www.aviationweather.gov/gairmet), and [CWAs](https://www.aviationweather.gov/cwamis)
 6. Federal Aviation Administration [TFRs](https://tfr.faa.gov)
 
 ![Screenshot of PPG.report website](https://user-images.githubusercontent.com/2166114/166601608-42c74bed-7c87-41ef-bd55-0911b470a9c4.png)
