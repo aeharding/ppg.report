@@ -35,7 +35,7 @@ export default function Errors() {
       )}
       {aviationAlerts === "failed" ? (
         <Failed>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> SIGMETs, G-AIRMETs
+          <FontAwesomeIcon icon={faExclamationTriangle} /> SIGMETs, G‑AIRMETs
           and CWAs failed to load.
         </Failed>
       ) : (
