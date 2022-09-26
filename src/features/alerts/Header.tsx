@@ -137,6 +137,12 @@ export default function Header({
     return <AirSigmetHeadline alert={alert} />;
   }
 
+  const noEndLabel = (() => {
+    if (isWeatherAlert(alert)) return "Until further notice";
+
+    return "Permanent";
+  })();
+
   return (
     <Container warning={isAlertDangerous(alert)} ref={ref}>
       <Headline>
@@ -151,7 +157,11 @@ export default function Header({
         </Aside>
       </Headline>
 
-      <Times alert={alert} includeYear={!!includeYear} />
+      <Times
+        alert={alert}
+        includeYear={!!includeYear}
+        noEndLabel={noEndLabel}
+      />
 
       {children}
     </Container>

@@ -106,6 +106,7 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
                   <GeometryTime
                     onClick={() => setFocusedAlert(relatedAlert)}
                     selected={relatedAlert.id === focusedAlert.id}
+                    key={relatedAlert.id}
                   >
                     {formatInTimeZone(
                       getAlertStart(relatedAlert),
