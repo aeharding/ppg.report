@@ -66,8 +66,7 @@ export function getAlertStart(alert: Alert) {
 }
 
 export function getAlertEnd(alert: Alert) {
-  if (isWeatherAlert(alert))
-    return alert.properties.ends || alert.properties.expires;
+  if (isWeatherAlert(alert)) return alert.properties.ends;
 
   if (isTFRAlert(alert)) {
     if (alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM") {

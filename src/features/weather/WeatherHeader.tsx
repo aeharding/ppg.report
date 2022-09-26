@@ -181,10 +181,9 @@ function isAlertActive(alert: Alert, date: string): boolean {
   if (isWeatherAlert(alert))
     return isWithinInterval(new Date(date), {
       start: startOfHour(new Date(alert.properties.onset)),
-      end: addMinutes(
-        new Date(alert.properties.ends || alert.properties.expires),
-        -1
-      ),
+      end: alert.properties.ends
+        ? addMinutes(new Date(alert.properties.ends), -1)
+        : addYears(new Date(), 10),
     });
 
   if (isTFRAlert(alert)) {

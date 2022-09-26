@@ -1,3 +1,4 @@
+import { addHours } from "date-fns";
 import sortBy from "lodash/sortBy";
 import {
   Alert,
@@ -102,11 +103,12 @@ export function findRelatedAlerts(
     alerts: GAirmetFeature[]
   ): GAirmetFeature[] {
     const ret: GAirmetFeature[] = [];
-    let forecast = +alert.properties.forecast;
+    let validTime = new Date(alert.properties.validTime);
 
     for (const alert of alerts) {
-      forecast = forecast + 3;
-      if (+alert.properties.forecast !== forecast) return ret;
+      validTime = addHours(validTime, 3);
+      if (Date.parse(alert.properties.validTime) !== validTime.getTime())
+        return ret;
       ret.push(alert);
     }
 
@@ -118,11 +120,12 @@ export function findRelatedAlerts(
     alerts: GAirmetFeature[]
   ): GAirmetFeature[] {
     const ret: GAirmetFeature[] = [];
-    let forecast = +alert.properties.forecast;
+    let validTime = new Date(alert.properties.validTime);
 
     for (const alert of alerts.reverse()) {
-      forecast = forecast - 3;
-      if (+alert.properties.forecast !== forecast) return ret;
+      validTime = addHours(validTime, -3);
+      if (Date.parse(alert.properties.validTime) !== validTime.getTime())
+        return ret;
       ret.push(alert);
     }
 

@@ -23,9 +23,10 @@ const Container = styled.div`
 interface TimesProps {
   alert: Alert;
   includeYear: boolean;
+  noEndLabel: string;
 }
 
-export default function Times({ alert, includeYear }: TimesProps) {
+export default function Times({ alert, includeYear, noEndLabel }: TimesProps) {
   const aviationAlertsResult = useAppSelector(
     (state) => state.weather.aviationAlerts
   );
@@ -43,10 +44,14 @@ export default function Times({ alert, includeYear }: TimesProps) {
 
   return (
     <Container>
-      <Time time={start} includeYear={includeYear}>
+      <Time time={start} includeYear={includeYear} noEndLabel={noEndLabel}>
         Start
       </Time>
-      <Time time={end ? new Date(end) : undefined} includeYear={includeYear}>
+      <Time
+        time={end ? new Date(end) : undefined}
+        includeYear={includeYear}
+        noEndLabel={noEndLabel}
+      >
         End
       </Time>
     </Container>
@@ -68,9 +73,10 @@ interface TimeProps {
   children: React.ReactNode;
   time?: Date;
   includeYear: boolean;
+  noEndLabel: string;
 }
 
-function Time({ children, time, includeYear }: TimeProps) {
+function Time({ children, time, includeYear, noEndLabel }: TimeProps) {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
 
   if (!timeZone) throw new Error("timezone must be defined");
@@ -79,7 +85,7 @@ function Time({ children, time, includeYear }: TimeProps) {
     <div>
       <Label>{children}</Label>
       <TimeLabel>
-        {time ? formatInTimeZone(time, timeZone, "p") : "Permanent"}
+        {time ? formatInTimeZone(time, timeZone, "p") : noEndLabel}
       </TimeLabel>
       {time ? (
         <div>

@@ -99,6 +99,11 @@ export type GAirmetFeature = AbstractAviationAlertFeature<{
    */
   issueTime: string;
 
+  /**
+   * Hours forecast in the future (at time of original issuance)
+   *
+   * Warning: This may be stale, so don't use it.
+   */
   forecast: string;
 
   /**

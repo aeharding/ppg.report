@@ -53,11 +53,12 @@ export async function getAlerts({
 
   // Hack for https://github.com/weather-gov/api/discussions/573
   data.features = data.features.filter(
-    (feauture) =>
-      !data.features.find((potentialNewerFeature) =>
-        potentialNewerFeature.properties.parameters.expiredReferences?.find(
-          (reference) => reference.includes(feauture.properties.id)
-        )
+    (feature) =>
+      !data.features.find(
+        (potentialNewerFeature) =>
+          potentialNewerFeature.properties.event === feature.properties.event &&
+          Date.parse(potentialNewerFeature.properties.sent) >
+            Date.parse(feature.properties.sent)
       )
   );
 
