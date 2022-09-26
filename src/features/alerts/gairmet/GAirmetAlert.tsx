@@ -258,8 +258,8 @@ function getHazardHelp(
         <p>
           Areas of widespread mountain obscuration where VMC cannot be
           maintained, including the weather causing the obscuration. The weather
-          causing the obscuration includes only CLDS, PCPN, FU, HZ, BR, and/or
-          FG.
+          causing the obscuration includes only CLDS (clouds), PCPN
+          (precipitation), FU (smoke), HZ (haze), BR (mist), and/or FG (fog).
         </p>
       );
   }
