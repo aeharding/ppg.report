@@ -99,3 +99,28 @@ export function getGroupedGAirmetAlertEnd(
 
   return getAlertEnd(related[related.length - 1]);
 }
+
+/**
+ * Convective SIGMETs override convective outlooks, so if one exists,
+ * filter out the outlook
+ *
+ * This prevents redundant alerts that can be annoying
+ * (it's only like a 5 minute overlap)
+ *
+ * @param alerts a set of alerts for a given hour
+ */
+export function filterDuplicateAlertsForHour(alerts: Alert[]): Alert[] {
+  const hasConvectiveSigmet = !!alerts.find(
+    (alert) =>
+      isSigmetAlert(alert) &&
+      alert.properties.airSigmetType === "SIGMET" &&
+      alert.properties.hazard === "CONVECTIVE"
+  );
+
+  if (!hasConvectiveSigmet) return alerts;
+
+  return alerts.filter(
+    (alert) =>
+      !(isSigmetAlert(alert) && alert.properties.airSigmetType === "OUTLOOK")
+  );
+}
