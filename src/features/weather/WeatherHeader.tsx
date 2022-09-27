@@ -16,6 +16,7 @@ import { addMinutes, addYears, startOfHour } from "date-fns";
 import {
   Alert,
   alertsSelector,
+  filterDuplicateAlertsForHour,
   isGAirmetAlert,
   isTFRAlert,
   isWeatherAlert,
@@ -130,7 +131,9 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const relevantAlerts = useMemo(
     () =>
       typeof alerts === "object"
-        ? sortAlerts(alerts.filter((alert) => isAlertActive(alert, date)))
+        ? filterDuplicateAlertsForHour(
+            sortAlerts(alerts.filter((alert) => isAlertActive(alert, date)))
+          )
         : [],
     [alerts, date]
   );
