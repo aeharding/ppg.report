@@ -11,6 +11,7 @@ import TFRAlert from "./TFRAlert";
 import SigmetAlert from "./SigmetAlert";
 import CwaAlert from "./CwaAlert";
 import GAirmetAlert from "./gairmet/GAirmetAlert";
+import React from "react";
 
 const AlertsContainer = styled.div`
   display: flex;
@@ -22,7 +23,7 @@ interface AlertsProps {
   alerts: Alert[];
 }
 
-export default function Alerts({ alerts }: AlertsProps) {
+function Alerts({ alerts }: AlertsProps) {
   function renderAlert(alert: Alert, index: number) {
     if (isWeatherAlert(alert))
       return <WeatherAlert alert={alert} index={index} total={alerts.length} />;
@@ -38,6 +39,7 @@ export default function Alerts({ alerts }: AlertsProps) {
 
     return <CwaAlert alert={alert} index={index} total={alerts.length} />;
   }
+
   return (
     <AlertsContainer>
       {alerts?.map((alert, index) => (
@@ -46,3 +48,5 @@ export default function Alerts({ alerts }: AlertsProps) {
     </AlertsContainer>
   );
 }
+
+export default React.memo(Alerts);
