@@ -7,8 +7,19 @@ import { outputP3ColorFromLab } from "../../../helpers/colors";
 import { useMemo } from "react";
 
 const colorScale = chroma
-  .scale(["#00FF00", "#00FF00", "white", "white", "orange", "red", "purple"])
-  .domain([0, 3, 9.5, 10, 14, 30, 50])
+  .scale([
+    "#00FF00",
+    "#00FF00",
+    "white",
+    "white",
+    "orange",
+    "red",
+    "red",
+    "#FF10F0",
+    "#AD2AFF",
+    "white",
+  ])
+  .domain([0, 3, 9.5, 10, 14, 30, 35, 75, 100, 160])
   .mode("lab");
 
 const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`

@@ -23,18 +23,19 @@ export const alertsSelector = createSelector(
     if (
       !weatherAlerts ||
       weatherAlerts === "pending" ||
-      weatherAlerts === "failed" ||
       !tfrs ||
       tfrs === "pending" ||
-      tfrs === "failed" ||
       !aviationAlerts ||
       aviationAlerts === "pending" ||
-      aviationAlerts === "failed" ||
       aviationAlerts === "not-available"
     )
       return;
 
-    return [...weatherAlerts.features, ...tfrs, ...aviationAlerts];
+    return [
+      ...(weatherAlerts === "failed" ? [] : weatherAlerts.features),
+      ...(tfrs === "failed" ? [] : tfrs),
+      ...(aviationAlerts === "failed" ? [] : aviationAlerts),
+    ];
   }
 );
 
