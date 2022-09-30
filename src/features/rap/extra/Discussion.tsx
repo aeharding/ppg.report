@@ -7,14 +7,15 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import Loading from "../../../shared/Loading";
 import { setDiscussionViewed } from "../../weather/weatherSlice";
 import * as storage from "../../user/storage";
+import { Opts } from "linkifyjs";
 
-export const linkifyOptions = {
+export const linkifyOptions: Opts = {
   nl2br: true,
   rel: "noopener noreferrer",
   target: "_blank",
   defaultProtocol: "https",
   ignoreTags: ["a"],
-  validate: (value: string) => value.toLowerCase().indexOf("ppg.report") === -1,
+  validate: (value) => value.toLowerCase().indexOf("ppg.report") === -1,
 };
 
 const Overflow = styled.div`
