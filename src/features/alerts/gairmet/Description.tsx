@@ -2,13 +2,13 @@ import { GAirmetFeature } from "../../../services/aviationWeather";
 import { capitalizeFirstLetter } from "../../../helpers/string";
 import { formatSeverity } from "../../../helpers/aviationAlerts";
 import React from "react";
-import groupBy from "lodash/groupBy";
 import omit from "lodash/omit";
 import styled from "@emotion/styled/macro";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../../weather/weatherSlice";
+import isEqual from "lodash/isEqual";
 
 const Label = styled.div`
   margin: 1rem 0 -1rem;
@@ -62,13 +62,21 @@ export default function Description({ alerts }: DescriptionProps) {
     }
   }
 
-  const items = Object.values(
-    groupBy(alerts, (alert) =>
-      Object.values(
-        omit(alert.properties, "issueTime", "forecast", "validTime")
-      ).join("")
-    )
-  );
+  const items = alerts.reduce<GAirmetFeature[][]>((prev, curr) => {
+    if (prev.length && hasSimilarData(curr, prev[prev.length - 1][0])) {
+      prev[prev.length - 1].push(curr);
+    } else {
+      prev.push([curr]);
+    }
+    return prev;
+  }, []);
+
+  function hasSimilarData(a: GAirmetFeature, b: GAirmetFeature): boolean {
+    const simplify = (alert: GAirmetFeature) =>
+      omit(alert.properties, "issueTime", "forecast", "validTime");
+
+    return isEqual(simplify(a), simplify(b));
+  }
 
   if (items.length < 2) return <>{renderAlertDescription(items[0][0])}</>;
 
