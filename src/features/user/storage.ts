@@ -1,7 +1,7 @@
 import { differenceInDays, differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
 import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
-import { AltitudeType } from "./userSlice";
+import { AltitudeType, SwipeInertia } from "./userSlice";
 
 export interface UserLocation {
   lat: number;
@@ -15,6 +15,7 @@ const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
 const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const READ_ALERTS = "read-alerts";
+const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -163,4 +164,22 @@ export function getReadAlertKey(alert: Alert): string {
   if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
 
   return `aviationalert-${alert.id}`;
+}
+
+export function getSwipeInertia(): SwipeInertia {
+  const savedValue = localStorage.getItem(SWIPE_INERTIA_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== SwipeInertia.On && savedValue !== SwipeInertia.Off)
+  )
+    return SwipeInertia.On;
+
+  return savedValue;
+}
+
+export function setSwipeInertia(swipeInertia: SwipeInertia): SwipeInertia {
+  localStorage.setItem(SWIPE_INERTIA_STORAGE_KEY, swipeInertia);
+
+  return swipeInertia;
 }

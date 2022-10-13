@@ -14,6 +14,8 @@ import Scrubber from "./Scrubber";
 import { isEqual, startOfHour } from "date-fns";
 import ReportStale from "./warnings/ReportStale";
 import Errors from "./Errors";
+import { SwipeInertia } from "../user/userSlice";
+import { useAppSelector } from "../../hooks";
 
 const browser = detect();
 
@@ -50,7 +52,7 @@ const ScrollContainer = styled.div`
   justify-content: center;
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ swipeInertia: SwipeInertia }>`
   --hours-gutter: 1.4em;
 
   @media (max-width: 360px) {
@@ -64,6 +66,11 @@ const Container = styled.div`
 
   scroll-snap-type: x mandatory;
 
+  section {
+    scroll-snap-stop: ${({ swipeInertia }) =>
+      swipeInertia === SwipeInertia.On ? "normal" : "always"};
+  }
+
   ${browser?.os !== "Mac OS" &&
   css`
     @media (any-hover: hover) {
@@ -75,7 +82,6 @@ const Container = styled.div`
       }
     }
   `}
-
   @media (any-hover: none) {
     ::-webkit-scrollbar {
       display: none;
@@ -155,6 +161,8 @@ interface TableProps {
 }
 
 export default function Hours({ rap }: TableProps) {
+  const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
+
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(
     ScrollPosition.Beginning
@@ -337,7 +345,7 @@ export default function Hours({ rap }: TableProps) {
       <ReportStale />
 
       <Scrubber scrollViewRef={scrollViewRef}>
-        <Container ref={scrollViewRef}>
+        <Container ref={scrollViewRef} swipeInertia={swipeInertia}>
           <ScrollContainer>
             {scrollPosition !== ScrollPosition.None && (
               <Nav

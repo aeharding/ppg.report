@@ -10,6 +10,12 @@ export enum AltitudeType {
   MSL = "MSL",
 }
 
+// CSS scroll-snap-stop
+export enum SwipeInertia {
+  On = "On",
+  Off = "Off",
+}
+
 export function toggle(altitude: AltitudeType): AltitudeType {
   switch (altitude) {
     case AltitudeType.AGL:
@@ -23,6 +29,7 @@ interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
   readAlerts: Record<string, string>;
+  swipeInertia: SwipeInertia;
 }
 
 // Define the initial state using that type
@@ -30,6 +37,7 @@ const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
   readAlerts: storage.getReadAlerts(),
+  swipeInertia: storage.getSwipeInertia(),
 };
 
 /**
@@ -51,10 +59,14 @@ export const userReducer = createSlice({
     readAlert(state, action: PayloadAction<Alert>) {
       state.readAlerts = storage.setReadAlert(action.payload);
     },
+    setSwipeInertia(state, action: PayloadAction<SwipeInertia>) {
+      state.swipeInertia = storage.setSwipeInertia(action.payload);
+    },
   },
 });
 
-export const { updateLocations, readAlert } = userReducer.actions;
+export const { updateLocations, readAlert, setSwipeInertia } =
+  userReducer.actions;
 
 export const toggleAltitude =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {

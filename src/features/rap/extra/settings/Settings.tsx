@@ -1,6 +1,11 @@
 import styled from "@emotion/styled/macro";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import { AltitudeType, setAltitude } from "../../../user/userSlice";
+import {
+  AltitudeType,
+  setAltitude,
+  setSwipeInertia,
+  SwipeInertia,
+} from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
 const Container = styled.div`
@@ -14,6 +19,7 @@ const Container = styled.div`
 export default function Settings() {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
 
   return (
     <Container>
@@ -22,6 +28,12 @@ export default function Settings() {
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
+      />
+      <Radio
+        label="Swipe Inertia"
+        options={[SwipeInertia.On, SwipeInertia.Off]}
+        value={swipeInertia}
+        onChange={(value) => dispatch(setSwipeInertia(value))}
       />
       <p>More settings coming soon! 🚀</p>
       {/* <Radio label="Wind Speed" options={["mph", "km/h", "kts", "m/s"]} />
