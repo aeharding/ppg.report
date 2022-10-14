@@ -197,23 +197,29 @@ function getHazardHelp(
       return (
         <p>
           Freezing level is defined as the lowest freezing level above the
-          ground or at the SFC as appropriate. Freezing level information is
-          included after AIRMETs for moderate icing or statements indicating
-          that no significant icing is expected. Freezing levels are delineated
-          using high altitude VOR locations describing the location of the
-          lowest freezing level above the ground or SFC as appropriate. Freezing
-          levels above the ground are delineated at 4000 feet intervals AMSL.
-          Multiple freezing levels above the ground are delineated by high
+          ground or at the surface (SFC) as appropriate. Freezing level
+          information is included after AIRMETs for moderate icing or statements
+          indicating that no significant icing is expected. Freezing levels are
+          delineated using high altitude VOR locations describing the location
+          of the lowest freezing level above the ground or SFC as appropriate.
+          Freezing levels above the ground are delineated at 4000 feet intervals
+          AMSL. Multiple freezing levels above the ground are delineated by high
           altitude and low altitude VOR locations. The range of freezing levels
           across the forecast area is also included.
         </p>
       );
     case "ICE":
       return (
-        <p>
-          Areas of moderate airframe icing, other than convectively induced,
-          including the areal extent.
-        </p>
+        <>
+          <p>
+            Areas of moderate airframe icing, other than convectively induced,
+            including the areal extent.
+          </p>
+          <p>
+            The freezing level is defined as the lowest freezing level above the
+            ground or at the surface (SFC) as appropriate.
+          </p>
+        </>
       );
     case "LLWS":
       return (
