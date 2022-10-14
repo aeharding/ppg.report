@@ -27,8 +27,6 @@ export default function Description({ alerts }: DescriptionProps) {
   if (!timeZone) throw new Error("timeZone not defined");
 
   function renderAlertDescription(alert: GAirmetFeature) {
-    if (alert.properties.dueTo) return <p>{alert.properties.dueTo}</p>;
-
     switch (alert.properties.hazard) {
       case "TURB-LO":
       case "TURB-HI":
@@ -59,7 +57,33 @@ export default function Description({ alerts }: DescriptionProps) {
         );
       case "SFC_WND":
         return <p>AIR SPEED LOSS OR GAIN OF 30KTS OR MORE BELOW 2000 FT AGL</p>;
+      case "ICE":
+        return (
+          <p>
+            {alert.properties.base === "FZL" ? (
+              <>
+                Freezing level between{" "}
+                {formatFlightLevel(alert.properties.fzlbase!)} and{" "}
+                {formatFlightLevel(alert.properties.fzltop!)}.
+              </>
+            ) : (
+              ""
+            )}{" "}
+            {capitalizeFirstLetter(
+              [formatSeverity(alert.properties.severity), "icing"]
+                .filter((n) => n)
+                .join(" ")
+            )}{" "}
+            from{" "}
+            {alert.properties.base === "FZL"
+              ? "freezing level"
+              : formatFlightLevel(alert.properties.base!)}{" "}
+            to {formatFlightLevel(alert.properties.top!)}.
+          </p>
+        );
     }
+
+    if (alert.properties.dueTo) return <p>{alert.properties.dueTo}</p>;
   }
 
   const items = alerts.reduce<GAirmetFeature[][]>((prev, curr) => {

@@ -137,6 +137,16 @@ export type GAirmetFeature = AbstractAviationAlertFeature<{
   top?: string;
 
   /**
+   * Freezing level base. Included with ice g-airmet where base === "FZL"
+   */
+  fzlbase?: string;
+
+  /**
+   * Freezing level top. Included with ice g-airmet where base === "FZL"
+   */
+  fzltop?: string;
+
+  /**
    * Additional information for advisory
    */
   dueTo?: string;
