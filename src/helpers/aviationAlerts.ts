@@ -1,3 +1,4 @@
+import sortBy from "lodash/sortBy";
 import { isGAirmetAlert, isSigmetAlert } from "../features/alerts/alertsSlice";
 import {
   AviationAlertFeature,
@@ -102,7 +103,10 @@ function formatQualifier(
   }
 }
 
-export function extractIssuedTimestamp(alert: AviationAlertFeature): string {
+export function extractIssuedTimestamp(
+  alert: AviationAlertFeature,
+  relatedAlerts: GAirmetFeature[]
+): string {
   if (isSigmetAlert(alert)) {
     const iss = alert.properties.rawAirSigmet.split("\n")[0].split(" ")[2];
     if (!iss || iss.length !== 6) return alert.properties.validTimeFrom;
@@ -136,7 +140,12 @@ export function extractIssuedTimestamp(alert: AviationAlertFeature): string {
   }
 
   if (isGAirmetAlert(alert)) {
-    return alert.properties.issueTime;
+    const initialRelatedAlert = sortBy(
+      relatedAlerts,
+      "properties.validTime"
+    )[0];
+
+    return initialRelatedAlert.properties.validTime;
   }
 
   return alert.properties.validTimeFrom;

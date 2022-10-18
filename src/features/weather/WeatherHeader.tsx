@@ -132,7 +132,10 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     () =>
       typeof alerts === "object"
         ? filterDuplicateAlertsForHour(
-            sortAlerts(alerts.filter((alert) => isAlertActive(alert, date)))
+            sortAlerts(
+              alerts.filter((alert) => isAlertActive(alert, date)),
+              alerts
+            )
           )
         : [],
     [alerts, date]
