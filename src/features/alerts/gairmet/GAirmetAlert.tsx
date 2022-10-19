@@ -165,7 +165,7 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
  */
 function getHazardHelp(
   hazard: GAirmetFeature["properties"]["hazard"]
-): React.ReactNode {
+): React.ReactElement {
   switch (hazard) {
     case "IFR":
       return (
@@ -194,6 +194,7 @@ function getHazardHelp(
         </>
       );
     case "FZLVL":
+    case "M_FZLVL":
       return (
         <p>
           Freezing level is defined as the lowest freezing level above the

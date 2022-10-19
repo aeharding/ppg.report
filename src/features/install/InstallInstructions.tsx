@@ -77,7 +77,7 @@ export default function InstallInstructions() {
     return (
       <List>
         <li>
-          Tap on <StyledShareIcon /> in the tab bar
+          Tap on <StyledShareIcon /> in the Safari tab bar
         </li>
         <li>
           Scroll and tap{" "}
