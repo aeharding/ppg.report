@@ -48,13 +48,18 @@ const HourContainer = styled.h3`
 interface HourProps {
   rap: Rap;
   rows: number; // number of altitudes/rows to render
+  surfaceLevelMode: boolean;
 }
 
-export default function Hour({ rap, rows, ...rest }: HourProps) {
+export default function Hour({
+  rap,
+  rows,
+  surfaceLevelMode,
+  ...rest
+}: HourProps) {
   const timeZone = useAppSelector(timeZoneSelector);
-  if (!timeZone) throw new Error("Timezone not found");
 
-  // const [flipped, setFlipped] = useState(false);
+  if (!timeZone) throw new Error("Timezone not found");
 
   const [yesterdayTimes] = useState(
     SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
@@ -119,7 +124,7 @@ export default function Hour({ rap, rows, ...rest }: HourProps) {
         }}
       >
         <WeatherHeader date={rap.date} />
-        <Table rap={rap} rows={rows} />
+        <Table rap={rap} rows={rows} surfaceLevelMode={surfaceLevelMode} />
       </Card>
     </Column>
   );

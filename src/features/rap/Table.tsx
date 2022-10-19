@@ -9,12 +9,13 @@ import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
-import { ELEVATION_DISCREPANCY_THRESHOLD } from "./warnings/ReportElevationDiscrepancy";
 
 const TableEl = styled.table`
   width: 100%;
   text-align: center;
   overflow: hidden;
+  table-layout: fixed;
+  padding: 0 0 0 8px;
 
   th {
     ${headerText}
@@ -36,11 +37,13 @@ const InteractTh = styled.th`
 interface TableProps {
   rap: Rap;
   rows: number; // number of altitudes/rows to render
+  surfaceLevelMode: boolean;
 }
 
-export default function Table({ rap, rows }: TableProps) {
+export default function Table({ rap, rows, surfaceLevelMode }: TableProps) {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+
   const elevation = useAppSelector((state) => state.weather.elevation);
 
   const lowestReportedAltitude = rap.data[0].height;
@@ -48,11 +51,7 @@ export default function Table({ rap, rows }: TableProps) {
   if (typeof elevation !== "number") throw new Error("Altitude not defined!");
 
   // If there is a discrepancy of less than 120 meters, it's negligible
-  const surfaceLevel =
-    Math.abs(elevation - lowestReportedAltitude) <
-    ELEVATION_DISCREPANCY_THRESHOLD
-      ? lowestReportedAltitude
-      : elevation;
+  const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
   const displayedRapData = rap.data
     .slice(0, rows)
