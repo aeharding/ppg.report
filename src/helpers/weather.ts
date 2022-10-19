@@ -30,15 +30,19 @@ export function isAlertDangerous(alert: Alert): boolean {
 /**
  * Most severe first
  */
-export function sortAlerts(alerts: Alert[]): Alert[] {
+export function sortAlerts(alerts: Alert[], allAlerts: Alert[]): Alert[] {
   return sortBy(alerts, (alert) => {
     if (isWeatherAlert(alert))
-      return -new Date(alert.properties.sent).getTime();
+      return -new Date(alert.properties.onset).getTime();
 
     if (isTFRAlert(alert))
-      return -new Date(alert.properties.coreNOTAMData.notam.issued).getTime();
+      return -new Date(
+        alert.properties.coreNOTAMData.notam.effectiveStart
+      ).getTime();
 
-    return -new Date(extractIssuedTimestamp(alert));
+    return -new Date(
+      extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts))
+    );
   });
 }
 
