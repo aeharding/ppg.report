@@ -81,6 +81,22 @@ export default function Description({ alerts }: DescriptionProps) {
             to {formatFlightLevel(alert.properties.top!)}.
           </p>
         );
+      case "M_FZLVL":
+        return (
+          <p>
+            Multiple freezing levels
+            {alert.properties.base && alert.properties.top ? (
+              <>
+                {" "}
+                from {formatFlightLevel(alert.properties.base)} to{" "}
+                {formatFlightLevel(alert.properties.top)}
+              </>
+            ) : (
+              ""
+            )}
+            .
+          </p>
+        );
     }
 
     if (alert.properties.dueTo) return <p>{alert.properties.dueTo}</p>;
