@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import { css } from "@emotion/react/macro";
+import { css, SerializedStyles } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import {
   CloudQuantity,
+  CloudType,
   DistanceUnit,
   getCompositeForecastForDate,
   ICloud,
@@ -15,8 +16,12 @@ import {
 } from "metar-taf-parser";
 import { Micro } from "../WeatherHeader";
 import Tippy from "@tippyjs/react";
+import BottomSheet from "../../../bottomSheet/BottomSheet";
+import DetailedAviationReport from "../aviation/DetailedAviationReport";
+import { notEmpty } from "../../../helpers/array";
+import { isTouchDevice } from "../../../helpers/device";
 
-enum FlightCategory {
+export enum FlightCategory {
   VFR = "VFR",
   MVFR = "MVFR",
   IFR = "IFR",
@@ -33,26 +38,7 @@ const AirportContainer = styled.span<AirportContainerProps>`
   padding: 0 1px;
   border: 1px solid;
 
-  ${({ category }) => {
-    switch (category) {
-      case FlightCategory.LIFR:
-        return css`
-          ${outputP3ColorFromRGB([255, 0, 255])}
-        `;
-      case FlightCategory.IFR:
-        return css`
-          ${outputP3ColorFromRGB([255, 0, 0])}
-        `;
-      case FlightCategory.MVFR:
-        return css`
-          ${outputP3ColorFromRGB([0, 150, 255])}
-        `;
-      case FlightCategory.VFR:
-        return css`
-          ${outputP3ColorFromRGB([0, 255, 0])}
-        `;
-    }
-  }}
+  ${({ category }) => getFlightCategoryCssColor(category)}
 `;
 
 interface AirportProps {
@@ -88,6 +74,10 @@ export default function Airport({ taf, date }: AirportProps) {
     composedForecast.additional[0]?.visibility ||
     composedForecast.base.visibility;
 
+  const verticalVisbility =
+    composedForecast.additional[0]?.verticalVisibility ??
+    composedForecast.base.verticalVisibility;
+
   const category = getFlightCategory(visibility, clouds);
 
   const lowestCloud: ICloud | undefined = clouds[0];
@@ -95,6 +85,8 @@ export default function Airport({ taf, date }: AirportProps) {
     ? lowestCloud.height
       ? `${lowestCloud.quantity}@${lowestCloud.height / 1000}k`
       : lowestCloud.quantity
+    : verticalVisbility
+    ? "OBSC"
     : "SKC";
 
   const badge = (
@@ -106,30 +98,42 @@ export default function Airport({ taf, date }: AirportProps) {
       <div>
         Forecasted to be {category} by TAF report from {taf.station}:
       </div>
-      {buildTooltip(visibility, clouds)}
+      {buildTooltip(visibility, clouds, verticalVisbility)}
     </>
   );
 
   return (
-    <Tippy content={tip} placement="bottom">
-      <div>
-        <Micro icon={badge}>{cloudLabel}</Micro>
-      </div>
-    </Tippy>
+    <BottomSheet
+      openButton={
+        <Tippy content={tip} placement="bottom" disabled={isTouchDevice()}>
+          <div>
+            <Micro icon={badge}>{cloudLabel}</Micro>
+          </div>
+        </Tippy>
+      }
+      title={`${taf.station} Aviation Weather Report`}
+    >
+      <DetailedAviationReport taf={taf} />
+    </BottomSheet>
   );
 }
 
 function buildTooltip(
   visibility: Visibility | undefined,
-  clouds: ICloud[]
+  clouds: ICloud[],
+  verticalVisibility: number | undefined
 ): React.ReactNode {
   return (
     <ul>
-      {[formatVisibility(visibility), formatCeiling(clouds)].map(
-        (str, index) => (
+      {[
+        formatVisibility(visibility),
+        formatCeiling(clouds),
+        formatVerticalVisbility(verticalVisibility),
+      ]
+        .filter(notEmpty)
+        .map((str, index) => (
           <li key={index}>{str}.</li>
-        )
-      )}
+        ))}
     </ul>
   );
 }
@@ -159,7 +163,23 @@ function formatCeiling(clouds: ICloud[]): string {
 
   if (!ceiling) return "No clouds found";
 
-  switch (ceiling.quantity) {
+  ret += formatCloud(ceiling);
+
+  return ret;
+}
+
+function formatVerticalVisbility(
+  verticalVisibility: number | undefined
+): string | undefined {
+  if (verticalVisibility == null) return;
+
+  return `${verticalVisibility.toLocaleString()} ft AGL vertical visibility`;
+}
+
+export function formatCloud(cloud: ICloud): string {
+  let ret = "";
+
+  switch (cloud.quantity) {
     case CloudQuantity.NSC:
       return "No significant clouds";
     case CloudQuantity.SKC:
@@ -177,18 +197,52 @@ function formatCeiling(clouds: ICloud[]): string {
       ret += "Overcast";
   }
 
-  ret += ` at ${ceiling.height?.toLocaleString()}ft`;
+  if (cloud.type) {
+    ret += ` (${formatCloudType(cloud.type)})`;
+  }
+
+  ret += ` at ${cloud.height?.toLocaleString()}ft`;
 
   return ret;
 }
 
-function getFlightCategory(
+function formatCloudType(type: CloudType): string {
+  switch (type) {
+    case CloudType.CB:
+      return "Cumulonimbus";
+    case CloudType.TCU:
+      return "Towering cumulus";
+    case CloudType.CI:
+      return "Cirrus";
+    case CloudType.CC:
+      return "Cirrocumulus";
+    case CloudType.CS:
+      return "Cirrostratus";
+    case CloudType.AC:
+      return "Altocumulus";
+    case CloudType.ST:
+      return "Stratus";
+    case CloudType.CU:
+      return "Cumulus";
+    case CloudType.AS:
+      return "Astrostratus";
+    case CloudType.NS:
+      return "Nimbostratus";
+    case CloudType.SC:
+      return "Stratocumulus";
+  }
+}
+export function getFlightCategory(
   visibility: Visibility | undefined,
-  clouds: ICloud[]
+  clouds: ICloud[],
+  verticalVisibility?: number
 ): FlightCategory {
   const convertedVisibility = convertToMiles(visibility);
   const distance = convertedVisibility != null ? convertedVisibility : Infinity;
-  const height = determineCeilingFromClouds(clouds)?.height || Infinity;
+  const height =
+    determineCeilingFromClouds(clouds)?.height ??
+    verticalVisibility ??
+    Infinity;
 
   let flightCategory = FlightCategory.VFR;
 
@@ -230,7 +284,9 @@ function determineCeilingOrLowestLayerFromClouds(
 /**
  * Finds the ceiling. If no ceiling exists, returns the lowest cloud layer.
  */
-function determineCeilingFromClouds(clouds: ICloud[]): ICloud | undefined {
+export function determineCeilingFromClouds(
+  clouds: ICloud[]
+): ICloud | undefined {
   let ceiling: ICloud | undefined;
 
   clouds.forEach((cloud) => {
@@ -259,5 +315,28 @@ function convertToMiles(visibility?: Visibility): number | undefined {
         return Math.round(distance);
 
       return +distance.toFixed(2);
+  }
+}
+
+export function getFlightCategoryCssColor(
+  category: FlightCategory
+): SerializedStyles {
+  switch (category) {
+    case FlightCategory.LIFR:
+      return css`
+        ${outputP3ColorFromRGB([255, 0, 255])}
+      `;
+    case FlightCategory.IFR:
+      return css`
+        ${outputP3ColorFromRGB([255, 0, 0])}
+      `;
+    case FlightCategory.MVFR:
+      return css`
+        ${outputP3ColorFromRGB([0, 150, 255])}
+      `;
+    case FlightCategory.VFR:
+      return css`
+        ${outputP3ColorFromRGB([0, 255, 0])}
+      `;
   }
 }
