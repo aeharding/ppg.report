@@ -12,6 +12,7 @@ import {
 } from "metar-taf-parser";
 import React from "react";
 import { notEmpty } from "../../../helpers/array";
+import { capitalizeFirstLetter } from "../../../helpers/string";
 import { useAppSelector } from "../../../hooks";
 import WindIndicator from "../../rap/WindIndicator";
 import {
@@ -165,6 +166,28 @@ export default function Forecast({ data }: ForecastProps) {
               </td>
             </tr>
           )}
+          {data.windShear && (
+            <tr>
+              <td>Wind Shear</td>
+              <td>
+                {data.windShear.degrees ? (
+                  <>
+                    {data.windShear.degrees}{" "}
+                    <WindIndicator direction={data.windShear.degrees} /> at{" "}
+                  </>
+                ) : (
+                  "Variable direction at"
+                )}{" "}
+                {data.windShear.speed} {data.windShear.unit}{" "}
+                {data.windShear.gust != null ? (
+                  <>gusting to {data.windShear.gust}</>
+                ) : (
+                  ""
+                )}{" "}
+                at {data.windShear.height.toLocaleString()} ft AGL
+              </td>
+            </tr>
+          )}
           {data.clouds.length || data.verticalVisibility != null ? (
             <tr>
               <td>Clouds</td>
@@ -216,6 +239,20 @@ export default function Forecast({ data }: ForecastProps) {
               <td>{formatWeather(data.weatherConditions)}</td>
             </tr>
           ) : undefined}
+
+          {data.remarks.length ? (
+            <tr>
+              <td>Remarks</td>
+              <td>
+                {data.remarks.map((remark) => (
+                  <>
+                    {remark.description || remark.raw}
+                    <br />
+                  </>
+                ))}
+              </td>
+            </tr>
+          ) : undefined}
         </tbody>
       </Table>
       <Raw>{data.raw}</Raw>
@@ -237,19 +274,31 @@ function formatIndicator(indicator: ValueIndicator | undefined) {
 function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
   return (
     <>
-      {weather
-        .map((condition) =>
-          [
-            formatIntensity(condition.intensity),
-            formatDescriptive(condition.descriptive),
-            condition.phenomenons
-              .map((phenomenon) => formatPhenomenon(phenomenon))
-              .join("/"),
-          ]
-            .filter(notEmpty)
-            .join(" ")
-        )
-        .join(", ")}
+      {capitalizeFirstLetter(
+        weather
+          .map((condition) =>
+            [
+              condition.intensity !== Intensity.IN_VICINITY
+                ? formatIntensity(condition.intensity)
+                : undefined,
+              formatDescriptive(
+                condition.descriptive,
+                !!condition.phenomenons.length
+              ),
+              condition.phenomenons
+                .map((phenomenon) => formatPhenomenon(phenomenon))
+                .join("/"),
+              condition.intensity === Intensity.IN_VICINITY
+                ? formatIntensity(condition.intensity)
+                : undefined,
+            ]
+              .filter(notEmpty)
+              .join(" ")
+          )
+          .join(", ")
+          .toLowerCase()
+          .trim()
+      )}
     </>
   );
 }
@@ -305,14 +354,17 @@ function formatPhenomenon(phenomenon: Phenomenon): string {
   }
 }
 
-function formatDescriptive(descriptive: Descriptive | undefined): string {
+function formatDescriptive(
+  descriptive: Descriptive | undefined,
+  hasPhenomenon: boolean
+): string {
   switch (descriptive) {
     case Descriptive.SHOWERS:
-      return "Showers of";
+      return `Showers${hasPhenomenon ? " of" : ""}`;
     case Descriptive.SHALLOW:
       return "Shallow";
     case Descriptive.PATCHES:
-      return "Patches of";
+      return `Patches${hasPhenomenon ? " of" : ""}`;
     case Descriptive.PARTIAL:
       return "Partial";
     case Descriptive.DRIFTING:
@@ -333,7 +385,7 @@ function formatIntensity(intensity: Intensity | undefined): string {
     case Intensity.HEAVY:
       return "Heavy";
     case Intensity.IN_VICINITY:
-      return "In vicinity";
+      return "in vicinity";
     case Intensity.LIGHT:
       return "Light";
     default:
@@ -359,7 +411,7 @@ function getPeriodRemark(
   }
 }
 
-function formatWithTomorrowIfNeeded(
+export function formatWithTomorrowIfNeeded(
   date: Date,
   timeZone: string,
   formatStr: string

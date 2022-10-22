@@ -105,11 +105,12 @@ const Loading = styled.div`
 interface MicroProps {
   icon: React.ReactNode;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function Micro({ icon, children }: MicroProps) {
+export function Micro({ icon, children, className }: MicroProps) {
   return (
-    <MicroContents>
+    <MicroContents className={className}>
       <div>{icon}</div>
       <div>{children}</div>
     </MicroContents>

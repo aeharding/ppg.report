@@ -4,7 +4,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import { IForecastContainer } from "metar-taf-parser";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
-import Forecast from "./Forecast";
+import Forecast, { formatWithTomorrowIfNeeded } from "./Forecast";
 
 const Container = styled.div`
   overflow: hidden;
@@ -16,7 +16,7 @@ const Title = styled.div`
   margin: 1rem;
 `;
 
-const Description = styled.p`
+const Description = styled.div`
   margin: 1rem;
 `;
 
@@ -43,10 +43,33 @@ export default function DetailedAviationReport({
       <Title>Forecast</Title>
 
       <Description>
-        TAF report from {taf.station} issued{" "}
-        {formatInTimeZone(taf.issued, timeZone, "p")} and is valid for{" "}
-        {formatDistanceStrict(taf.end, taf.start, { unit: "hour" })} starting at{" "}
-        {formatInTimeZone(taf.start, timeZone, "p")}.
+        <p>
+          {taf.amendment ? "Amended " : ""} TAF report from {taf.station} issued{" "}
+          {formatInTimeZone(taf.issued, timeZone, "p")} and is valid for{" "}
+          {formatDistanceStrict(taf.end, taf.start, { unit: "hour" })} starting
+          at {formatWithTomorrowIfNeeded(taf.start, timeZone, "p")}.
+        </p>
+
+        <p>
+          {taf.maxTemperature
+            ? `High of ${
+                taf.maxTemperature.temperature
+              }℃ at ${formatWithTomorrowIfNeeded(
+                taf.maxTemperature.date,
+                timeZone,
+                "p"
+              )}.`
+            : undefined}{" "}
+          {taf.minTemperature
+            ? `Low of ${
+                taf.minTemperature.temperature
+              }℃ at ${formatWithTomorrowIfNeeded(
+                taf.minTemperature.date,
+                timeZone,
+                "p"
+              )}.`
+            : undefined}
+        </p>
       </Description>
 
       <Forecasts>

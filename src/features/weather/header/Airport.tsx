@@ -41,6 +41,10 @@ const AirportContainer = styled.span<AirportContainerProps>`
   ${({ category }) => getFlightCategoryCssColor(category)}
 `;
 
+const StyledMicro = styled(Micro)`
+  cursor: pointer;
+`;
+
 interface AirportProps {
   taf: IForecastContainer;
   date: string;
@@ -107,7 +111,7 @@ export default function Airport({ taf, date }: AirportProps) {
       openButton={
         <Tippy content={tip} placement="bottom" disabled={isTouchDevice()}>
           <div>
-            <Micro icon={badge}>{cloudLabel}</Micro>
+            <StyledMicro icon={badge}>{cloudLabel}</StyledMicro>
           </div>
         </Tippy>
       }
