@@ -1,5 +1,5 @@
 import { ICloud } from "metar-taf-parser";
-import { formatCloud } from "../header/Airport";
+import { formatCloud } from "../../../helpers/taf";
 
 interface CloudProps {
   data: ICloud;

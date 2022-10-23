@@ -6901,10 +6901,10 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-metar-taf-parser@^5.0.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/metar-taf-parser/-/metar-taf-parser-5.1.0.tgz#3ef826f55058b1333569601d0e6ec2196eeaa880"
-  integrity sha512-0o0DjAJKLDNndnND6uA/uUyEjNPqYUs+Zxifhlg5xXynn9qqeWuWGuVyf7lUfkxaK5tEZTuyn/LyCD/glX9kXg==
+metar-taf-parser@^6.0.0:
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/metar-taf-parser/-/metar-taf-parser-6.1.4.tgz#4d1e34442284d6eeaf0c3977b55f8fd5d2046b34"
+  integrity sha512-fb6WTRgu453x69e6p14Oxc6Dyd7vHncvOnYI0soa+rgqLdfQuONAl05qHWgQemJUx+DIFdxspbVqvSZqDvIA9A==
 
 methods@~1.1.2:
   version "1.1.2"

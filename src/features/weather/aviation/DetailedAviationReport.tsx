@@ -1,4 +1,6 @@
 import styled from "@emotion/styled/macro";
+import { faExternalLink } from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDistanceStrict } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { IForecastContainer } from "metar-taf-parser";
@@ -8,16 +10,19 @@ import Forecast, { formatWithTomorrowIfNeeded } from "./Forecast";
 
 const Container = styled.div`
   overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const Title = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
-  margin: 1rem;
+  margin: 1rem 1rem 0;
 `;
 
 const Description = styled.div`
-  margin: 1rem;
+  margin: 0 1rem 1rem;
 `;
 
 const Forecasts = styled.div`
@@ -25,6 +30,20 @@ const Forecasts = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   margin: 0 0 1rem;
+`;
+
+const OpenExternal = styled.a`
+  margin: 0 auto 1rem;
+  padding: 1rem;
+  opacity: 0.5;
+
+  display: flex;
+  gap: 0.5rem;
+
+  svg {
+    margin-top: 2px;
+    font-size: 0.6em;
+  }
 `;
 
 interface DetailedAviationReportProps {
@@ -52,18 +71,18 @@ export default function DetailedAviationReport({
 
         <p>
           {taf.maxTemperature
-            ? `High of ${
+            ? `High of ${cToF(
                 taf.maxTemperature.temperature
-              }℃ at ${formatWithTomorrowIfNeeded(
+              )}℉ at ${formatWithTomorrowIfNeeded(
                 taf.maxTemperature.date,
                 timeZone,
                 "p"
               )}.`
             : undefined}{" "}
           {taf.minTemperature
-            ? `Low of ${
+            ? `Low of ${cToF(
                 taf.minTemperature.temperature
-              }℃ at ${formatWithTomorrowIfNeeded(
+              )}℉ at ${formatWithTomorrowIfNeeded(
                 taf.minTemperature.date,
                 timeZone,
                 "p"
@@ -77,6 +96,18 @@ export default function DetailedAviationReport({
           <Forecast data={forecast} key={index} />
         ))}
       </Forecasts>
+
+      <OpenExternal
+        target="_blank"
+        rel="noopener noreferrer"
+        href={`https://www.aviationweather.gov/taf/data?ids=${taf.station}&format=decoded&metars=on`}
+      >
+        aviationweather.gov <FontAwesomeIcon icon={faExternalLink} />
+      </OpenExternal>
     </Container>
   );
+}
+
+function cToF(celsius: number): number {
+  return Math.round((celsius * 9) / 5 + 32);
 }

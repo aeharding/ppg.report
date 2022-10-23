@@ -1,37 +1,57 @@
+import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { startOfTomorrow } from "date-fns";
 import { formatInTimeZone, zonedTimeToUtc } from "date-fns-tz";
 import {
-  Descriptive,
   Forecast as IForecast,
   Intensity,
   IWeatherCondition,
-  Phenomenon,
-  ValueIndicator,
   WeatherChangeType,
 } from "metar-taf-parser";
 import React from "react";
 import { notEmpty } from "../../../helpers/array";
 import { capitalizeFirstLetter } from "../../../helpers/string";
-import { useAppSelector } from "../../../hooks";
-import WindIndicator from "../../rap/WindIndicator";
 import {
   determineCeilingFromClouds,
   FlightCategory,
+  formatDescriptive,
+  formatIntensity,
+  formatPhenomenon,
+  formatVisibility,
+  formatWind,
   getFlightCategory,
   getFlightCategoryCssColor,
-} from "../header/Airport";
+} from "../../../helpers/taf";
+import { useAppSelector } from "../../../hooks";
+import WindIndicator from "../../rap/WindIndicator";
 import { timeZoneSelector } from "../weatherSlice";
 import Cloud from "./Cloud";
 
-const Container = styled.div`
+const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   overflow: hidden;
-  border-left: 3px solid #0095ff;
   background: #0095ff10;
+  border-left: 3px solid;
+
+  ${({ type }) => {
+    switch (type) {
+      case undefined:
+      case WeatherChangeType.FM:
+      case WeatherChangeType.BECMG:
+      default:
+        return css`
+          border-left-color: #0095ff;
+        `;
+      case WeatherChangeType.PROB:
+      case WeatherChangeType.TEMPO:
+        return css`
+          border-left-color: #0095ff5d;
+        `;
+    }
+  }}
 `;
 
 const Header = styled.div`
@@ -103,17 +123,20 @@ export default function Forecast({ data }: ForecastProps) {
       case WeatherChangeType.BECMG:
         return "Becoming";
       case WeatherChangeType.PROB:
-        return `${data.probability}% Probability`;
+        return `${data.probability}% Chance`;
       case WeatherChangeType.TEMPO:
-        return "Temporarily between";
+        return "Temporarily";
     }
   }
 
   return (
-    <Container>
+    <Container type={data.type}>
       <Header>
         <Text>
           {formatType(data.type)}{" "}
+          {data.probability && data.type !== WeatherChangeType.PROB
+            ? `(${data.probability}% chance) `
+            : undefined}{" "}
           {formatWithTomorrowIfNeeded(data.start, timeZone, "p")}{" "}
           {data.end ? (
             <>to {formatWithTomorrowIfNeeded(data.end, timeZone, "p")}</>
@@ -152,7 +175,7 @@ export default function Forecast({ data }: ForecastProps) {
                     ) : (
                       "Variable"
                     )}{" "}
-                    at {data.wind.speed} {data.wind.unit}{" "}
+                    at {formatWind(data.wind.speed, data.wind.unit)}{" "}
                   </>
                 ) : (
                   <>Calm</>
@@ -160,7 +183,7 @@ export default function Forecast({ data }: ForecastProps) {
                 {data.wind.gust != null && (
                   <>
                     <br />
-                    Gusting to {data.wind.gust} {data.wind.unit}
+                    Gusting to {formatWind(data.wind.gust, data.wind.unit)}
                   </>
                 )}
               </td>
@@ -210,9 +233,8 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Visibility</td>
               <td>
-                {data.visibility.value} {data.visibility.unit}{" "}
-                {data.visibility.ndv && "NDV"}{" "}
-                {formatIndicator(data.visibility.indicator)}
+                {formatVisibility(data.visibility)}{" "}
+                {data.visibility.ndv && "No directional visibility"}{" "}
               </td>
             </tr>
           )}
@@ -260,17 +282,6 @@ export default function Forecast({ data }: ForecastProps) {
   );
 }
 
-function formatIndicator(indicator: ValueIndicator | undefined) {
-  switch (indicator) {
-    case ValueIndicator.GreaterThan:
-      return "or greater";
-    case ValueIndicator.LessThan:
-      return "or less";
-    default:
-      return "";
-  }
-}
-
 function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
   return (
     <>
@@ -303,109 +314,17 @@ function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
   );
 }
 
-function formatPhenomenon(phenomenon: Phenomenon): string {
-  switch (phenomenon) {
-    case Phenomenon.RAIN:
-      return "Rain";
-    case Phenomenon.DRIZZLE:
-      return "Drizzle";
-    case Phenomenon.SNOW:
-      return "Snow";
-    case Phenomenon.SNOW_GRAINS:
-      return "Snow grains";
-    case Phenomenon.ICE_PELLETS:
-      return "Ice pellets";
-    case Phenomenon.ICE_CRYSTALS:
-      return "Ice crystals";
-    case Phenomenon.HAIL:
-      return "Hail";
-    case Phenomenon.SMALL_HAIL:
-      return "Small hail";
-    case Phenomenon.UNKNOW_PRECIPITATION:
-      return "Unknown precipitation";
-    case Phenomenon.FOG:
-      return "Fog";
-    case Phenomenon.VOLCANIC_ASH:
-      return "Volcanic ash";
-    case Phenomenon.MIST:
-      return "Mist";
-    case Phenomenon.HAZE:
-      return "Haze";
-    case Phenomenon.WIDESPREAD_DUST:
-      return "Widespread dust";
-    case Phenomenon.SMOKE:
-      return "Smoke";
-    case Phenomenon.SAND:
-      return "Sand";
-    case Phenomenon.SPRAY:
-      return "Spray";
-    case Phenomenon.SQUALL:
-      return "Squall";
-    case Phenomenon.SAND_WHIRLS:
-      return "Sand whirls";
-    case Phenomenon.THUNDERSTORM:
-      return "Thunderstorm";
-    case Phenomenon.DUSTSTORM:
-      return "Duststorm";
-    case Phenomenon.SANDSTORM:
-      return "Sandstorm";
-    case Phenomenon.FUNNEL_CLOUD:
-      return "Funnel cloud";
-  }
-}
-
-function formatDescriptive(
-  descriptive: Descriptive | undefined,
-  hasPhenomenon: boolean
-): string {
-  switch (descriptive) {
-    case Descriptive.SHOWERS:
-      return `Showers${hasPhenomenon ? " of" : ""}`;
-    case Descriptive.SHALLOW:
-      return "Shallow";
-    case Descriptive.PATCHES:
-      return `Patches${hasPhenomenon ? " of" : ""}`;
-    case Descriptive.PARTIAL:
-      return "Partial";
-    case Descriptive.DRIFTING:
-      return "Drifting";
-    case Descriptive.THUNDERSTORM:
-      return "Thunderstorm";
-    case Descriptive.BLOWING:
-      return "Blowing";
-    case Descriptive.FREEZING:
-      return "Freezing";
-    default:
-      return "";
-  }
-}
-
-function formatIntensity(intensity: Intensity | undefined): string {
-  switch (intensity) {
-    case Intensity.HEAVY:
-      return "Heavy";
-    case Intensity.IN_VICINITY:
-      return "in vicinity";
-    case Intensity.LIGHT:
-      return "Light";
-    default:
-      return "";
-  }
-}
-
 function getPeriodRemark(
   forecast: IForecast,
   timeZone: string
 ): string | undefined {
   switch (forecast.type) {
     case WeatherChangeType.BECMG:
-      if (forecast.validity.end)
-        return `Conditions expected to become as follows by ${formatWithTomorrowIfNeeded(
-          forecast.validity.end,
-          timeZone,
-          "p"
-        )}.`;
-      break;
+      return `Conditions expected to become as follows by ${formatWithTomorrowIfNeeded(
+        forecast.by,
+        timeZone,
+        "p"
+      )}.`;
     case WeatherChangeType.TEMPO:
       return "The following changes expected for less than half the time period.";
   }

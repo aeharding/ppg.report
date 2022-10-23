@@ -84,7 +84,8 @@ export interface WeatherObservation {
     | "sand_storm"
     | "thunderstorms"
     | "unknown"
-    | "volcanic_ash";
+    | "volcanic_ash"
+    | "snow_showers";
   intensity?: "light" | "very_light" | "moderate" | "heavy";
   attributes: (
     | "damaging_wind"
