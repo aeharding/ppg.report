@@ -4,7 +4,6 @@ import {
   faCloudHail,
   faCloudRain,
   faCloudSleet,
-  faCloudSnow,
   faFog,
   faPooStorm,
   faRaindrops,
@@ -22,6 +21,7 @@ import { findValue } from "../../../services/weather";
 import { WeatherObservation, WeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
 import { css } from "@emotion/react/macro";
+import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 
 const thunderAnimate = keyframes`
   0% {
@@ -182,8 +182,10 @@ function findIconFor(observation: WeatherObservation): IconProp | undefined {
     case "snow":
     case "snow_grains":
     case "snow_pellets":
+    case "snow_showers":
+      return faSnowflake;
     case "squalls":
-      return faCloudSnow;
+      return faWind;
     case "thunderstorms":
       return faThunderstorm;
   }

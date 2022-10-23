@@ -1,9 +1,8 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { faLongArrowDown } from "@fortawesome/pro-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
+import WindIndicator from "../WindIndicator";
 
 export const shearIndicator = css`
   content: "";
@@ -38,10 +37,6 @@ const Container = styled.div<{ shear: boolean }>`
     `}
 `;
 
-const TransformedIcon = styled(FontAwesomeIcon)<{ direction: number }>`
-  transform: rotate(${({ direction }) => direction}deg);
-`;
-
 interface WindDirectionProps {
   curr: number;
   prev?: number;
@@ -56,7 +51,7 @@ export default function WindDirection({ curr, prev }: WindDirectionProps) {
           25
         }
       >
-        {curr} <TransformedIcon icon={faLongArrowDown} direction={curr} />
+        {curr} <WindIndicator direction={curr} />
       </Container>
     );
   }, [curr, prev]);
