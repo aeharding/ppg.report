@@ -8,7 +8,9 @@ import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react/macro";
 import throttle from "lodash/throttle";
 import { Rap } from "gsl-parser";
-import ReportElevationDiscrepancy from "./warnings/ReportElevationDiscrepancy";
+import ReportElevationDiscrepancy, {
+  ELEVATION_DISCREPANCY_THRESHOLD,
+} from "./warnings/ReportElevationDiscrepancy";
 import Extra from "./extra/Extra";
 import Scrubber from "./Scrubber";
 import { isEqual, startOfHour } from "date-fns";
@@ -161,12 +163,18 @@ interface TableProps {
 }
 
 export default function Hours({ rap }: TableProps) {
+  const elevation = useAppSelector((state) => state.weather.elevation);
+
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
 
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(
     ScrollPosition.Beginning
   );
+
+  if (elevation == null) throw new Error("Elevation not found");
+
+  const lowestReportedAltitude = rap[0].data[0].height;
 
   // Each report can have a different # of rows. This normalizes that
   const rows = rap[0].data.filter(({ height }) => height < 5800).length;
@@ -175,10 +183,17 @@ export default function Hours({ rap }: TableProps) {
     () =>
       rap.map((rap) => (
         <HourContainer key={rap.date}>
-          <StyledHour rap={rap} rows={rows} />
+          <StyledHour
+            rap={rap}
+            rows={rows}
+            surfaceLevelMode={
+              Math.abs(elevation - lowestReportedAltitude) <
+              ELEVATION_DISCREPANCY_THRESHOLD
+            }
+          />
         </HourContainer>
       )),
-    [rap, rows]
+    [rap, rows, elevation, lowestReportedAltitude]
   );
 
   useEffect(() => {
