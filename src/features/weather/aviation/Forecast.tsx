@@ -201,9 +201,12 @@ export default function Forecast({ data }: ForecastProps) {
                 ) : (
                   "Variable direction at"
                 )}{" "}
-                {data.windShear.speed} {data.windShear.unit}{" "}
+                {formatWind(data.windShear.speed, data.windShear.unit)}{" "}
                 {data.windShear.gust != null ? (
-                  <>gusting to {data.windShear.gust}</>
+                  <>
+                    gusting to{" "}
+                    {formatWind(data.windShear.gust, data.windShear.unit)}
+                  </>
                 ) : (
                   ""
                 )}{" "}
