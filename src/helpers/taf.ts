@@ -143,8 +143,9 @@ function convertSpeedToMph(speed: number, unit: SpeedUnit): number {
 export function formatVisibility(visibility: Visibility | undefined): string {
   if (!visibility) return "Unknown visibility";
 
-  const miles = convertDistanceToMiles(visibility.value, visibility.unit);
-  let value = `${Math.round(miles * 10) / 10} miles`;
+  const rawMiles = convertDistanceToMiles(visibility.value, visibility.unit);
+  const miles = Math.round(rawMiles * 10) / 10;
+  let value = `${miles} mile${miles !== 1 ? "s" : ""}`;
 
   const indiciator = formatIndicator(visibility.indicator);
 
