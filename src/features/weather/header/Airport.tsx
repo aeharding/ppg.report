@@ -62,23 +62,23 @@ export default function Airport({ taf, date }: AirportProps) {
     if (!composedForecast) return [];
 
     return [
-      ...composedForecast.base.clouds,
-      ...composedForecast.additional.flatMap(({ clouds }) => clouds),
+      ...composedForecast.prevailing.clouds,
+      ...composedForecast.supplemental.flatMap(({ clouds }) => clouds),
     ].sort((a, b) => (a.height || 100000) - (b.height || 100000));
   }, [composedForecast]);
 
   if (!composedForecast) return <></>;
 
   const visibility = [
-    ...composedForecast.additional.map(({ visibility }) => visibility),
-    composedForecast.base.visibility,
+    ...composedForecast.supplemental.map(({ visibility }) => visibility),
+    composedForecast.prevailing.visibility,
   ]
     .filter(notEmpty)
     .sort((a, b) => a.value - b.value)[0];
 
   const verticalVisbility =
-    composedForecast.additional[0]?.verticalVisibility ??
-    composedForecast.base.verticalVisibility;
+    composedForecast.supplemental[0]?.verticalVisibility ??
+    composedForecast.prevailing.verticalVisibility;
 
   const category = getFlightCategory(visibility, clouds);
 

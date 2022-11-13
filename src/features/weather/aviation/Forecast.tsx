@@ -15,8 +15,10 @@ import {
   determineCeilingFromClouds,
   FlightCategory,
   formatDescriptive,
+  formatIcingIntensity,
   formatIntensity,
   formatPhenomenon,
+  formatTurbulenceIntensity,
   formatVisibility,
   formatWind,
   getFlightCategory,
@@ -126,6 +128,8 @@ export default function Forecast({ data }: ForecastProps) {
         return `${data.probability}% Chance`;
       case WeatherChangeType.TEMPO:
         return "Temporarily";
+      case WeatherChangeType.INTER:
+        return "Intermittent";
     }
   }
 
@@ -262,6 +266,47 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Weather</td>
               <td>{formatWeather(data.weatherConditions)}</td>
+            </tr>
+          ) : undefined}
+
+          {data.turbulence ? (
+            <tr>
+              <td>Turbulence</td>
+              <td>
+                {data.turbulence.map((turbulence) => (
+                  <>
+                    {formatTurbulenceIntensity(turbulence.intensity)} from{" "}
+                    {turbulence.baseHeight
+                      ? turbulence.baseHeight.toLocaleString()
+                      : "surface"}{" "}
+                    to{" "}
+                    {(
+                      turbulence.baseHeight + turbulence.depth
+                    ).toLocaleString()}{" "}
+                    ft AGL.
+                    <br />
+                  </>
+                ))}
+              </td>
+            </tr>
+          ) : undefined}
+
+          {data.icing ? (
+            <tr>
+              <td>Icing</td>
+              <td>
+                {data.icing.map((icing) => (
+                  <>
+                    {formatIcingIntensity(icing.intensity)} from{" "}
+                    {icing.baseHeight
+                      ? icing.baseHeight.toLocaleString()
+                      : "surface"}{" "}
+                    to {(icing.baseHeight + icing.depth).toLocaleString()} ft
+                    AGL.
+                    <br />
+                  </>
+                ))}
+              </td>
             </tr>
           ) : undefined}
 
