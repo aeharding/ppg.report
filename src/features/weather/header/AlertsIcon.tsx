@@ -19,9 +19,9 @@ import { css } from "@emotion/react/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
-import { getReadAlertKey } from "../../user/storage";
 import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
+import { getAlertId } from "../../../helpers/alert";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -152,10 +152,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
               {formatInTimeZone(new Date(date), timeZone, "h:mmaaaaa")}
             </div>
             <Subtext>
-              {
-                alerts.filter((alert) => !readAlerts[getReadAlertKey(alert)])
-                  .length
-              }{" "}
+              {alerts.filter((alert) => !readAlerts[getAlertId(alert)]).length}{" "}
               Unread
               {hiddenAlertsForLocation?.length ? (
                 <>, {hiddenAlertsForLocation.length} Additional Hidden</>

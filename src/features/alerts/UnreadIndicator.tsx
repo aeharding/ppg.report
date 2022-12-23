@@ -1,7 +1,7 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
+import { getAlertId } from "../../helpers/alert";
 import { useAppSelector } from "../../hooks";
-import { getReadAlertKey } from "../user/storage";
 import { Alert } from "./alertsSlice";
 
 const Bubble = styled.div<{ read: boolean }>`
@@ -24,5 +24,5 @@ interface UnreadIndicatorProps {
 export default function UnreadIndicator({ alert }: UnreadIndicatorProps) {
   const readAlerts = useAppSelector((state) => state.user.readAlerts);
 
-  return <Bubble read={!!readAlerts[getReadAlertKey(alert)]} />;
+  return <Bubble read={!!readAlerts[getAlertId(alert)]} />;
 }

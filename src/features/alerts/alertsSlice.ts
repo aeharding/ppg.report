@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { addHours } from "date-fns";
+import { getAlertId } from "../../helpers/alert";
 import { findRelatedAlerts } from "../../helpers/weather";
 import {
   AviationAlertFeature,
@@ -8,7 +9,6 @@ import {
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { RootState } from "../../store";
-import { getReadAlertKey } from "../user/storage";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
 
 const weatherAlertsSelector = (state: RootState) => state.weather.alerts;
@@ -61,7 +61,7 @@ export const hiddenAlertsForLocationSelector = createSelector(
 function generateIsHiddenFunction(
   hiddenAlerts: Record<string, true>
 ): (alert: Alert) => boolean {
-  return (alert) => hiddenAlerts[getReadAlertKey(alert)];
+  return (alert) => hiddenAlerts[getAlertId(alert)];
 }
 
 export function isWeatherAlert(alert: Alert): alert is WeatherAlertFeature {

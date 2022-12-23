@@ -1,6 +1,7 @@
 import { differenceInDays, differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
-import { Alert, isTFRAlert, isWeatherAlert } from "../alerts/alertsSlice";
+import { getAlertId } from "../../helpers/alert";
+import { Alert } from "../alerts/alertsSlice";
 import { AltitudeType, SwipeInertia } from "./userSlice";
 
 export interface UserLocation {
@@ -145,7 +146,7 @@ export function getReadAlerts(): Record<string, string> {
 export function setReadAlert(alert: Alert): Record<string, string> {
   const readAlerts = getReadAlerts();
 
-  readAlerts[getReadAlertKey(alert)] = new Date().toISOString();
+  readAlerts[getAlertId(alert)] = new Date().toISOString();
 
   // Cleanup old entries
   Object.entries(readAlerts).forEach(([key, dateString]) => {
@@ -170,7 +171,7 @@ export function getHiddenAlerts(): Record<string, true> {
 export function setHiddenAlert(alert: Alert): Record<string, true> {
   const hiddenAlerts = getHiddenAlerts();
 
-  hiddenAlerts[getReadAlertKey(alert)] = true;
+  hiddenAlerts[getAlertId(alert)] = true;
 
   localStorage.setItem(HIDDEN_ALERTS, JSON.stringify(hiddenAlerts));
 
@@ -179,14 +180,6 @@ export function setHiddenAlert(alert: Alert): Record<string, true> {
 
 export function resetHiddenAlerts() {
   localStorage.removeItem(HIDDEN_ALERTS);
-}
-
-export function getReadAlertKey(alert: Alert): string {
-  if (isWeatherAlert(alert)) return alert.properties.id;
-
-  if (isTFRAlert(alert)) return alert.properties.coreNOTAMData.notam.id;
-
-  return `aviationalert-${alert.id}`;
 }
 
 export function getSwipeInertia(): SwipeInertia {
