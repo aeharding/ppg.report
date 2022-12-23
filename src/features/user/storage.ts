@@ -15,6 +15,7 @@ const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
 const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const READ_ALERTS = "read-alerts";
+const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
@@ -148,7 +149,7 @@ export function setReadAlert(alert: Alert): Record<string, string> {
 
   // Cleanup old entries
   Object.entries(readAlerts).forEach(([key, dateString]) => {
-    if (differenceInDays(new Date(dateString), new Date()) > 30) {
+    if (differenceInDays(new Date(), new Date(dateString)) > 30) {
       delete readAlerts[key];
     }
   });
@@ -156,6 +157,28 @@ export function setReadAlert(alert: Alert): Record<string, string> {
   localStorage.setItem(READ_ALERTS, JSON.stringify(readAlerts));
 
   return readAlerts;
+}
+
+export function getHiddenAlerts(): Record<string, true> {
+  const savedValue = localStorage.getItem(HIDDEN_ALERTS);
+
+  if (typeof savedValue !== "string") return {};
+
+  return JSON.parse(savedValue);
+}
+
+export function setHiddenAlert(alert: Alert): Record<string, true> {
+  const hiddenAlerts = getHiddenAlerts();
+
+  hiddenAlerts[getReadAlertKey(alert)] = true;
+
+  localStorage.setItem(HIDDEN_ALERTS, JSON.stringify(hiddenAlerts));
+
+  return hiddenAlerts;
+}
+
+export function resetHiddenAlerts() {
+  localStorage.removeItem(HIDDEN_ALERTS);
 }
 
 export function getReadAlertKey(alert: Alert): string {

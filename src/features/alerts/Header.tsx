@@ -26,7 +26,7 @@ import UnreadIndicator from "./UnreadIndicator";
 const Container = styled.div<{ warning: boolean }>`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 
   padding: 1rem;
   background: ${({ warning }) => (warning ? "#6e0101" : "#6e6701")};

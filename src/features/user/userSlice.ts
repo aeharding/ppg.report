@@ -29,6 +29,7 @@ interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
   readAlerts: Record<string, string>;
+  hiddenAlerts: Record<string, true>;
   swipeInertia: SwipeInertia;
 }
 
@@ -37,6 +38,7 @@ const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
   readAlerts: storage.getReadAlerts(),
+  hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
 };
 
@@ -59,14 +61,26 @@ export const userReducer = createSlice({
     readAlert(state, action: PayloadAction<Alert>) {
       state.readAlerts = storage.setReadAlert(action.payload);
     },
+    hideAlert(state, action: PayloadAction<Alert>) {
+      state.hiddenAlerts = storage.setHiddenAlert(action.payload);
+    },
+    resetHiddenAlerts(state) {
+      storage.resetHiddenAlerts();
+      state.hiddenAlerts = {};
+    },
     setSwipeInertia(state, action: PayloadAction<SwipeInertia>) {
       state.swipeInertia = storage.setSwipeInertia(action.payload);
     },
   },
 });
 
-export const { updateLocations, readAlert, setSwipeInertia } =
-  userReducer.actions;
+export const {
+  updateLocations,
+  readAlert,
+  hideAlert,
+  resetHiddenAlerts,
+  setSwipeInertia,
+} = userReducer.actions;
 
 export const toggleAltitude =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {

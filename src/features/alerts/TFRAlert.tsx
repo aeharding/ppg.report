@@ -15,10 +15,39 @@ import {
 } from "./shared";
 import More from "../../shared/More";
 import MyPosition from "../../map/MyPosition";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEyeSlash } from "@fortawesome/pro-light-svg-icons";
+import { useAppDispatch } from "../../hooks";
+import { hideAlert } from "../user/userSlice";
 
 const Disclaimer = styled.p`
   font-size: 0.9rem;
   opacity: 0.8;
+`;
+
+const HideButton = styled.button`
+  font-size: 1em;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 1rem 1rem 0.5rem 0.5rem;
+  color: inherit;
+  opacity: 0.5;
+  border-radius: 5px;
+  cursor: pointer;
+
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  position: relative;
+  z-index: 1;
+
+  float: right;
+  padding: 0.25rem 0.75rem;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 interface AlertProps {
@@ -28,6 +57,18 @@ interface AlertProps {
 }
 
 export default function TFRAlert({ alert, index, total }: AlertProps) {
+  const dispatch = useAppDispatch();
+
+  function confirmHide() {
+    const confirmed = window.confirm(
+      `Permanently hide this TFR? You can reset hidden TFRs in the settings.`
+    );
+
+    if (!confirmed) return;
+
+    dispatch(hideAlert(alert));
+  }
+
   return (
     <AlertContainer>
       <Title>
@@ -51,8 +92,15 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
             <MyPosition />
           </StyledMapContainer>
         )}
-
         <Header alert={alert} index={index} total={total} includeYear />
+
+        {alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM" ? (
+          <HideButton onClick={confirmHide}>
+            <FontAwesomeIcon icon={faEyeSlash} /> Hide
+          </HideButton>
+        ) : (
+          ""
+        )}
 
         <StyledLinkify tagName="div" options={linkifyOptions}>
           <Disclaimer>
