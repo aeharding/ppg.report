@@ -21,8 +21,8 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../alerts/alertsSlice";
-import { getReadAlertKey } from "../user/storage";
 import { addHours } from "date-fns/esm";
+import { getAlertId } from "../../helpers/alert";
 
 export enum HeaderType {
   Normal,
@@ -143,7 +143,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   );
 
   const unreadAlerts = relevantAlerts.filter(
-    (alert) => !readAlerts[getReadAlertKey(alert)]
+    (alert) => !readAlerts[getAlertId(alert)]
   );
 
   if (weather === "failed") return <></>;
@@ -167,7 +167,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     type = HeaderType.Danger;
   }
 
-  if (relevantAlerts.every((alert) => readAlerts[getReadAlertKey(alert)]))
+  if (relevantAlerts.every((alert) => readAlerts[getAlertId(alert)]))
     type = HeaderType.Normal;
 
   return (

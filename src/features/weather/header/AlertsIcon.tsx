@@ -7,16 +7,21 @@ import { isTouchDevice } from "../../../helpers/device";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
 import { lazy, Suspense } from "react";
 import Loading from "../../../shared/Loading";
-import { Alert, isTFRAlert, isWeatherAlert } from "../../alerts/alertsSlice";
+import {
+  Alert,
+  hiddenAlertsForLocationSelector,
+  isTFRAlert,
+  isWeatherAlert,
+} from "../../alerts/alertsSlice";
 import { isAlertDangerous } from "../../../helpers/weather";
 import { HeaderType } from "../WeatherHeader";
 import { css } from "@emotion/react/macro";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
-import { getReadAlertKey } from "../../user/storage";
 import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
+import { getAlertId } from "../../../helpers/alert";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -60,7 +65,7 @@ const Title = styled.div`
   line-height: 1.05;
 `;
 
-const Unread = styled.div`
+const Subtext = styled.div`
   opacity: 0.5;
   font-size: 0.7rem;
 `;
@@ -91,6 +96,9 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
   if (!timeZone) throw new Error("Timezone not found");
 
   const readAlerts = useAppSelector((state) => state.user.readAlerts);
+  const hiddenAlertsForLocation = useAppSelector(
+    hiddenAlertsForLocationSelector
+  );
 
   const type = alerts.filter(isAlertDangerous).length
     ? HeaderType.Danger
@@ -143,13 +151,15 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
               {alerts.length} Alert{alerts.length === 1 ? "" : "s"} at{" "}
               {formatInTimeZone(new Date(date), timeZone, "h:mmaaaaa")}
             </div>
-            <Unread>
-              {
-                alerts.filter((alert) => !readAlerts[getReadAlertKey(alert)])
-                  .length
-              }{" "}
+            <Subtext>
+              {alerts.filter((alert) => !readAlerts[getAlertId(alert)]).length}{" "}
               Unread
-            </Unread>
+              {hiddenAlertsForLocation?.length ? (
+                <>, {hiddenAlertsForLocation.length} Additional Hidden</>
+              ) : (
+                ""
+              )}
+            </Subtext>
           </Title>
           <Actions>
             <JumpActions />

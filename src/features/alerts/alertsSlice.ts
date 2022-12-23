@@ -1,5 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { addHours } from "date-fns";
+import { getAlertId } from "../../helpers/alert";
 import { findRelatedAlerts } from "../../helpers/weather";
 import {
   AviationAlertFeature,
@@ -14,10 +15,12 @@ const weatherAlertsSelector = (state: RootState) => state.weather.alerts;
 const tfrsSelector = (state: RootState) => state.faa.tfrs;
 const aviationAlertsSelector = (state: RootState) =>
   state.weather.aviationAlerts;
+export const hiddenAlertsSelector = (state: RootState) =>
+  state.user.hiddenAlerts;
 
 export type Alert = WeatherAlertFeature | TFRFeature | AviationAlertFeature;
 
-export const alertsSelector = createSelector(
+const allAlertsSelector = createSelector(
   [weatherAlertsSelector, tfrsSelector, aviationAlertsSelector],
   (weatherAlerts, tfrs, aviationAlerts) => {
     if (
@@ -38,6 +41,28 @@ export const alertsSelector = createSelector(
     ];
   }
 );
+
+export const alertsSelector = createSelector(
+  [allAlertsSelector, hiddenAlertsSelector],
+  (allAlerts, hiddenAlerts) => {
+    const isHidden = generateIsHiddenFunction(hiddenAlerts);
+
+    return allAlerts?.filter((alert) => !isHidden(alert));
+  }
+);
+
+export const hiddenAlertsForLocationSelector = createSelector(
+  [allAlertsSelector, hiddenAlertsSelector],
+  (allAlerts, hiddenAlerts) => {
+    return allAlerts?.filter(generateIsHiddenFunction(hiddenAlerts));
+  }
+);
+
+function generateIsHiddenFunction(
+  hiddenAlerts: Record<string, true>
+): (alert: Alert) => boolean {
+  return (alert) => hiddenAlerts[getAlertId(alert)];
+}
 
 export function isWeatherAlert(alert: Alert): alert is WeatherAlertFeature {
   return "parameters" in alert.properties;
