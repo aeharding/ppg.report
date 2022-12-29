@@ -146,7 +146,12 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     (alert) => !readAlerts[getAlertId(alert)]
   );
 
-  if (weather === "failed") return <></>;
+  if (
+    weather === "failed" &&
+    !tafReport &&
+    (typeof alerts !== "object" || !alerts?.length)
+  )
+    return <></>;
   if (
     !weather ||
     weather === "pending" ||

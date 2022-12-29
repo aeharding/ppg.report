@@ -14,9 +14,18 @@ export default function Errors() {
     (state) => state.weather.aviationAlerts
   );
   const tfrs = useAppSelector((state) => state.faa.tfrs);
+  const weather = useAppSelector((state) => state.weather.weather);
 
   return (
     <>
+      {weather === "failed" ? (
+        <Failed>
+          <FontAwesomeIcon icon={faExclamationTriangle} /> NWS hourly weather
+          failed to load.
+        </Failed>
+      ) : (
+        ""
+      )}
       {weatherAlerts === "failed" ? (
         <Failed>
           <FontAwesomeIcon icon={faExclamationTriangle} /> Weather alerts failed
