@@ -6,6 +6,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
+import { OnOff } from "../features/user/userSlice";
 import { GAirmetFeature } from "../services/aviationWeather";
 import { extractIssuedTimestamp } from "./aviationAlerts";
 
@@ -19,8 +20,6 @@ export function isAlertDangerous(alert: Alert): boolean {
 
   if (isTFRAlert(alert)) return true;
 
-  if (isGAirmetAlert(alert) && alert.properties.hazard === "LLWS") return true;
-
   return (
     alert.properties.data === "SIGMET" &&
     alert.properties.airSigmetType !== "OUTLOOK"
@@ -30,8 +29,23 @@ export function isAlertDangerous(alert: Alert): boolean {
 /**
  * Most severe first
  */
-export function sortAlerts(alerts: Alert[], allAlerts: Alert[]): Alert[] {
+export function sortAlerts(
+  alerts: Alert[],
+  allAlerts: Alert[],
+  gAirmetRead: OnOff
+): Alert[] {
   return sortBy(alerts, (alert) => {
+    // If the setting for always marking G-Airmets as read is on,
+    // push all G-Airmets to the bottom of the list of alerts so
+    // the user doesn't have to scroll to get to the stuff they care about more
+    if (gAirmetRead === OnOff.On && isGAirmetAlert(alert))
+      return (
+        -new Date(
+          extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts))
+        ).getTime() +
+        1000 * 60 * 60 * 60
+      );
+
     if (isWeatherAlert(alert))
       return -new Date(alert.properties.onset).getTime();
 
@@ -42,7 +56,7 @@ export function sortAlerts(alerts: Alert[], allAlerts: Alert[]): Alert[] {
 
     return -new Date(
       extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts))
-    );
+    ).getTime();
   });
 }
 

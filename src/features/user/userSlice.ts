@@ -11,7 +11,7 @@ export enum AltitudeType {
 }
 
 // CSS scroll-snap-stop
-export enum SwipeInertia {
+export enum OnOff {
   On = "On",
   Off = "Off",
 }
@@ -30,7 +30,8 @@ interface UserState {
   altitude: AltitudeType;
   readAlerts: Record<string, string>;
   hiddenAlerts: Record<string, true>;
-  swipeInertia: SwipeInertia;
+  swipeInertia: OnOff;
+  gAirmetRead: OnOff;
 }
 
 // Define the initial state using that type
@@ -40,6 +41,7 @@ const initialState: UserState = {
   readAlerts: storage.getReadAlerts(),
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
+  gAirmetRead: storage.getGAirmetRead(),
 };
 
 /**
@@ -68,8 +70,11 @@ export const userReducer = createSlice({
       storage.resetHiddenAlerts();
       state.hiddenAlerts = {};
     },
-    setSwipeInertia(state, action: PayloadAction<SwipeInertia>) {
+    setSwipeInertia(state, action: PayloadAction<OnOff>) {
       state.swipeInertia = storage.setSwipeInertia(action.payload);
+    },
+    setGAirmetRead(state, action: PayloadAction<OnOff>) {
+      state.gAirmetRead = storage.setGAirmetRead(action.payload);
     },
   },
 });
@@ -80,6 +85,7 @@ export const {
   hideAlert,
   resetHiddenAlerts,
   setSwipeInertia,
+  setGAirmetRead,
 } = userReducer.actions;
 
 export const toggleAltitude =

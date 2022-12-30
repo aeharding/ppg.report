@@ -1,6 +1,6 @@
 import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
-import { getAlertId } from "../../helpers/alert";
+import { isAlertRead } from "../../helpers/alert";
 import { useAppSelector } from "../../hooks";
 import { Alert } from "./alertsSlice";
 
@@ -22,7 +22,7 @@ interface UnreadIndicatorProps {
 }
 
 export default function UnreadIndicator({ alert }: UnreadIndicatorProps) {
-  const readAlerts = useAppSelector((state) => state.user.readAlerts);
+  const userState = useAppSelector((state) => state.user);
 
-  return <Bubble read={!!readAlerts[getAlertId(alert)]} />;
+  return <Bubble read={isAlertRead(alert, userState)} />;
 }

@@ -5,7 +5,14 @@ import {
 } from "../../../../helpers/colors";
 
 const GroupLabel = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+`;
+
+const GroupTip = styled.div`
+  font-size: 0.8em;
+  opacity: 0.8;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
 `;
 
 const Input = styled.input`
@@ -36,6 +43,7 @@ interface RadioProps<T> {
   onChange: (value: T) => void;
   options: T[];
   label: string;
+  tip?: string;
 }
 
 export function Radio<T extends string>({
@@ -43,10 +51,12 @@ export function Radio<T extends string>({
   label,
   onChange,
   value,
+  tip,
 }: RadioProps<T>) {
   return (
     <div>
       <GroupLabel>{label}</GroupLabel>
+      {tip ? <GroupTip>{tip}</GroupTip> : ""}
       {options.map((option) => (
         <>
           <Input
@@ -54,10 +64,10 @@ export function Radio<T extends string>({
             name={label}
             checked={value === option}
             value={option}
-            id={option}
+            id={`${label}${option}`}
             onChange={(event) => onChange(event.target.value as T)}
           />
-          <Label htmlFor={option}>{option}</Label>
+          <Label htmlFor={`${label}${option}`}>{option}</Label>
         </>
       ))}
     </div>
