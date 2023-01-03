@@ -2,7 +2,7 @@ import { differenceInDays, differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
 import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
-import { AltitudeType, SwipeInertia } from "./userSlice";
+import { AltitudeType, OnOff } from "./userSlice";
 
 export interface UserLocation {
   lat: number;
@@ -18,6 +18,7 @@ const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const READ_ALERTS = "read-alerts";
 const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
+const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -182,20 +183,38 @@ export function resetHiddenAlerts() {
   localStorage.removeItem(HIDDEN_ALERTS);
 }
 
-export function getSwipeInertia(): SwipeInertia {
+export function getSwipeInertia(): OnOff {
   const savedValue = localStorage.getItem(SWIPE_INERTIA_STORAGE_KEY);
 
   if (
     typeof savedValue !== "string" ||
-    (savedValue !== SwipeInertia.On && savedValue !== SwipeInertia.Off)
+    (savedValue !== OnOff.On && savedValue !== OnOff.Off)
   )
-    return SwipeInertia.On;
+    return OnOff.On;
 
   return savedValue;
 }
 
-export function setSwipeInertia(swipeInertia: SwipeInertia): SwipeInertia {
+export function setSwipeInertia(swipeInertia: OnOff): OnOff {
   localStorage.setItem(SWIPE_INERTIA_STORAGE_KEY, swipeInertia);
 
   return swipeInertia;
+}
+
+export function getGAirmetRead(): OnOff {
+  const savedValue = localStorage.getItem(G_AIRMET_READ_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== OnOff.On && savedValue !== OnOff.Off)
+  )
+    return OnOff.Off;
+
+  return savedValue;
+}
+
+export function setGAirmetRead(gAirmetRead: OnOff): OnOff {
+  localStorage.setItem(G_AIRMET_READ_STORAGE_KEY, gAirmetRead);
+
+  return gAirmetRead;
 }

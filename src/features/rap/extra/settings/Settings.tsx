@@ -6,16 +6,17 @@ import {
   resetHiddenAlerts,
   setAltitude,
   setSwipeInertia,
-  SwipeInertia,
+  OnOff,
+  setGAirmetRead,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
 const Container = styled.div`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 2rem;
 
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 `;
 
 const Hr = styled.hr`
@@ -27,6 +28,7 @@ export default function Settings() {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
+  const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
   const hiddenAlertsNumber = Object.keys(hiddenAlerts).length;
 
@@ -40,9 +42,17 @@ export default function Settings() {
       />
       <Radio
         label="Swipe Inertia"
-        options={[SwipeInertia.On, SwipeInertia.Off]}
+        options={[OnOff.On, OnOff.Off]}
         value={swipeInertia}
         onChange={(value) => dispatch(setSwipeInertia(value))}
+        tip="If turned off, swiping quickly will not skip hours. Useful especially on Android devices."
+      />
+      <Radio
+        label="Hush G-AIRMETs"
+        options={[OnOff.On, OnOff.Off]}
+        value={gAirmetRead}
+        onChange={(value) => dispatch(setGAirmetRead(value))}
+        tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy."
       />
 
       <Hr />
@@ -61,9 +71,6 @@ export default function Settings() {
         )}
       </div>
 
-      <Hr />
-
-      <div style={{ marginBottom: "1rem" }}>More settings coming soon! 🚀</div>
       {/* <Radio label="Wind Speed" options={["mph", "km/h", "kts", "m/s"]} />
       <Radio label="Temperature" options={["°F", "°C"]} />
       <Radio label="Elevation" options={["ft", "m"]} /> */}

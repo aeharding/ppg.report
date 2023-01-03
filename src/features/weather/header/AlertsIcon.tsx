@@ -21,7 +21,8 @@ import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
-import { getAlertId } from "../../../helpers/alert";
+import { isAlertRead } from "../../../helpers/alert";
+import { OnOff } from "../../user/userSlice";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -95,7 +96,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   if (!timeZone) throw new Error("Timezone not found");
 
-  const readAlerts = useAppSelector((state) => state.user.readAlerts);
+  const userState = useAppSelector((state) => state.user);
   const hiddenAlertsForLocation = useAppSelector(
     hiddenAlertsForLocationSelector
   );
@@ -152,7 +153,16 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
               {formatInTimeZone(new Date(date), timeZone, "h:mmaaaaa")}
             </div>
             <Subtext>
-              {alerts.filter((alert) => !readAlerts[getAlertId(alert)]).length}{" "}
+              {
+                alerts.filter(
+                  (alert) =>
+                    // Force gAirmetRead to false to show the actual read/unread regardless of setting
+                    !isAlertRead(alert, {
+                      ...userState,
+                      gAirmetRead: OnOff.Off,
+                    })
+                ).length
+              }{" "}
               Unread
               {hiddenAlertsForLocation?.length ? (
                 <>, {hiddenAlertsForLocation.length} Additional Hidden</>

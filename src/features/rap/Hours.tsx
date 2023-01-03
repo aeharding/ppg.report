@@ -16,7 +16,7 @@ import Scrubber from "./Scrubber";
 import { isEqual, startOfHour } from "date-fns";
 import ReportStale from "./warnings/ReportStale";
 import Errors from "./Errors";
-import { SwipeInertia } from "../user/userSlice";
+import { OnOff } from "../user/userSlice";
 import { useAppSelector } from "../../hooks";
 
 const browser = detect();
@@ -54,7 +54,7 @@ const ScrollContainer = styled.div`
   justify-content: center;
 `;
 
-const Container = styled.div<{ swipeInertia: SwipeInertia }>`
+const Container = styled.div<{ swipeInertia: OnOff }>`
   --hours-gutter: 1.4em;
 
   @media (max-width: 360px) {
@@ -70,7 +70,7 @@ const Container = styled.div<{ swipeInertia: SwipeInertia }>`
 
   section {
     scroll-snap-stop: ${({ swipeInertia }) =>
-      swipeInertia === SwipeInertia.On ? "normal" : "always"};
+      swipeInertia === OnOff.On ? "normal" : "always"};
   }
 
   ${browser?.os !== "Mac OS" &&

@@ -22,7 +22,7 @@ import {
   isWeatherAlert,
 } from "../alerts/alertsSlice";
 import { addHours } from "date-fns/esm";
-import { getAlertId } from "../../helpers/alert";
+import { isAlertRead } from "../../helpers/alert";
 
 export enum HeaderType {
   Normal,
@@ -127,7 +127,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
   const weatherAlerts = useAppSelector((state) => state.weather.alerts);
   const tfrs = useAppSelector((state) => state.faa.tfrs);
   const tafReport = useAppSelector(tafReportSelector);
-  const readAlerts = useAppSelector((state) => state.user.readAlerts);
+  const userState = useAppSelector((state) => state.user);
 
   const relevantAlerts = useMemo(
     () =>
@@ -135,15 +135,16 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
         ? filterDuplicateAlertsForHour(
             sortAlerts(
               alerts.filter((alert) => isAlertActive(alert, date)),
-              alerts
+              alerts,
+              userState.gAirmetRead
             )
           )
         : [],
-    [alerts, date]
+    [alerts, date, userState.gAirmetRead]
   );
 
   const unreadAlerts = relevantAlerts.filter(
-    (alert) => !readAlerts[getAlertId(alert)]
+    (alert) => !isAlertRead(alert, userState)
   );
 
   if (
@@ -172,7 +173,7 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
     type = HeaderType.Danger;
   }
 
-  if (relevantAlerts.every((alert) => readAlerts[getAlertId(alert)]))
+  if (relevantAlerts.every((alert) => isAlertRead(alert, userState)))
     type = HeaderType.Normal;
 
   return (
