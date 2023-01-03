@@ -22,6 +22,7 @@ import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 import { isAlertRead } from "../../../helpers/alert";
+import { OnOff } from "../../user/userSlice";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -152,7 +153,16 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
               {formatInTimeZone(new Date(date), timeZone, "h:mmaaaaa")}
             </div>
             <Subtext>
-              {alerts.filter((alert) => !isAlertRead(alert, userState)).length}{" "}
+              {
+                alerts.filter(
+                  (alert) =>
+                    // Force gAirmetRead to false to show the actual read/unread regardless of setting
+                    !isAlertRead(alert, {
+                      ...userState,
+                      gAirmetRead: OnOff.Off,
+                    })
+                ).length
+              }{" "}
               Unread
               {hiddenAlertsForLocation?.length ? (
                 <>, {hiddenAlertsForLocation.length} Additional Hidden</>

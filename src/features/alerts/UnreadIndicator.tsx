@@ -2,6 +2,7 @@ import { css } from "@emotion/react/macro";
 import styled from "@emotion/styled/macro";
 import { isAlertRead } from "../../helpers/alert";
 import { useAppSelector } from "../../hooks";
+import { OnOff } from "../user/userSlice";
 import { Alert } from "./alertsSlice";
 
 const Bubble = styled.div<{ read: boolean }>`
@@ -24,5 +25,10 @@ interface UnreadIndicatorProps {
 export default function UnreadIndicator({ alert }: UnreadIndicatorProps) {
   const userState = useAppSelector((state) => state.user);
 
-  return <Bubble read={isAlertRead(alert, userState)} />;
+  return (
+    <Bubble
+      // Force gAirmetRead to false to show the bubble state regardless of setting
+      read={isAlertRead(alert, { ...userState, gAirmetRead: OnOff.Off })}
+    />
+  );
 }
