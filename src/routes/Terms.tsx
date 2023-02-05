@@ -49,6 +49,17 @@ export default function Terms() {
 
       <Email />
 
+      <p>
+        Or via Mastodon:{" "}
+        <a
+          href="https://social.harding.dev/@ppgreport"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @ppgreport@harding.dev
+        </a>
+      </p>
+
       <h2>Privacy Policy</h2>
 
       <p>Last Updated: September 19th, 2022</p>
