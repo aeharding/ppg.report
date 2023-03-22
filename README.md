@@ -57,7 +57,7 @@ Using a reverse proxy such as Nginx, configure the following:
   - GET `/api/timezone` ➡ `http://api.timezonedb.com/v2.1/get-time-zone` (You will need to attach an API key. Note: This API is only used as a fallback for when the `/api/weather` endpoint fails.)
   - GET `/api/aviationweather` ➡ `https://www.aviationweather.gov/adds/dataserver_current/httpparam`
   - GET `/api/weather/{proxy+}` ➡ `https://api.weather.gov/{proxy}` Greedy path capturing, forwards to api.weather.gov.
-  - GET `/api/pqs` ➡ `https://nationalmap.gov/epqs/pqs.php` Get United States altitude information for a given geolocation.
+  - GET `/api/pqs` ➡ `https://epqs.nationalmap.gov/v1/json` Get United States altitude information for a given geolocation.
   - GET `/api/googleelevation` ➡ `https://maps.googleapis.com/maps/api/elevation/json` Get global altitude information for a given geolocation (backup API).
   - GET `/api/tfr` ➡ self-hosted [tfr-scraper](https://github.com/aeharding/tfr-scraper)
   - GET `/api/aviationalerts` ➡ self-hosted [aviation-wx](https://github.com/aeharding/aviation-wx)
