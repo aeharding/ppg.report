@@ -3,7 +3,7 @@ import axios from "axios";
 /**
  * Get elevation, in meters
  *
- * https://nationalmap.gov/epqs/pqs.php?x=-111.051%20&y=45.685&units=Feet&output=json
+ * https://epqs.nationalmap.gov/v1/json?x=-111.051%20&y=45.685&units=Feet
  */
 export async function getElevation({
   lat,
@@ -17,15 +17,13 @@ export async function getElevation({
       x: lon,
       y: lat,
       units: "Meters",
-      output: "json",
     },
   });
 
-  const potentialElevation =
-    data?.USGS_Elevation_Point_Query_Service?.Elevation_Query?.Elevation;
+  const potentialElevation = +data?.value;
 
   // Failed - outside of the USA or some other reason. Use Google.
-  if (typeof potentialElevation === "number" && potentialElevation !== -1000000)
+  if (typeof potentialElevation === "number" && !isNaN(potentialElevation))
     return potentialElevation;
 
   throw new Error("Invalid elevation returned");
