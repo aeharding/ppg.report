@@ -5,7 +5,8 @@ import { metersToFeet } from "../../cells/Altitude";
 
 export default function PointInfo() {
   const rap = useAppSelector((state) => state.rap.rap);
-  const { lat, lon } = useParams();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
   const elevation = useAppSelector((state) => state.weather.elevation);
   if (!lat || !lon) throw new Error("lat or lon not defined!");
   if (!rap || typeof rap !== "object") throw new Error("RAP not defined");

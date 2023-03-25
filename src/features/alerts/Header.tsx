@@ -223,7 +223,8 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
 }
 
 function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
-  const { lat, lon } = useParams<"lat" | "lon">();
+  const { location } = useParams<"location">();
+  const [lat, lon] = location!.split(",");
 
   // https://www.aviationweather.gov/cwamis/help?page=inter
   function buildUrl() {

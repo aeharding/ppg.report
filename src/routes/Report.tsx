@@ -18,7 +18,8 @@ import { differenceInHours, isPast } from "date-fns";
 import { getTFRs, clear as clearFaa } from "../features/faa/faaSlice";
 
 export default function Report() {
-  const { lat, lon } = useParams<"lat" | "lon">();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
 
   if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return <NotFound />;
 

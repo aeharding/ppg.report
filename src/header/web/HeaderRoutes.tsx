@@ -4,7 +4,7 @@ import ReportHeader from "./ReportHeader";
 export default function HeaderRoutes() {
   return (
     <Routes>
-      <Route path="/:lat,:lon" element={<ReportHeader />} />
+      <Route path="/:location" element={<ReportHeader />} />
     </Routes>
   );
 }

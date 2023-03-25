@@ -7,7 +7,8 @@ import { useParams } from "react-router-dom";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 
 export default function MyPosition() {
-  const { lat, lon } = useParams();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
 
   if (!lat || !lon) throw new Error("lat or lon not defined!");
   const myPosition: LatLngExpression = [+lat, +lon];

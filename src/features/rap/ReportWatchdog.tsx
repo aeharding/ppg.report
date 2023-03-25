@@ -15,7 +15,8 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
   const dispatch = useAppDispatch();
   const visibility = usePageVisibility();
   const [lastUpdated, setLastUpdated] = useState(Date.now());
-  const { lat, lon } = useParams();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
   if (!lat || !lon) throw new Error("lat or lon not defined!");
 
   useInterval(() => {
