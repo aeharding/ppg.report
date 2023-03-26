@@ -50,7 +50,8 @@ const SunsetSunrise = styled.div`
 `;
 
 export default function ReportHeader() {
-  const { lat, lon } = useParams<"lat" | "lon">();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
 
   if (!lat || !lon || isNaN(+lat) || isNaN(+lon)) return null;
 

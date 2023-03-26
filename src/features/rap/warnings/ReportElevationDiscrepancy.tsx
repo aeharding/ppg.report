@@ -41,7 +41,8 @@ const CloseButton = styled.button`
 
 export default function ReportElevationDiscrepancy() {
   const rap = useAppSelector((state) => state.rap.rap);
-  const { lat, lon } = useParams();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
   const storageKey = `elevation-alert-closed-${lat},${lon}`;
   const elevation = useAppSelector((state) => state.weather.elevation);
   const [closed, setClosed] = useState(!!localStorage.getItem(storageKey));

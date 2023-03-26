@@ -12,7 +12,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route
-        path="/:lat,:lon"
+        path="/:location"
         element={
           <Suspense fallback={<Loading />}>
             <Report />

@@ -33,7 +33,8 @@ interface SkyCoverProps {
 }
 
 export default function SkyCover({ date, weather }: SkyCoverProps) {
-  const { lat, lon } = useParams();
+  const { location } = useParams<"location">();
+  const [lat, lon] = (location ?? "").split(",");
   const [isDay] = useState(
     lat && lon
       ? SunCalc.getPosition(new Date(date), +lat, +lon).altitude > 0
