@@ -64,6 +64,12 @@ async function _getRap(
       airport: getTrimmedCoordinates(+lat, +lon),
       ...generateStartParams(hours, start),
     },
+    paramsSerializer: {
+      // For some reason encoding spaces stopped working sometime ~ April 2023
+      // So instead, don't encode, just pass through (this is a bit dangerous though
+      // if we pass anything with & symbol for example)
+      encode: (params) => params,
+    },
   });
 
   const report = parse(asciiReports);
