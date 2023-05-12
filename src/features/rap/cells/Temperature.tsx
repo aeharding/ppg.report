@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import chroma from "chroma-js";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { Aside } from "./Altitude";

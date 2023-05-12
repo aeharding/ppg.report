@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";

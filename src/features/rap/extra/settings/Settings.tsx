@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { hiddenAlertsSelector } from "../../../alerts/alertsSlice";
 import {

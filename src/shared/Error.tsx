@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { FunctionComponent } from "react";
 
 const Container = styled.div`

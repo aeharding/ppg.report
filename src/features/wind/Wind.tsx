@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { ReactComponent as WindSvg } from "./wind.svg";
 
 const WindContainer = styled.div`

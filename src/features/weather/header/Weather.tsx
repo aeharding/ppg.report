@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   faCloudHail,
@@ -20,7 +20,7 @@ import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { WeatherObservation, WeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 
 const thunderAnimate = keyframes`

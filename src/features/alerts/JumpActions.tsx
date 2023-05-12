@@ -1,5 +1,5 @@
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import throttle from "lodash/throttle";

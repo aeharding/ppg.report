@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { useAppSelector } from "../../hooks";
 import Location from "./Location";
 

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 import { ReactComponent as Email } from "./email.svg";
 import pJson from "../../package.json";

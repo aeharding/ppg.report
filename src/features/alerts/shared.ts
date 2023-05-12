@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import Linkify from "linkify-react";
 import { MapContainer } from "react-leaflet";
 

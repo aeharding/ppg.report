@@ -1,5 +1,5 @@
 import { keyframes } from "@emotion/css";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { faHandPointUp, faBolt } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";

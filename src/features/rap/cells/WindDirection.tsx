@@ -1,5 +1,5 @@
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import WindIndicator from "../WindIndicator";

@@ -1,11 +1,11 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import Footer from "./Footer";
 import WebHeader from "./header/web/Header";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import AppHeader from "./header/app/Header";
 import Routes from "./Routes";
 import HeaderRoutes from "./header/web/HeaderRoutes";
-import { css, Global } from "@emotion/react/macro";
+import { css, Global } from "@emotion/react";
 import { writeVariables } from "./theme";
 import { isInstalled } from "./helpers/device";
 import WindowInstallEventSetup from "./features/install/WindowInstallEventSetup";

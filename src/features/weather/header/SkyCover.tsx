@@ -1,5 +1,5 @@
 import SunCalc from "suncalc";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import {
   faClouds,
   faCloudsSun,

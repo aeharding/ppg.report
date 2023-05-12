@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { TileLayer } from "react-leaflet";
 
 // eslint-disable-next-line

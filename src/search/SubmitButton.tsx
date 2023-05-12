@@ -5,9 +5,9 @@ import Location, { Button } from "../features/location/Location";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/pro-regular-svg-icons";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import Spinner from "../shared/Spinner";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 
 const transitionName = "submit-loading";
 

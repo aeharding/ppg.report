@@ -3,7 +3,7 @@ import { capitalizeFirstLetter } from "../../../helpers/string";
 import { formatSeverity } from "../../../helpers/aviationAlerts";
 import React from "react";
 import omit from "lodash/omit";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";

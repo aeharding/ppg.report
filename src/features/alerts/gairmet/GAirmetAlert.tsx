@@ -18,11 +18,11 @@ import { useAppSelector } from "../../../hooks";
 import { findRelatedAlerts } from "../../../helpers/weather";
 import DescriptionText from "./Description";
 import { useState } from "react";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { formatInTimeZone } from "date-fns-tz";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { timeZoneSelector } from "../../weather/weatherSlice";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import MyPosition from "../../../map/MyPosition";
 

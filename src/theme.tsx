@@ -1,4 +1,4 @@
-import { css, SerializedStyles } from "@emotion/react/macro";
+import { css, SerializedStyles } from "@emotion/react";
 
 export function writeVariables(): SerializedStyles {
   return css`

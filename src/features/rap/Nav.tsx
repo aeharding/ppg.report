@@ -1,5 +1,5 @@
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { detect } from "detect-browser";
 import React from "react";
 import { isTouchDevice } from "../../helpers/device";

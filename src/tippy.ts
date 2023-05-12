@@ -1,4 +1,4 @@
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 
 export const tippyStyles = css`
   .tippy-box {

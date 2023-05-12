@@ -12,7 +12,7 @@ import {
   TurbulenceIntensity,
   IcingIntensity,
 } from "metar-taf-parser";
-import { css, SerializedStyles } from "@emotion/react/macro";
+import { css, SerializedStyles } from "@emotion/react";
 import { outputP3ColorFromRGB } from "./colors";
 
 export enum FlightCategory {

@@ -1,5 +1,5 @@
-import { css, keyframes } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css, keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { useAppSelector } from "../../hooks";

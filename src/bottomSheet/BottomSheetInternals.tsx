@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { BottomSheet as SpringBottomSheet } from "react-spring-bottom-sheet";
 import { faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

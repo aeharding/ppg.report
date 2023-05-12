@@ -1,6 +1,6 @@
-import styled from "@emotion/styled/macro";
-import { keyframes } from "@emotion/css/macro";
-import { css } from "@emotion/react/macro";
+import styled from "@emotion/styled";
+import { keyframes } from "@emotion/css";
+import { css } from "@emotion/react";
 
 const Container = styled.div<{ center: boolean }>`
   position: relative;
