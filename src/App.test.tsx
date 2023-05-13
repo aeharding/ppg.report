@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import App from "./App";
 import "@testing-library/jest-dom";
@@ -13,7 +13,7 @@ test("renders learn react link", async () => {
     </Provider>
   );
 
-  await waitFor(() =>
-    expect(screen).toHaveTextContent(/Weather report for Paramotor Pilots/i)
-  );
+  expect(
+    await screen.findByText("Weather report for Paramotor Pilots")
+  ).toBeVisible();
 });
