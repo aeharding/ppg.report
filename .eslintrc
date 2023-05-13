@@ -1,5 +1,6 @@
 {
   "extends": ["react-app", "react-app/jest"],
+  "plugins": ["testing-library"],
   "rules": {
     // use @emotion/styled and @emotion/react without macro
     //

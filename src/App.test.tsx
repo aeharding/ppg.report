@@ -4,7 +4,7 @@ import App from "./App";
 import "@testing-library/jest-dom";
 import { createStore } from "./store";
 
-test("renders learn react link", () => {
+test("renders learn react link", async () => {
   const store = createStore();
 
   render(
@@ -13,7 +13,7 @@ test("renders learn react link", () => {
     </Provider>
   );
 
-  waitFor(() =>
+  await waitFor(() =>
     expect(screen).toHaveTextContent(/Weather report for Paramotor Pilots/i)
   );
 });
