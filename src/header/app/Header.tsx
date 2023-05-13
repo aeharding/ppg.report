@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { FIXED_HEADER_MEDIAQUERY } from "../../helpers/device";
 import HeaderRoutes from "./HeaderRoutes";

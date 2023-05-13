@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import { LatLngExpression } from "leaflet";
 import { Circle } from "react-leaflet";
 import { useParams } from "react-router-dom";

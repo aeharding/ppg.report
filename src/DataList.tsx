@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 
 export const DataList = styled.div`
   display: flex;

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
@@ -15,7 +15,7 @@ import {
 } from "../../alerts/alertsSlice";
 import { isAlertDangerous } from "../../../helpers/weather";
 import { HeaderType } from "../WeatherHeader";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";

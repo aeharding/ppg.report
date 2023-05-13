@@ -1,11 +1,11 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { detect } from "detect-browser";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Hour from "./Hour";
 import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import throttle from "lodash/throttle";
 import { Rap } from "gsl-parser";
 import ReportElevationDiscrepancy, {

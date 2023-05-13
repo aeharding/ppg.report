@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
 import { isInstalled } from "./helpers/device";

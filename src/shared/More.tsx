@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import React, { useState } from "react";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 

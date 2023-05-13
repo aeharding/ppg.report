@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import SunCalc from "suncalc";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
 import formatInTimeZone from "date-fns-tz/formatInTimeZone";
 import { useAppSelector } from "../../hooks";

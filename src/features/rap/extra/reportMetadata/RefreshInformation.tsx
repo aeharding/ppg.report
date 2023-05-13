@@ -3,7 +3,7 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import { useAppSelector } from "../../../../hooks";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { DataListItem } from "../../../../DataList";
 import capitalize from "lodash/capitalize";
 

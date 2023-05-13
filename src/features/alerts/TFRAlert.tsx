@@ -4,7 +4,7 @@ import BaseLayer from "../../map/BaseLayer";
 import { linkifyOptions } from "../rap/extra/Discussion";
 import { undoFixedWidthText } from "../../helpers/weather";
 import OSMAttribution from "../../map/OSMAttribution";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import MapController from "./MapController";
 import { TFRFeature } from "../../services/faa";
 import {

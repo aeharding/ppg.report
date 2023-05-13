@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { useAppSelector } from "../../../hooks";
 import { AltitudeType } from "../../../features/user/userSlice";
 

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled/macro";
-import { css } from "@emotion/react/macro";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { Aside } from "./Altitude";
 import chroma from "chroma-js";
 import { shearIndicator } from "./WindDirection";

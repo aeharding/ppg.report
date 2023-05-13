@@ -1,7 +1,6 @@
 {
   "name": "ppg.report",
   "version": "3.8.2",
-  "proxy": "https://ppg.report",
   "license": "MIT",
   "private": true,
   "packageManager": "yarn@1.22.11",
@@ -18,10 +17,10 @@
     "@fortawesome/pro-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@reduxjs/toolkit": "^1.7.2",
-    "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^14.1.1",
     "@tippyjs/react": "^4.2.6",
+    "@vitejs/plugin-react": "^4.0.0",
     "axios": "^1.3.4",
     "axios-retry": "^3.2.5",
     "chroma-js": "^2.4.2",
@@ -45,7 +44,6 @@
     "react-page-visibility": "^7.0.0",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.1",
     "react-spring-bottom-sheet": "^3.4.1",
     "react-string-replace": "^1.1.0",
     "react-transition-group": "^4.4.2",
@@ -64,22 +62,17 @@
     "workbox-streams": "^6.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!metar-taf-parser)/\"",
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "vitest",
     "deploy": "aws s3 sync --exclude index.html build/ s3://ppg.report && aws s3 sync --include index.html build/ s3://ppg.report",
     "deploy-beta": "aws s3 sync --exclude index.html build/ s3://beta.ppg.report && aws s3 sync --include index.html build/ s3://beta.ppg.report",
-    "analyze": "NODE_OPTIONS=--no-experimental-fetch source-map-explorer 'build/static/js/*.js'",
+    "analyze": "NODE_OPTIONS=--no-experimental-fetch source-map-explorer 'build/assets/*.js'",
     "format": "prettier --check src/",
     "lint": "eslint --max-warnings=0 src/",
     "splash": "pwa-asset-generator --type png --index public/index.html --splash-only --path-override '%PUBLIC_URL%/splash' public/splash.png ./public/splash --padding '30vh 20vw 50vh' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html",
     "icon": "pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --favicon --opaque false --path-override '%PUBLIC_URL%' public/favicon-rounded.html ./public && pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --path-override '' public/favicon.html ./public && prettier -w public/index.html"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -94,6 +87,8 @@
     ]
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.11.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@types/chroma-js": "^2.1.3",
     "@types/leaflet": "^1.7.11",
     "@types/lodash": "^4.14.178",
@@ -105,10 +100,18 @@
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/suncalc": "^1.8.1",
     "eslint": "^8.14.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-testing-library": "^5.11.0",
+    "happy-dom": "^9.17.0",
     "prettier": "^2.5.1",
     "pwa-asset-generator": "^6.0.6",
     "source-map-explorer": "^2.5.2",
-    "ts-jest": "^29.0.5"
+    "vite": "^4.3.5",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-pwa": "^0.14.7",
+    "vite-plugin-rewrite-all": "^1.0.1",
+    "vite-plugin-svgr": "^3.2.0",
+    "vitest": "^0.31.0"
   },
   "resolutions": {
     "autoprefixer": "10.4.5"

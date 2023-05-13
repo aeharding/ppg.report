@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { formatInTimeZone } from "date-fns-tz";
 import React from "react";
 import { useAppSelector } from "../../hooks";

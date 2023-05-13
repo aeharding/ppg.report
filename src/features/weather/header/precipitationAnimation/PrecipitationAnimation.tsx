@@ -1,5 +1,5 @@
-import { keyframes } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
 import snow1 from "./snow1.png";
 import snow2 from "./snow2.png";
 import snow3 from "./snow3.png";

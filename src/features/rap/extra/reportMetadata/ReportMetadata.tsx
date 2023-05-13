@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { latLng, LatLngExpression, divIcon } from "leaflet";
 import { useEffect, useRef } from "react";
 import {
@@ -19,7 +19,7 @@ import Legend from "./Legend";
 import RefreshInformation from "./RefreshInformation";
 import { DataList } from "../../../../DataList";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import OSMAttribution from "../../../../map/OSMAttribution";
 import MyPosition from "../../../../map/MyPosition";
 

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { isInApp, isThirdPartyIosBrowser } from "../../helpers/device";
 import { ReactComponent as ShareIcon } from "./share.svg";
 import { ReactComponent as AddIcon } from "./add.svg";

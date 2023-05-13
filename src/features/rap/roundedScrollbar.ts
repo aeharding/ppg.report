@@ -1,4 +1,4 @@
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 
 // Source https://gist.github.com/fathyar/b65080597e7563eac56e57983d6f1a53
 

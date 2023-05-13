@@ -1,9 +1,9 @@
 import Wind from "../features/wind/Wind";
 import Search from "../search/Search";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import Locations from "../features/user/Locations";
 import { useAppSelector } from "../hooks";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 
 const Container = styled.div`
   width: 100%;

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { faClock } from "@fortawesome/pro-light-svg-icons";
 import { differenceInHours } from "date-fns";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";

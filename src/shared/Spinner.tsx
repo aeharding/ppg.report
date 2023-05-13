@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 
 export default styled.div`
   color: rgba(255, 255, 255, 0.5);

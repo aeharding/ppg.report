@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
@@ -7,7 +7,7 @@ import {
   faLongArrowRight,
   IconDefinition,
 } from "@fortawesome/pro-light-svg-icons";
-import { css } from "@emotion/react/macro";
+import { css } from "@emotion/react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { faSearch } from "@fortawesome/pro-regular-svg-icons";
 import BottomSheet from "../../../bottomSheet/BottomSheet";

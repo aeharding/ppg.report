@@ -1,5 +1,5 @@
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { outputP3ColorFromLab } from "../../helpers/colors";

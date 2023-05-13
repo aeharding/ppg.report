@@ -1,4 +1,4 @@
-import styled from "@emotion/styled/macro";
+import styled from "@emotion/styled";
 import { ReactComponent as Icon } from "../icon.svg";
 
 const LogoContainer = styled.span`

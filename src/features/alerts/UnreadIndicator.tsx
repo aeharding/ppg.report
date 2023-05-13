@@ -1,5 +1,5 @@
-import { css } from "@emotion/react/macro";
-import styled from "@emotion/styled/macro";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { isAlertRead } from "../../helpers/alert";
 import { useAppSelector } from "../../hooks";
 import { OnOff } from "../user/userSlice";
