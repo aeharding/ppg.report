@@ -12,6 +12,7 @@ import ReverseLocation from "../../features/geocode/ReverseLocation";
 import formatInTimeZone from "date-fns-tz/formatInTimeZone";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../../features/weather/weatherSlice";
+import { getTimeFormatString } from "../../features/weather/aviation/Forecast";
 
 const Icon = styled(FontAwesomeIcon)`
   && {
@@ -43,6 +44,7 @@ interface ReportHeaderProps {
 }
 
 function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const timeZone = useAppSelector(timeZoneSelector);
 
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
@@ -63,12 +65,20 @@ function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
       <SunLine>
         <span>
           <Icon icon={faSunrise} />{" "}
-          {formatInTimeZone(times.sunrise, timeZone, "h:mmaaaaa")}
+          {formatInTimeZone(
+            times.sunrise,
+            timeZone,
+            getTimeFormatString(timeFormat, true)
+          )}
         </span>
         &nbsp;&nbsp;
         <span>
           <Icon icon={faSunset} />{" "}
-          {formatInTimeZone(times.sunsetStart, timeZone, "h:mmaaaaa")}
+          {formatInTimeZone(
+            times.sunsetStart,
+            timeZone,
+            getTimeFormatString(timeFormat, true)
+          )}
         </span>
       </SunLine>
     </>

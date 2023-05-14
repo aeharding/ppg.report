@@ -16,6 +16,8 @@ import {
   setTemperatureUnit,
   DistanceUnit,
   setDistanceUnit,
+  TimeFormat,
+  setTimeFormat,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
@@ -39,6 +41,7 @@ export default function Settings() {
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
@@ -75,6 +78,12 @@ export default function Settings() {
         options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
         value={distanceUnit}
         onChange={(value) => dispatch(setDistanceUnit(value))}
+      />{" "}
+      <Radio
+        label="Time format"
+        options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
+        value={timeFormat}
+        onChange={(value) => dispatch(setTimeFormat(value))}
       />
       <Radio
         label="Swipe Inertia"

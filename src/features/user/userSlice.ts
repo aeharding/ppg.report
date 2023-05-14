@@ -38,6 +38,11 @@ export enum DistanceUnit {
   Kilometers = "km",
 }
 
+export enum TimeFormat {
+  TwentyFour = "24-hour",
+  Twelve = "12-hour",
+}
+
 export function toggle(altitude: AltitudeType): AltitudeType {
   switch (altitude) {
     case AltitudeType.AGL:
@@ -54,6 +59,7 @@ interface UserState {
   speedUnit: SpeedUnit;
   temperatureUnit: TemperatureUnit;
   distanceUnit: DistanceUnit;
+  timeFormat: TimeFormat;
   readAlerts: Record<string, string>;
   hiddenAlerts: Record<string, true>;
   swipeInertia: OnOff;
@@ -68,6 +74,7 @@ const initialState: UserState = {
   speedUnit: storage.getSpeedUnit(),
   temperatureUnit: storage.getTemperatureUnit(),
   distanceUnit: storage.getDistanceUnit(),
+  timeFormat: storage.getTimeFormat(),
   readAlerts: storage.getReadAlerts(),
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
@@ -101,6 +108,9 @@ export const userReducer = createSlice({
     },
     updateDistanceUnit(state, action: PayloadAction<DistanceUnit>) {
       state.distanceUnit = action.payload;
+    },
+    updateTimeFormat(state, action: PayloadAction<TimeFormat>) {
+      state.timeFormat = action.payload;
     },
     readAlert(state, action: PayloadAction<Alert>) {
       state.readAlerts = storage.setReadAlert(action.payload);
@@ -175,6 +185,14 @@ export const setDistanceUnit =
     dispatch(userReducer.actions.updateDistanceUnit(distanceUnit));
 
     storage.setDistanceUnit(getState().user.distanceUnit);
+  };
+
+export const setTimeFormat =
+  (timeFormat: TimeFormat) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateTimeFormat(timeFormat));
+
+    storage.setTimeFormat(getState().user.timeFormat);
   };
 
 export const visitedLocation =

@@ -12,6 +12,7 @@ import WeatherHeader from "../weather/WeatherHeader";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../weather/weatherSlice";
 import { zonedTimeToUtc } from "date-fns-tz";
+import { getTimeFormatString } from "../weather/aviation/Forecast";
 
 const Column = styled.div`
   position: relative;
@@ -58,6 +59,7 @@ export default function Hour({
   ...rest
 }: HourProps) {
   const timeZone = useAppSelector(timeZoneSelector);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
 
   if (!timeZone) throw new Error("Timezone not found");
 
@@ -108,7 +110,11 @@ export default function Hour({
     <Column {...rest}>
       <Header>
         <HourContainer>
-          {formatInTimeZone(new Date(rap.date), timeZone, "h:mmaaaaa")}
+          {formatInTimeZone(
+            new Date(rap.date),
+            timeZone,
+            getTimeFormatString(timeFormat, true)
+          )}
           {new Date(rap.date).getTime() >=
             zonedTimeToUtc(startOfTomorrow(), timeZone).getTime() && (
             <sup>+1</sup>

@@ -23,6 +23,7 @@ export default defineConfig(() => {
         strategies: "injectManifest",
         srcDir: "src",
         filename: "service-worker.ts",
+        registerType: "autoUpdate",
       }),
       eslint(),
     ],

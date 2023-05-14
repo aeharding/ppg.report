@@ -6,7 +6,10 @@ import { formatInTimeZone } from "date-fns-tz";
 import { IForecastContainer } from "metar-taf-parser";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
-import Forecast, { formatWithTomorrowIfNeeded } from "./Forecast";
+import Forecast, {
+  formatWithTomorrowIfNeeded,
+  getTimeFormatString,
+} from "./Forecast";
 import { TemperatureUnit } from "../../user/userSlice";
 
 const Container = styled.div`
@@ -56,6 +59,7 @@ export default function DetailedAviationReport({
 }: DetailedAviationReportProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
 
   function formatTemperature(temperatureInC: number): string {
     switch (temperatureUnit) {
@@ -75,9 +79,20 @@ export default function DetailedAviationReport({
       <Description>
         <p>
           {taf.amendment ? "Amended " : ""} TAF report from {taf.station} issued{" "}
-          {formatInTimeZone(taf.issued, timeZone, "p")} and is valid for{" "}
+          {formatInTimeZone(
+            taf.issued,
+            timeZone,
+            getTimeFormatString(timeFormat)
+          )}{" "}
+          and is valid for{" "}
           {formatDistanceStrict(taf.end, taf.start, { unit: "hour" })} starting
-          at {formatWithTomorrowIfNeeded(taf.start, timeZone, "p")}.
+          at{" "}
+          {formatWithTomorrowIfNeeded(
+            taf.start,
+            timeZone,
+            getTimeFormatString(timeFormat)
+          )}
+          .
         </p>
 
         <p>
@@ -87,7 +102,7 @@ export default function DetailedAviationReport({
               )} at ${formatWithTomorrowIfNeeded(
                 taf.maxTemperature.date,
                 timeZone,
-                "p"
+                getTimeFormatString(timeFormat)
               )}.`
             : undefined}{" "}
           {taf.minTemperature
@@ -96,7 +111,7 @@ export default function DetailedAviationReport({
               )} at ${formatWithTomorrowIfNeeded(
                 taf.minTemperature.date,
                 timeZone,
-                "p"
+                getTimeFormatString(timeFormat)
               )}.`
             : undefined}
         </p>

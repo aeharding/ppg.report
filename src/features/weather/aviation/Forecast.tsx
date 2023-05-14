@@ -29,6 +29,7 @@ import { timeZoneSelector } from "../weatherSlice";
 import Cloud from "./Cloud";
 import Wind from "./cells/Wind";
 import WindShear from "./cells/WindShear";
+import { TimeFormat } from "../../user/userSlice";
 
 const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;
@@ -109,6 +110,7 @@ export default function Forecast({ data }: ForecastProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
 
   if (!timeZone) throw new Error("timezone undefined");
 
@@ -118,7 +120,7 @@ export default function Forecast({ data }: ForecastProps) {
     data.clouds,
     data.verticalVisibility
   );
-  const periodRemark = getPeriodRemark(data, timeZone);
+  const periodRemark = getPeriodRemark(data, timeZone, timeFormat);
 
   function formatType(type: WeatherChangeType | undefined): string {
     switch (type) {
@@ -144,9 +146,20 @@ export default function Forecast({ data }: ForecastProps) {
           {data.probability && data.type !== WeatherChangeType.PROB
             ? `(${data.probability}% chance) `
             : undefined}{" "}
-          {formatWithTomorrowIfNeeded(data.start, timeZone, "p")}{" "}
+          {formatWithTomorrowIfNeeded(
+            data.start,
+            timeZone,
+            getTimeFormatString(timeFormat)
+          )}{" "}
           {data.end ? (
-            <>to {formatWithTomorrowIfNeeded(data.end, timeZone, "p")}</>
+            <>
+              to{" "}
+              {formatWithTomorrowIfNeeded(
+                data.end,
+                timeZone,
+                getTimeFormatString(timeFormat)
+              )}
+            </>
           ) : (
             ""
           )}
@@ -335,14 +348,15 @@ function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
 
 function getPeriodRemark(
   forecast: IForecast,
-  timeZone: string
+  timeZone: string,
+  timeFormat: TimeFormat
 ): string | undefined {
   switch (forecast.type) {
     case WeatherChangeType.BECMG:
       return `Conditions expected to become as follows by ${formatWithTomorrowIfNeeded(
         forecast.by,
         timeZone,
-        "p"
+        getTimeFormatString(timeFormat)
       )}.`;
     case WeatherChangeType.TEMPO:
       return "The following changes expected for less than half the time period.";
@@ -360,4 +374,16 @@ export function formatWithTomorrowIfNeeded(
       ? " tomorrow"
       : ""
   }`;
+}
+
+export function getTimeFormatString(
+  timeFormat: TimeFormat,
+  condensed = false
+): string {
+  switch (timeFormat) {
+    case TimeFormat.Twelve:
+      return condensed ? "h:mmaaaaa" : "p";
+    case TimeFormat.TwentyFour:
+      return "HH:mm";
+  }
 }

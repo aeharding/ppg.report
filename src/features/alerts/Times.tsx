@@ -10,6 +10,7 @@ import {
   getGroupedGAirmetAlertStart,
   isGAirmetAlert,
 } from "./alertsSlice";
+import { getTimeFormatString } from "../weather/aviation/Forecast";
 
 const Container = styled.div`
   display: flex;
@@ -78,6 +79,7 @@ interface TimeProps {
 
 function Time({ children, time, includeYear, noEndLabel }: TimeProps) {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
 
   if (!timeZone) throw new Error("timezone must be defined");
 
@@ -85,7 +87,9 @@ function Time({ children, time, includeYear, noEndLabel }: TimeProps) {
     <div>
       <Label>{children}</Label>
       <TimeLabel>
-        {time ? formatInTimeZone(time, timeZone, "p") : noEndLabel}
+        {time
+          ? formatInTimeZone(time, timeZone, getTimeFormatString(timeFormat))
+          : noEndLabel}
       </TimeLabel>
       {time ? (
         <div>

@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../../features/weather/weatherSlice";
 import formatInTimeZone from "date-fns-tz/formatInTimeZone";
+import { getTimeFormatString } from "../../features/weather/aviation/Forecast";
 
 const BackButton = styled.div`
   position: absolute;
@@ -64,6 +65,8 @@ interface ReportHeaderProps {
 }
 
 function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
+
   const [times] = useState(SunCalc.getTimes(new Date(), +lat, +lon));
   const timeZone = useAppSelector(timeZoneSelector);
 
@@ -78,11 +81,19 @@ function ReportHeaderValidProps({ lat, lon }: ReportHeaderProps) {
       {timeZone && (
         <SunsetSunrise>
           <div>
-            {formatInTimeZone(times.sunrise, timeZone, "h:mmaaaaa")}{" "}
+            {formatInTimeZone(
+              times.sunrise,
+              timeZone,
+              getTimeFormatString(timeFormat, true)
+            )}{" "}
             <FontAwesomeIcon icon={faSunrise} />
           </div>
           <div>
-            {formatInTimeZone(times.sunsetStart, timeZone, "h:mmaaaaa")}{" "}
+            {formatInTimeZone(
+              times.sunsetStart,
+              timeZone,
+              getTimeFormatString(timeFormat, true)
+            )}{" "}
             <FontAwesomeIcon icon={faSunset} />
           </div>
         </SunsetSunrise>
