@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../../hooks";
-import { AltitudeType } from "../../../features/user/userSlice";
+import { AltitudeType, HeightUnit } from "../../../features/user/userSlice";
 
 export const Aside = styled.aside`
   display: inline;
@@ -9,41 +9,93 @@ export const Aside = styled.aside`
 `;
 
 interface HeightProps {
-  height: number; // in meters
-  surfaceLevel: number; // surface above MSL in meters
+  heightInMeters: number; // in meters
+  surfaceLevelInMeters: number; // surface above MSL in meters
+  heightUnitLabel: string;
+  heightValueFormatter: (heightInMeters: number) => number;
 }
 
-export default function Altitude({ height, surfaceLevel }: HeightProps) {
+export default function Altitude({
+  heightInMeters,
+  surfaceLevelInMeters,
+}: HeightProps) {
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
+
+  const heightUnitLabel = heightUnitFormatter(heightUnit);
+
+  const _heightValueFormatter = (heightInMeters: number) =>
+    heightValueFormatter(heightInMeters, heightUnit);
 
   switch (altitudeType) {
     case AltitudeType.AGL:
-      return AltitudeAGL({ height, surfaceLevel });
+      return AltitudeAGL({
+        heightInMeters: heightInMeters,
+        surfaceLevelInMeters,
+        heightUnitLabel,
+        heightValueFormatter: _heightValueFormatter,
+      });
     case AltitudeType.MSL:
-      return AltitudeMSL({ height });
+      return AltitudeMSL({
+        heightInMeters,
+        heightUnitLabel,
+        heightValueFormatter: _heightValueFormatter,
+      });
   }
 }
 
-function AltitudeAGL({ height, surfaceLevel }: HeightProps) {
-  const agl = height - surfaceLevel;
+function AltitudeAGL({
+  heightInMeters,
+  surfaceLevelInMeters,
+  heightUnitLabel,
+  heightValueFormatter,
+}: HeightProps) {
+  const agl = heightInMeters - surfaceLevelInMeters;
 
   if (!agl) return <Aside>Surface</Aside>;
 
   return (
     <>
-      {Math.round(metersToFeet(agl)).toLocaleString()} <Aside>ft</Aside>
+      {Math.round(heightValueFormatter(agl)).toLocaleString()}{" "}
+      <Aside>{heightUnitLabel}</Aside>
     </>
   );
 }
 
-function AltitudeMSL({ height }: Pick<HeightProps, "height">) {
+function AltitudeMSL({
+  heightInMeters,
+  heightUnitLabel,
+  heightValueFormatter,
+}: Omit<HeightProps, "surfaceLevelInMeters">) {
   return (
     <>
-      {Math.round(metersToFeet(height)).toLocaleString()} <Aside>ft</Aside>
+      {Math.round(heightValueFormatter(heightInMeters)).toLocaleString()}{" "}
+      <Aside>{heightUnitLabel}</Aside>
     </>
   );
 }
 
 export function metersToFeet(meters: number): number {
   return meters * 3.28084;
+}
+
+export function heightUnitFormatter(heightUnit: HeightUnit): string {
+  switch (heightUnit) {
+    case HeightUnit.Feet:
+      return "ft";
+    case HeightUnit.Meters:
+      return "m";
+  }
+}
+
+export function heightValueFormatter(
+  heightInMeters: number,
+  heightUnit: HeightUnit
+): number {
+  switch (heightUnit) {
+    case HeightUnit.Feet:
+      return metersToFeet(heightInMeters);
+    case HeightUnit.Meters:
+      return heightInMeters;
+  }
 }

@@ -9,6 +9,9 @@ import { outputP3ColorFromRGBA } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
+import { useAppSelector } from "../../../hooks";
+import { SpeedUnit } from "../../user/userSlice";
+import { speedUnitFormatter } from "../../rap/cells/WindSpeed";
 
 // When a gust is considered worth displaying
 const GUST_DELTA_THRESHOLD = 2;
@@ -41,6 +44,7 @@ interface WindProps {
 }
 
 export default function Wind({ headerType, date, weather }: WindProps) {
+  const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const wind = useMemo(
     () =>
       typeof weather === "object"
@@ -57,18 +61,22 @@ export default function Wind({ headerType, date, weather }: WindProps) {
   const speed = Math.round(toMph(wind.speed.value));
   const gust = Math.round(toMph(wind.gust.value));
 
+  const speedUnitLabel = speedUnitFormatter(speedUnit);
+  const speedFormatted = Math.round(formatSpeed(wind.speed.value, speedUnit));
+  const gustFormatted = Math.round(formatSpeed(wind.gust.value, speedUnit));
+
   const body =
     gust - speed < GUST_DELTA_THRESHOLD ? (
-      <>{speed}</>
+      <>{speedFormatted}</>
     ) : (
       <>
-        {speed}G{gust}
+        {speedFormatted}G{gustFormatted}
       </>
     );
 
   return (
     <Tippy
-      content={`Wind ${speed}mph gusting to ${gust}mph`}
+      content={`Wind ${speedFormatted}${speedUnitLabel} gusting to ${gustFormatted}${speedUnitLabel}`}
       placement="bottom"
     >
       <div>
@@ -98,4 +106,17 @@ function toMph(speed: number): number {
  */
 function getCompositeWindValue(speed: number, gust: number): number {
   return Math.max((gust - speed) * 2.5, speed, gust);
+}
+
+export function formatSpeed(speedInKph: number, speedUnit: SpeedUnit): number {
+  switch (speedUnit) {
+    case SpeedUnit.KPH:
+      return speedInKph;
+    case SpeedUnit.MPH:
+      return speedInKph * 0.621371;
+    case SpeedUnit.Knots:
+      return speedInKph * 0.539957;
+    case SpeedUnit.mps:
+      return speedInKph * 0.277778;
+  }
 }

@@ -125,20 +125,14 @@ export function formatIntensity(intensity: Intensity | undefined): string {
   }
 }
 
-export function formatWind(speed: number, unit: SpeedUnit): string {
-  const mph = convertSpeedToMph(speed, unit);
-
-  return `${Math.round(mph)} mph`;
-}
-
-function convertSpeedToMph(speed: number, unit: SpeedUnit): number {
+export function convertSpeedToKph(speed: number, unit: SpeedUnit): number {
   switch (unit) {
     case SpeedUnit.KilometersPerHour:
-      return speed * 0.621371;
+      return speed;
     case SpeedUnit.Knot:
-      return speed * 1.15078;
+      return speed * 1.852;
     case SpeedUnit.MetersPerSecond:
-      return speed * 2.23694;
+      return speed * 3.6;
   }
 }
 

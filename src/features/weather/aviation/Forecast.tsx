@@ -20,7 +20,6 @@ import {
   formatPhenomenon,
   formatTurbulenceIntensity,
   formatVisibility,
-  formatWind,
   getFlightCategory,
   getFlightCategoryCssColor,
 } from "../../../helpers/taf";
@@ -28,6 +27,7 @@ import { useAppSelector } from "../../../hooks";
 import WindIndicator from "../../rap/WindIndicator";
 import { timeZoneSelector } from "../weatherSlice";
 import Cloud from "./Cloud";
+import Wind from "./cells/Wind";
 
 const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;
@@ -169,27 +169,7 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Wind</td>
               <td>
-                {data.wind.speed && data.wind.direction ? (
-                  <>
-                    {data.wind.degrees != null ? (
-                      <>
-                        {data.wind.degrees}{" "}
-                        <WindIndicator direction={data.wind.degrees} />
-                      </>
-                    ) : (
-                      "Variable"
-                    )}{" "}
-                    at {formatWind(data.wind.speed, data.wind.unit)}{" "}
-                  </>
-                ) : (
-                  <>Calm</>
-                )}{" "}
-                {data.wind.gust != null && (
-                  <>
-                    <br />
-                    Gusting to {formatWind(data.wind.gust, data.wind.unit)}
-                  </>
-                )}
+                <Wind wind={data.wind} />
               </td>
             </tr>
           )}

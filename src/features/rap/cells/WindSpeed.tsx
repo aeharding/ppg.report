@@ -5,6 +5,8 @@ import chroma from "chroma-js";
 import { shearIndicator } from "./WindDirection";
 import { outputP3ColorFromLab } from "../../../helpers/colors";
 import { useMemo } from "react";
+import { useAppSelector } from "../../../hooks";
+import { SpeedUnit } from "../../user/userSlice";
 
 const colorScale = chroma
   .scale([
@@ -43,16 +45,46 @@ interface WindSpeedProps {
 }
 
 export default function WindSpeed({ curr, prev }: WindSpeedProps) {
+  const speedUnit = useAppSelector((state) => state.user.speedUnit);
+
   const content = useMemo(() => {
+    const formattedWindSpeed = (() => {
+      switch (speedUnit) {
+        case SpeedUnit.Knots:
+          return curr;
+        case SpeedUnit.MPH:
+          return curr * 1.15078;
+        case SpeedUnit.KPH:
+          return curr * 1.852;
+        case SpeedUnit.mps:
+          return curr * 0.514444;
+      }
+    })();
+
+    const speedUnitLabel = speedUnitFormatter(speedUnit);
+
     return (
       <WindSpeedContainer
         speed={curr}
         shear={Math.abs(curr - (prev === undefined ? curr : prev)) > 8}
       >
-        {Math.round(curr * 1.15078)} <Aside>mph</Aside>
+        {Math.round(formattedWindSpeed)} <Aside>{speedUnitLabel}</Aside>
       </WindSpeedContainer>
     );
-  }, [curr, prev]);
+  }, [curr, prev, speedUnit]);
 
   return content;
+}
+
+export function speedUnitFormatter(speedUnit: SpeedUnit): string {
+  switch (speedUnit) {
+    case SpeedUnit.KPH:
+      return "km/h";
+    case SpeedUnit.MPH:
+      return "mph";
+    case SpeedUnit.Knots:
+      return "kt";
+    case SpeedUnit.mps:
+      return "m/s";
+  }
 }
