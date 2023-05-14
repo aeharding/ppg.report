@@ -14,6 +14,8 @@ import {
   setHeightUnit,
   setSpeedUnit,
   setTemperatureUnit,
+  DistanceUnit,
+  setDistanceUnit,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
@@ -35,6 +37,7 @@ export default function Settings() {
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
+  const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
@@ -66,6 +69,12 @@ export default function Settings() {
         options={[TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius]}
         value={temperatureUnit}
         onChange={(value) => dispatch(setTemperatureUnit(value))}
+      />
+      <Radio
+        label="Distance"
+        options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
+        value={distanceUnit}
+        onChange={(value) => dispatch(setDistanceUnit(value))}
       />
       <Radio
         label="Swipe Inertia"

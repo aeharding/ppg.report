@@ -7,6 +7,7 @@ import { IForecastContainer } from "metar-taf-parser";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
 import Forecast, { formatWithTomorrowIfNeeded } from "./Forecast";
+import { TemperatureUnit } from "../../user/userSlice";
 
 const Container = styled.div`
   overflow: hidden;
@@ -54,6 +55,16 @@ export default function DetailedAviationReport({
   taf,
 }: DetailedAviationReportProps) {
   const timeZone = useAppSelector(timeZoneSelector);
+  const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+
+  function formatTemperature(temperatureInC: number): string {
+    switch (temperatureUnit) {
+      case TemperatureUnit.Celsius:
+        return `${temperatureInC}℃`;
+      case TemperatureUnit.Fahrenheit:
+        return `${cToF(temperatureInC)}℉`;
+    }
+  }
 
   if (!timeZone) throw new Error("timezone undefined");
 
@@ -71,18 +82,18 @@ export default function DetailedAviationReport({
 
         <p>
           {taf.maxTemperature
-            ? `High of ${cToF(
+            ? `High of ${formatTemperature(
                 taf.maxTemperature.temperature
-              )}℉ at ${formatWithTomorrowIfNeeded(
+              )} at ${formatWithTomorrowIfNeeded(
                 taf.maxTemperature.date,
                 timeZone,
                 "p"
               )}.`
             : undefined}{" "}
           {taf.minTemperature
-            ? `Low of ${cToF(
+            ? `Low of ${formatTemperature(
                 taf.minTemperature.temperature
-              )}℉ at ${formatWithTomorrowIfNeeded(
+              )} at ${formatWithTomorrowIfNeeded(
                 taf.minTemperature.date,
                 timeZone,
                 "p"

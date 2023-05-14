@@ -4,9 +4,7 @@ import { useAppSelector } from "../../../../hooks";
 import {
   heightUnitFormatter,
   heightValueFormatter,
-  metersToFeet,
 } from "../../cells/Altitude";
-import { HeightUnit } from "../../../user/userSlice";
 
 export default function PointInfo() {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);

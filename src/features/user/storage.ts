@@ -4,6 +4,7 @@ import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
 import {
   AltitudeType,
+  DistanceUnit,
   HeightUnit,
   OnOff,
   SpeedUnit,
@@ -23,6 +24,7 @@ const ALTITUDE_STORAGE_KEY = "user-altitude";
 const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
 const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
 const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
+const DISTANCE_UNIT_STORAGE_KEY = "user-distance-unit";
 const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const READ_ALERTS = "read-alerts";
 const HIDDEN_ALERTS = "hidden-alerts";
@@ -165,6 +167,23 @@ export function getTemperatureUnit(): TemperatureUnit {
 
 export function setTemperatureUnit(temperatureUnit: TemperatureUnit): void {
   localStorage.setItem(TEMPERATURE_UNIT_STORAGE_KEY, temperatureUnit);
+}
+
+export function getDistanceUnit(): DistanceUnit {
+  const savedValue = localStorage.getItem(DISTANCE_UNIT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== DistanceUnit.Kilometers &&
+      savedValue !== DistanceUnit.Miles)
+  )
+    return DistanceUnit.Miles;
+
+  return savedValue;
+}
+
+export function setDistanceUnit(distanceUnit: DistanceUnit): void {
+  localStorage.setItem(DISTANCE_UNIT_STORAGE_KEY, distanceUnit);
 }
 
 export function discussionLastViewedByStation(): Record<string, string> {

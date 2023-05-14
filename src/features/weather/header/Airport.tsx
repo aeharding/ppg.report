@@ -15,6 +15,7 @@ import DetailedAviationReport from "../aviation/DetailedAviationReport";
 import { notEmpty } from "../../../helpers/array";
 import { isTouchDevice } from "../../../helpers/device";
 import {
+  convertHeightToMeters,
   FlightCategory,
   formatCeiling,
   formatVerticalVisbility,
@@ -22,6 +23,9 @@ import {
   getFlightCategory,
   getFlightCategoryCssColor,
 } from "../../../helpers/taf";
+import { DistanceUnit, HeightUnit } from "../../user/userSlice";
+import { useAppSelector } from "../../../hooks";
+import { heightValueFormatter } from "../../rap/cells/Altitude";
 
 interface AirportContainerProps {
   category: FlightCategory;
@@ -46,6 +50,9 @@ interface AirportProps {
 }
 
 export default function Airport({ taf, date }: AirportProps) {
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
+  const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
+
   let composedForecast: ICompositeForecast | undefined = useMemo(() => {
     let result: ICompositeForecast | undefined;
     try {
@@ -85,7 +92,16 @@ export default function Airport({ taf, date }: AirportProps) {
   const lowestCloud: ICloud | undefined = clouds[0];
   const cloudLabel = lowestCloud
     ? lowestCloud.height
-      ? `${lowestCloud.quantity}@${lowestCloud.height / 1000}k`
+      ? `${lowestCloud.quantity}@${
+          Math.round(
+            (heightValueFormatter(
+              convertHeightToMeters(lowestCloud.height),
+              heightUnit
+            ) /
+              1_000) *
+              10
+          ) / 10
+        }k`
       : lowestCloud.quantity
     : verticalVisbility
     ? "OBSC"
@@ -100,7 +116,13 @@ export default function Airport({ taf, date }: AirportProps) {
       <div>
         Forecasted to be {category} by TAF report from {taf.station}:
       </div>
-      {buildTooltip(visibility, clouds, verticalVisbility)}
+      {buildTooltip(
+        visibility,
+        clouds,
+        verticalVisbility,
+        heightUnit,
+        distanceUnit
+      )}
     </>
   );
 
@@ -123,14 +145,16 @@ export default function Airport({ taf, date }: AirportProps) {
 function buildTooltip(
   visibility: Visibility | undefined,
   clouds: ICloud[],
-  verticalVisibility: number | undefined
+  verticalVisibility: number | undefined,
+  heightUnit: HeightUnit,
+  distanceUnit: DistanceUnit
 ): React.ReactNode {
   return (
     <ul>
       {[
-        formatVisibility(visibility),
-        formatCeiling(clouds),
-        formatVerticalVisbility(verticalVisibility),
+        formatVisibility(visibility, distanceUnit),
+        formatCeiling(clouds, heightUnit),
+        formatVerticalVisbility(verticalVisibility, heightUnit),
       ]
         .filter(notEmpty)
         .map((str, index) => (

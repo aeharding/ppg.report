@@ -1,9 +1,7 @@
 import { IWind } from "metar-taf-parser";
 import WindIndicator from "../../../rap/WindIndicator";
-import { convertSpeedToKph } from "../../../../helpers/taf";
+import { formatWind } from "../../../../helpers/taf";
 import { useAppSelector } from "../../../../hooks";
-import { formatSpeed } from "../../header/Wind";
-import { speedUnitFormatter } from "../../../rap/cells/WindSpeed";
 
 interface WindProps {
   wind: IWind;
@@ -11,14 +9,6 @@ interface WindProps {
 
 export default function Wind({ wind }: WindProps) {
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
-  const speedUnitLabel = speedUnitFormatter(speedUnit);
-
-  const windSpeedLocalized = Math.round(
-    formatSpeed(convertSpeedToKph(wind.speed, wind.unit), speedUnit)
-  );
-  const gustSpeedLocalized = Math.round(
-    formatSpeed(convertSpeedToKph(wind.gust ?? 0, wind.unit), speedUnit)
-  );
 
   return (
     <>
@@ -31,7 +21,7 @@ export default function Wind({ wind }: WindProps) {
           ) : (
             "Variable"
           )}{" "}
-          at {windSpeedLocalized} {speedUnitLabel}{" "}
+          at {formatWind(wind.speed, wind.unit, speedUnit)}{" "}
         </>
       ) : (
         <>Calm</>
@@ -39,7 +29,7 @@ export default function Wind({ wind }: WindProps) {
       {wind.gust != null && (
         <>
           <br />
-          Gusting to {gustSpeedLocalized} {speedUnitLabel}
+          Gusting to {formatWind(wind.gust, wind.unit, speedUnit)}
         </>
       )}
     </>

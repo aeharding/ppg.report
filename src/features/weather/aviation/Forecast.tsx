@@ -15,6 +15,7 @@ import {
   determineCeilingFromClouds,
   FlightCategory,
   formatDescriptive,
+  formatHeight,
   formatIcingIntensity,
   formatIntensity,
   formatPhenomenon,
@@ -24,10 +25,10 @@ import {
   getFlightCategoryCssColor,
 } from "../../../helpers/taf";
 import { useAppSelector } from "../../../hooks";
-import WindIndicator from "../../rap/WindIndicator";
 import { timeZoneSelector } from "../weatherSlice";
 import Cloud from "./Cloud";
 import Wind from "./cells/Wind";
+import WindShear from "./cells/WindShear";
 
 const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;
@@ -106,6 +107,8 @@ interface ForecastProps {
 
 export default function Forecast({ data }: ForecastProps) {
   const timeZone = useAppSelector(timeZoneSelector);
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
+  const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
 
   if (!timeZone) throw new Error("timezone undefined");
 
@@ -177,24 +180,7 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Wind Shear</td>
               <td>
-                {data.windShear.degrees ? (
-                  <>
-                    {data.windShear.degrees}{" "}
-                    <WindIndicator direction={data.windShear.degrees} /> at{" "}
-                  </>
-                ) : (
-                  "Variable direction at"
-                )}{" "}
-                {formatWind(data.windShear.speed, data.windShear.unit)}{" "}
-                {data.windShear.gust != null ? (
-                  <>
-                    gusting to{" "}
-                    {formatWind(data.windShear.gust, data.windShear.unit)}
-                  </>
-                ) : (
-                  ""
-                )}{" "}
-                at {data.windShear.height.toLocaleString()} ft AGL
+                <WindShear windShear={data.windShear} />
               </td>
             </tr>
           )}
@@ -220,7 +206,7 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Visibility</td>
               <td>
-                {formatVisibility(data.visibility)}{" "}
+                {formatVisibility(data.visibility, distanceUnit)}{" "}
                 {data.visibility.ndv && "No directional visibility"}{" "}
               </td>
             </tr>
@@ -231,11 +217,14 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Ceiling</td>
               <td>
-                {ceiling
-                  ? `${ceiling.height?.toLocaleString()} ft AGL`
+                {ceiling?.height != null
+                  ? `${formatHeight(ceiling.height, heightUnit)} AGL`
                   : data.verticalVisibility
-                  ? `Vertical visibility ${data.verticalVisibility.toFixed()} ft AGL`
-                  : "At least 12,000 ft AGL"}
+                  ? `Vertical visibility ${formatHeight(
+                      data.verticalVisibility,
+                      heightUnit
+                    )} AGL`
+                  : `At least ${formatHeight(12_000, heightUnit)} AGL`}
               </td>
             </tr>
           ) : (
@@ -257,13 +246,14 @@ export default function Forecast({ data }: ForecastProps) {
                   <>
                     {formatTurbulenceIntensity(turbulence.intensity)} from{" "}
                     {turbulence.baseHeight
-                      ? turbulence.baseHeight.toLocaleString()
+                      ? formatHeight(turbulence.baseHeight, heightUnit)
                       : "surface"}{" "}
                     to{" "}
-                    {(
-                      turbulence.baseHeight + turbulence.depth
-                    ).toLocaleString()}{" "}
-                    ft AGL.
+                    {formatHeight(
+                      turbulence.baseHeight + turbulence.depth,
+                      heightUnit
+                    )}{" "}
+                    AGL.
                     <br />
                   </>
                 ))}
@@ -279,9 +269,10 @@ export default function Forecast({ data }: ForecastProps) {
                   <>
                     {formatIcingIntensity(icing.intensity)} from{" "}
                     {icing.baseHeight
-                      ? icing.baseHeight.toLocaleString()
+                      ? formatHeight(icing.baseHeight, heightUnit)
                       : "surface"}{" "}
-                    to {(icing.baseHeight + icing.depth).toLocaleString()} ft
+                    to{" "}
+                    {formatHeight(icing.baseHeight + icing.depth, heightUnit)}
                     AGL.
                     <br />
                   </>
