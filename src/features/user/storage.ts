@@ -2,7 +2,15 @@ import { differenceInDays, differenceInHours } from "date-fns";
 import getDistance from "geolib/es/getDistance";
 import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
-import { AltitudeType, OnOff } from "./userSlice";
+import {
+  AltitudeType,
+  DistanceUnit,
+  HeightUnit,
+  OnOff,
+  SpeedUnit,
+  TemperatureUnit,
+  TimeFormat,
+} from "./userSlice";
 
 export interface UserLocation {
   lat: number;
@@ -14,6 +22,11 @@ export interface UserLocation {
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
+const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
+const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
+const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
+const DISTANCE_UNIT_STORAGE_KEY = "user-distance-unit";
+const TIME_FORMAT_STORAGE_KEY = "user-time-format";
 const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
 const READ_ALERTS = "read-alerts";
 const HIDDEN_ALERTS = "hidden-alerts";
@@ -100,11 +113,95 @@ export function getAltitude(): AltitudeType {
   )
     return AltitudeType.AGL;
 
-  return AltitudeType[savedValue];
+  return savedValue;
 }
 
 export function setAltitude(altitude: AltitudeType): void {
   localStorage.setItem(ALTITUDE_STORAGE_KEY, altitude);
+}
+
+export function getHeightUnit(): HeightUnit {
+  const savedValue = localStorage.getItem(HEIGHT_UNIT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== HeightUnit.Feet && savedValue !== HeightUnit.Meters)
+  )
+    return HeightUnit.Feet;
+
+  return savedValue;
+}
+
+export function setHeightUnit(heightUnit: HeightUnit): void {
+  localStorage.setItem(HEIGHT_UNIT_STORAGE_KEY, heightUnit);
+}
+
+export function getSpeedUnit(): SpeedUnit {
+  const savedValue = localStorage.getItem(SPEED_UNIT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== SpeedUnit.KPH &&
+      savedValue !== SpeedUnit.Knots &&
+      savedValue !== SpeedUnit.MPH)
+  )
+    return SpeedUnit.MPH;
+
+  return savedValue;
+}
+
+export function setSpeedUnit(speedUnit: SpeedUnit): void {
+  localStorage.setItem(SPEED_UNIT_STORAGE_KEY, speedUnit);
+}
+
+export function getTemperatureUnit(): TemperatureUnit {
+  const savedValue = localStorage.getItem(TEMPERATURE_UNIT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== TemperatureUnit.Celsius &&
+      savedValue !== TemperatureUnit.Fahrenheit)
+  )
+    return TemperatureUnit.Fahrenheit;
+
+  return savedValue;
+}
+
+export function setTemperatureUnit(temperatureUnit: TemperatureUnit): void {
+  localStorage.setItem(TEMPERATURE_UNIT_STORAGE_KEY, temperatureUnit);
+}
+
+export function getDistanceUnit(): DistanceUnit {
+  const savedValue = localStorage.getItem(DISTANCE_UNIT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== DistanceUnit.Kilometers &&
+      savedValue !== DistanceUnit.Miles)
+  )
+    return DistanceUnit.Miles;
+
+  return savedValue;
+}
+
+export function setDistanceUnit(distanceUnit: DistanceUnit): void {
+  localStorage.setItem(DISTANCE_UNIT_STORAGE_KEY, distanceUnit);
+}
+
+export function getTimeFormat(): TimeFormat {
+  const savedValue = localStorage.getItem(TIME_FORMAT_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== TimeFormat.Twelve && savedValue !== TimeFormat.TwentyFour)
+  )
+    return TimeFormat.Twelve;
+
+  return savedValue;
+}
+
+export function setTimeFormat(timeFormat: TimeFormat): void {
+  localStorage.setItem(TIME_FORMAT_STORAGE_KEY, timeFormat);
 }
 
 export function discussionLastViewedByStation(): Record<string, string> {

@@ -6,7 +6,11 @@ import { formatInTimeZone } from "date-fns-tz";
 import { IForecastContainer } from "metar-taf-parser";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
-import Forecast, { formatWithTomorrowIfNeeded } from "./Forecast";
+import Forecast, {
+  formatWithTomorrowIfNeeded,
+  getTimeFormatString,
+} from "./Forecast";
+import { TemperatureUnit } from "../../user/userSlice";
 
 const Container = styled.div`
   overflow: hidden;
@@ -54,6 +58,17 @@ export default function DetailedAviationReport({
   taf,
 }: DetailedAviationReportProps) {
   const timeZone = useAppSelector(timeZoneSelector);
+  const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
+
+  function formatTemperature(temperatureInC: number): string {
+    switch (temperatureUnit) {
+      case TemperatureUnit.Celsius:
+        return `${temperatureInC}℃`;
+      case TemperatureUnit.Fahrenheit:
+        return `${cToF(temperatureInC)}℉`;
+    }
+  }
 
   if (!timeZone) throw new Error("timezone undefined");
 
@@ -64,28 +79,39 @@ export default function DetailedAviationReport({
       <Description>
         <p>
           {taf.amendment ? "Amended " : ""} TAF report from {taf.station} issued{" "}
-          {formatInTimeZone(taf.issued, timeZone, "p")} and is valid for{" "}
+          {formatInTimeZone(
+            taf.issued,
+            timeZone,
+            getTimeFormatString(timeFormat)
+          )}{" "}
+          and is valid for{" "}
           {formatDistanceStrict(taf.end, taf.start, { unit: "hour" })} starting
-          at {formatWithTomorrowIfNeeded(taf.start, timeZone, "p")}.
+          at{" "}
+          {formatWithTomorrowIfNeeded(
+            taf.start,
+            timeZone,
+            getTimeFormatString(timeFormat)
+          )}
+          .
         </p>
 
         <p>
           {taf.maxTemperature
-            ? `High of ${cToF(
+            ? `High of ${formatTemperature(
                 taf.maxTemperature.temperature
-              )}℉ at ${formatWithTomorrowIfNeeded(
+              )} at ${formatWithTomorrowIfNeeded(
                 taf.maxTemperature.date,
                 timeZone,
-                "p"
+                getTimeFormatString(timeFormat)
               )}.`
             : undefined}{" "}
           {taf.minTemperature
-            ? `Low of ${cToF(
+            ? `Low of ${formatTemperature(
                 taf.minTemperature.temperature
-              )}℉ at ${formatWithTomorrowIfNeeded(
+              )} at ${formatWithTomorrowIfNeeded(
                 taf.minTemperature.date,
                 timeZone,
-                "p"
+                getTimeFormatString(timeFormat)
               )}.`
             : undefined}
         </p>

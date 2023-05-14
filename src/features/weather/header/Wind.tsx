@@ -9,6 +9,9 @@ import { outputP3ColorFromRGBA } from "../../../helpers/colors";
 import { findValue } from "../../../services/weather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
+import { useAppSelector } from "../../../hooks";
+import { SpeedUnit as MetarTafSpeedUnit } from "metar-taf-parser";
+import { formatWind } from "../../../helpers/taf";
 
 // When a gust is considered worth displaying
 const GUST_DELTA_THRESHOLD = 2;
@@ -41,6 +44,7 @@ interface WindProps {
 }
 
 export default function Wind({ headerType, date, weather }: WindProps) {
+  const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const wind = useMemo(
     () =>
       typeof weather === "object"
@@ -57,18 +61,39 @@ export default function Wind({ headerType, date, weather }: WindProps) {
   const speed = Math.round(toMph(wind.speed.value));
   const gust = Math.round(toMph(wind.gust.value));
 
+  const speedFormatted = formatWind(
+    wind.speed.value,
+    MetarTafSpeedUnit.KilometersPerHour,
+    speedUnit,
+    false
+  );
+  const gustFormatted = formatWind(
+    wind.gust.value,
+    MetarTafSpeedUnit.KilometersPerHour,
+    speedUnit,
+    false
+  );
+
   const body =
     gust - speed < GUST_DELTA_THRESHOLD ? (
-      <>{speed}</>
+      <>{speedFormatted}</>
     ) : (
       <>
-        {speed}G{gust}
+        {speedFormatted}G{gustFormatted}
       </>
     );
 
   return (
     <Tippy
-      content={`Wind ${speed}mph gusting to ${gust}mph`}
+      content={`Wind ${formatWind(
+        wind.speed.value,
+        MetarTafSpeedUnit.KilometersPerHour,
+        speedUnit
+      )} gusting to ${formatWind(
+        wind.gust.value,
+        MetarTafSpeedUnit.KilometersPerHour,
+        speedUnit
+      )}`}
       placement="bottom"
     >
       <div>

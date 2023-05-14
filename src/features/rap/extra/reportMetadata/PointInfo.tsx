@@ -1,9 +1,15 @@
 import { useParams } from "react-router-dom";
 import { DataListItem } from "../../../../DataList";
 import { useAppSelector } from "../../../../hooks";
-import { metersToFeet } from "../../cells/Altitude";
+import {
+  heightUnitFormatter,
+  heightValueFormatter,
+} from "../../cells/Altitude";
 
 export default function PointInfo() {
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
+  const heightUnitLabel = heightUnitFormatter(heightUnit);
+
   const rap = useAppSelector((state) => state.rap.rap);
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
@@ -18,12 +24,20 @@ export default function PointInfo() {
       <DataListItem>
         <div>Location elevation</div>
         <div>
-          {Math.round(metersToFeet(elevation || -1)).toLocaleString()}ft
+          {Math.round(
+            heightValueFormatter(elevation ?? -1, heightUnit)
+          ).toLocaleString()}
+          {heightUnitLabel}
         </div>
       </DataListItem>
       <DataListItem>
         <div>Winds aloft gridpoint elevation</div>
-        <div>{Math.round(metersToFeet(rapHeight)).toLocaleString()}ft</div>
+        <div>
+          {Math.round(
+            heightValueFormatter(rapHeight, heightUnit)
+          ).toLocaleString()}
+          {heightUnitLabel}
+        </div>
       </DataListItem>
     </>
   );

@@ -95,7 +95,10 @@ export default function Table({ rap, rows, surfaceLevelMode }: TableProps) {
         {displayedRapData.map((datum, index) => (
           <Row key={index} opaque={negativeAltitude(datum)}>
             <td>
-              <Altitude height={datum.height} surfaceLevel={surfaceLevel} />
+              <Altitude
+                heightInMeters={datum.height}
+                surfaceLevelInMeters={surfaceLevel}
+              />
             </td>
             <td>
               <Temperature temperature={datum.temp} />

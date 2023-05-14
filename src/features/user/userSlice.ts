@@ -16,6 +16,33 @@ export enum OnOff {
   Off = "Off",
 }
 
+export enum SpeedUnit {
+  KPH = "km/h",
+  MPH = "mph",
+  Knots = "knots",
+  mps = "m/s",
+}
+
+export enum HeightUnit {
+  Feet = "ft",
+  Meters = "m",
+}
+
+export enum TemperatureUnit {
+  Celsius = "°C",
+  Fahrenheit = "°F",
+}
+
+export enum DistanceUnit {
+  Miles = "miles",
+  Kilometers = "km",
+}
+
+export enum TimeFormat {
+  TwentyFour = "24-hour",
+  Twelve = "12-hour",
+}
+
 export function toggle(altitude: AltitudeType): AltitudeType {
   switch (altitude) {
     case AltitudeType.AGL:
@@ -28,6 +55,11 @@ export function toggle(altitude: AltitudeType): AltitudeType {
 interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
+  heightUnit: HeightUnit;
+  speedUnit: SpeedUnit;
+  temperatureUnit: TemperatureUnit;
+  distanceUnit: DistanceUnit;
+  timeFormat: TimeFormat;
   readAlerts: Record<string, string>;
   hiddenAlerts: Record<string, true>;
   swipeInertia: OnOff;
@@ -38,6 +70,11 @@ interface UserState {
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
+  heightUnit: storage.getHeightUnit(),
+  speedUnit: storage.getSpeedUnit(),
+  temperatureUnit: storage.getTemperatureUnit(),
+  distanceUnit: storage.getDistanceUnit(),
+  timeFormat: storage.getTimeFormat(),
   readAlerts: storage.getReadAlerts(),
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
@@ -59,6 +96,21 @@ export const userReducer = createSlice({
     },
     updateAltitude(state, action: PayloadAction<AltitudeType>) {
       state.altitude = action.payload;
+    },
+    updateHeightUnit(state, action: PayloadAction<HeightUnit>) {
+      state.heightUnit = action.payload;
+    },
+    updateSpeedUnit(state, action: PayloadAction<SpeedUnit>) {
+      state.speedUnit = action.payload;
+    },
+    updateTemperatureUnit(state, action: PayloadAction<TemperatureUnit>) {
+      state.temperatureUnit = action.payload;
+    },
+    updateDistanceUnit(state, action: PayloadAction<DistanceUnit>) {
+      state.distanceUnit = action.payload;
+    },
+    updateTimeFormat(state, action: PayloadAction<TimeFormat>) {
+      state.timeFormat = action.payload;
     },
     readAlert(state, action: PayloadAction<Alert>) {
       state.readAlerts = storage.setReadAlert(action.payload);
@@ -101,6 +153,46 @@ export const setAltitude =
     dispatch(userReducer.actions.updateAltitude(altitude));
 
     storage.setAltitude(getState().user.altitude);
+  };
+
+export const setHeightUnit =
+  (altitude: HeightUnit) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateHeightUnit(altitude));
+
+    storage.setHeightUnit(getState().user.heightUnit);
+  };
+
+export const setSpeedUnit =
+  (speedUnit: SpeedUnit) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateSpeedUnit(speedUnit));
+
+    storage.setSpeedUnit(getState().user.speedUnit);
+  };
+
+export const setTemperatureUnit =
+  (temperatureUnit: TemperatureUnit) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateTemperatureUnit(temperatureUnit));
+
+    storage.setTemperatureUnit(getState().user.temperatureUnit);
+  };
+
+export const setDistanceUnit =
+  (distanceUnit: DistanceUnit) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateDistanceUnit(distanceUnit));
+
+    storage.setDistanceUnit(getState().user.distanceUnit);
+  };
+
+export const setTimeFormat =
+  (timeFormat: TimeFormat) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateTimeFormat(timeFormat));
+
+    storage.setTimeFormat(getState().user.timeFormat);
   };
 
 export const visitedLocation =

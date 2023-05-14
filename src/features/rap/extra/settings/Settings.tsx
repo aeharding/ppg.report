@@ -8,6 +8,16 @@ import {
   setSwipeInertia,
   OnOff,
   setGAirmetRead,
+  SpeedUnit,
+  HeightUnit,
+  TemperatureUnit,
+  setHeightUnit,
+  setSpeedUnit,
+  setTemperatureUnit,
+  DistanceUnit,
+  setDistanceUnit,
+  TimeFormat,
+  setTimeFormat,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
@@ -27,6 +37,11 @@ const Hr = styled.hr`
 export default function Settings() {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
+  const speedUnit = useAppSelector((state) => state.user.speedUnit);
+  const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
+  const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
@@ -35,10 +50,40 @@ export default function Settings() {
   return (
     <Container>
       <Radio
-        label="Altitude"
+        label="Altitude format"
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
+      />
+      <Radio
+        label="Altitude unit"
+        options={[HeightUnit.Feet, HeightUnit.Meters]}
+        value={heightUnit}
+        onChange={(value) => dispatch(setHeightUnit(value))}
+      />
+      <Radio
+        label="Speed"
+        options={[SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps]}
+        value={speedUnit}
+        onChange={(value) => dispatch(setSpeedUnit(value))}
+      />
+      <Radio
+        label="Temperature"
+        options={[TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius]}
+        value={temperatureUnit}
+        onChange={(value) => dispatch(setTemperatureUnit(value))}
+      />
+      <Radio
+        label="Distance"
+        options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
+        value={distanceUnit}
+        onChange={(value) => dispatch(setDistanceUnit(value))}
+      />{" "}
+      <Radio
+        label="Time format"
+        options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
+        value={timeFormat}
+        onChange={(value) => dispatch(setTimeFormat(value))}
       />
       <Radio
         label="Swipe Inertia"
@@ -53,10 +98,8 @@ export default function Settings() {
         value={gAirmetRead}
         onChange={(value) => dispatch(setGAirmetRead(value))}
         tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy."
-      />
-
+      />{" "}
       <Hr />
-
       <div onClick={() => dispatch(resetHiddenAlerts())}>
         {hiddenAlertsNumber > 0 ? (
           <>
@@ -70,7 +113,6 @@ export default function Settings() {
           </>
         )}
       </div>
-
       {/* <Radio label="Wind Speed" options={["mph", "km/h", "kts", "m/s"]} />
       <Radio label="Temperature" options={["°F", "°C"]} />
       <Radio label="Elevation" options={["ft", "m"]} /> */}

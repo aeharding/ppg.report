@@ -33,7 +33,7 @@ const Label = styled.label`
   padding: 0.5rem 0.5rem;
   min-width: 4rem;
   border: 1px solid;
-  color: #bbb;
+  color: #888;
   border-radius: 2rem;
   margin-right: 0.5rem;
 `;

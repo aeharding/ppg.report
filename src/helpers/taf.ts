@@ -2,10 +2,10 @@ import {
   Descriptive,
   Intensity,
   Phenomenon,
-  SpeedUnit,
+  SpeedUnit as MetarTafSpeedUnit,
   CloudQuantity,
   CloudType,
-  DistanceUnit,
+  DistanceUnit as MetarTafDistanceUnit,
   ValueIndicator,
   Visibility,
   ICloud,
@@ -14,6 +14,16 @@ import {
 } from "metar-taf-parser";
 import { css, SerializedStyles } from "@emotion/react";
 import { outputP3ColorFromRGB } from "./colors";
+import {
+  DistanceUnit,
+  HeightUnit,
+  SpeedUnit,
+} from "../features/user/userSlice";
+import {
+  heightUnitFormatter,
+  heightValueFormatter,
+} from "../features/rap/cells/Altitude";
+import { speedUnitFormatter } from "../features/rap/cells/WindSpeed";
 
 export enum FlightCategory {
   VFR = "VFR",
@@ -125,29 +135,60 @@ export function formatIntensity(intensity: Intensity | undefined): string {
   }
 }
 
-export function formatWind(speed: number, unit: SpeedUnit): string {
-  const mph = convertSpeedToMph(speed, unit);
-
-  return `${Math.round(mph)} mph`;
-}
-
-function convertSpeedToMph(speed: number, unit: SpeedUnit): number {
+export function convertSpeedToKph(
+  speed: number,
+  unit: MetarTafSpeedUnit
+): number {
   switch (unit) {
-    case SpeedUnit.KilometersPerHour:
-      return speed * 0.621371;
-    case SpeedUnit.Knot:
-      return speed * 1.15078;
-    case SpeedUnit.MetersPerSecond:
-      return speed * 2.23694;
+    case MetarTafSpeedUnit.KilometersPerHour:
+      return speed;
+    case MetarTafSpeedUnit.Knot:
+      return speed * 1.852;
+    case MetarTafSpeedUnit.MetersPerSecond:
+      return speed * 3.6;
   }
 }
 
-export function formatVisibility(visibility: Visibility | undefined): string {
+function convertKphToUserSpeed(
+  speedInKph: number,
+  speedUnit: SpeedUnit
+): number {
+  switch (speedUnit) {
+    case SpeedUnit.KPH:
+      return speedInKph;
+    case SpeedUnit.Knots:
+      return speedInKph * 0.539957;
+    case SpeedUnit.MPH:
+      return speedInKph * 0.621371;
+    case SpeedUnit.mps:
+      return speedInKph * 0.277778;
+  }
+}
+
+export function formatWind(
+  speed: number,
+  unit: MetarTafSpeedUnit,
+  speedUnit: SpeedUnit,
+  withUnits = true
+) {
+  const speedInKph = convertSpeedToKph(speed, unit);
+  const convertedSpeed = convertKphToUserSpeed(speedInKph, speedUnit);
+
+  return [
+    Math.round(convertedSpeed).toLocaleString(),
+    withUnits ? speedUnitFormatter(speedUnit) : undefined,
+  ]
+    .filter((a) => a)
+    .join(" ");
+}
+
+export function formatVisibility(
+  visibility: Visibility | undefined,
+  distanceUnit: DistanceUnit
+): string {
   if (!visibility) return "Unknown visibility";
 
-  const rawMiles = convertDistanceToMiles(visibility.value, visibility.unit);
-  const miles = Math.round(rawMiles * 10) / 10;
-  let value = `${miles} mile${miles !== 1 ? "s" : ""}`;
+  let value = formatDistance(visibility.value, visibility.unit, distanceUnit);
 
   const indiciator = formatIndicator(visibility.indicator);
 
@@ -156,37 +197,90 @@ export function formatVisibility(visibility: Visibility | undefined): string {
   return value;
 }
 
-function convertDistanceToMiles(distance: number, unit: DistanceUnit): number {
+function convertDistanceToMiles(
+  distance: number,
+  unit: MetarTafDistanceUnit
+): number {
   switch (unit) {
-    case DistanceUnit.Meters:
+    case MetarTafDistanceUnit.Meters:
       if (distance === 9999) return 6;
       return distance / 1609.34;
-    case DistanceUnit.StatuteMiles:
+    case MetarTafDistanceUnit.StatuteMiles:
       return distance;
   }
 }
 
-export function formatCeiling(clouds: ICloud[]): string {
+function convertMilesToUserDistance(
+  distanceInMiles: number,
+  distanceUnit: DistanceUnit
+): number {
+  switch (distanceUnit) {
+    case DistanceUnit.Kilometers: {
+      if (distanceInMiles === 6) return 10;
+      return distanceInMiles * 1.60934;
+    }
+    case DistanceUnit.Miles:
+      return distanceInMiles;
+  }
+}
+
+export function formatDistance(
+  distance: number,
+  unit: MetarTafDistanceUnit,
+  distanceUnit: DistanceUnit
+): string {
+  const distanceAsMiles = convertDistanceToMiles(distance, unit);
+  const distanceAsUserDistance = convertMilesToUserDistance(
+    distanceAsMiles,
+    distanceUnit
+  );
+
+  return `${(
+    Math.round(distanceAsUserDistance * 10) / 10
+  ).toLocaleString()} ${formatDistanceUnit(distanceUnit)}`;
+}
+
+function formatDistanceUnit(distanceUnit: DistanceUnit, plural = true): string {
+  switch (distanceUnit) {
+    case DistanceUnit.Kilometers:
+      return "km";
+    case DistanceUnit.Miles:
+      return `mile${plural ? "s" : ""}`;
+  }
+}
+
+export function convertHeightToMeters(heightInFeet: number): number {
+  return heightInFeet * 0.3048;
+}
+
+export function formatCeiling(
+  clouds: ICloud[],
+  heightUnit: HeightUnit
+): string {
   const ceiling = determineCeilingOrLowestLayerFromClouds(clouds);
 
   let ret = "";
 
   if (!ceiling) return "No clouds found";
 
-  ret += formatCloud(ceiling);
+  ret += formatCloud(ceiling, heightUnit);
 
   return ret;
 }
 
 export function formatVerticalVisbility(
-  verticalVisibility: number | undefined
+  verticalVisibility: number | undefined,
+  heightUnit: HeightUnit
 ): string | undefined {
   if (verticalVisibility == null) return;
 
-  return `${verticalVisibility.toLocaleString()} ft AGL vertical visibility`;
+  return `${formatHeight(
+    verticalVisibility,
+    heightUnit
+  )} AGL vertical visibility`;
 }
 
-export function formatCloud(cloud: ICloud): string {
+export function formatCloud(cloud: ICloud, heightUnit: HeightUnit): string {
   let ret = "";
 
   switch (cloud.quantity) {
@@ -211,9 +305,21 @@ export function formatCloud(cloud: ICloud): string {
     ret += ` (${formatCloudType(cloud.type)})`;
   }
 
-  ret += ` at ${cloud.height?.toLocaleString()}ft`;
+  if (cloud.height) ret += ` at ${formatHeight(cloud.height!, heightUnit)}`;
 
   return ret;
+}
+
+export function formatHeight(
+  heightInFeet: number,
+  heightUnit: HeightUnit
+): string {
+  return `${(
+    Math.round(
+      heightValueFormatter(convertHeightToMeters(heightInFeet), heightUnit) /
+        100
+    ) * 100
+  ).toLocaleString()}${heightUnitFormatter(heightUnit)}`;
 }
 
 function formatCloudType(type: CloudType): string {
@@ -316,9 +422,9 @@ function convertToMiles(visibility?: Visibility): number | undefined {
   if (!visibility) return;
 
   switch (visibility.unit) {
-    case DistanceUnit.StatuteMiles:
+    case MetarTafDistanceUnit.StatuteMiles:
       return visibility.value;
-    case DistanceUnit.Meters:
+    case MetarTafDistanceUnit.Meters:
       const distance = visibility.value * 0.000621371;
 
       if (visibility.value % 1000 === 0 || visibility.value === 9999)

@@ -23,6 +23,7 @@ import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 import { isAlertRead } from "../../../helpers/alert";
 import { OnOff } from "../../user/userSlice";
+import { getTimeFormatString } from "../aviation/Forecast";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -96,6 +97,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   if (!timeZone) throw new Error("Timezone not found");
 
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const userState = useAppSelector((state) => state.user);
   const hiddenAlertsForLocation = useAppSelector(
     hiddenAlertsForLocationSelector
@@ -150,7 +152,11 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
           <Title>
             <div>
               {alerts.length} Alert{alerts.length === 1 ? "" : "s"} at{" "}
-              {formatInTimeZone(new Date(date), timeZone, "h:mmaaaaa")}
+              {formatInTimeZone(
+                new Date(date),
+                timeZone,
+                getTimeFormatString(timeFormat, true)
+              )}
             </div>
             <Subtext>
               {
