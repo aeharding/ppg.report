@@ -75,7 +75,7 @@ export default function Legend({ showTaf, showNws, showOp40 }: LegendProps) {
       {showTaf && (
         <LegendItem>
           <StyledPlaneSvg />
-          Terminal Aerodrome Forecast (TAF) location
+          METAR & TAF location
         </LegendItem>
       )}
     </Container>

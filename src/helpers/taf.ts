@@ -217,6 +217,7 @@ function convertMilesToUserDistance(
   switch (distanceUnit) {
     case DistanceUnit.Kilometers: {
       if (distanceInMiles === 6) return 10;
+      if (distanceInMiles === 10) return 16;
       return distanceInMiles * 1.60934;
     }
     case DistanceUnit.Miles:
