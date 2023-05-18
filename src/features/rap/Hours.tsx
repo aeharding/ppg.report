@@ -197,11 +197,6 @@ export default function Hours({ rap }: TableProps) {
   );
 
   useEffect(() => {
-    // Safari 14 and less are broke af
-    // TODO: Remove once Safari 16 is released (~ September 2022)
-    if (browser?.name === "safari" && +browser?.version.split(".")[0] <= 14)
-      return;
-
     onScroll();
 
     const callback = (e: KeyboardEvent) => {
