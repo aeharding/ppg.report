@@ -1,10 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { detect } from "detect-browser";
 import React from "react";
 import { isTouchDevice } from "../../helpers/device";
-
-const browser = detect();
 
 const Container = styled.div<{ flip: boolean }>`
   position: absolute;
@@ -102,14 +99,8 @@ type NavProps = React.HTMLAttributes<HTMLDivElement> & {
   visible: boolean;
 } & ({ left: true } | { right: true });
 
-// Safari 14 and less are broke af
-// TODO: Remove once Safari 16 is released (~ September 2022)
-const shitIsBroke =
-  browser?.name === "safari" && +browser?.version.split(".")[0] <= 14;
-
 export default function Nav(props: NavProps) {
-  // Safari scrolling snap views is super messed up
-  if (shitIsBroke || isTouchDevice()) return null;
+  if (isTouchDevice()) return null;
 
   return (
     <Container flip={"right" in props} {...props}>
