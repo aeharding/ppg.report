@@ -46,6 +46,15 @@ export function isThirdPartyIosBrowser() {
 }
 
 /**
+ * Is mobile device, or iPad-like
+ */
+export function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+    navigator.userAgent
+  );
+}
+
+/**
  * Important: Must check to make sure UA is Safari first
  */
 export function isSFSafariViewController(): boolean {
