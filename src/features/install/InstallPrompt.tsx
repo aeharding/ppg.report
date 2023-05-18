@@ -1,6 +1,6 @@
 import React from "react";
 import BottomSheet from "../../bottomSheet/BottomSheet";
-import { isInstalled } from "../../helpers/device";
+import { isInstalled, isMobile } from "../../helpers/device";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import InstallInstructions from "./InstallInstructions";
 import { promptToAddToHomeScreen } from "./installSlice";
@@ -37,6 +37,7 @@ export default function InstallPrompt() {
   if (isInstalled()) return <></>;
   if (navigator.userAgent.match(/iPhone|iPad/i)) return renderiPhonePromo();
   if (!beforeInstallEvent) return <></>;
+  if (!isMobile()) return <></>;
 
   return (
     <Promo
