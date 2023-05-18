@@ -1,7 +1,7 @@
 import Header from "./Header";
 
 import BaseLayer from "../../map/BaseLayer";
-import { linkifyOptions } from "../rap/extra/Discussion";
+import { linkifyOptions } from "../rap/extra/discussion/Discussion";
 import OSMAttribution from "../../map/OSMAttribution";
 import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";

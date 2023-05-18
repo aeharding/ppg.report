@@ -124,3 +124,24 @@ function isBetweenWxTime(weatherInterval: string, date: Date): boolean {
 
   return isWithinInterval(date, { start: new Date(start), end });
 }
+
+export interface GlossaryTerm {
+  term: string;
+  definition: string;
+  lwrTerm: string;
+}
+
+const blacklist: Record<string, true> = {
+  weather: true,
+};
+
+export async function getGlossary(): Promise<GlossaryTerm[]> {
+  let { data } = await axios.get("/api/weather/glossary");
+
+  return (data.glossary as GlossaryTerm[])
+    .filter(
+      ({ term }) => !!term && term.length > 2 && !blacklist[term.toLowerCase()]
+    )
+    .map((item) => ({ ...item, lwrTerm: item.term.toLowerCase() }))
+    .sort((a, b) => b.term.length - a.term.length);
+}
