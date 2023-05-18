@@ -4803,9 +4803,9 @@ merge2@^1.3.0, merge2@^1.4.1:
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
 metar-taf-parser@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/metar-taf-parser/-/metar-taf-parser-8.0.1.tgz#2c459c5987c3125d562fa273b6504f8583bd4ace"
-  integrity sha512-6B7rhkFhQLBWTTiQ3u/vcqP3IFA+ugYWFbSQ4T+hDO0lTaxMoMiR+5D5hEKd4miy69V7aj26kocmxm9c+LVmwQ==
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/metar-taf-parser/-/metar-taf-parser-8.0.3.tgz#64e424be7ecae517ad768bc0d154eebb99b8e185"
+  integrity sha512-jOimBqThyy4pnroA17H4M3norhpEnD47/tTNba+ZiEHPvDOBVEUwz2MhFE8YzkIIFPgOKmUuZbVsYhkgFtq40A==
 
 micromatch@^4.0.4:
   version "4.0.5"

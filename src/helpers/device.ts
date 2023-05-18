@@ -1,7 +1,7 @@
 import { doesFontExist } from "./fontDetect";
 
 export function isTouchDevice(): boolean {
-  return window.matchMedia("(any-hover: none)").matches;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
 
 export function isLandscape(): boolean {
