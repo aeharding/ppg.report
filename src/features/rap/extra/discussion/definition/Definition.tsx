@@ -2,16 +2,25 @@ import { detect } from "detect-browser";
 import { isTouchDevice } from "../../../../../helpers/device";
 import DefinitionDialog from "./DefinitionDialog";
 import DefinitionTooltip from "./DefinitionTooltip";
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 
 const browser = detect();
 
 const touchDevice = isTouchDevice();
 
+const definitionUnderlineColorFadeIn = keyframes`
+  from {
+    text-decoration-color: transparent;
+  }
+
+  to {
+    text-decoration-color: rgba(0, 157, 255, 0.7);
+  }
+`;
+
 export const definitionStyles = css`
   text-decoration: underline;
   text-decoration-style: wavy;
-  text-decoration-color: rgba(0, 157, 255, 0.7);
   text-decoration-skip-ink: none;
   text-underline-offset: 0.25em;
 
@@ -23,11 +32,17 @@ export const definitionStyles = css`
           text-decoration-thickness: 0.8px;
         `;
       case "safari":
+      case "ios":
+      case "ios-webview":
+      case "edge-ios":
         return css`
-          text-decoration-thickness: 1px;
+          text-decoration-thickness: 1.4px;
         `;
     }
   })()}
+
+  animation: ${definitionUnderlineColorFadeIn} 500ms ease-out;
+  animation-fill-mode: forwards;
 `;
 
 export interface DefinitionTooltipProps {

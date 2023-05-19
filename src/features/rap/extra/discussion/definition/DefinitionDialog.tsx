@@ -5,12 +5,11 @@ import linkifyHtml from "linkify-html";
 import { linkifyOptions } from "../Discussion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLink } from "@fortawesome/pro-light-svg-icons";
+import { CSSTransition } from "react-transition-group";
 
-const Takeover = styled.div`
-  position: fixed;
+const TakeoverContents = styled.div`
+  position: absolute;
   inset: 0;
-  top: 56px;
-  background: rgba(0, 0, 0, 0.7);
 
   display: flex;
   flex-direction: column;
@@ -18,10 +17,52 @@ const Takeover = styled.div`
   gap: 1rem;
 
   padding: 1rem;
+`;
+
+const Takeover = styled.div`
+  position: fixed;
+  inset: 0;
+  top: 56px;
+  background: rgba(0, 0, 0, 0.7);
 
   backdrop-filter: blur(3px);
 
   z-index: 1;
+
+  &.takeover {
+    &-enter {
+      opacity: 0;
+
+      > ${() => TakeoverContents} {
+        scale: 0.95;
+      }
+    }
+    &-enter-active {
+      opacity: 1;
+      transition: 200ms opacity;
+
+      > ${() => TakeoverContents} {
+        transition: 200ms scale;
+        scale: 1;
+      }
+    }
+    &-exit {
+      opacity: 1;
+
+      > ${() => TakeoverContents} {
+        scale: 1;
+
+      }
+    }
+    &-exit-active {
+      opacity: 0;
+      transition: 200ms opacity;
+
+      > ${() => TakeoverContents} {
+        scale: 0.95;
+        transition: 200ms scale;
+      }
+    }
 `;
 
 const ClickBlock = styled.div`
@@ -81,37 +122,44 @@ export default function DefinitionDialog({
   return (
     <>
       <DefinitionSpan onClick={open}>{children}</DefinitionSpan>
-      {isOpen && (
+      <CSSTransition
+        in={isOpen}
+        timeout={200}
+        classNames="takeover"
+        unmountOnExit
+      >
         <Takeover onTouchStart={close}>
-          <Term>{term}</Term>
-          <DefinitionText
-            onTouchStart={(e) => {
-              if (
-                !e.target ||
-                !(e.target instanceof HTMLElement) ||
-                e.target.tagName !== "A"
-              )
-                return;
+          <TakeoverContents>
+            <Term>{term}</Term>
+            <DefinitionText
+              onTouchStart={(e) => {
+                if (
+                  !e.target ||
+                  !(e.target instanceof HTMLElement) ||
+                  e.target.tagName !== "A"
+                )
+                  return;
 
-              e.stopPropagation();
-            }}
-            dangerouslySetInnerHTML={{
-              __html: linkifyHtml(definition, {
-                ...linkifyOptions,
-              }),
-            }}
-          ></DefinitionText>
+                e.stopPropagation();
+              }}
+              dangerouslySetInnerHTML={{
+                __html: linkifyHtml(definition, {
+                  ...linkifyOptions,
+                }),
+              }}
+            ></DefinitionText>
 
-          <Link
-            href={`https://forecast.weather.gov/glossary.php?word=${term}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onTouchStart={(e) => e.stopPropagation()}
-          >
-            <FontAwesomeIcon icon={faExternalLink} />
-          </Link>
+            <Link
+              href={`https://forecast.weather.gov/glossary.php?word=${term}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              <FontAwesomeIcon icon={faExternalLink} />
+            </Link>
+          </TakeoverContents>
         </Takeover>
-      )}
+      </CSSTransition>
 
       {clickBlock && (
         <ClickBlock
