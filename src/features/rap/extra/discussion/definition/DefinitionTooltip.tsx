@@ -60,7 +60,7 @@ export default function DefinitionTooltip({
           window.open(
             href,
             "noaaDefinitions",
-            "toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+            "toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes,width=540,height=540"
           );
           e.preventDefault();
         }}
