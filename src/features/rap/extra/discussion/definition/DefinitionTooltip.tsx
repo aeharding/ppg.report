@@ -46,14 +46,24 @@ export default function DefinitionTooltip({
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
+  const href = `https://forecast.weather.gov/glossary.php?word=${term}`;
+
   return (
     <>
       <DefinitionLink
         ref={refs.setReference}
         {...getReferenceProps()}
-        href={`https://forecast.weather.gov/glossary.php?word=${term}`}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => {
+          window.open(
+            href,
+            "noaaDefinitions",
+            "toolbar=no,location=yes,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+          );
+          e.preventDefault();
+        }}
       >
         {children}
       </DefinitionLink>
