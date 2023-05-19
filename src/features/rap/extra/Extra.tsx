@@ -11,7 +11,7 @@ import { css } from "@emotion/react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { faSearch } from "@fortawesome/pro-regular-svg-icons";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
-import Discussion from "./Discussion";
+import Discussion from "./discussion/Discussion";
 import { useAppSelector } from "../../../hooks";
 import Settings from "./settings/Settings";
 import Loading from "../../../shared/Loading";

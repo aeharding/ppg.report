@@ -2,7 +2,7 @@ import Header from "./Header";
 
 import BaseLayer from "../../map/BaseLayer";
 import RadarLayer from "../../map/RadarLayer";
-import { linkifyOptions } from "../rap/extra/Discussion";
+import { linkifyOptions } from "../rap/extra/discussion/Discussion";
 import { undoFixedWidthText } from "../../helpers/weather";
 import OSMAttribution from "../../map/OSMAttribution";
 import { WeatherAlertFeature } from "../weather/weatherSlice";
