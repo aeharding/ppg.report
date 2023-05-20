@@ -131,8 +131,36 @@ export interface GlossaryTerm {
   lwrTerm: string;
 }
 
-const blacklist: Record<string, true> = {
+/**
+ * Some terms generate large amounts of false positives and/or are layman terms
+ */
+const blacklist: Record<Lowercase<string>, true> = {
   weather: true,
+  track: true,
+  forecast: true,
+  few: true,
+  cloud: true,
+  temperature: true,
+  high: true,
+  low: true,
+  pressure: true,
+  center: true,
+  as: true,
+  air: true,
+  cdt: true,
+  pdt: true,
+  edt: true,
+  mdt: true,
+  mid: true,
+  rain: true,
+  chance: true,
+  night: true,
+  temps: true,
+  shower: true,
+  wind: true,
+  same: true,
+  range: true,
+  day: true,
 };
 
 export async function getGlossary(): Promise<GlossaryTerm[]> {
@@ -140,7 +168,10 @@ export async function getGlossary(): Promise<GlossaryTerm[]> {
 
   return (data.glossary as GlossaryTerm[])
     .filter(
-      ({ term }) => !!term && term.length > 2 && !blacklist[term.toLowerCase()]
+      ({ term }) =>
+        !!term &&
+        term.length > 1 &&
+        !blacklist[term.toLowerCase() as Lowercase<string>]
     )
     .map((item) => ({ ...item, lwrTerm: item.term.toLowerCase() }))
     .sort((a, b) => b.term.length - a.term.length);
