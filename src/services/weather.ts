@@ -161,6 +161,7 @@ const blacklist: Record<Lowercase<string>, true> = {
   same: true,
   range: true,
   day: true,
+  precipitation: true,
 };
 
 export async function getGlossary(): Promise<GlossaryTerm[]> {
