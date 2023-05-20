@@ -83,6 +83,7 @@ const DefinitionText = styled.div`
   font-size: 0.9rem;
   min-height: 0;
   margin-bottom: 20vh;
+  white-space: normal;
 `;
 
 const Link = styled.a`
@@ -145,6 +146,7 @@ export default function DefinitionDialog({
               dangerouslySetInnerHTML={{
                 __html: linkifyHtml(definition, {
                   ...linkifyOptions,
+                  nl2br: false,
                 }),
               }}
             ></DefinitionText>

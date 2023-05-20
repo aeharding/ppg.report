@@ -16,6 +16,7 @@ const DefinitionTooltipContainer = styled.div`
   max-width: 450px;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
+  white-space: normal;
 `;
 
 const DefinitionLink = styled.a`
