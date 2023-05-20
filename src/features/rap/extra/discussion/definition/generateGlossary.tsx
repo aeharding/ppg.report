@@ -2,6 +2,8 @@ import { Fragment, ReactNode } from "react";
 import { GlossaryTerm } from "../../../../../services/weather";
 import Definition from "./Definition";
 
+const SEPARATOR_REGEX = /\s|\.|,|'|"|\//;
+
 export function generateGlossary(section: string, glossary: GlossaryTerm[]) {
   if (!glossary) return <></>;
 
@@ -22,8 +24,8 @@ export function generateGlossary(section: string, glossary: GlossaryTerm[]) {
         const preceding = part.charAt(location - 1);
         const following = part.charAt(location + term.length);
 
-        if (location !== 0 && !/\s|\./.test(preceding)) continue;
-        if (!/\s|\.|,/.test(following)) continue;
+        if (location !== 0 && !SEPARATOR_REGEX.test(preceding)) continue;
+        if (!SEPARATOR_REGEX.test(following)) continue;
 
         result.splice(
           i,
