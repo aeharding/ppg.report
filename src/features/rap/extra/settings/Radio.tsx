@@ -3,6 +3,7 @@ import {
   outputP3ColorFromRGB,
   outputP3ColorFromRGBA,
 } from "../../../../helpers/colors";
+import React from "react";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -58,7 +59,7 @@ export function Radio<T extends string>({
       <GroupLabel>{label}</GroupLabel>
       {tip ? <GroupTip>{tip}</GroupTip> : ""}
       {options.map((option) => (
-        <>
+        <React.Fragment key={option}>
           <Input
             type="radio"
             name={label}
@@ -68,7 +69,7 @@ export function Radio<T extends string>({
             onChange={(event) => onChange(event.target.value as T)}
           />
           <Label htmlFor={`${label}${option}`}>{option}</Label>
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

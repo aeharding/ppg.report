@@ -101,18 +101,21 @@ const planeIcon = divIcon({
 });
 
 const MapController = () => {
-  const rap = useAppSelector((state) => state.rap.rap);
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather
   );
-  if (!rap || typeof rap !== "object")
+  if (!windsAloft || typeof windsAloft !== "object")
     throw new Error("RAP report must be defined");
 
   const map = useMap();
   const groupRef = useRef<any>();
 
-  const rapPosition: LatLngExpression = [rap[0].lat, -rap[0].lon];
+  const rapPosition: LatLngExpression = [
+    windsAloft.latitude,
+    windsAloft.longitude,
+  ];
   const airportPosition: LatLngExpression | undefined =
     aviationWeather && typeof aviationWeather === "object"
       ? [aviationWeather.lat, aviationWeather.lon]

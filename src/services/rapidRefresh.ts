@@ -2,6 +2,7 @@ import axios from "axios";
 import { addHours, differenceInHours } from "date-fns";
 import parse, { Rap } from "gsl-parser";
 import { getTrimmedCoordinates } from "../helpers/coordinates";
+import { WindsAloftReport } from "../models/WindsAloft";
 // Documentation: https://rucsoundings.noaa.gov/text_sounding_query_parameters.pdf
 // /?data_source=Op40&latest=latest&start_year=2021&start_month_name=Aug&start_mday=20&start_hour=21&start_min=0&n_hrs=1.0&fcst_len=shortest&airport=MSN&text=Ascii%20text%20%28GSL%20format%29&hydrometeors=false&start=latest
 
@@ -19,7 +20,34 @@ const BASE_PARAMS = {
   hydrometeors: false,
 };
 
-export async function getRap(
+export async function getWindsAloft(
+  lat: number,
+  lon: number,
+  data_source: "Op40" | "GFS" = "Op40"
+): Promise<WindsAloftReport> {
+  return transformRapToWindsAloft(await getRap(lat, lon, data_source));
+}
+
+function transformRapToWindsAloft(rap: Rap[]): WindsAloftReport {
+  return {
+    latitude: rap[0].lat,
+    longitude: -rap[0].lon,
+    source: "rucSounding",
+    hours: rap.map(({ cape, cin, date, data }) => ({
+      date,
+      cape,
+      cin,
+      altitudes: data.map(({ height, temp, windDir, windSpd }) => ({
+        windSpeedInKph: windSpd * 1.852,
+        windDirectionInDeg: windDir,
+        temperatureInC: temp / 10,
+        altitudeInM: height,
+      })),
+    })),
+  };
+}
+
+async function getRap(
   lat: number,
   lon: number,
   data_source: "Op40" | "GFS" = "Op40"

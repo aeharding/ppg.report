@@ -7,7 +7,6 @@ import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react";
 import throttle from "lodash/throttle";
-import { Rap } from "gsl-parser";
 import ReportElevationDiscrepancy, {
   ELEVATION_DISCREPANCY_THRESHOLD,
 } from "./warnings/ReportElevationDiscrepancy";
@@ -18,6 +17,7 @@ import ReportStale from "./warnings/ReportStale";
 import Errors from "./Errors";
 import { OnOff } from "../user/userSlice";
 import { useAppSelector } from "../../hooks";
+import { WindsAloftHour } from "../../models/WindsAloft";
 
 const browser = detect();
 
@@ -159,10 +159,10 @@ const Footer = styled.div`
 `;
 
 interface TableProps {
-  rap: Rap[];
+  hours: WindsAloftHour[];
 }
 
-export default function Hours({ rap }: TableProps) {
+export default function Hours({ hours }: TableProps) {
   const elevation = useAppSelector((state) => state.weather.elevation);
 
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
@@ -174,17 +174,20 @@ export default function Hours({ rap }: TableProps) {
 
   if (elevation == null) throw new Error("Elevation not found");
 
-  const lowestReportedAltitude = rap[0].data[0].height;
+  const lowestReportedAltitude = hours[0].altitudes[0].altitudeInM;
 
   // Each report can have a different # of rows. This normalizes that
-  const rows = rap[0].data.filter(({ height }) => height < 5800).length;
+  const rows = Math.max(
+    hours[0].altitudes.filter(({ altitudeInM }) => altitudeInM < 5800).length,
+    16
+  );
 
   const data = useMemo(
     () =>
-      rap.map((rap) => (
-        <HourContainer key={rap.date}>
+      hours.map((hour) => (
+        <HourContainer key={hour.date}>
           <StyledHour
-            rap={rap}
+            hour={hour}
             rows={rows}
             surfaceLevelMode={
               Math.abs(elevation - lowestReportedAltitude) <
@@ -193,7 +196,7 @@ export default function Hours({ rap }: TableProps) {
           />
         </HourContainer>
       )),
-    [rap, rows, elevation, lowestReportedAltitude]
+    [hours, rows, elevation, lowestReportedAltitude]
   );
 
   useEffect(() => {
@@ -261,8 +264,8 @@ export default function Hours({ rap }: TableProps) {
     const scrollView = scrollViewRef.current;
     if (!scrollView) return;
 
-    const index = rap.findIndex((rapLine) =>
-      isEqual(new Date(rapLine.date), startOfHour(new Date()))
+    const index = hours.findIndex((hour) =>
+      isEqual(new Date(hour.date), startOfHour(new Date()))
     );
 
     if (index === -1 || scrollView.scrollLeft) return;
@@ -383,7 +386,7 @@ export default function Hours({ rap }: TableProps) {
 
         <Extra />
 
-        <ReportWatchdog rap={rap} />
+        <ReportWatchdog hours={hours} />
       </Footer>
     </>
   );

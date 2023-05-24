@@ -3,6 +3,7 @@ import sortBy from "lodash/sortBy";
 import {
   Alert,
   isGAirmetAlert,
+  isISigmetAlert,
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
@@ -19,6 +20,8 @@ export function isAlertDangerous(alert: Alert): boolean {
     );
 
   if (isTFRAlert(alert)) return true;
+
+  if (isISigmetAlert(alert)) return true;
 
   return (
     alert.properties.data === "SIGMET" &&

@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Tippy from "@tippyjs/react";
-import { Rap, RapDatum } from "gsl-parser";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { AltitudeType, toggle, toggleAltitude } from "../user/userSlice";
 import Altitude from "./cells/Altitude";
@@ -9,6 +8,7 @@ import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
+import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
 
 const TableEl = styled.table`
   width: 100%;
@@ -35,36 +35,41 @@ const InteractTh = styled.th`
 `;
 
 interface TableProps {
-  rap: Rap;
+  windsAloftHour: WindsAloftHour;
   rows: number; // number of altitudes/rows to render
   surfaceLevelMode: boolean;
 }
 
-export default function Table({ rap, rows, surfaceLevelMode }: TableProps) {
+export default function Table({
+  windsAloftHour,
+  rows,
+  surfaceLevelMode,
+}: TableProps) {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
 
   const elevation = useAppSelector((state) => state.weather.elevation);
 
-  const lowestReportedAltitude = rap.data[0].height;
+  const lowestReportedAltitude = windsAloftHour.altitudes[0].altitudeInM;
 
   if (typeof elevation !== "number") throw new Error("Altitude not defined!");
 
   // If there is a discrepancy of less than 120 meters, it's negligible
   const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
-  const displayedRapData = rap.data
+  const displayedRapData = windsAloftHour.altitudes
     .slice(0, rows)
     .filter((datum) => !hiddenAltitude(datum));
 
-  function hiddenAltitude(datum: RapDatum): boolean {
+  function hiddenAltitude(datum: WindsAloftAltitude): boolean {
     return (
-      altitudeType === AltitudeType.AGL && !!(datum.height - surfaceLevel < 0)
+      altitudeType === AltitudeType.AGL &&
+      !!(datum.altitudeInM - surfaceLevel < 0)
     );
   }
 
-  function negativeAltitude(datum: RapDatum): boolean {
-    return !!(datum.height - surfaceLevel < 0);
+  function negativeAltitude(datum: WindsAloftAltitude): boolean {
+    return !!(datum.altitudeInM - surfaceLevel < 0);
   }
 
   return (
@@ -96,23 +101,23 @@ export default function Table({ rap, rows, surfaceLevelMode }: TableProps) {
           <Row key={index} opaque={negativeAltitude(datum)}>
             <td>
               <Altitude
-                heightInMeters={datum.height}
+                heightInMeters={datum.altitudeInM}
                 surfaceLevelInMeters={surfaceLevel}
               />
             </td>
             <td>
-              <Temperature temperature={datum.temp} />
+              <Temperature temperature={datum.temperatureInC} />
             </td>
             <td>
               <WindDirection
-                curr={datum.windDir}
-                prev={displayedRapData[index - 1]?.windDir}
+                curr={datum.windDirectionInDeg}
+                prev={displayedRapData[index - 1]?.windDirectionInDeg}
               />
             </td>
             <td>
               <WindSpeed
-                curr={datum.windSpd}
-                prev={displayedRapData[index - 1]?.windSpd}
+                curr={datum.windSpeedInKph}
+                prev={displayedRapData[index - 1]?.windSpeedInKph}
               />
             </td>
           </Row>

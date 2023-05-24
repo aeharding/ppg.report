@@ -18,7 +18,7 @@ interface HeightProps {
 export default function Altitude({
   heightInMeters,
   surfaceLevelInMeters,
-}: HeightProps) {
+}: Omit<HeightProps, "heightUnitLabel" | "heightValueFormatter">) {
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
 

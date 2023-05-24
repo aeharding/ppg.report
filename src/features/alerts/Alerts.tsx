@@ -3,12 +3,14 @@ import WeatherAlert from "./WeatherAlert";
 import {
   Alert,
   isGAirmetAlert,
+  isISigmetAlert,
   isSigmetAlert,
   isTFRAlert,
   isWeatherAlert,
 } from "./alertsSlice";
 import TFRAlert from "./TFRAlert";
 import SigmetAlert from "./SigmetAlert";
+import ISigmetAlert from "./ISigmetAlert";
 import CwaAlert from "./CwaAlert";
 import GAirmetAlert from "./gairmet/GAirmetAlert";
 import React from "react";
@@ -33,6 +35,9 @@ function Alerts({ alerts }: AlertsProps) {
 
     if (isSigmetAlert(alert))
       return <SigmetAlert alert={alert} index={index} total={alerts.length} />;
+
+    if (isISigmetAlert(alert))
+      return <ISigmetAlert alert={alert} index={index} total={alerts.length} />;
 
     if (isGAirmetAlert(alert))
       return <GAirmetAlert alert={alert} index={index} total={alerts.length} />;

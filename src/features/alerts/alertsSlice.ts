@@ -5,6 +5,7 @@ import { findRelatedAlerts } from "../../helpers/weather";
 import {
   AviationAlertFeature,
   GAirmetFeature,
+  ISigmetFeature,
   SigmetFeature,
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
@@ -74,6 +75,10 @@ export function isTFRAlert(alert: Alert): alert is TFRFeature {
 
 export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
   return "data" in alert.properties && alert.properties.data === "SIGMET";
+}
+
+export function isISigmetAlert(alert: Alert): alert is ISigmetFeature {
+  return "data" in alert.properties && alert.properties.data === "ISIGMET";
 }
 
 export function isGAirmetAlert(alert: Alert): alert is GAirmetFeature {

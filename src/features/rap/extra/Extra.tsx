@@ -53,7 +53,7 @@ export default function Extra() {
       : false;
 
   const gridId =
-    weather && typeof weather === "object"
+    weather && typeof weather === "object" && "properties" in weather
       ? `${weather.properties.gridId} `
       : "";
 
@@ -61,22 +61,24 @@ export default function Extra() {
     <Container>
       <InstallPrompt />
 
-      <BottomSheet
-        openButton={
-          <Item
-            icon={faFileAlt}
-            iconBg={[0, 255, 0]}
-            iconColor="black"
-            flag={unviewed}
-            loading={discussion === "pending"}
-          >
-            Discussion
-          </Item>
-        }
-        title={`${gridId}Area Forecast Discussion`}
-      >
-        <Discussion />
-      </BottomSheet>
+      {discussion !== "failed" ? (
+        <BottomSheet
+          openButton={
+            <Item
+              icon={faFileAlt}
+              iconBg={[0, 255, 0]}
+              iconColor="black"
+              flag={unviewed}
+              loading={discussion === "pending"}
+            >
+              Discussion
+            </Item>
+          }
+          title={`${gridId}Area Forecast Discussion`}
+        >
+          <Discussion />
+        </BottomSheet>
+      ) : undefined}
 
       <BottomSheet
         openButton={

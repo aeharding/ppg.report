@@ -5,7 +5,6 @@ import RadarLayer from "../../map/RadarLayer";
 import { linkifyOptions } from "../rap/extra/discussion/Discussion";
 import { undoFixedWidthText } from "../../helpers/weather";
 import OSMAttribution from "../../map/OSMAttribution";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
 import MapController from "./MapController";
 import {
   AlertContainer,
@@ -14,6 +13,7 @@ import {
   Title,
 } from "./shared";
 import MyPosition from "../../map/MyPosition";
+import { WeatherAlertFeature } from "../../services/nwsWeather";
 
 interface AlertProps {
   alert: WeatherAlertFeature;

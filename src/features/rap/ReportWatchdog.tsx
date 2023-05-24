@@ -2,16 +2,15 @@ import { useAppDispatch } from "../../hooks";
 import useInterval from "../../helpers/useInterval";
 import { usePageVisibility } from "react-page-visibility";
 import { useEffect, useState } from "react";
-import { getRap } from "./rapSlice";
 import { getWeather } from "../weather/weatherSlice";
 import { useParams } from "react-router-dom";
-import { Rap } from "gsl-parser";
+import { WindsAloftHour } from "../../models/WindsAloft";
 
 interface ReportWatchdogProps {
-  rap: Rap[];
+  hours: WindsAloftHour[];
 }
 
-export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
+export default function ReportWatchdog({ hours }: ReportWatchdogProps) {
   const dispatch = useAppDispatch();
   const visibility = usePageVisibility();
   const [lastUpdated, setLastUpdated] = useState(Date.now());
@@ -30,9 +29,8 @@ export default function ReportWatchdog({ rap }: ReportWatchdogProps) {
   useEffect(() => {
     if (document.hidden) return;
 
-    dispatch(getRap(+lat, +lon));
     dispatch(getWeather(+lat, +lon));
-  }, [lastUpdated, dispatch, rap, lat, lon]);
+  }, [lastUpdated, dispatch, hours, lat, lon]);
 
   return <></>;
 }

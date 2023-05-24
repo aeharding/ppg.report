@@ -1,27 +1,15 @@
 import styled from "@emotion/styled";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import {
-  faCloudHail,
-  faCloudRain,
-  faCloudSleet,
-  faFog,
-  faPooStorm,
-  faRaindrops,
-  faSmoke,
-  faThunderstorm,
-  faWind,
-} from "@fortawesome/pro-duotone-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from "@tippyjs/react";
-import lowerCase from "lodash/lowerCase";
-import capitalize from "lodash/capitalize";
+
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
-import { findValue } from "../../../services/weather";
-import { WeatherObservation, WeatherResult } from "../weatherSlice";
+import { findValue } from "../../../services/nwsWeather";
+import { WeatherResult as NWSWeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
 import { css } from "@emotion/react";
-import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
+import NWSWeather from "./NWSWeather";
+import WMOWeather from "./WMOWeather";
 
 const thunderAnimate = keyframes`
   0% {
@@ -73,8 +61,8 @@ const thunderAnimate = keyframes`
   }
 `;
 
-const WeatherIcon = styled(FontAwesomeIcon)<{
-  coverage: WeatherObservation["coverage"];
+export const WeatherIcon = styled(FontAwesomeIcon)<{
+  lightning: boolean;
 }>`
   font-size: 1.4em;
   margin-right: 0.5rem;
@@ -82,111 +70,39 @@ const WeatherIcon = styled(FontAwesomeIcon)<{
   &.fa-thunderstorm {
     ${outputP3ColorFromRGB([255, 255, 0])}
 
-    ${({ coverage }) => {
-      switch (coverage) {
-        case "slight_chance":
-        case "chance":
-          return;
-        default:
-          return css`
-            .fa-secondary {
-              animation: ${thunderAnimate} 10s linear infinite;
-            }
-          `;
-      }
-    }}
+    ${({ lightning }) =>
+      lightning &&
+      css`
+        .fa-secondary {
+          animation: ${thunderAnimate} 10s linear infinite;
+        }
+      `}
   }
-`;
-
-const Flex = styled.div`
-  display: flex;
 `;
 
 interface WeatherProps {
   date: string;
-  weather: WeatherResult | undefined;
+  weather: NWSWeatherResult | undefined;
 }
 
 export default function Weather({ date, weather }: WeatherProps) {
-  const observations = useMemo(
-    () =>
-      typeof weather === "object"
-        ? findValue(
-            new Date(date),
+  const observations = useMemo(() => {
+    if (typeof weather !== "object") return undefined;
 
-            weather.properties.weather
-          )
-        : undefined,
-    [date, weather]
-  )?.value;
+    if ("properties" in weather)
+      return findValue(
+        new Date(date),
+
+        weather.properties.weather
+      )?.value;
+
+    return weather.byUnixTimestamp[new Date(date).getTime() / 1_000]?.weather;
+  }, [date, weather]);
 
   if (!observations) return <></>;
 
-  const observation: WeatherObservation | undefined =
-    observations.find(({ weather }) => weather === "thunderstorms") ||
-    observations[0];
+  if (Array.isArray(observations))
+    return <NWSWeather observations={observations} />;
 
-  if (!observation) return <></>;
-
-  let tooltip = capitalize(
-    observations
-      .map((observation) =>
-        [observation.coverage, observation.weather].map(lowerCase).join(" ")
-      )
-      .join(", ")
-  );
-
-  const icon = findIconFor(observation);
-
-  if (!icon) return <></>;
-
-  return (
-    <Tippy content={tooltip} placement="bottom">
-      <Flex>
-        <WeatherIcon icon={icon} coverage={observation.coverage} />
-      </Flex>
-    </Tippy>
-  );
-}
-
-function findIconFor(observation: WeatherObservation): IconProp | undefined {
-  switch (observation.weather) {
-    case "drizzle":
-      return faRaindrops;
-    case "dust":
-    case "sand":
-    case "sand_storm":
-    case "volcanic_ash":
-    case "unknown":
-      return;
-    case "dust_storm":
-    case "dust_whirls":
-      return faWind;
-    case "fog":
-    case "fog_mist":
-    case "haze":
-      return faFog;
-    case "funnel_cloud":
-      return faPooStorm;
-    case "hail":
-      return faCloudHail;
-    case "ice_crystals":
-    case "ice_pellets":
-      return faCloudSleet;
-    case "rain":
-    case "spray":
-    case "rain_showers":
-      return faCloudRain;
-    case "smoke":
-      return faSmoke;
-    case "snow":
-    case "snow_grains":
-    case "snow_pellets":
-    case "snow_showers":
-      return faSnowflake;
-    case "squalls":
-      return faWind;
-    case "thunderstorms":
-      return faThunderstorm;
-  }
+  return <WMOWeather wmoCode={observations} />;
 }

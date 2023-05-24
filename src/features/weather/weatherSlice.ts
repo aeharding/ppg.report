@@ -1,19 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
-import * as weather from "../../services/weather";
+import * as nwsWeather from "../../services/nwsWeather";
 import { differenceInMinutes } from "date-fns";
 import axios from "axios";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
-import { GeoJsonObject } from "geojson";
 import * as storage from "../user/storage";
+import { WindsAloftReport } from "../../models/WindsAloft";
+import * as rapidRefresh from "../../services/rapidRefresh";
+import * as openMeteo from "../../services/openMeteo";
 
-interface Coordinates {
-  lat: number;
-  lon: number;
-}
+type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
 export type WeatherResult =
   // component has requested a weather, to be batched in next bulk request
@@ -25,144 +24,15 @@ export type WeatherResult =
   // Request failed
   | "failed";
 
-export interface Weather extends Coordinates {
-  properties: {
-    probabilityOfPrecipitation: Property;
-    skyCover: Property;
-    weather: Property<WeatherObservation[]>;
-    windSpeed: Property;
-    windGust: Property;
-    windDirection: Property;
-
-    /**
-     * The NWS office, like "MKX"
-     */
-    gridId: string;
-  };
-  geometry: GeoJsonObject | null;
-}
-
-export interface WeatherObservation {
-  coverage?:
-    | "areas"
-    | "brief"
-    | "chance"
-    | "definite"
-    | "few"
-    | "frequent"
-    | "intermittent"
-    | "isolated"
-    | "likely"
-    | "numerous"
-    | "occasional"
-    | "patchy"
-    | "periods"
-    | "scattered"
-    | "slight_chance"
-    | "widespread";
-  weather?:
-    | "fog_mist"
-    | "dust_storm"
-    | "dust"
-    | "drizzle"
-    | "funnel_cloud"
-    | "fog"
-    | "smoke"
-    | "hail"
-    | "snow_pellets"
-    | "haze"
-    | "ice_crystals"
-    | "ice_pellets"
-    | "dust_whirls"
-    | "spray"
-    | "rain_showers"
-    | "rain"
-    | "sand"
-    | "snow_grains"
-    | "snow"
-    | "squalls"
-    | "sand_storm"
-    | "thunderstorms"
-    | "unknown"
-    | "volcanic_ash"
-    | "snow_showers";
-  intensity?: "light" | "very_light" | "moderate" | "heavy";
-  attributes: (
-    | "damaging_wind"
-    | "dry_thunderstorms"
-    | "flooding"
-    | "gusty_wind"
-    | "heavy_rain"
-    | "large_hail"
-    | "small_hail"
-    | "tornadoes"
-  )[];
-}
-
-export interface Property<T = number> {
-  uom: string;
-  values: Value<T>[];
-}
-
-export interface Value<T = unknown> {
-  validTime: string;
-  value: T;
-}
-
 export type AlertsResult =
   // component has requested a weather, to be batched in next bulk request
   | "pending"
 
   // the weather data (finished resolving)
-  | Alerts
+  | nwsWeather.Alerts
 
   // Request failed
   | "failed";
-
-export interface Alerts {
-  features: WeatherAlertFeature[];
-}
-
-export interface WeatherAlertFeature {
-  properties: {
-    id: string;
-    sent: string;
-    effective: string;
-    onset: string;
-    expires: string;
-    ends: string;
-    category:
-      | "Met"
-      | "Geo"
-      | "Safety"
-      | "Security"
-      | "Rescue"
-      | "Fire"
-      | "Health"
-      | "Env"
-      | "Transport"
-      | "Infra"
-      | "CBRNE"
-      | "Other";
-    severity: "Extreme" | "Severe" | "Moderate" | "Minor" | "Unknown";
-    certainty: "Observed" | "Likely" | "Possible" | "Unlikely" | "Unknown";
-    urgency: "Immediate" | "Expected" | "Future" | "Past" | "Unknown";
-    event: string;
-    headline?: string;
-    description: string;
-    instruction?: string;
-    parameters: {
-      AWIPSidentifier: string[];
-      WMOidentifier: string[];
-      NWSheadline: string[];
-      eventMotionDescription: string[];
-      BLOCKCHANNEL: string[];
-      "EAS-ORG": string[];
-      expiredReferences: string[];
-    };
-  };
-  geometry: GeoJsonObject | null;
-}
 
 type AviationWeatherResult =
   // component has requested a weather, to be batched in next bulk request
@@ -203,6 +73,19 @@ type DiscussionResult =
   // Nothing found for the coordinates
   | "not-available";
 
+export type WindsAloftResult =
+  // component has requested a book, to be batched in next bulk request
+  | "pending"
+
+  // the winds aloft by hour (finished resolving)
+  | WindsAloftReport
+
+  // API request failed
+  | "failed"
+
+  // Unsupported coordinates provided
+  | "coordinates-error";
+
 export interface Discussion {
   id: string;
   wmoCollectiveId: string;
@@ -229,6 +112,9 @@ interface WeatherState {
   discussion: DiscussionResult | undefined;
   discussionLastUpdated?: string;
   discussionLastViewed: string | undefined;
+
+  windsAloft: WindsAloftResult | undefined;
+  windsAloftUpdated: string | undefined;
 }
 
 // Define the initial state using that type
@@ -247,6 +133,9 @@ const initialState: WeatherState = {
   elevationLoading: false,
   discussion: undefined,
   discussionLastViewed: undefined,
+
+  windsAloft: undefined,
+  windsAloftUpdated: undefined,
 };
 
 /**
@@ -356,7 +245,7 @@ export const weatherReducer = createSlice({
     /**
      * @param action Action containing payload as the Rap
      */
-    alertsReceived: (state, action: PayloadAction<Alerts>) => {
+    alertsReceived: (state, action: PayloadAction<nwsWeather.Alerts>) => {
       if (state.alerts === "pending") {
         state.alerts = action.payload;
         state.alertsLastUpdated = new Date().toISOString();
@@ -549,6 +438,59 @@ export const weatherReducer = createSlice({
       state.discussionLastViewed = action.payload;
     },
 
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    windsAloftLoading: (state) => {
+      switch (state.windsAloft) {
+        case "failed":
+        case "coordinates-error":
+        case undefined:
+          state.windsAloft = "pending";
+          return;
+        case "pending":
+          return;
+        default: {
+          if (
+            !state.windsAloftUpdated ||
+            Math.abs(
+              differenceInMinutes(new Date(state.windsAloftUpdated), new Date())
+            ) > 30
+          ) {
+            state.windsAloft = "pending";
+          }
+        }
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the Rap
+     */
+    windsAloftReceived: (state, action: PayloadAction<WindsAloftReport>) => {
+      if (state.windsAloft === "pending") {
+        state.windsAloft = action.payload;
+        state.windsAloftUpdated = new Date().toISOString();
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    windsAloftFailed: (state) => {
+      if (state.windsAloft === "pending") {
+        state.windsAloft = "failed";
+      }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    windsAloftBadCoordinates: (state) => {
+      if (state.windsAloft === "pending") {
+        state.windsAloft = "coordinates-error";
+      }
+    },
+
     clear: () => initialState,
   },
 });
@@ -578,26 +520,68 @@ export const {
   discussionFailed,
   discussionNotAvailable,
   setDiscussionViewed,
+
+  windsAloftLoading,
+  windsAloftReceived,
+  windsAloftFailed,
+  windsAloftBadCoordinates,
 } = weatherReducer.actions;
 
 export const getWeather =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    loadAlerts();
-    loadElevation();
+    // Open Meteo can provide weather and elevation alongside winds aloft
+    const { elevation, weather } = await loadWindsAloft();
+
+    if (elevation == null) loadElevation();
+    else dispatch(elevationReceived(elevation));
+
+    if (weather == null) {
+      loadNWSWeather();
+      loadNWSAlerts();
+    } else {
+      dispatch(weatherLoading());
+      dispatch(weatherReceived(weather));
+      loadTimezoneIfNeeded();
+    }
+
     loadAviationWeather();
     loadAviationAlerts();
 
-    if (getState().weather.discussion === "pending") return;
-    dispatch(discussionLoading());
-    if (getState().weather.discussion !== "pending") return;
+    async function loadWindsAloft(): Promise<{
+      elevation?: number;
+      weather?: Weather;
+    }> {
+      dispatch(windsAloftLoading());
 
-    try {
-      const gridId = await loadPointData();
-      if (gridId) loadDiscussion(gridId);
-    } catch (error) {
-      dispatch(discussionFailed());
-      throw error;
+      const isPending = getState().weather.windsAloft === "pending";
+
+      if (!isPending) return {};
+
+      try {
+        const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
+
+        dispatch(windsAloftReceived(windsAloft));
+      } catch (error) {
+        try {
+          // It would be nice in the future to intelligently choose an API
+          // instead of trial and error (and, it would be faster)
+          const { windsAloft, weather } = await openMeteo.getWindsAloft(
+            lat,
+            lon
+          );
+
+          dispatch(windsAloftReceived(windsAloft));
+
+          return { elevation: windsAloft.elevationInM, weather };
+        } catch (error) {
+          dispatch(windsAloftFailed());
+
+          throw error;
+        }
+      }
+
+      return {};
     }
 
     async function loadPointData() {
@@ -608,32 +592,21 @@ export const getWeather =
       try {
         let forecastGridDataUrl;
         try {
-          const data = await weather.getPointResources({ lat, lon });
+          const data = await nwsWeather.getPointResources({ lat, lon });
 
           forecastGridDataUrl = data.forecastGridDataUrl;
 
           dispatch(timeZoneReceived(data.timeZone));
         } catch (e) {
-          if (getState().weather.timeZone) throw e;
-
           // Likely Mexico or Canada
           // We still need the timezone, so try to fall back anyways
-          try {
-            let timeZone = await timezoneService.get({ lat, lon });
-            dispatch(timeZoneReceived(timeZone));
-          } catch (e) {
-            if (!axios.isAxiosError(e)) throw e;
-
-            dispatch(timeZoneFailed());
-
-            throw e;
-          }
+          loadTimezoneIfNeeded();
 
           throw e;
         }
 
         if (forecastGridDataUrl) {
-          const data = await weather.getGridData(forecastGridDataUrl);
+          const data = await nwsWeather.getGridData(forecastGridDataUrl);
 
           dispatch(weatherReceived(data));
 
@@ -645,13 +618,28 @@ export const getWeather =
       }
     }
 
-    async function loadAlerts() {
+    async function loadTimezoneIfNeeded() {
+      if (getState().weather.timeZone) return;
+
+      try {
+        let timeZone = await timezoneService.get({ lat, lon });
+        dispatch(timeZoneReceived(timeZone));
+      } catch (e) {
+        if (!axios.isAxiosError(e)) throw e;
+
+        dispatch(timeZoneFailed());
+
+        throw e;
+      }
+    }
+
+    async function loadNWSAlerts() {
       if (getState().weather.alerts === "pending") return;
       dispatch(alertsLoading());
       if (getState().weather.alerts !== "pending") return;
 
       try {
-        const alerts = await weather.getAlerts({ lat, lon });
+        const alerts = await nwsWeather.getAlerts({ lat, lon });
         dispatch(alertsReceived(alerts));
       } catch (e: unknown) {
         dispatch(alertsFailed());
@@ -718,9 +706,23 @@ export const getWeather =
       }
     }
 
-    async function loadDiscussion(gridId: string) {
+    async function loadNWSWeather() {
+      if (getState().weather.discussion === "pending") return;
+      dispatch(discussionLoading());
+      if (getState().weather.discussion !== "pending") return;
+
       try {
-        const discussion = await weather.getDiscussion(gridId);
+        const gridId = await loadPointData();
+        if (gridId) loadDiscussionFromGridId(gridId);
+      } catch (error) {
+        dispatch(discussionFailed());
+        throw error;
+      }
+    }
+
+    async function loadDiscussionFromGridId(gridId: string) {
+      try {
+        const discussion = await nwsWeather.getDiscussion(gridId);
         if (!discussion) {
           dispatch(discussionNotAvailable());
         } else {
@@ -747,3 +749,6 @@ function getDiscussionLastViewed(issuingOffice: string): string {
 
   return discussionLastViewedByStation[issuingOffice];
 }
+
+// Other code such as selectors can use the imported `RootState` type
+export const windsAloft = (state: RootState) => state.weather.windsAloft;

@@ -134,6 +134,6 @@ export default function DetailedAviationReport({
   );
 }
 
-function cToF(celsius: number): number {
+export function cToF(celsius: number): number {
   return Math.round((celsius * 9) / 5 + 32);
 }

@@ -7,7 +7,6 @@ import Precipitation from "./header/Precipitation";
 import { isWithinInterval } from "../../helpers/date";
 import Airport from "./header/Airport";
 import SkyCover from "./header/SkyCover";
-import Weather from "./header/Weather";
 import AlertsIcon from "./header/AlertsIcon";
 import { tafReport as tafReportSelector } from "./weatherSliceLazy";
 import Wind from "./header/Wind";
@@ -23,6 +22,7 @@ import {
 } from "../alerts/alertsSlice";
 import { addHours } from "date-fns/esm";
 import { isAlertRead } from "../../helpers/alert";
+import Weather from "./header/Weather";
 
 export enum HeaderType {
   Normal,

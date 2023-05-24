@@ -10,14 +10,46 @@ export default function PointInfo() {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const heightUnitLabel = heightUnitFormatter(heightUnit);
 
-  const rap = useAppSelector((state) => state.rap.rap);
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
   const elevation = useAppSelector((state) => state.weather.elevation);
   if (!lat || !lon) throw new Error("lat or lon not defined!");
-  if (!rap || typeof rap !== "object") throw new Error("RAP not defined");
+  if (!windsAloft || typeof windsAloft !== "object")
+    throw new Error("RAP not defined");
 
-  const rapHeight = rap[0].data[0].height;
+  const altitudeInM = windsAloft.hours[0].altitudes[0].altitudeInM;
+
+  const source = (() => {
+    switch (windsAloft.source) {
+      case "openMeteo":
+        return (
+          <>
+            <a
+              href="https://open-meteo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              open-meteo.com
+            </a>{" "}
+            / Best model
+          </>
+        );
+      case "rucSounding":
+        return (
+          <>
+            <a
+              href="https://rucsoundings.noaa.gov"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              rucsoundings.noaa.gov
+            </a>{" "}
+            / Op40
+          </>
+        );
+    }
+  })();
 
   return (
     <>
@@ -34,10 +66,14 @@ export default function PointInfo() {
         <div>Winds aloft gridpoint elevation</div>
         <div>
           {Math.round(
-            heightValueFormatter(rapHeight, heightUnit)
+            heightValueFormatter(altitudeInM, heightUnit)
           ).toLocaleString()}
           {heightUnitLabel}
         </div>
+      </DataListItem>
+      <DataListItem>
+        <div>Source/model</div>
+        <div>{source}</div>
       </DataListItem>
     </>
   );

@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tippy from "@tippyjs/react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { findValue } from "../../../services/weather";
+import { findValue } from "../../../services/nwsWeather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 
@@ -41,38 +41,38 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
       : true
   );
 
-  const chance = useMemo(
-    () =>
-      typeof weather === "object"
-        ? findValue(
-            new Date(date),
+  const chance = useMemo(() => {
+    if (typeof weather !== "object") return undefined;
 
-            weather.properties.skyCover
-          )
-        : undefined,
-    [date, weather]
-  );
+    if ("properties" in weather)
+      return findValue(
+        new Date(date),
 
-  if (!chance) return <></>;
+        weather.properties.skyCover
+      )?.value;
+
+    return weather.byUnixTimestamp[new Date(date).getTime() / 1_000]
+      ?.cloudCover;
+  }, [date, weather]);
+
+  if (chance == null) return <></>;
 
   const icon = (() => {
-    if (chance?.value > 75) return faClouds;
-    else if (chance?.value > 35) return isDay ? faCloudsSun : faCloudsMoon;
+    if (chance > 75) return faClouds;
+    else if (chance > 35) return isDay ? faCloudsSun : faCloudsMoon;
     return isDay ? faSun : faMoon;
   })();
 
-  const body = <>{chance.value}%</>;
+  const body = <>{chance}%</>;
 
   // if (chance.value <= SHOW_SKY_COVER_THRESHOLD) {
   //   return iconElement;
   // }
 
   return (
-    <Tippy content={`${chance.value}% sky cover`} placement="bottom">
+    <Tippy content={`${chance}% sky cover`} placement="bottom">
       <div>
-        <Micro icon={<SkyIcon icon={icon} chance={chance.value} />}>
-          {body}
-        </Micro>
+        <Micro icon={<SkyIcon icon={icon} chance={chance} />}>{body}</Micro>
       </div>
     </Tippy>
   );

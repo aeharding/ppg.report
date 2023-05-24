@@ -58,47 +58,51 @@ const Cape = styled.span<{ cape: number }>`
 `;
 
 interface CinCapeProps {
-  cin: number;
+  cin?: number;
   cape: number;
 }
 
 export default function CinCape({ cin, cape }: CinCapeProps) {
+  if (cin == null && cape == null) return null;
+
   return (
     <Container>
-      <Tippy
-        content={
-          <Description>
-            <p>
-              <a
-                href="https://en.wikipedia.org/wiki/Convective_inhibition"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                CIn (Convective inhibition)
-              </a>{" "}
-              in J/Kg. We use the most unstable CIN (MUCIN) using the parcel
-              with highest theta-e in lowest 300 mb.
-            </p>
-            <p>
-              CIN values between <Cin cin={0}>0</Cin> and{" "}
-              <Cin cin={-25}>-25</Cin> are classified as weak inhibition.
-            </p>{" "}
-            <p>
-              CIN values between <Cin cin={-25}>-25</Cin> and{" "}
-              <Cin cin={-50}>-50</Cin>, typically qualify as moderate. When you
-              see CIN values of <Cin cin={-100}>-100</Cin>, you have a chance of
-              a very large storm!
-            </p>
-          </Description>
-        }
-        interactive
-        placement="bottom"
-      >
-        <Cin cin={cin}>
-          <h4>CIN</h4>
-          {cin}
-        </Cin>
-      </Tippy>
+      {cin != null && (
+        <Tippy
+          content={
+            <Description>
+              <p>
+                <a
+                  href="https://en.wikipedia.org/wiki/Convective_inhibition"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  CIn (Convective inhibition)
+                </a>{" "}
+                in J/Kg. We use the most unstable CIN (MUCIN) using the parcel
+                with highest theta-e in lowest 300 mb.
+              </p>
+              <p>
+                CIN values between <Cin cin={0}>0</Cin> and{" "}
+                <Cin cin={-25}>-25</Cin> are classified as weak inhibition.
+              </p>{" "}
+              <p>
+                CIN values between <Cin cin={-25}>-25</Cin> and{" "}
+                <Cin cin={-50}>-50</Cin>, typically qualify as moderate. When
+                you see CIN values of <Cin cin={-100}>-100</Cin>, you have a
+                chance of a very large storm!
+              </p>
+            </Description>
+          }
+          interactive
+          placement="bottom"
+        >
+          <Cin cin={cin}>
+            <h4>CIN</h4>
+            {cin}
+          </Cin>
+        </Tippy>
+      )}
       <Tippy
         content={
           <Description>

@@ -6,13 +6,13 @@ import chroma from "chroma-js";
 import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
 import formatInTimeZone from "date-fns-tz/formatInTimeZone";
-import { Rap } from "gsl-parser";
 import Table from "./Table";
 import WeatherHeader from "../weather/WeatherHeader";
 import { useAppSelector } from "../../hooks";
-import { timeZoneSelector } from "../weather/weatherSlice";
+import { timeZoneSelector, windsAloft } from "../weather/weatherSlice";
 import { zonedTimeToUtc } from "date-fns-tz";
 import { getTimeFormatString } from "../weather/aviation/Forecast";
+import { WindsAloftHour } from "../../models/WindsAloft";
 
 const Column = styled.div`
   position: relative;
@@ -47,27 +47,39 @@ const HourContainer = styled.h3`
 `;
 
 interface HourProps {
-  rap: Rap;
+  hour: WindsAloftHour;
   rows: number; // number of altitudes/rows to render
   surfaceLevelMode: boolean;
 }
 
 export default function Hour({
-  rap,
+  hour,
   rows,
   surfaceLevelMode,
   ...rest
 }: HourProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
+  const windsAloftResult = useAppSelector(windsAloft);
+
+  if (typeof windsAloftResult !== "object")
+    throw new Error("Winds aloft should be resolved");
 
   if (!timeZone) throw new Error("Timezone not found");
 
   const [yesterdayTimes] = useState(
-    SunCalc.getTimes(subDays(new Date(rap.date), 1), rap.lat, -rap.lon)
+    SunCalc.getTimes(
+      subDays(new Date(hour.date), 1),
+      windsAloftResult.latitude,
+      windsAloftResult.longitude
+    )
   );
   const [times] = useState(
-    SunCalc.getTimes(new Date(rap.date), rap.lat, -rap.lon)
+    SunCalc.getTimes(
+      new Date(hour.date),
+      windsAloftResult.latitude,
+      windsAloftResult.longitude
+    )
   );
 
   const [colorScale] = useState(() =>
@@ -111,26 +123,30 @@ export default function Hour({
       <Header>
         <HourContainer>
           {formatInTimeZone(
-            new Date(rap.date),
+            new Date(hour.date),
             timeZone,
             getTimeFormatString(timeFormat, true)
           )}
-          {new Date(rap.date).getTime() >=
+          {new Date(hour.date).getTime() >=
             zonedTimeToUtc(startOfTomorrow(), timeZone).getTime() && (
             <sup>+1</sup>
           )}
         </HourContainer>
 
-        <CinCape cin={rap.cin} cape={rap.cape} />
+        <CinCape cin={hour.cin} cape={hour.cape} />
       </Header>
 
       <Card
         style={{
-          backgroundColor: colorScale(new Date(rap.date).getTime()).css(),
+          backgroundColor: colorScale(new Date(hour.date).getTime()).css(),
         }}
       >
-        <WeatherHeader date={rap.date} />
-        <Table rap={rap} rows={rows} surfaceLevelMode={surfaceLevelMode} />
+        <WeatherHeader date={hour.date} />
+        <Table
+          windsAloftHour={hour}
+          rows={rows}
+          surfaceLevelMode={surfaceLevelMode}
+        />
       </Card>
     </Column>
   );

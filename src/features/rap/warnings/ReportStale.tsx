@@ -10,11 +10,17 @@ const StyledWarningMessage = styled(WarningMessage)`
 `;
 
 export default function ReportStale() {
-  const rap = useAppSelector((state) => state.rap.rap);
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
 
-  if (!rap || typeof rap !== "object") return <></>;
+  if (!windsAloft || typeof windsAloft !== "object") return <></>;
 
-  const difference = differenceInHours(new Date(), new Date(rap[0].date));
+  // Need to determine behavior for outdated open meteo data
+  if (windsAloft.source !== "rucSounding") return <></>;
+
+  const difference = differenceInHours(
+    new Date(),
+    new Date(windsAloft.hours[0].date)
+  );
 
   if (difference < 4) return <></>;
 

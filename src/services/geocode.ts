@@ -24,23 +24,25 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
     return { lat, lon, label: `${lat}, ${lon}`, isFallbackLabel: true };
 
   const subject =
-    data.address.aeroway ||
-    data.address.municipality ||
-    data.address.town ||
-    data.address.village ||
-    data.address.city ||
+    data.address.aeroway ??
+    data.address.municipality ??
+    data.address.town ??
+    data.address.village ??
+    data.address.city ??
     data.address.county;
+
+  const label = [
+    subject ? `${subject},` : "",
+    data.address.state ?? data.address.province,
+    data.address.postcode,
+  ].filter((x) => x);
+
+  if (label.length === 0) label.push(data.address.country);
 
   return {
     lat,
     lon,
-    label: [
-      subject ? `${subject},` : "",
-      data.address.state,
-      data.address.postcode,
-    ]
-      .filter((x) => x)
-      .join(" "),
+    label: label.join(" "),
   };
 }
 
@@ -49,7 +51,6 @@ export async function search(q: string): Promise<{ lat: number; lon: number }> {
     params: {
       format: "jsonv2",
       limit: 1,
-      countrycodes: "us",
       q,
     },
   });
