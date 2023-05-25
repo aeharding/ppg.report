@@ -123,7 +123,8 @@ export type ISigmetFeature = AbstractAviationAlertFeature<{
     | "FRQ"
     | "SQL"
     | "HVY"
-    | "RDOACT CLD";
+    | "RDOACT CLD"
+    | "OBSC";
 
   geom: "AREA";
 

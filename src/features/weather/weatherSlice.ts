@@ -28,6 +28,9 @@ export type AlertsResult =
   // component has requested a weather, to be batched in next bulk request
   | "pending"
 
+  // Outside USA
+  | "not-available"
+
   // the weather data (finished resolving)
   | nwsWeather.Alerts
 
@@ -264,6 +267,13 @@ export const weatherReducer = createSlice({
         state.alerts = "failed";
         state.alertsLastUpdated = new Date().toISOString();
       }
+    },
+
+    /**
+     * @param action Action containing payload as the URL of the rap resource
+     */
+    alertsNotAvailable: (state) => {
+      state.alerts = "not-available";
     },
 
     /**
@@ -512,6 +522,7 @@ export const {
   alertsLoading,
   alertsReceived,
   alertsFailed,
+  alertsNotAvailable,
   aviationWeatherLoading,
   aviationWeatherReceived,
   aviationWeatherFailed,
@@ -555,6 +566,8 @@ export const getWeather =
           dispatch(weatherResetLoading());
           dispatch(weatherReceived(await openMeteo.getWeather(lat, lon)));
 
+          dispatch(alertsFailed());
+
           loadTimezoneIfNeeded();
 
           throw error;
@@ -567,6 +580,8 @@ export const getWeather =
 
       dispatch(weatherLoading());
       dispatch(weatherReceived(weather));
+
+      dispatch(alertsNotAvailable());
 
       loadTimezoneIfNeeded();
     }

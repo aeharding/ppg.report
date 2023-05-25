@@ -86,7 +86,7 @@ export async function getWeather(
         params: {
           latitude,
           longitude,
-          forecast_days: 2,
+          forecast_days: 1,
           timeformat: "unixtime",
           hourly: generateWeatherParams().join(","),
         },
@@ -180,7 +180,7 @@ async function getOpenMeteoWindsAloft(
       params: {
         latitude,
         longitude,
-        forecast_days: 2,
+        forecast_days: 1,
         timeformat: "unixtime",
         hourly: [
           ...generateWindsAloftParams(),

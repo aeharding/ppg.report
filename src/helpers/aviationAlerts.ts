@@ -31,7 +31,11 @@ export function getAviationAlertName(alert: AviationAlertFeature): string {
 }
 
 function getSigmetAlertName(alert: SigmetFeature): string {
-  return [formatHazard(alert.properties.hazard), getSigmetAlertType(alert)]
+  return [
+    formatHazard(alert.properties.hazard),
+    getSigmetAlertType(alert),
+    "SIGMET",
+  ]
     .filter((a) => a)
     .join(" ");
 }
@@ -43,6 +47,7 @@ function getISigmetAlertName(alert: ISigmetFeature): string {
       alert.properties.qualifier as CwaFeature["properties"]["qualifier"]
     ) ?? alert.properties.qualifier,
     formatHazard(alert.properties.hazard),
+    "SIGMET",
   ]
     .filter((a) => a)
     .join(" ");
@@ -143,6 +148,8 @@ function formatQualifier(
       return "Heavy";
     case "RDOACT CLD":
       return "Radioactive Cloud";
+    case "OBSC":
+      return "Obscured";
   }
 }
 
