@@ -165,8 +165,7 @@ export default function Forecast({ data }: ForecastProps) {
           )}
         </Text>
 
-        {data.visibility &&
-        (data.clouds.length || data.verticalVisibility != null) ? (
+        {data.visibility ? (
           <Category category={category}>{category}</Category>
         ) : (
           ""

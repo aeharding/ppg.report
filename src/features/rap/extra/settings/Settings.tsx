@@ -18,6 +18,8 @@ import {
   setDistanceUnit,
   TimeFormat,
   setTimeFormat,
+  AltitudeLevels,
+  setAltitudeLevels,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 
@@ -37,6 +39,7 @@ const Hr = styled.hr`
 export default function Settings() {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const altitudeLevels = useAppSelector((state) => state.user.altitudeLevels);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
@@ -54,6 +57,12 @@ export default function Settings() {
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
+      />
+      <Radio
+        label="Altitude levels"
+        options={[AltitudeLevels.Default, AltitudeLevels.Normalized]}
+        value={altitudeLevels}
+        onChange={(value) => dispatch(setAltitudeLevels(value))}
       />
       <Radio
         label="Altitude unit"
@@ -97,7 +106,7 @@ export default function Settings() {
         options={[OnOff.On, OnOff.Off]}
         value={gAirmetRead}
         onChange={(value) => dispatch(setGAirmetRead(value))}
-        tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy."
+        tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy. [US-only]"
       />{" "}
       <Hr />
       <div onClick={() => dispatch(resetHiddenAlerts())}>

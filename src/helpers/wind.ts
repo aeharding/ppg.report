@@ -70,3 +70,33 @@ export function convertToInterpolator(
     direction: windAltitude.windDirectionInDeg,
   };
 }
+
+/**
+ * @param altitudes Assumed to be sorted, lowest to highest
+ */
+export function findNormalizedAltitude(
+  altitudeInM: number,
+  altitudes: WindsAloftAltitude[]
+): WindsAloftAltitude {
+  for (let i = 0; i < altitudes.length; i++) {
+    const altitude = altitudes[i];
+    if (altitude.altitudeInM > altitudeInM) {
+      if (!altitudes[i - 1]) return altitude;
+
+      const { speed, direction } = interpolateWindVectors(
+        convertToInterpolator(altitudes[i - 1]),
+        convertToInterpolator(altitudes[i]),
+        altitudeInM
+      );
+
+      return {
+        altitudeInM,
+        windDirectionInDeg: direction,
+        temperatureInC: altitudes[i].temperatureInC, // TODO
+        windSpeedInKph: speed,
+      };
+    }
+  }
+
+  return altitudes[altitudes.length - 1];
+}

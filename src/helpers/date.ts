@@ -9,3 +9,7 @@ export const isWithinInterval: typeof _isWithinInterval = (...args) => {
     throw e;
   }
 };
+
+export function isValidDate(d: Date) {
+  return d instanceof Date && !isNaN(d.getTime());
+}

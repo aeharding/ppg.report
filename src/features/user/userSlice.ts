@@ -10,6 +10,11 @@ export enum AltitudeType {
   MSL = "MSL",
 }
 
+export enum AltitudeLevels {
+  Default = "Default",
+  Normalized = "Normalized",
+}
+
 // CSS scroll-snap-stop
 export enum OnOff {
   On = "On",
@@ -43,6 +48,81 @@ export enum TimeFormat {
   Twelve = "12-hour",
 }
 
+export const DEFAULT_HEIGHT_UNIT = (() => {
+  switch (navigator.language) {
+    case "en-US":
+    case "ms-MY":
+      return HeightUnit.Feet;
+    default:
+      return HeightUnit.Meters;
+  }
+})();
+
+export const DEFAULT_DISTANCE_UNIT: DistanceUnit = (() => {
+  switch (DEFAULT_HEIGHT_UNIT) {
+    case HeightUnit.Feet:
+      return DistanceUnit.Miles;
+    case HeightUnit.Meters:
+      return DistanceUnit.Kilometers;
+  }
+})();
+
+export const DEFAULT_TEMPERATURE_UNIT = (() => {
+  switch (navigator.language) {
+    case "en-US":
+    case "ms-MY":
+      return TemperatureUnit.Fahrenheit;
+    default:
+      return TemperatureUnit.Celsius;
+  }
+})();
+
+export const DEFAULT_SPEED_UNIT = (() => {
+  switch (navigator.language) {
+    case "en-US":
+    case "en-GB":
+    case "en-CA":
+    case "en-AU":
+      return SpeedUnit.MPH;
+    case "en-IN":
+    case "hi-IN":
+    case "bn-IN":
+    case "ta-IN":
+    case "de-DE":
+    case "pl-PL":
+    case "de-AT":
+    case "sl-SI":
+    case "fr-CH":
+    case "fr-FR":
+    case "es-ES":
+    case "pt-PT":
+    case "tr-TR":
+    case "ar-JO":
+      return SpeedUnit.KPH;
+    case "en-ZA":
+    case "af-ZA":
+    case "zu-ZA":
+      return SpeedUnit.Knots;
+    default:
+      return SpeedUnit.mps;
+  }
+})();
+
+export const DEFAULT_TIME_FORMAT = (() => {
+  switch (navigator.language) {
+    case "en-US":
+    case "en-CA":
+    case "en-AU":
+    case "en-GB":
+    case "en-IN":
+    case "en-NZ":
+    case "en-ZW":
+      return TimeFormat.Twelve;
+    default:
+      return TimeFormat.TwentyFour;
+  }
+})();
+
 export function toggle(altitude: AltitudeType): AltitudeType {
   switch (altitude) {
     case AltitudeType.AGL:
@@ -55,6 +135,7 @@ export function toggle(altitude: AltitudeType): AltitudeType {
 interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
+  altitudeLevels: AltitudeLevels;
   heightUnit: HeightUnit;
   speedUnit: SpeedUnit;
   temperatureUnit: TemperatureUnit;
@@ -70,6 +151,7 @@ interface UserState {
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
+  altitudeLevels: storage.getAltitudeLevels(),
   heightUnit: storage.getHeightUnit(),
   speedUnit: storage.getSpeedUnit(),
   temperatureUnit: storage.getTemperatureUnit(),
@@ -96,6 +178,9 @@ export const userReducer = createSlice({
     },
     updateAltitude(state, action: PayloadAction<AltitudeType>) {
       state.altitude = action.payload;
+    },
+    updateAltitudeLevels(state, action: PayloadAction<AltitudeLevels>) {
+      state.altitudeLevels = action.payload;
     },
     updateHeightUnit(state, action: PayloadAction<HeightUnit>) {
       state.heightUnit = action.payload;
@@ -153,6 +238,14 @@ export const setAltitude =
     dispatch(userReducer.actions.updateAltitude(altitude));
 
     storage.setAltitude(getState().user.altitude);
+  };
+
+export const setAltitudeLevels =
+  (altitudeLevels: AltitudeLevels) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateAltitudeLevels(altitudeLevels));
+
+    storage.setAltitudeLevels(getState().user.altitudeLevels);
   };
 
 export const setHeightUnit =

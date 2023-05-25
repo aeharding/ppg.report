@@ -61,7 +61,7 @@ export default function Extra() {
     <Container>
       <InstallPrompt />
 
-      {discussion !== "failed" ? (
+      {discussion !== "not-available" ? (
         <BottomSheet
           openButton={
             <Item

@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import Tippy from "@tippyjs/react";
-import capitalize from "lodash/capitalize";
 import { WeatherIcon } from "./Weather";
 import {
   faCloudRain,
@@ -8,6 +7,7 @@ import {
   faThunderstorm,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
+import { convertTitleCaseToSpaces } from "../../../helpers/string";
 
 const Flex = styled.div`
   display: flex;
@@ -32,6 +32,12 @@ enum WMOWeatherCode {
   LightRainShowers = 80,
   ModerateRainShowers = 81,
   HeavyRainShowers = 82,
+  LightIntermittentSnow = 70,
+  LightContinuousSnow = 71,
+  ModerateIntermittentSnow = 72,
+  ModerateContinuousSnow = 73,
+  HeavyIntermittentSnow = 74,
+  HeavyContinuousSnow = 75,
   LightSnowShowers = 85,
   HeavySnowShowers = 86,
   LightOrModerateThunderstorms = 95,
@@ -44,7 +50,7 @@ interface WMOWeatherCodeProps {
 }
 
 export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
-  let tooltip = capitalize(WMOWeatherCode[wmoCode]);
+  let tooltip = convertTitleCaseToSpaces(WMOWeatherCode[wmoCode]);
 
   const icon = (() => {
     switch (wmoCode) {
@@ -61,6 +67,12 @@ export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
       case WMOWeatherCode.SnowGrains:
       case WMOWeatherCode.LightSnowShowers:
       case WMOWeatherCode.HeavySnowShowers:
+      case WMOWeatherCode.LightIntermittentSnow:
+      case WMOWeatherCode.LightContinuousSnow:
+      case WMOWeatherCode.ModerateIntermittentSnow:
+      case WMOWeatherCode.ModerateContinuousSnow:
+      case WMOWeatherCode.HeavyIntermittentSnow:
+      case WMOWeatherCode.HeavyContinuousSnow:
         return faSnowflake;
       case WMOWeatherCode.ThunderstormWithHeavyHail:
       case WMOWeatherCode.ThunderstormWithLightHail:
@@ -77,14 +89,7 @@ export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
   return (
     <Tippy content={tooltip} placement="bottom">
       <Flex>
-        <WeatherIcon
-          icon={icon}
-          lightning={
-            wmoCode === WMOWeatherCode.ThunderstormWithHeavyHail ||
-            wmoCode === WMOWeatherCode.ThunderstormWithLightHail ||
-            wmoCode === WMOWeatherCode.LightOrModerateThunderstorms
-          }
-        />
+        <WeatherIcon icon={icon} lightning />
       </Flex>
     </Tippy>
   );

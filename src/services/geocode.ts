@@ -25,15 +25,20 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
 
   const subject =
     data.address.aeroway ??
-    data.address.municipality ??
     data.address.town ??
     data.address.village ??
+    data.address.borough ??
     data.address.city ??
+    data.address.hamlet ??
+    data.address.municipality ??
     data.address.county;
 
   const label = [
     subject ? `${subject},` : "",
-    data.address.state ?? data.address.province,
+    data.address.state ??
+      data.address.province ??
+      data.address.county ??
+      data.address.city,
     data.address.postcode,
   ].filter((x) => x);
 

@@ -3,16 +3,17 @@ import { useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
-import startOfTomorrow from "date-fns/startOfTomorrow";
 import subDays from "date-fns/subDays";
 import formatInTimeZone from "date-fns-tz/formatInTimeZone";
 import Table from "./Table";
 import WeatherHeader from "../weather/WeatherHeader";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector, windsAloft } from "../weather/weatherSlice";
-import { zonedTimeToUtc } from "date-fns-tz";
+import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import { getTimeFormatString } from "../weather/aviation/Forecast";
 import { WindsAloftHour } from "../../models/WindsAloft";
+import { isValidDate } from "../../helpers/date";
+import { addDays, startOfDay } from "date-fns";
 
 const Column = styled.div`
   position: relative;
@@ -82,8 +83,9 @@ export default function Hour({
     )
   );
 
-  const [colorScale] = useState(() =>
-    chroma
+  const [colorScale] = useState(() => {
+    if (!isValidDate(times.sunrise)) return chroma.scale(["#ffffff0a"]);
+    return chroma
       .scale([
         "#0000004d",
         "#6666660e",
@@ -115,8 +117,8 @@ export default function Hour({
         times.sunset.getTime() - 4.5 * 60 * 60 * 1000,
         times.sunset.getTime() - 4 * 60 * 60 * 1000,
         times.sunset.getTime() + 0.5 * 60 * 60 * 1000,
-      ])
-  );
+      ]);
+  });
 
   return (
     <Column {...rest}>
@@ -128,9 +130,7 @@ export default function Hour({
             getTimeFormatString(timeFormat, true)
           )}
           {new Date(hour.date).getTime() >=
-            zonedTimeToUtc(startOfTomorrow(), timeZone).getTime() && (
-            <sup>+1</sup>
-          )}
+            startOfTomorrowInTimeZone(timeZone).getTime() && <sup>+1</sup>}
         </HourContainer>
 
         <CinCape cin={hour.cin} cape={hour.cape} />
@@ -149,5 +149,12 @@ export default function Hour({
         />
       </Card>
     </Column>
+  );
+}
+
+function startOfTomorrowInTimeZone(timeZone: string): Date {
+  return zonedTimeToUtc(
+    startOfDay(utcToZonedTime(addDays(new Date(), 1), timeZone)),
+    timeZone
   );
 }

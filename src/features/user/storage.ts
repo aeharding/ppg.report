@@ -3,7 +3,13 @@ import getDistance from "geolib/es/getDistance";
 import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
 import {
+  AltitudeLevels,
   AltitudeType,
+  DEFAULT_DISTANCE_UNIT,
+  DEFAULT_HEIGHT_UNIT,
+  DEFAULT_SPEED_UNIT,
+  DEFAULT_TEMPERATURE_UNIT,
+  DEFAULT_TIME_FORMAT,
   DistanceUnit,
   HeightUnit,
   OnOff,
@@ -22,6 +28,7 @@ export interface UserLocation {
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
+const ALTITUDE_LEVELS_STORAGE_KEY = "user-altitude-levels";
 const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
 const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
 const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
@@ -116,6 +123,23 @@ export function getAltitude(): AltitudeType {
   return savedValue;
 }
 
+export function setAltitudeLevels(altitudeLevels: AltitudeLevels): void {
+  localStorage.setItem(ALTITUDE_LEVELS_STORAGE_KEY, altitudeLevels);
+}
+
+export function getAltitudeLevels(): AltitudeLevels {
+  const savedValue = localStorage.getItem(ALTITUDE_LEVELS_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== AltitudeLevels.Default &&
+      savedValue !== AltitudeLevels.Normalized)
+  )
+    return AltitudeLevels.Default;
+
+  return savedValue;
+}
+
 export function setAltitude(altitude: AltitudeType): void {
   localStorage.setItem(ALTITUDE_STORAGE_KEY, altitude);
 }
@@ -127,7 +151,7 @@ export function getHeightUnit(): HeightUnit {
     typeof savedValue !== "string" ||
     (savedValue !== HeightUnit.Feet && savedValue !== HeightUnit.Meters)
   )
-    return HeightUnit.Feet;
+    return DEFAULT_HEIGHT_UNIT;
 
   return savedValue;
 }
@@ -145,7 +169,7 @@ export function getSpeedUnit(): SpeedUnit {
       savedValue !== SpeedUnit.Knots &&
       savedValue !== SpeedUnit.MPH)
   )
-    return SpeedUnit.MPH;
+    return DEFAULT_SPEED_UNIT;
 
   return savedValue;
 }
@@ -162,7 +186,7 @@ export function getTemperatureUnit(): TemperatureUnit {
     (savedValue !== TemperatureUnit.Celsius &&
       savedValue !== TemperatureUnit.Fahrenheit)
   )
-    return TemperatureUnit.Fahrenheit;
+    return DEFAULT_TEMPERATURE_UNIT;
 
   return savedValue;
 }
@@ -179,7 +203,7 @@ export function getDistanceUnit(): DistanceUnit {
     (savedValue !== DistanceUnit.Kilometers &&
       savedValue !== DistanceUnit.Miles)
   )
-    return DistanceUnit.Miles;
+    return DEFAULT_DISTANCE_UNIT;
 
   return savedValue;
 }
@@ -195,7 +219,7 @@ export function getTimeFormat(): TimeFormat {
     typeof savedValue !== "string" ||
     (savedValue !== TimeFormat.Twelve && savedValue !== TimeFormat.TwentyFour)
   )
-    return TimeFormat.Twelve;
+    return DEFAULT_TIME_FORMAT;
 
   return savedValue;
 }

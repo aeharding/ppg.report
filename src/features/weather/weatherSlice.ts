@@ -147,6 +147,10 @@ export const weatherReducer = createSlice({
   name: "weather",
   initialState,
   reducers: {
+    weatherResetLoading: (state) => {
+      state.weather = "pending";
+    },
+
     /**
      * @param action Action containing payload as the URL of the rap resource
      */
@@ -496,6 +500,7 @@ export const weatherReducer = createSlice({
 });
 
 export const {
+  weatherResetLoading,
   weatherLoading,
   weatherReceived,
   timeZoneReceived,
@@ -531,32 +536,56 @@ export const getWeather =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     // Open Meteo can provide weather and elevation alongside winds aloft
-    const { elevation, weather } = await loadWindsAloft();
+    const windsAloft = await loadWindsAloft();
+
+    if (!windsAloft) return; // pending
+    const { elevation, weather } = windsAloft;
 
     if (elevation == null) loadElevation();
     else dispatch(elevationReceived(elevation));
 
     if (weather == null) {
-      loadNWSWeather();
+      (async () => {
+        try {
+          await loadNWSWeather();
+        } catch (error) {
+          dispatch(discussionLoading());
+          dispatch(discussionNotAvailable());
+
+          dispatch(weatherResetLoading());
+          dispatch(weatherReceived(await openMeteo.getWeather(lat, lon)));
+
+          loadTimezoneIfNeeded();
+
+          throw error;
+        }
+      })();
       loadNWSAlerts();
     } else {
+      dispatch(discussionLoading());
+      dispatch(discussionNotAvailable());
+
       dispatch(weatherLoading());
       dispatch(weatherReceived(weather));
+
       loadTimezoneIfNeeded();
     }
 
     loadAviationWeather();
     loadAviationAlerts();
 
-    async function loadWindsAloft(): Promise<{
-      elevation?: number;
-      weather?: Weather;
-    }> {
+    async function loadWindsAloft(): Promise<
+      | {
+          elevation?: number;
+          weather?: Weather;
+        }
+      | undefined
+    > {
       dispatch(windsAloftLoading());
 
       const isPending = getState().weather.windsAloft === "pending";
 
-      if (!isPending) return {};
+      if (!isPending) return;
 
       try {
         const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);

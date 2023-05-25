@@ -2,13 +2,20 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Tippy from "@tippyjs/react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { AltitudeType, toggle, toggleAltitude } from "../user/userSlice";
+import {
+  AltitudeLevels,
+  AltitudeType,
+  HeightUnit,
+  toggle,
+  toggleAltitude,
+} from "../user/userSlice";
 import Altitude from "./cells/Altitude";
 import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
+import { findNormalizedAltitude } from "../../helpers/wind";
 
 const TableEl = styled.table`
   width: 100%;
@@ -40,6 +47,16 @@ interface TableProps {
   surfaceLevelMode: boolean;
 }
 
+const NORMALIZED_ALTITUDES_AGL_FT = [
+  0, 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7000,
+  8000, 9000, 10000, 11000, 12000, 13000, 14000,
+].map((ft) => ft * 0.3048);
+
+const NORMALIZED_ALTITUDES_AGL_M = [
+  0, 30, 75, 150, 225, 300, 450, 600, 750, 900, 1200, 1500, 1800, 2100, 2400,
+  2700, 3000, 3300, 3600, 3900, 4200,
+];
+
 export default function Table({
   windsAloftHour,
   rows,
@@ -47,6 +64,8 @@ export default function Table({
 }: TableProps) {
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const altitudeLevels = useAppSelector((state) => state.user.altitudeLevels);
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
 
   const elevation = useAppSelector((state) => state.weather.elevation);
 
@@ -57,14 +76,31 @@ export default function Table({
   // If there is a discrepancy of less than 120 meters, it's negligible
   const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
-  const displayedRapData = windsAloftHour.altitudes
-    .slice(0, rows)
-    .filter((datum) => !hiddenAltitude(datum));
+  let displayedRapData: WindsAloftAltitude[];
 
-  function hiddenAltitude(datum: WindsAloftAltitude): boolean {
-    return (
-      altitudeType === AltitudeType.AGL &&
-      !!(datum.altitudeInM - surfaceLevel < 0)
+  if (altitudeLevels === AltitudeLevels.Default) {
+    displayedRapData = windsAloftHour.altitudes
+      .slice(0, rows)
+      .filter((datum) => !hiddenAltitude(datum));
+
+    function hiddenAltitude(datum: WindsAloftAltitude): boolean {
+      return (
+        altitudeType === AltitudeType.AGL &&
+        !!(datum.altitudeInM - surfaceLevel < 0)
+      );
+    }
+  } else {
+    const NORMALIZED_ALTITUDES = (() => {
+      switch (heightUnit) {
+        case HeightUnit.Feet:
+          return NORMALIZED_ALTITUDES_AGL_FT;
+        case HeightUnit.Meters:
+          return NORMALIZED_ALTITUDES_AGL_M;
+      }
+    })();
+
+    displayedRapData = NORMALIZED_ALTITUDES.map((altitude) =>
+      findNormalizedAltitude(altitude + surfaceLevel, windsAloftHour.altitudes)
     );
   }
 

@@ -26,11 +26,8 @@ const AGL_ALTITUDES = [80, 120, 180] as const;
 
 const AGL_METRICS = ["windspeed", "winddirection", "temperature"] as const;
 
-const SPECIAL_VARIABLES = [
+const SPECIAL_ALOFT_VARIABLES = [
   "cape",
-  "precipitation_probability",
-  "weathercode",
-  "cloudcover",
 
   "temperature_2m",
 
@@ -41,17 +38,28 @@ const SPECIAL_VARIABLES = [
   "windgusts_10m",
 ] as const;
 
+const WEATHER_VARIABLES = [
+  "precipitation_probability",
+  "weathercode",
+  "cloudcover",
+
+  "windspeed_10m",
+  "windgusts_10m",
+] as const;
+
 type HourlyPressureParams =
   | `${(typeof PRESSURE_ALTITUDE_METRICS)[number]}_${(typeof PRESSURE_ALTITUDES)[number]}hPa`
   | `${(typeof AGL_METRICS)[number]}_${(typeof AGL_ALTITUDES)[number]}m`
-  | (typeof SPECIAL_VARIABLES)[number];
+  | (typeof SPECIAL_ALOFT_VARIABLES)[number];
 
-interface OpenMeteoResponse {
+type HourlyWeatherParams = (typeof WEATHER_VARIABLES)[number];
+
+interface OpenMeteoResponse<Params extends string> {
   timezone: string;
   elevation: number;
   longitude: number;
   latitude: number;
-  hourly: Record<"time" | HourlyPressureParams, number[]>;
+  hourly: Record<"time" | Params, number[]>;
 }
 
 export interface OpenMeteoWeather {
@@ -68,6 +76,25 @@ interface OpenMeteoWeatherHour {
   cloudCover: number;
 }
 
+export async function getWeather(
+  latitude: number,
+  longitude: number
+): Promise<OpenMeteoWeather> {
+  return convertOpenMeteoToWeather(
+    (
+      await axios.get("/api/openmeteo/forecast", {
+        params: {
+          latitude,
+          longitude,
+          forecast_days: 2,
+          timeformat: "unixtime",
+          hourly: generateWeatherParams().join(","),
+        },
+      })
+    ).data
+  );
+}
+
 export async function getWindsAloft(
   latitude: number,
   longitude: number
@@ -76,19 +103,25 @@ export async function getWindsAloft(
 
   return {
     windsAloft: interpolate(convertOpenMeteoToWindsAloft(openMeteoResponse)),
-    weather: {
-      byUnixTimestamp: zipObject(
-        openMeteoResponse.hourly.time,
-        openMeteoResponse.hourly.time.map((_, index) => ({
-          precipitationChance:
-            openMeteoResponse.hourly.precipitation_probability[index],
-          weather: openMeteoResponse.hourly.weathercode[index],
-          windSpeed: openMeteoResponse.hourly.windspeed_10m[index],
-          windGust: openMeteoResponse.hourly.windgusts_10m[index],
-          cloudCover: openMeteoResponse.hourly.cloudcover[index],
-        }))
-      ),
-    },
+    weather: convertOpenMeteoToWeather(openMeteoResponse),
+  };
+}
+
+function convertOpenMeteoToWeather(
+  openMeteoResponse: OpenMeteoResponse<HourlyWeatherParams>
+): OpenMeteoWeather {
+  return {
+    byUnixTimestamp: zipObject(
+      openMeteoResponse.hourly.time,
+      openMeteoResponse.hourly.time.map((_, index) => ({
+        precipitationChance:
+          openMeteoResponse.hourly.precipitation_probability[index],
+        weather: openMeteoResponse.hourly.weathercode[index],
+        windSpeed: openMeteoResponse.hourly.windspeed_10m[index],
+        windGust: openMeteoResponse.hourly.windgusts_10m[index],
+        cloudCover: openMeteoResponse.hourly.cloudcover[index],
+      }))
+    ),
   };
 }
 
@@ -141,7 +174,7 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
 async function getOpenMeteoWindsAloft(
   latitude: number,
   longitude: number
-): Promise<OpenMeteoResponse> {
+): Promise<OpenMeteoResponse<HourlyPressureParams | HourlyWeatherParams>> {
   return (
     await axios.get("/api/openmeteo/forecast", {
       params: {
@@ -149,14 +182,17 @@ async function getOpenMeteoWindsAloft(
         longitude,
         forecast_days: 2,
         timeformat: "unixtime",
-        hourly: generateParams().join(","),
+        hourly: [
+          ...generateWindsAloftParams(),
+          ...generateWeatherParams(),
+        ].join(","),
       },
     })
   ).data;
 }
 
 function convertOpenMeteoToWindsAloft(
-  openMeteoResponse: OpenMeteoResponse
+  openMeteoResponse: OpenMeteoResponse<HourlyPressureParams>
 ): WindsAloftReport {
   let pressureAltitudeHours = openMeteoResponse.hourly.time.map((time, index) =>
     PRESSURE_ALTITUDES.map((pressureAltitude) => ({
@@ -228,7 +264,7 @@ function convertOpenMeteoToWindsAloft(
   };
 }
 
-function generateParams(): HourlyPressureParams[] {
+function generateWindsAloftParams(): HourlyPressureParams[] {
   const result: HourlyPressureParams[] = [];
 
   for (const pressure of PRESSURE_ALTITUDES) {
@@ -251,7 +287,11 @@ function generateParams(): HourlyPressureParams[] {
     }
   }
 
-  result.push(...SPECIAL_VARIABLES);
+  result.push(...SPECIAL_ALOFT_VARIABLES);
 
   return result;
+}
+
+function generateWeatherParams(): HourlyWeatherParams[] {
+  return WEATHER_VARIABLES.slice();
 }
