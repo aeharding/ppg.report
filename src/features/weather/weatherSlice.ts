@@ -11,6 +11,7 @@ import * as storage from "../user/storage";
 import { WindsAloftReport } from "../../models/WindsAloft";
 import * as rapidRefresh from "../../services/rapidRefresh";
 import * as openMeteo from "../../services/openMeteo";
+import { isPossiblyWithinUSA } from "../../helpers/geo";
 
 type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
@@ -546,6 +547,32 @@ export const {
 export const getWeather =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(windsAloftLoading());
+
+    const isPending = getState().weather.windsAloft === "pending";
+
+    if (!isPending) return;
+
+    if (!isPossiblyWithinUSA(lat, lon)) {
+      dispatch(discussionLoading());
+      dispatch(discussionNotAvailable());
+      dispatch(alertsNotAvailable());
+
+      loadTimezoneIfNeeded();
+
+      dispatch(windsAloftLoading());
+      dispatch(weatherLoading());
+
+      const { windsAloft, weather, elevationInM } =
+        await openMeteo.getWindsAloft(lat, lon);
+
+      dispatch(windsAloftReceived(windsAloft));
+      dispatch(weatherReceived(weather));
+      dispatch(elevationReceived(elevationInM));
+
+      return;
+    }
+
     // Open Meteo can provide weather and elevation alongside winds aloft
     const windsAloft = await loadWindsAloft();
 
@@ -596,12 +623,6 @@ export const getWeather =
         }
       | undefined
     > {
-      dispatch(windsAloftLoading());
-
-      const isPending = getState().weather.windsAloft === "pending";
-
-      if (!isPending) return;
-
       try {
         const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
 

@@ -98,12 +98,17 @@ export async function getWeather(
 export async function getWindsAloft(
   latitude: number,
   longitude: number
-): Promise<{ windsAloft: WindsAloftReport; weather: OpenMeteoWeather }> {
+): Promise<{
+  windsAloft: WindsAloftReport;
+  weather: OpenMeteoWeather;
+  elevationInM: number;
+}> {
   const openMeteoResponse = await getOpenMeteoWindsAloft(latitude, longitude);
 
   return {
     windsAloft: interpolate(convertOpenMeteoToWindsAloft(openMeteoResponse)),
     weather: convertOpenMeteoToWeather(openMeteoResponse),
+    elevationInM: openMeteoResponse.elevation,
   };
 }
 

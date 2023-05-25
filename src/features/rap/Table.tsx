@@ -16,6 +16,7 @@ import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
 import { findNormalizedAltitude } from "../../helpers/wind";
+import uniqBy from "lodash/uniqBy";
 
 const TableEl = styled.table`
   width: 100%;
@@ -99,8 +100,14 @@ export default function Table({
       }
     })();
 
-    displayedRapData = NORMALIZED_ALTITUDES.map((altitude) =>
-      findNormalizedAltitude(altitude + surfaceLevel, windsAloftHour.altitudes)
+    displayedRapData = uniqBy(
+      NORMALIZED_ALTITUDES.map((altitude) =>
+        findNormalizedAltitude(
+          altitude + surfaceLevel,
+          windsAloftHour.altitudes
+        )
+      ),
+      (alt) => alt.altitudeInM
     );
   }
 
