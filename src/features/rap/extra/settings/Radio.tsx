@@ -4,7 +4,6 @@ import {
   outputP3ColorFromRGBA,
 } from "../../../../helpers/colors";
 import React from "react";
-import { convertTitleCaseToSpaces } from "../../../../helpers/string";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -32,7 +31,7 @@ const Label = styled.label`
   justify-content: center;
   cursor: pointer;
 
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 0.85rem;
   min-width: 4rem;
   border: 1px solid;
   color: #888;
@@ -69,9 +68,7 @@ export function Radio<T extends string>({
             id={`${label}${option}`}
             onChange={(event) => onChange(event.target.value as T)}
           />
-          <Label htmlFor={`${label}${option}`}>
-            {convertTitleCaseToSpaces(option)}
-          </Label>
+          <Label htmlFor={`${label}${option}`}>{option}</Label>
         </React.Fragment>
       ))}
     </div>

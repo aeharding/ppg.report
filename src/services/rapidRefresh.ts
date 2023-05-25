@@ -82,7 +82,7 @@ async function _getRap(
   lat: number,
   lon: number,
   data_source: "Op40" | "GFS" = "Op40",
-  hours = 24,
+  hours = 30,
   start?: Date
 ) {
   const { data: asciiReports } = await axios.get<string>(API_PATH, {

@@ -185,7 +185,7 @@ async function getOpenMeteoWindsAloft(
       params: {
         latitude,
         longitude,
-        forecast_days: 1,
+        forecast_days: 2,
         timeformat: "unixtime",
         hourly: [
           ...generateWindsAloftParams(),

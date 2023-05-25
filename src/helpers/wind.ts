@@ -1,4 +1,5 @@
 import { WindsAloftAltitude } from "../models/WindsAloft";
+import interpolate from "./interpolate";
 
 interface WindVector {
   height: number;
@@ -92,7 +93,17 @@ export function findNormalizedAltitude(
       return {
         altitudeInM,
         windDirectionInDeg: direction,
-        temperatureInC: altitudes[i].temperatureInC, // TODO
+        temperatureInC: interpolate(
+          altitudeInM,
+          {
+            value: altitudes[i - 1].temperatureInC,
+            point: altitudes[i - 1].altitudeInM,
+          },
+          {
+            value: altitudes[i].temperatureInC,
+            point: altitudes[i].altitudeInM,
+          }
+        ),
         windSpeedInKph: speed,
       };
     }

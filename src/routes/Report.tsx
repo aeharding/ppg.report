@@ -95,10 +95,8 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
         <Hours
           hours={windsAloft.hours.filter(
             ({ date }) =>
-              !(
-                isPast(new Date(date)) &&
-                differenceInHours(new Date(), new Date(date)) >= 4
-              )
+              differenceInHours(new Date(date), new Date()) >= -2 &&
+              differenceInHours(new Date(date), new Date()) < 24
           )}
         />
       );
