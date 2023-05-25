@@ -560,6 +560,9 @@ export const getWeather =
 
       loadTimezoneIfNeeded();
 
+      loadAviationWeather();
+      loadAviationAlerts();
+
       dispatch(windsAloftLoading());
       dispatch(weatherLoading());
 
