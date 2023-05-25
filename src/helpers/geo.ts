@@ -47,6 +47,13 @@ export function isPossiblyWithinUSA(
       minLongitude: -65.154457,
       maxLongitude: -64.512674,
     },
+    {
+      name: "Puerto Rico",
+      minLatitude: 17.831509,
+      maxLatitude: 18.570947,
+      minLongitude: -67.945404,
+      maxLongitude: -65.1685,
+    },
     // Add more locations as needed
   ];
 

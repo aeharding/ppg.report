@@ -11,7 +11,10 @@ import * as storage from "../user/storage";
 import { WindsAloftReport } from "../../models/WindsAloft";
 import * as rapidRefresh from "../../services/rapidRefresh";
 import * as openMeteo from "../../services/openMeteo";
-import { isPossiblyWithinUSA } from "../../helpers/geo";
+import {
+  isPossiblyWithinUSA,
+  isWithinNWSRAPModelBoundary,
+} from "../../helpers/geo";
 
 type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
@@ -588,7 +591,7 @@ export const getWeather =
     if (weather == null) {
       (async () => {
         try {
-          await loadNWSWeather();
+          await Promise.all([loadNWSAlerts(), loadNWSWeather()]);
         } catch (error) {
           dispatch(discussionLoading());
           dispatch(discussionNotAvailable());
@@ -603,17 +606,22 @@ export const getWeather =
           throw error;
         }
       })();
-      loadNWSAlerts();
     } else {
-      dispatch(discussionLoading());
-      dispatch(discussionNotAvailable());
+      try {
+        await Promise.all([loadNWSAlerts(), loadNWSWeather()]);
+      } catch (error) {
+        dispatch(discussionLoading());
+        dispatch(discussionNotAvailable());
 
-      dispatch(weatherLoading());
-      dispatch(weatherReceived(weather));
+        dispatch(weatherLoading());
+        dispatch(weatherReceived(weather));
 
-      dispatch(alertsNotAvailable());
+        dispatch(alertsNotAvailable());
 
-      loadTimezoneIfNeeded();
+        loadTimezoneIfNeeded();
+
+        throw error;
+      }
     }
 
     loadAviationWeather();
@@ -626,11 +634,19 @@ export const getWeather =
         }
       | undefined
     > {
+      if (!isWithinNWSRAPModelBoundary(lat, lon)) return fallback();
+
       try {
         const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
 
         dispatch(windsAloftReceived(windsAloft));
       } catch (error) {
+        return fallback();
+      }
+
+      return {};
+
+      async function fallback() {
         try {
           // It would be nice in the future to intelligently choose an API
           // instead of trial and error (and, it would be faster)
@@ -648,8 +664,6 @@ export const getWeather =
           throw error;
         }
       }
-
-      return {};
     }
 
     async function loadPointData() {
