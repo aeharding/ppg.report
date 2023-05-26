@@ -50,19 +50,22 @@ const StyledPlaneSvg = styled(PlaneSvg)`
 interface LegendProps {
   showTaf: boolean;
   showNws: boolean;
+  showOp40: boolean;
 }
 
-export default function Legend({ showTaf, showNws }: LegendProps) {
+export default function Legend({ showTaf, showNws, showOp40 }: LegendProps) {
   return (
     <Container>
       <LegendItem>
         <YourLocation />
         Selected location
       </LegendItem>
-      <LegendItem>
-        <WindsAloft />
-        Op40 Winds Aloft Gridpoint (approx)
-      </LegendItem>
+      {showOp40 && (
+        <LegendItem>
+          <WindsAloft />
+          Op40 Winds Aloft Gridpoint (approx)
+        </LegendItem>
+      )}
       {showNws && (
         <LegendItem>
           <NWS />

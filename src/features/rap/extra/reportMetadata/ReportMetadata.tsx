@@ -57,7 +57,11 @@ export default function ReportMetadata() {
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather
   );
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
+
+  const showOp40 =
+    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
 
   return (
     <Container>
@@ -81,7 +85,10 @@ export default function ReportMetadata() {
 
       <Legend
         showTaf={!!(aviationWeather && typeof aviationWeather === "object")}
-        showNws={!!(weather && typeof weather === "object")}
+        showNws={
+          !!(weather && typeof weather === "object" && "geometry" in weather)
+        }
+        showOp40={showOp40}
       />
 
       <StyledDataList>
@@ -109,6 +116,9 @@ const MapController = () => {
   if (!windsAloft || typeof windsAloft !== "object")
     throw new Error("RAP report must be defined");
 
+  const showOp40 =
+    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
+
   const map = useMap();
   const groupRef = useRef<any>();
 
@@ -132,36 +142,43 @@ const MapController = () => {
 
   return (
     <FeatureGroup ref={groupRef}>
-      <Rectangle
-        bounds={bounds}
-        css={css`
-          ${outputP3ColorFromRGB([0, 0, 255], "fill")}
-          ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
-        `}
-      />
-      <Circle
-        center={rapPosition}
-        fillOpacity={1}
-        radius={500}
-        css={css`
-          ${outputP3ColorFromRGB([0, 0, 255], "fill")}
-          ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
-        `}
-      />
+      {showOp40 && (
+        <>
+          <Rectangle
+            bounds={bounds}
+            css={css`
+              ${outputP3ColorFromRGB([0, 0, 255], "fill")}
+              ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
+            `}
+          />
+          <Circle
+            center={rapPosition}
+            fillOpacity={1}
+            radius={500}
+            css={css`
+              ${outputP3ColorFromRGB([0, 0, 255], "fill")}
+              ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
+            `}
+          />
+        </>
+      )}
 
       {airportPosition && (
         <Marker position={airportPosition} icon={planeIcon} pane="markerPane" />
       )}
 
-      {weather && typeof weather === "object" && weather.geometry && (
-        <GeoJSON
-          data={weather.geometry}
-          pathOptions={{
-            className: "weather-geometry",
-          }}
-          pane="markerPane"
-        />
-      )}
+      {weather &&
+        typeof weather === "object" &&
+        "geometry" in weather &&
+        weather.geometry && (
+          <GeoJSON
+            data={weather.geometry}
+            pathOptions={{
+              className: "weather-geometry",
+            }}
+            pane="markerPane"
+          />
+        )}
 
       <MyPosition />
     </FeatureGroup>

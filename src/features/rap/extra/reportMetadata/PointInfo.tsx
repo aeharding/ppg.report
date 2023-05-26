@@ -20,6 +20,9 @@ export default function PointInfo() {
 
   const altitudeInM = windsAloft.hours[0].altitudes[0].altitudeInM;
 
+  const showOp40 =
+    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
+
   const source = (() => {
     switch (windsAloft.source) {
       case "openMeteo":
@@ -62,15 +65,17 @@ export default function PointInfo() {
           {heightUnitLabel}
         </div>
       </DataListItem>
-      <DataListItem>
-        <div>Winds aloft gridpoint elevation</div>
-        <div>
-          {Math.round(
-            heightValueFormatter(altitudeInM, heightUnit)
-          ).toLocaleString()}
-          {heightUnitLabel}
-        </div>
-      </DataListItem>
+      {showOp40 && (
+        <DataListItem>
+          <div>Winds aloft gridpoint elevation</div>
+          <div>
+            {Math.round(
+              heightValueFormatter(altitudeInM, heightUnit)
+            ).toLocaleString()}
+            {heightUnitLabel}
+          </div>
+        </DataListItem>
+      )}
       <DataListItem>
         <div>Source/model</div>
         <div>{source}</div>

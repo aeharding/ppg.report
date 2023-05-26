@@ -23,22 +23,38 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
   if (!data.address || !data)
     return { lat, lon, label: `${lat}, ${lon}`, isFallbackLabel: true };
 
-  const subject =
+  let subject =
     data.address.aeroway ??
     data.address.town ??
     data.address.village ??
     data.address.borough ??
+    data.address.suburb ??
     data.address.city ??
+    data.address.neighbourhood ??
     data.address.hamlet ??
     data.address.municipality ??
     data.address.county;
 
+  const state =
+    data.address.state ??
+    data.address.province ??
+    data.address.region ??
+    data.address.county ??
+    data.address.city;
+
+  if (subject === state) {
+    if (subject === data.address.city) {
+      subject =
+        data.address.neighbourhood ??
+        data.address.hamlet ??
+        data.address.municipality ??
+        data.address.county;
+    } else subject = "";
+  }
+
   const label = [
     subject ? `${subject},` : "",
-    data.address.state ??
-      data.address.province ??
-      data.address.county ??
-      data.address.city,
+    state,
     data.address.postcode,
   ].filter((x) => x);
 
