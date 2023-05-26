@@ -20,8 +20,10 @@ import {
   setTimeFormat,
   AltitudeLevels,
   setAltitudeLevels,
+  setLanguage,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
+import { Languages } from "../../../../i18n";
 
 const Container = styled.div`
   padding: 0.5rem 1rem 2rem;
@@ -38,6 +40,7 @@ const Hr = styled.hr`
 
 export default function Settings() {
   const dispatch = useAppDispatch();
+  const language = useAppSelector((state) => state.user.language);
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const altitudeLevels = useAppSelector((state) => state.user.altitudeLevels);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
@@ -52,6 +55,12 @@ export default function Settings() {
 
   return (
     <Container>
+      <Radio
+        label="Language"
+        options={[Languages.Auto, Languages.EN, Languages.FR, Languages.NL]}
+        value={language}
+        onChange={(value) => dispatch(setLanguage(value))}
+      />
       <Radio
         label="Altitude format"
         options={[AltitudeType.AGL, AltitudeType.MSL]}

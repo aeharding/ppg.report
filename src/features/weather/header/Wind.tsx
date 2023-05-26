@@ -12,6 +12,7 @@ import { WeatherResult } from "../weatherSlice";
 import { useAppSelector } from "../../../hooks";
 import { SpeedUnit as MetarTafSpeedUnit } from "metar-taf-parser";
 import { formatWind } from "../../../helpers/taf";
+import { useTranslation } from "react-i18next";
 
 // When a gust is considered worth displaying
 const GUST_DELTA_THRESHOLD = 2;
@@ -44,6 +45,7 @@ interface WindProps {
 }
 
 export default function Wind({ headerType, date, weather }: WindProps) {
+  const { t } = useTranslation();
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const wind = useMemo(() => {
     if (typeof weather !== "object") return undefined;
@@ -85,21 +87,26 @@ export default function Wind({ headerType, date, weather }: WindProps) {
       <>{speedFormatted}</>
     ) : (
       <>
-        {speedFormatted}G{gustFormatted}
+        {speedFormatted}
+        {t("WindGustAsOneLetter")}
+        {gustFormatted}
       </>
     );
 
   return (
     <Tippy
-      content={`Wind ${formatWind(
-        wind.speed,
-        MetarTafSpeedUnit.KilometersPerHour,
-        speedUnit
-      )} gusting to ${formatWind(
-        wind.gust,
-        MetarTafSpeedUnit.KilometersPerHour,
-        speedUnit
-      )}`}
+      content={t("WindSpeedGustingToWindSpeed", {
+        baseWindSpeed: formatWind(
+          wind.speed,
+          MetarTafSpeedUnit.KilometersPerHour,
+          speedUnit
+        ),
+        gustWindSpeed: formatWind(
+          wind.gust,
+          MetarTafSpeedUnit.KilometersPerHour,
+          speedUnit
+        ),
+      })}
       placement="bottom"
     >
       <div>

@@ -1,0 +1,19 @@
+{
+  "Weather report for Paramotor Pilots": "Weerrapport voor Paramotorvliegers",
+  "Discussion": "Bespreking",
+  "Report Metadata": "Rapportmetadata",
+  "Settings": "Instellingen",
+  "Area Forecast Discussion": "{{officeId}} Bespreking van het verwachtingsgebied",
+  "Surface": "Opp.",
+  "Temp": "Temp",
+  "Direction": "Richting",
+  "Speed": "Snelheid",
+  "WindGustAsOneLetter": "V",
+  "WindSpeedGustingToWindSpeed": "Wind {{baseWindSpeed}} met windstoten tot {{gustWindSpeed}}",
+  "Search locations": "Locaties zoeken",
+  "Terms & Privacy": "Voorwaarden & Privacy",
+  "Star on Github": "<0/> op Github",
+  "Fly Warning": "Let op! Vlieg op eigen risico.",
+  "Sky Coverage": "{{percentage}} bewolking",
+  "TAF forecast overview": "Verwacht te zijn {{flightCategory}} volgens TAF-rapport van {{airportStationIdentifier}}"
+}

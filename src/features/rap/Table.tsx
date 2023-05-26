@@ -17,6 +17,7 @@ import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
 import { findNormalizedAltitude } from "../../helpers/wind";
 import uniqBy from "lodash/uniqBy";
+import { useTranslation } from "react-i18next";
 
 const TableEl = styled.table`
   width: 100%;
@@ -63,6 +64,7 @@ export default function Table({
   rows,
   surfaceLevelMode,
 }: TableProps) {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const altitudeLevels = useAppSelector((state) => state.user.altitudeLevels);
@@ -133,9 +135,9 @@ export default function Table({
               Alt. ({altitudeType})
             </InteractTh>
           </Tippy>
-          <th>Temp</th>
-          <th>Direction</th>
-          <th>Speed</th>
+          <th>{t("Temp")}</th>
+          <th>{t("Direction")}</th>
+          <th>{t("Speed")}</th>
         </tr>
       </thead>
 

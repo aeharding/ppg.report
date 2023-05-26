@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "../../store";
 import { Alert } from "../alerts/alertsSlice";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
+import { Languages } from "../../i18n";
 
 export enum AltitudeType {
   AGL = "AGL",
@@ -145,6 +146,7 @@ interface UserState {
   hiddenAlerts: Record<string, true>;
   swipeInertia: OnOff;
   gAirmetRead: OnOff;
+  language: Languages;
 }
 
 // Define the initial state using that type
@@ -161,6 +163,7 @@ const initialState: UserState = {
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
   gAirmetRead: storage.getGAirmetRead(),
+  language: storage.getLanguage(),
 };
 
 /**
@@ -212,6 +215,9 @@ export const userReducer = createSlice({
     },
     setGAirmetRead(state, action: PayloadAction<OnOff>) {
       state.gAirmetRead = storage.setGAirmetRead(action.payload);
+    },
+    updateLanguage(state, action: PayloadAction<Languages>) {
+      state.language = action.payload;
     },
   },
 });
@@ -303,6 +309,14 @@ export const removeLocation =
     const updatedLocations = storage.removeLocation(location);
 
     dispatch(updateLocations(updatedLocations));
+  };
+
+export const setLanguage =
+  (language: Languages) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateLanguage(language));
+
+    storage.setLanguage(getState().user.language);
   };
 
 export default userReducer.reducer;

@@ -6,6 +6,7 @@ import { outputP3ColorFromRGB } from "./helpers/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/pro-regular-svg-icons";
 import pJson from "../package.json";
+import { Trans, useTranslation } from "react-i18next";
 
 const FancyFooter = styled.footer`
   padding: 1em;
@@ -22,6 +23,7 @@ const Warning = styled.span`
 `;
 
 export default function Footer() {
+  const { t } = useTranslation();
   const location = useLocation();
 
   if (location.pathname !== "/" && isInstalled()) return null;
@@ -41,10 +43,12 @@ export default function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <FontAwesomeIcon icon={faStar} /> on Github
+        <Trans i18nKey="Star on Github">
+          <FontAwesomeIcon icon={faStar} /> on Github
+        </Trans>
       </a>{" "}
-      — <Link to="/terms">Terms &amp; Privacy</Link> —{" "}
-      <Warning>⚠️ Warning! Fly at your own risk.</Warning>
+      — <Link to="/terms">{t("Terms & Privacy")}</Link> —{" "}
+      <Warning>⚠️ {t("Fly Warning")}</Warning>
     </FancyFooter>
   );
 }

@@ -3,7 +3,7 @@ import {
   outputP3ColorFromRGB,
   outputP3ColorFromRGBA,
 } from "../../../../helpers/colors";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -54,6 +54,13 @@ export function Radio<T extends string>({
   value,
   tip,
 }: RadioProps<T>) {
+  // Cached value provides instant update
+  const [cachedValue, setCachedValue] = useState(value);
+
+  useEffect(() => {
+    setCachedValue(value);
+  }, [value]);
+
   return (
     <div>
       <GroupLabel>{label}</GroupLabel>
@@ -63,10 +70,16 @@ export function Radio<T extends string>({
           <Input
             type="radio"
             name={label}
-            checked={value === option}
+            checked={cachedValue === option}
             value={option}
             id={`${label}${option}`}
-            onChange={(event) => onChange(event.target.value as T)}
+            onChange={(event) => {
+              setCachedValue(event.target.value as T);
+
+              setTimeout(() => {
+                onChange(event.target.value as T);
+              }, 50);
+            }}
           />
           <Label htmlFor={`${label}${option}`}>{option}</Label>
         </React.Fragment>

@@ -18,6 +18,7 @@ import Loading from "../../../shared/Loading";
 import InstallPrompt from "../../install/InstallPrompt";
 import { isAfter } from "date-fns";
 import Spinner from "../../../shared/Spinner";
+import { useTranslation } from "react-i18next";
 
 const ReportMetadata = lazy(() => import("./reportMetadata/ReportMetadata"));
 
@@ -37,6 +38,7 @@ const Container = styled.div`
 `;
 
 export default function Extra() {
+  const { t } = useTranslation();
   const weather = useAppSelector((state) => state.weather.weather);
   const discussionLastViewed = useAppSelector(
     (state) => state.weather.discussionLastViewed
@@ -71,10 +73,10 @@ export default function Extra() {
               flag={unviewed}
               loading={discussion === "pending"}
             >
-              Discussion
+              {t("Discussion")}
             </Item>
           }
-          title={`${gridId}Area Forecast Discussion`}
+          title={t("Area Forecast Discussion", { officeId: gridId })}
         >
           <Discussion />
         </BottomSheet>
@@ -83,10 +85,10 @@ export default function Extra() {
       <BottomSheet
         openButton={
           <Item icon={faSearch} iconBg={[255, 0, 0]}>
-            Report Metadata
+            {t("Report Metadata")}
           </Item>
         }
-        title="Report Metadata"
+        title={t("Report Metadata")}
       >
         <Suspense fallback={<Loading />}>
           <ReportMetadata />
@@ -96,10 +98,10 @@ export default function Extra() {
       <BottomSheet
         openButton={
           <Item icon={faCog} iconBg={[20, 20, 20]}>
-            Settings
+            {t("Settings")}
           </Item>
         }
-        title="Settings"
+        title={t("Settings")}
       >
         <Settings />
       </BottomSheet>

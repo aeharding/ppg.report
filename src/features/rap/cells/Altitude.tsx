@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../../hooks";
 import { AltitudeType, HeightUnit } from "../../../features/user/userSlice";
+import { useTranslation } from "react-i18next";
 
 export const Aside = styled.aside`
   display: inline;
@@ -29,18 +30,22 @@ export default function Altitude({
 
   switch (altitudeType) {
     case AltitudeType.AGL:
-      return AltitudeAGL({
-        heightInMeters: heightInMeters,
-        surfaceLevelInMeters,
-        heightUnitLabel,
-        heightValueFormatter: _heightValueFormatter,
-      });
+      return (
+        <AltitudeAGL
+          heightInMeters={heightInMeters}
+          surfaceLevelInMeters={surfaceLevelInMeters}
+          heightUnitLabel={heightUnitLabel}
+          heightValueFormatter={_heightValueFormatter}
+        />
+      );
     case AltitudeType.MSL:
-      return AltitudeMSL({
-        heightInMeters,
-        heightUnitLabel,
-        heightValueFormatter: _heightValueFormatter,
-      });
+      return (
+        <AltitudeMSL
+          heightInMeters={heightInMeters}
+          heightUnitLabel={heightUnitLabel}
+          heightValueFormatter={_heightValueFormatter}
+        />
+      );
   }
 }
 
@@ -50,9 +55,10 @@ function AltitudeAGL({
   heightUnitLabel,
   heightValueFormatter,
 }: HeightProps) {
+  const { t } = useTranslation();
   const agl = heightInMeters - surfaceLevelInMeters;
 
-  if (!agl) return <Aside>Surface</Aside>;
+  if (!agl) return <Aside>{t("Surface")}</Aside>;
 
   return (
     <>

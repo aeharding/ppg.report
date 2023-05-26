@@ -17,6 +17,7 @@ import {
   TemperatureUnit,
   TimeFormat,
 } from "./userSlice";
+import { Languages } from "../../i18n";
 
 export interface UserLocation {
   lat: number;
@@ -39,6 +40,7 @@ const READ_ALERTS = "read-alerts";
 const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
+const LANGUAGE_STORAGE_KEY = "user-language";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -338,4 +340,22 @@ export function setGAirmetRead(gAirmetRead: OnOff): OnOff {
   localStorage.setItem(G_AIRMET_READ_STORAGE_KEY, gAirmetRead);
 
   return gAirmetRead;
+}
+
+export function getLanguage(): Languages {
+  const savedValue = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+  if (
+    savedValue !== Languages.Auto &&
+    savedValue !== Languages.EN &&
+    savedValue !== Languages.FR &&
+    savedValue !== Languages.NL
+  )
+    return Languages.Auto;
+
+  return savedValue;
+}
+
+export function setLanguage(language: Languages): void {
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
 }

@@ -1,0 +1,19 @@
+{
+  "Weather report for Paramotor Pilots": "Bulletin météo pour les pilotes de paramoteur",
+  "Discussion": "Discussion",
+  "Report Metadata": "Métadonnées du rapport",
+  "Settings": "Paramètres",
+  "Area Forecast Discussion": "Discussion prévisions {{officeId}}",
+  "Surface": "Surface",
+  "Temp": "Temp",
+  "Direction": "Direction",
+  "Speed": "Vitesse",
+  "WindGustAsOneLetter": "R",
+  "WindSpeedGustingToWindSpeed": "Vent {{baseWindSpeed}} avec des rafales jusqu'à {{gustWindSpeed}}",
+  "Search locations": "Chercher des lieux",
+  "Terms & Privacy": "Conditions & Confidentialité",
+  "Star on Github": "<0/> sur Github",
+  "Fly Warning": "Attention ! Vol à vos risques.",
+  "Sky Coverage": "{{percentage}} de nuages",
+  "TAF forecast overview": "Prévu d'être {{flightCategory}} selon le rapport TAF de {{airportStationIdentifier}}"
+}

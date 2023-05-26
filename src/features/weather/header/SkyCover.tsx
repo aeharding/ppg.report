@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { findValue } from "../../../services/nwsWeather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
+import { useTranslation } from "react-i18next";
 
 const SkyIcon = styled(FontAwesomeIcon)<{ chance: number }>`
   &.fa-sun {
@@ -33,6 +34,7 @@ interface SkyCoverProps {
 }
 
 export default function SkyCover({ date, weather }: SkyCoverProps) {
+  const { t } = useTranslation();
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
   const [isDay] = useState(
@@ -70,7 +72,10 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
   // }
 
   return (
-    <Tippy content={`${chance}% sky cover`} placement="bottom">
+    <Tippy
+      content={t("Sky Coverage", { percentage: `${chance}%` })}
+      placement="bottom"
+    >
       <div>
         <Micro icon={<SkyIcon icon={icon} chance={chance} />}>{body}</Micro>
       </div>
