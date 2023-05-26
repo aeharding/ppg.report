@@ -24,6 +24,7 @@ i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
+    fallbackLng: "en",
     ns: ["ns1"],
     defaultNS,
     resources,
