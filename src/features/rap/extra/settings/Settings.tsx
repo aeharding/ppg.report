@@ -75,6 +75,7 @@ export default function Settings() {
       />
       <Radio
         label="Altitude levels"
+        tip="Altitudes are derived from pressure altitude, which varies by hour. Select “normalized” to interpolate data at fixed altitudes."
         options={[AltitudeLevels.Default, AltitudeLevels.Normalized]}
         value={altitudeLevels}
         onChange={(value) => dispatch(setAltitudeLevels(value))}

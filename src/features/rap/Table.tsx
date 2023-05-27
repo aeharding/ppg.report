@@ -18,6 +18,7 @@ import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
 import { findNormalizedAltitude } from "../../helpers/wind";
 import uniqBy from "lodash/uniqBy";
 import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
 
 const TableEl = styled.table`
   width: 100%;
@@ -79,39 +80,48 @@ export default function Table({
   // If there is a discrepancy of less than 120 meters, it's negligible
   const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
-  let displayedRapData: WindsAloftAltitude[];
+  let displayedRapData: WindsAloftAltitude[] = useMemo(() => {
+    switch (altitudeLevels) {
+      case AltitudeLevels.Default:
+        return windsAloftHour.altitudes
+          .slice(0, rows)
+          .filter((datum) => !hiddenAltitude(datum));
 
-  if (altitudeLevels === AltitudeLevels.Default) {
-    displayedRapData = windsAloftHour.altitudes
-      .slice(0, rows)
-      .filter((datum) => !hiddenAltitude(datum));
+        function hiddenAltitude(datum: WindsAloftAltitude): boolean {
+          return (
+            altitudeType === AltitudeType.AGL &&
+            !!(datum.altitudeInM - surfaceLevel < 0)
+          );
+        }
 
-    function hiddenAltitude(datum: WindsAloftAltitude): boolean {
-      return (
-        altitudeType === AltitudeType.AGL &&
-        !!(datum.altitudeInM - surfaceLevel < 0)
-      );
+      case AltitudeLevels.Normalized:
+        const NORMALIZED_ALTITUDES = (() => {
+          switch (heightUnit) {
+            case HeightUnit.Feet:
+              return NORMALIZED_ALTITUDES_AGL_FT;
+            case HeightUnit.Meters:
+              return NORMALIZED_ALTITUDES_AGL_M;
+          }
+        })();
+
+        return uniqBy(
+          NORMALIZED_ALTITUDES.map((altitude) =>
+            findNormalizedAltitude(
+              altitude + surfaceLevel,
+              windsAloftHour.altitudes
+            )
+          ),
+          (alt) => alt.altitudeInM
+        );
     }
-  } else {
-    const NORMALIZED_ALTITUDES = (() => {
-      switch (heightUnit) {
-        case HeightUnit.Feet:
-          return NORMALIZED_ALTITUDES_AGL_FT;
-        case HeightUnit.Meters:
-          return NORMALIZED_ALTITUDES_AGL_M;
-      }
-    })();
-
-    displayedRapData = uniqBy(
-      NORMALIZED_ALTITUDES.map((altitude) =>
-        findNormalizedAltitude(
-          altitude + surfaceLevel,
-          windsAloftHour.altitudes
-        )
-      ),
-      (alt) => alt.altitudeInM
-    );
-  }
+  }, [
+    altitudeLevels,
+    windsAloftHour.altitudes,
+    rows,
+    altitudeType,
+    surfaceLevel,
+    heightUnit,
+  ]);
 
   function negativeAltitude(datum: WindsAloftAltitude): boolean {
     return !!(datum.altitudeInM - surfaceLevel < 0);

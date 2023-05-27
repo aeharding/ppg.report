@@ -88,10 +88,7 @@ export type WindsAloftResult =
   | WindsAloftReport
 
   // API request failed
-  | "failed"
-
-  // Unsupported coordinates provided
-  | "coordinates-error";
+  | "failed";
 
 export interface Discussion {
   id: string;
@@ -462,7 +459,6 @@ export const weatherReducer = createSlice({
     windsAloftLoading: (state) => {
       switch (state.windsAloft) {
         case "failed":
-        case "coordinates-error":
         case undefined:
           state.windsAloft = "pending";
           return;
@@ -497,15 +493,6 @@ export const weatherReducer = createSlice({
     windsAloftFailed: (state) => {
       if (state.windsAloft === "pending") {
         state.windsAloft = "failed";
-      }
-    },
-
-    /**
-     * @param action Action containing payload as the URL of the rap resource
-     */
-    windsAloftBadCoordinates: (state) => {
-      if (state.windsAloft === "pending") {
-        state.windsAloft = "coordinates-error";
       }
     },
 
@@ -544,7 +531,6 @@ export const {
   windsAloftLoading,
   windsAloftReceived,
   windsAloftFailed,
-  windsAloftBadCoordinates,
 } = weatherReducer.actions;
 
 export const getWeather =

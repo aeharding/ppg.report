@@ -28,8 +28,8 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
     data.address.town ??
     data.address.village ??
     data.address.borough ??
-    data.address.suburb ??
     data.address.city ??
+    data.address.suburb ??
     data.address.neighbourhood ??
     data.address.hamlet ??
     data.address.municipality ??

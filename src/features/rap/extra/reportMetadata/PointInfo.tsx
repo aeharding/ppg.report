@@ -8,8 +8,6 @@ import {
   heightValueFormatter,
 } from "../../cells/Altitude";
 
-const installed = isInstalled();
-
 export default function PointInfo() {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const heightUnitLabel = heightUnitFormatter(heightUnit);
@@ -60,12 +58,14 @@ export default function PointInfo() {
 
   return (
     <>
-      <DataListItem>
-        <div>Coordinates</div>
-        <div>
-          <CopyToClipboard>{`${lat},${lon}`}</CopyToClipboard>
-        </div>
-      </DataListItem>
+      {isInstalled() && (
+        <DataListItem>
+          <div>Coordinates</div>
+          <div>
+            <CopyToClipboard>{`${lat},${lon}`}</CopyToClipboard>
+          </div>
+        </DataListItem>
+      )}
       <DataListItem>
         <div>Location elevation</div>
         <div>

@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
 import Error from "../shared/Error";
-import { ReactComponent as Map } from "../assets/map.svg";
 import { ReactComponent as ErrorSvg } from "../assets/error.svg";
 import NotFound from "./NotFound";
 import {
@@ -74,14 +73,6 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
       return <Loading />;
     case "failed":
       return connectionError;
-    case "coordinates-error":
-      return (
-        <Error
-          icon={Map}
-          title="That's an unknown place."
-          description="At this time, only United States locations are supported."
-        />
-      );
     default:
       if (!timeZone || elevation == null) return connectionError;
 

@@ -71,7 +71,7 @@
     "test": "vitest",
     "deploy": "aws s3 sync --exclude index.html build/ s3://ppg.report && aws s3 sync --include index.html build/ s3://ppg.report",
     "deploy-beta": "aws s3 sync --exclude index.html build/ s3://beta.ppg.report && aws s3 sync --include index.html build/ s3://beta.ppg.report",
-    "analyze": "NODE_OPTIONS=--no-experimental-fetch source-map-explorer 'build/assets/*.js'",
+    "analyze": "NODE_OPTIONS=--no-experimental-fetch source-map-explorer 'build/assets/*.js' --no-border-checks",
     "format": "prettier --check src/",
     "lint": "eslint --max-warnings=0 src/",
     "splash": "pwa-asset-generator --type png --index public/index.html --splash-only --path-override '%PUBLIC_URL%/splash' public/splash.png ./public/splash --padding '30vh 20vw 50vh' -b 'linear-gradient(0deg, #0e0e0e, #001931)' && prettier -w public/index.html",
