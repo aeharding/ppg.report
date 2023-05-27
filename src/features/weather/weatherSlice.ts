@@ -3,7 +3,6 @@ import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as nwsWeather from "../../services/nwsWeather";
 import { differenceInMinutes } from "date-fns";
-import axios from "axios";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
@@ -15,6 +14,7 @@ import {
   isPossiblyWithinUSA,
   isWithinNWSRAPModelBoundary,
 } from "../../helpers/geo";
+import { AxiosError } from "axios";
 
 type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
@@ -111,6 +111,7 @@ interface WeatherState {
   aviationAlertsLastUpdated?: string;
   timeZone: string | undefined;
   timeZoneLoading: boolean;
+  usingLocalTime: boolean;
   elevation: number | undefined;
   elevationLoading: boolean;
   discussion: DiscussionResult | undefined;
@@ -133,6 +134,7 @@ const initialState: WeatherState = {
   aviationAlertsLastUpdated: undefined,
   timeZone: undefined,
   timeZoneLoading: true,
+  usingLocalTime: true,
   elevation: undefined,
   elevationLoading: false,
   discussion: undefined,
@@ -195,10 +197,13 @@ export const weatherReducer = createSlice({
     timeZoneReceived: (state, action: PayloadAction<string>) => {
       state.timeZone = action.payload;
       state.timeZoneLoading = false;
+      state.usingLocalTime = false;
     },
 
     timeZoneFailed: (state) => {
+      state.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       state.timeZoneLoading = false;
+      state.usingLocalTime = true;
     },
 
     elevationLoading: (state) => {
@@ -693,7 +698,7 @@ export const getWeather =
         let timeZone = await timezoneService.get({ lat, lon });
         dispatch(timeZoneReceived(timeZone));
       } catch (e) {
-        if (!axios.isAxiosError(e)) throw e;
+        if (!(e instanceof AxiosError)) throw e;
 
         dispatch(timeZoneFailed());
 

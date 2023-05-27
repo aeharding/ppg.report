@@ -14,6 +14,7 @@ import Extra from "./extra/Extra";
 import Scrubber from "./Scrubber";
 import { isEqual, startOfHour } from "date-fns";
 import ReportStale from "./warnings/ReportStale";
+import LocalTimeWarning from "./warnings/LocalTimeWarning";
 import Errors from "./Errors";
 import { OnOff } from "../user/userSlice";
 import { useAppSelector } from "../../hooks";
@@ -356,6 +357,7 @@ export default function Hours({ hours }: TableProps) {
     <>
       <ReportElevationDiscrepancy />
       <ReportStale />
+      <LocalTimeWarning />
 
       <Scrubber scrollViewRef={scrollViewRef}>
         <Container ref={scrollViewRef} swipeInertia={swipeInertia}>
