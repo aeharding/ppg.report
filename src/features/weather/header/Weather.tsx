@@ -27,7 +27,7 @@ const thunderAnimate = keyframes`
   24.5% {
     opacity: 0.4;
   }
-  
+
   45% {
     opacity: 0.4;
   }
@@ -61,7 +61,9 @@ const thunderAnimate = keyframes`
   }
 `;
 
-export const WeatherIcon = styled(FontAwesomeIcon)<{
+export const WeatherIcon = styled(FontAwesomeIcon, {
+  shouldForwardProp: (prop) => prop !== "lightning",
+})<{
   lightning: boolean;
 }>`
   font-size: 1.4em;

@@ -16,6 +16,8 @@ import {
 } from "../../helpers/geo";
 import { AxiosError } from "axios";
 
+const UPDATE_INTERVAL_MINUTES = 30;
+
 type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
 export type WeatherResult =
@@ -176,7 +178,7 @@ export const weatherReducer = createSlice({
                 new Date(state.weatherLastUpdated),
                 new Date()
               )
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.weather = "pending";
           }
@@ -247,7 +249,7 @@ export const weatherReducer = createSlice({
             !state.alertsLastUpdated ||
             Math.abs(
               differenceInMinutes(new Date(state.alertsLastUpdated), new Date())
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.alerts = "pending";
           }
@@ -302,7 +304,7 @@ export const weatherReducer = createSlice({
                 new Date(state.aviationWeatherLastUpdated),
                 new Date()
               )
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.aviationWeather = "pending";
           }
@@ -362,7 +364,7 @@ export const weatherReducer = createSlice({
                 new Date(state.aviationAlertsLastUpdated),
                 new Date()
               )
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.aviationAlerts = "pending";
           }
@@ -413,7 +415,7 @@ export const weatherReducer = createSlice({
                 new Date(state.discussionLastUpdated),
                 new Date()
               )
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.discussion = "pending";
           }
@@ -474,7 +476,7 @@ export const weatherReducer = createSlice({
             !state.windsAloftUpdated ||
             Math.abs(
               differenceInMinutes(new Date(state.windsAloftUpdated), new Date())
-            ) > 30
+            ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.windsAloft = "pending";
           }
