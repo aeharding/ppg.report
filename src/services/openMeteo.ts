@@ -5,6 +5,8 @@ import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
 import { Dictionary } from "@reduxjs/toolkit";
 
+const FORECAST_DAYS = 2;
+
 /**
  * in hPa
  */
@@ -86,7 +88,7 @@ export async function getWeather(
         params: {
           latitude,
           longitude,
-          forecast_days: 1,
+          forecast_days: FORECAST_DAYS,
           timeformat: "unixtime",
           hourly: generateWeatherParams().join(","),
         },
@@ -185,7 +187,7 @@ async function getOpenMeteoWindsAloft(
       params: {
         latitude,
         longitude,
-        forecast_days: 2,
+        forecast_days: FORECAST_DAYS,
         timeformat: "unixtime",
         hourly: [
           ...generateWindsAloftParams(),

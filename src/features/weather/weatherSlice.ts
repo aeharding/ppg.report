@@ -599,7 +599,7 @@ export const getWeather =
         dispatch(discussionLoading());
         dispatch(discussionNotAvailable());
 
-        dispatch(weatherLoading());
+        dispatch(weatherResetLoading());
         dispatch(weatherReceived(weather));
 
         dispatch(alertsNotAvailable());
