@@ -21,6 +21,10 @@ export const linkifyOptions: Opts = {
   validate: (value) => value.toLowerCase().indexOf("ppg.report") === -1,
 };
 
+const Container = styled.div`
+  margin-bottom: 2rem;
+`;
+
 const Overflow = styled.div`
   overflow: hidden;
   padding: 3rem 0;
@@ -79,7 +83,7 @@ export default function Discussion() {
       );
     default:
       return (
-        <>
+        <Container>
           {parseDiscussion(
             undoFixedWidthText(discussion.productText.trim())
           ).map((part, index) => {
@@ -110,7 +114,7 @@ export default function Discussion() {
                 );
             }
           })}
-        </>
+        </Container>
       );
   }
 }

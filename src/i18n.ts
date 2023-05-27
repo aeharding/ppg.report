@@ -4,6 +4,8 @@ import { initReactI18next } from "react-i18next";
 import en from "./locales/en.json";
 import fr from "./locales/fr.json";
 import nl from "./locales/nl.json";
+import es from "./locales/es.json";
+import de from "./locales/de.json";
 
 export const defaultNS = "ns1";
 
@@ -11,13 +13,17 @@ export const resources = {
   en: { ns1: en },
   fr: { ns1: fr },
   nl: { ns1: nl },
+  es: { ns1: es },
+  de: { ns1: de },
 } as const;
 
 export enum Languages {
   Auto = "Auto",
   EN = "English",
-  FR = "French",
-  NL = "Dutch",
+  FR = "Français",
+  NL = "Nederlands",
+  ES = "Español",
+  DE = "Deutsch",
 }
 
 i18n

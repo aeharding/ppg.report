@@ -57,7 +57,13 @@ export default function Settings() {
     <Container>
       <Radio
         label="Language"
-        options={[Languages.Auto, Languages.EN, Languages.FR, Languages.NL]}
+        options={[
+          Languages.Auto,
+          Languages.EN,
+          Languages.FR,
+          Languages.NL,
+          Languages.ES,
+        ]}
         value={language}
         onChange={(value) => dispatch(setLanguage(value))}
       />

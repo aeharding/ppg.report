@@ -9,7 +9,7 @@ import {
 } from "@floating-ui/react";
 import styled from "@emotion/styled";
 
-const DefinitionTooltipContainer = styled.div`
+export const TooltipContainer = styled.div`
   z-index: 1000;
   background: black;
   font-size: 0.8em;
@@ -69,7 +69,7 @@ export default function DefinitionTooltip({
         {children}
       </DefinitionLink>
       {isOpen && (
-        <DefinitionTooltipContainer
+        <TooltipContainer
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}

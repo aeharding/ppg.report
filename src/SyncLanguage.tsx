@@ -13,6 +13,10 @@ function getLanguageCode(language: Languages): string | null {
       return "fr";
     case Languages.NL:
       return "nl";
+    case Languages.ES:
+      return "es";
+    case Languages.DE:
+      return "de";
   }
 }
 

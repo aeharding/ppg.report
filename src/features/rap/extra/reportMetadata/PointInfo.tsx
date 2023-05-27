@@ -1,10 +1,14 @@
 import { useParams } from "react-router-dom";
 import { DataListItem } from "../../../../DataList";
+import { isInstalled } from "../../../../helpers/device";
 import { useAppSelector } from "../../../../hooks";
+import CopyToClipboard from "../../../../shared/CopyToClipboard";
 import {
   heightUnitFormatter,
   heightValueFormatter,
 } from "../../cells/Altitude";
+
+const installed = isInstalled();
 
 export default function PointInfo() {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
@@ -56,6 +60,12 @@ export default function PointInfo() {
 
   return (
     <>
+      <DataListItem>
+        <div>Coordinates</div>
+        <div>
+          <CopyToClipboard>{`${lat},${lon}`}</CopyToClipboard>
+        </div>
+      </DataListItem>
       <DataListItem>
         <div>Location elevation</div>
         <div>

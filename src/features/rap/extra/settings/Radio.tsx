@@ -16,6 +16,13 @@ const GroupTip = styled.div`
   margin-bottom: 0.75rem;
 `;
 
+const Options = styled.div`
+  display: flex;
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+`;
+
 const Input = styled.input`
   display: none;
 
@@ -65,25 +72,27 @@ export function Radio<T extends string>({
     <div>
       <GroupLabel>{label}</GroupLabel>
       {tip ? <GroupTip>{tip}</GroupTip> : ""}
-      {options.map((option) => (
-        <React.Fragment key={option}>
-          <Input
-            type="radio"
-            name={label}
-            checked={cachedValue === option}
-            value={option}
-            id={`${label}${option}`}
-            onChange={(event) => {
-              setCachedValue(event.target.value as T);
+      <Options>
+        {options.map((option) => (
+          <React.Fragment key={option}>
+            <Input
+              type="radio"
+              name={label}
+              checked={cachedValue === option}
+              value={option}
+              id={`${label}${option}`}
+              onChange={(event) => {
+                setCachedValue(event.target.value as T);
 
-              setTimeout(() => {
-                onChange(event.target.value as T);
-              }, 50);
-            }}
-          />
-          <Label htmlFor={`${label}${option}`}>{option}</Label>
-        </React.Fragment>
-      ))}
+                setTimeout(() => {
+                  onChange(event.target.value as T);
+                }, 50);
+              }}
+            />
+            <Label htmlFor={`${label}${option}`}>{option}</Label>
+          </React.Fragment>
+        ))}
+      </Options>
     </div>
   );
 }
