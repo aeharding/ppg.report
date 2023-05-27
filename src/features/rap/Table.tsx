@@ -15,7 +15,7 @@ import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
-import { findNormalizedAltitude } from "../../helpers/wind";
+import { findNormalizedAltitude } from "../../helpers/interpolate";
 import uniqBy from "lodash/uniqBy";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";

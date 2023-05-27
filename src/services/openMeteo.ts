@@ -1,6 +1,9 @@
 import axios from "axios";
 import { WindsAloftAltitude, WindsAloftReport } from "../models/WindsAloft";
-import { convertToInterpolator, interpolateWindVectors } from "../helpers/wind";
+import {
+  convertToInterpolator,
+  interpolateWindVectors,
+} from "../helpers/interpolate";
 import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
 import { Dictionary } from "@reduxjs/toolkit";
