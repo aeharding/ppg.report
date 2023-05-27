@@ -6,8 +6,10 @@ import { TooltipContainer } from "../features/rap/extra/discussion/definition/De
 const Container = styled.div`
   cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
