@@ -24,6 +24,7 @@ import {
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 import { Languages } from "../../../../i18n";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   padding: 0.5rem 1rem 2rem;
@@ -52,30 +53,31 @@ export default function Settings() {
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
   const hiddenAlertsNumber = Object.keys(hiddenAlerts).length;
+  const { t } = useTranslation();
 
   return (
     <Container>
       <Radio
-        label="Altitude format"
+        label={t("Altitude format")}
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
       />
       <Radio
-        label="Altitude levels"
-        tip="Altitudes are derived from pressure altitude, which varies by hour. Select “normalized” to interpolate data at fixed altitudes."
+        label={t("Altitude levels")}
+        tip={t("Altitude levels tip")}
         options={[AltitudeLevels.Default, AltitudeLevels.Normalized]}
         value={altitudeLevels}
         onChange={(value) => dispatch(setAltitudeLevels(value))}
       />
       <Radio
-        label="Altitude unit"
+        label={t("Altitude unit")}
         options={[HeightUnit.Feet, HeightUnit.Meters]}
         value={heightUnit}
         onChange={(value) => dispatch(setHeightUnit(value))}
       />
       <Radio
-        label="Speed"
+        label={t("Speed")}
         options={[SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps]}
         value={speedUnit}
         onChange={(value) => dispatch(setSpeedUnit(value))}
@@ -87,19 +89,19 @@ export default function Settings() {
         onChange={(value) => dispatch(setTemperatureUnit(value))}
       />
       <Radio
-        label="Distance"
+        label={t("Distance")}
         options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
         value={distanceUnit}
         onChange={(value) => dispatch(setDistanceUnit(value))}
       />{" "}
       <Radio
-        label="Time format"
+        label={t("Time format")}
         options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
         value={timeFormat}
         onChange={(value) => dispatch(setTimeFormat(value))}
       />
       <Radio
-        label="Language"
+        label={t("Language")}
         options={[
           Languages.Auto,
           Languages.EN,
@@ -108,23 +110,23 @@ export default function Settings() {
           Languages.ES,
           Languages.DE,
         ]}
-        tip="Localization is in progress. To help, please email hello@ppg.report"
+        tip={t("Localization in progress")}
         value={language}
         onChange={(value) => dispatch(setLanguage(value))}
       />
       <Radio
-        label="Swipe Inertia"
+        label={t("Swipe Inertia")}
         options={[OnOff.On, OnOff.Off]}
         value={swipeInertia}
         onChange={(value) => dispatch(setSwipeInertia(value))}
-        tip="If turned off, swiping quickly will not skip hours. Useful especially on Android devices."
+        tip={t("Swipe intertia tip")}
       />
       <Radio
-        label="Hush G-AIRMETs"
+        label={t("Hush G-AIRMETs")}
         options={[OnOff.On, OnOff.Off]}
         value={gAirmetRead}
         onChange={(value) => dispatch(setGAirmetRead(value))}
-        tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy. [US-only]"
+        tip={t("Hush G-Airmets tip")}
       />{" "}
       <Hr />
       <div onClick={() => dispatch(resetHiddenAlerts())}>

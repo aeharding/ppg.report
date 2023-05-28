@@ -6,6 +6,7 @@ import {
 import React, { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import { scrollIntoViewIfNeeded } from "../../../../helpers/dom";
 import DraggableScrollView from "../../../../shared/DraggableScrollView";
+import { useTranslation } from "react-i18next";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -119,6 +120,7 @@ function InputWithScrollTo({
   label,
   ...props
 }: InputWithScrollToProps) {
+  const { t } = useTranslation();
   const labelRef = useRef<HTMLLabelElement | null>(null);
   const [initial, setInitial] = useState(true);
 
@@ -135,7 +137,7 @@ function InputWithScrollTo({
     <>
       <Input {...props} checked={checked} />
       <Label htmlFor={`${label}${props.value}`} ref={labelRef}>
-        {props.value}
+        {t(props.value as any)}
       </Label>
     </>
   );

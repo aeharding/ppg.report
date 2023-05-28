@@ -15,5 +15,21 @@
   "Star on Github": "<0/> sur Github",
   "Fly Warning": "Attention ! Vol à vos risques.",
   "Sky Coverage": "{{percentage}} de nuages",
-  "TAF forecast overview": "Prévu d'être {{flightCategory}} selon le rapport TAF de {{airportStationIdentifier}}"
+  "TAF forecast overview": "Prévu d'être {{flightCategory}} selon le rapport TAF de {{airportStationIdentifier}}",
+  "Off": "Non",
+  "On": "Oui",
+  "Altitude format": "Format d'altitude",
+  "Altitude levels": "Niveaux d'altitude",
+  "Altitude levels tip": "Les altitudes sont dérivées de l'altitude de pression, qui varie chaque heure. Sélectionnez « normalisé » pour interpoler les données à des altitudes fixes.",
+  "Altitude unit": "Unité d'altitude",
+  "Distance": "Distance",
+  "Time format": "Format de l'heure",
+  "Language": "Langue",
+  "Swipe Inertia": "Inertie du balayage",
+  "Swipe inertia tip": "Si désactivée, un balayage rapide ne sautera pas d'heures. Utile notamment sur les appareils Android.",
+  "Hush G-AIRMETs": "Réduire les G-AIRMETs",
+  "Hush G-Airmets tip": "Si activée, les nouveaux G-AIRMETs ne déclencheront pas la bannière de notifications des alertes non lues, et ils seront poussés en bas de la liste des alertes. Ceci peut être utile si vous trouvez les G-AIRMETs trop bruyants. [Uniquement aux États-Unis]",
+  "Localization in progress": "La localisation est en cours. Pour aider, veuillez envoyer un e-mail à hello@ppg.report",
+  "Default": "Par défaut",
+  "Normalized": "Normalisé"
 }
