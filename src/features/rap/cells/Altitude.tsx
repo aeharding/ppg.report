@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../../hooks";
-import { AltitudeType, HeightUnit } from "../../../features/user/userSlice";
 import { useTranslation } from "react-i18next";
+import { AltitudeType, HeightUnit } from "../extra/settings/settingEnums";
 
 export const Aside = styled.aside`
   display: inline;

@@ -2,34 +2,38 @@ import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { hiddenAlertsSelector } from "../../../alerts/alertsSlice";
 import {
-  AltitudeType,
   resetHiddenAlerts,
   setAltitude,
   setSwipeInertia,
-  OnOff,
   setGAirmetRead,
-  SpeedUnit,
-  HeightUnit,
-  TemperatureUnit,
   setHeightUnit,
   setSpeedUnit,
   setTemperatureUnit,
-  DistanceUnit,
   setDistanceUnit,
-  TimeFormat,
   setTimeFormat,
-  AltitudeLevels,
   setAltitudeLevels,
   setLanguage,
-  DEFAULT_HEIGHT_UNIT,
-  DEFAULT_TEMPERATURE_UNIT,
-  DEFAULT_DISTANCE_UNIT,
-  DEFAULT_TIME_FORMAT,
-  DEFAULT_SPEED_UNIT,
 } from "../../../user/userSlice";
+import {
+  AltitudeType,
+  OnOff,
+  HeightUnit,
+  TemperatureUnit,
+  DistanceUnit,
+  TimeFormat,
+  SpeedUnit,
+  AltitudeLevels,
+} from "./settingEnums";
 import { Radio } from "./Radio";
 import { Languages } from "../../../../i18n";
 import { useTranslation } from "react-i18next";
+import {
+  DEFAULT_DISTANCE_UNIT,
+  DEFAULT_HEIGHT_UNIT,
+  DEFAULT_SPEED_UNIT,
+  DEFAULT_TEMPERATURE_UNIT,
+  DEFAULT_TIME_FORMAT,
+} from "../../../../helpers/locale";
 
 const Container = styled.div`
   padding: 0.5rem 1rem 2rem;

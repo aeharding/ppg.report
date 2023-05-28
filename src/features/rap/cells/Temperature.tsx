@@ -3,8 +3,8 @@ import chroma from "chroma-js";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { Aside } from "./Altitude";
 import { useAppSelector } from "../../../hooks";
-import { TemperatureUnit } from "../../user/userSlice";
 import { cToF } from "../../weather/aviation/DetailedAviationReport";
+import { TemperatureUnit } from "../extra/settings/settingEnums";
 
 const colorScale = chroma
   .scale(["rgb(176, 38, 255)", "#0084ff", "#00ff00", "yellow", "red"])

@@ -16,9 +16,9 @@ import { isEqual, startOfHour } from "date-fns";
 import ReportStale from "./warnings/ReportStale";
 import LocalTimeWarning from "./warnings/LocalTimeWarning";
 import Errors from "./Errors";
-import { OnOff } from "../user/userSlice";
 import { useAppSelector } from "../../hooks";
 import { WindsAloftHour } from "../../models/WindsAloft";
+import { OnOff } from "./extra/settings/settingEnums";
 
 const browser = detect();
 

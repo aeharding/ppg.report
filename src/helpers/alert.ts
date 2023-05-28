@@ -4,7 +4,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
-import { OnOff } from "../features/user/userSlice";
+import { OnOff } from "../features/rap/extra/settings/settingEnums";
 import { RootState } from "../store";
 
 export function getAlertId(alert: Alert): string {

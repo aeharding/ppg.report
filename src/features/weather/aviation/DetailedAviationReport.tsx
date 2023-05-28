@@ -10,7 +10,7 @@ import Forecast, {
   formatWithTomorrowIfNeeded,
   getTimeFormatString,
 } from "./Forecast";
-import { TemperatureUnit } from "../../user/userSlice";
+import { TemperatureUnit } from "../../rap/extra/settings/settingEnums";
 
 const Container = styled.div`
   overflow: hidden;

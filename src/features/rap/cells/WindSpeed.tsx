@@ -6,7 +6,7 @@ import { shearIndicator } from "./WindDirection";
 import { outputP3ColorFromLab } from "../../../helpers/colors";
 import { useMemo } from "react";
 import { useAppSelector } from "../../../hooks";
-import { SpeedUnit } from "../../user/userSlice";
+import { SpeedUnit } from "../extra/settings/settingEnums";
 
 const colorScale = chroma
   .scale([

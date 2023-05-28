@@ -23,10 +23,13 @@ import {
   getFlightCategory,
   getFlightCategoryCssColor,
 } from "../../../helpers/taf";
-import { DistanceUnit, HeightUnit } from "../../user/userSlice";
 import { useAppSelector } from "../../../hooks";
 import { heightValueFormatter } from "../../rap/cells/Altitude";
 import { useTranslation } from "react-i18next";
+import {
+  DistanceUnit,
+  HeightUnit,
+} from "../../rap/extra/settings/settingEnums";
 
 interface AirportContainerProps {
   category: FlightCategory;

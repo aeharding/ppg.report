@@ -7,9 +7,9 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
-import { OnOff } from "../features/user/userSlice";
 import { GAirmetFeature } from "../services/aviationWeather";
 import { extractIssuedTimestamp } from "./aviationAlerts";
+import { OnOff } from "../features/rap/extra/settings/settingEnums";
 
 export function isAlertDangerous(alert: Alert): boolean {
   if (isWeatherAlert(alert))

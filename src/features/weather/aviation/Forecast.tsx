@@ -29,7 +29,7 @@ import { timeZoneSelector } from "../weatherSlice";
 import Cloud from "./Cloud";
 import Wind from "./cells/Wind";
 import WindShear from "./cells/WindShear";
-import { TimeFormat } from "../../user/userSlice";
+import { TimeFormat } from "../../rap/extra/settings/settingEnums";
 
 const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;

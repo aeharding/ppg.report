@@ -15,15 +15,15 @@ import {
 import { css, SerializedStyles } from "@emotion/react";
 import { outputP3ColorFromRGB } from "./colors";
 import {
-  DistanceUnit,
-  HeightUnit,
-  SpeedUnit,
-} from "../features/user/userSlice";
-import {
   heightUnitFormatter,
   heightValueFormatter,
 } from "../features/rap/cells/Altitude";
 import { speedUnitFormatter } from "../features/rap/cells/WindSpeed";
+import {
+  DistanceUnit,
+  HeightUnit,
+  SpeedUnit,
+} from "../features/rap/extra/settings/settingEnums";
 
 export enum FlightCategory {
   VFR = "VFR",

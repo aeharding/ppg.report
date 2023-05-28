@@ -4,7 +4,7 @@ import snow1 from "./snow1.png";
 import snow2 from "./snow2.png";
 import snow3 from "./snow3.png";
 
-const animation = keyframes` 
+const animation = keyframes`
   0% {
     background-position: 0px 0px, 0px 0px, 0px 0px;
   }

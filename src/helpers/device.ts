@@ -77,7 +77,7 @@ function getIosVersion() {
 }
 
 export function isBrowserLocaleClockType24h(
-  languages?: string | string[]
+  languages: string | string[] = navigator.language
 ): boolean {
   // "In basic use without specifying a locale, DateTimeFormat
   // uses the default locale and default options."

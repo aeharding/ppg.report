@@ -22,8 +22,8 @@ import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import JumpActions from "../../alerts/JumpActions";
 import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 import { isAlertRead } from "../../../helpers/alert";
-import { OnOff } from "../../user/userSlice";
 import { getTimeFormatString } from "../aviation/Forecast";
+import { OnOff } from "../../rap/extra/settings/settingEnums";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 

@@ -66,6 +66,7 @@
   },
   "scripts": {
     "start": "vite",
+    "typecheck": "tsc --noEmit",
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest",

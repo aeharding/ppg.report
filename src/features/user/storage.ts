@@ -3,20 +3,22 @@ import getDistance from "geolib/es/getDistance";
 import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
 import {
-  AltitudeLevels,
   AltitudeType,
+  HeightUnit,
+  TemperatureUnit,
+  DistanceUnit,
+  TimeFormat,
+  SpeedUnit,
+  AltitudeLevels,
+  OnOff,
+} from "../../features/rap/extra/settings/settingEnums";
+import {
   DEFAULT_DISTANCE_UNIT,
   DEFAULT_HEIGHT_UNIT,
   DEFAULT_SPEED_UNIT,
   DEFAULT_TEMPERATURE_UNIT,
   DEFAULT_TIME_FORMAT,
-  DistanceUnit,
-  HeightUnit,
-  OnOff,
-  SpeedUnit,
-  TemperatureUnit,
-  TimeFormat,
-} from "./userSlice";
+} from "../../helpers/locale";
 import { Languages } from "../../i18n";
 
 export interface UserLocation {

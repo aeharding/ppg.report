@@ -2,13 +2,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import Tippy from "@tippyjs/react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  AltitudeLevels,
-  AltitudeType,
-  HeightUnit,
-  toggle,
-  toggleAltitude,
-} from "../user/userSlice";
 import Altitude from "./cells/Altitude";
 import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
@@ -19,6 +12,13 @@ import { findNormalizedAltitude } from "../../helpers/interpolate";
 import uniqBy from "lodash/uniqBy";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
+import {
+  AltitudeLevels,
+  AltitudeType,
+  HeightUnit,
+} from "./extra/settings/settingEnums";
+import { toggleAltitude } from "../user/userSlice";
+import { toggleAltitudeType } from "../../helpers/locale";
 
 const TableEl = styled.table`
   width: 100%;
@@ -132,7 +132,7 @@ export default function Table({
       <thead>
         <tr>
           <Tippy
-            content={`Switch to altitude ${toggle(altitudeType)}`}
+            content={`Switch to altitude ${toggleAltitudeType(altitudeType)}`}
             placement="top"
             hideOnClick={false}
           >
