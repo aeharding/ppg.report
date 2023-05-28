@@ -24,6 +24,8 @@ const Options = styled.div`
   margin: 0 -1rem;
   padding: 0 1rem;
   scroll-padding: 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 
   > * {
     flex-shrink: 0;
