@@ -349,9 +349,11 @@ export function getLanguage(): Languages {
     savedValue !== Languages.Auto &&
     savedValue !== Languages.EN &&
     savedValue !== Languages.FR &&
-    savedValue !== Languages.NL
+    savedValue !== Languages.NL &&
+    savedValue !== Languages.ES &&
+    savedValue !== Languages.DE
   )
-    return Languages.Auto;
+    return Languages.EN;
 
   return savedValue;
 }

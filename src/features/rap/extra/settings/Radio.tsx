@@ -3,7 +3,8 @@ import {
   outputP3ColorFromRGB,
   outputP3ColorFromRGBA,
 } from "../../../../helpers/colors";
-import React, { useEffect, useState } from "react";
+import React, { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import { scrollIntoViewIfNeeded } from "../../../../helpers/dom";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -19,8 +20,22 @@ const GroupTip = styled.div`
 const Options = styled.div`
   display: flex;
   overflow-x: auto;
+  gap: 0.5rem;
   margin: 0 -1rem;
   padding: 0 1rem;
+  scroll-padding: 2rem;
+
+  > * {
+    flex-shrink: 0;
+  }
+
+  @media (hover: none) {
+    scrollbar-width: none;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `;
 
 const Input = styled.input`
@@ -43,7 +58,6 @@ const Label = styled.label`
   border: 1px solid;
   color: #888;
   border-radius: 2rem;
-  margin-right: 0.5rem;
 `;
 
 interface RadioProps<T> {
@@ -75,7 +89,8 @@ export function Radio<T extends string>({
       <Options>
         {options.map((option) => (
           <React.Fragment key={option}>
-            <Input
+            <InputWithScrollTo
+              label={label}
               type="radio"
               name={label}
               checked={cachedValue === option}
@@ -89,10 +104,40 @@ export function Radio<T extends string>({
                 }, 50);
               }}
             />
-            <Label htmlFor={`${label}${option}`}>{option}</Label>
           </React.Fragment>
         ))}
       </Options>
     </div>
+  );
+}
+
+interface InputWithScrollToProps extends InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
+
+function InputWithScrollTo({
+  checked,
+  label,
+  ...props
+}: InputWithScrollToProps) {
+  const labelRef = useRef<HTMLLabelElement | null>(null);
+  const [initial, setInitial] = useState(true);
+
+  useEffect(() => {
+    if (!labelRef.current) return;
+    setInitial(false);
+    if (!checked) return;
+
+    scrollIntoViewIfNeeded(labelRef.current, !initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked, labelRef]);
+
+  return (
+    <>
+      <Input {...props} checked={checked} />
+      <Label htmlFor={`${label}${props.value}`} ref={labelRef}>
+        {props.value}
+      </Label>
+    </>
   );
 }

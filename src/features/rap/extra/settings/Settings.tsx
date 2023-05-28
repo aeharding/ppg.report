@@ -56,18 +56,6 @@ export default function Settings() {
   return (
     <Container>
       <Radio
-        label="Language"
-        options={[
-          Languages.Auto,
-          Languages.EN,
-          Languages.FR,
-          Languages.NL,
-          Languages.ES,
-        ]}
-        value={language}
-        onChange={(value) => dispatch(setLanguage(value))}
-      />
-      <Radio
         label="Altitude format"
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
@@ -109,6 +97,20 @@ export default function Settings() {
         options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
         value={timeFormat}
         onChange={(value) => dispatch(setTimeFormat(value))}
+      />
+      <Radio
+        label="Language"
+        options={[
+          Languages.Auto,
+          Languages.EN,
+          Languages.FR,
+          Languages.NL,
+          Languages.ES,
+          Languages.DE,
+        ]}
+        tip="Localization is in progress. To help, please email hello@ppg.report"
+        value={language}
+        onChange={(value) => dispatch(setLanguage(value))}
       />
       <Radio
         label="Swipe Inertia"
