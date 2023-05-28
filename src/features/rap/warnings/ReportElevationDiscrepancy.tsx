@@ -40,7 +40,7 @@ const CloseButton = styled.button`
 `;
 
 export default function ReportElevationDiscrepancy() {
-  const rap = useAppSelector((state) => state.rap.rap);
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
   const storageKey = `elevation-alert-closed-${lat},${lon}`;
@@ -54,10 +54,14 @@ export default function ReportElevationDiscrepancy() {
 
   if (closed) return <></>;
 
-  if (!rap || typeof rap !== "object" || typeof elevation !== "number")
+  if (
+    !windsAloft ||
+    typeof windsAloft !== "object" ||
+    typeof elevation !== "number"
+  )
     return <></>;
 
-  const rapHeight = rap[0].data[0].height;
+  const rapHeight = windsAloft.hours[0].altitudes[0].altitudeInM;
 
   if (Math.abs(elevation - rapHeight) < ELEVATION_DISCREPANCY_THRESHOLD)
     return <></>;

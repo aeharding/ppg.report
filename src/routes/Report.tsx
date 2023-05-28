@@ -1,12 +1,10 @@
 import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { getRap, clear as clearRap } from "../features/rap/rapSlice";
 import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
 import Error from "../shared/Error";
-import { ReactComponent as Map } from "../assets/map.svg";
 import { ReactComponent as ErrorSvg } from "../assets/error.svg";
 import NotFound from "./NotFound";
 import {
@@ -33,7 +31,7 @@ interface ValidParamsReportProps {
 
 function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const dispatch = useAppDispatch();
-  const rap = useAppSelector((state) => state.rap.rap);
+  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const timeZone = useAppSelector(timeZoneSelector);
   const timeZoneLoading = useAppSelector(
     (state) => state.weather.timeZoneLoading
@@ -46,13 +44,11 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   useEffect(() => {
     if (!isLatLonTrimmed(lat, lon)) return;
 
-    dispatch(getRap(+lat, +lon));
     dispatch(getWeather(+lat, +lon));
     dispatch(getTFRs(+lat, +lon));
 
     return () => {
       dispatch(clearWeather());
-      dispatch(clearRap());
       dispatch(clearFaa());
     };
   }, [dispatch, lat, lon]);
@@ -71,34 +67,27 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
 
   if (timeZoneLoading || elevationLoading) return <Loading />;
 
-  switch (rap) {
+  switch (windsAloft) {
     case "pending":
     case undefined:
       return <Loading />;
     case "failed":
       return connectionError;
-    case "coordinates-error":
-      return (
-        <Error
-          icon={Map}
-          title="That's an unknown place."
-          description="At this time, only United States locations are supported."
-        />
-      );
     default:
       if (!timeZone || elevation == null) return connectionError;
 
-      if (rap.filter(({ date }) => !isPast(new Date(date))).length < 4)
+      if (
+        windsAloft.hours.filter(({ date }) => !isPast(new Date(date))).length <
+        4
+      )
         return connectionError;
 
       return (
         <Hours
-          rap={rap.filter(
+          hours={windsAloft.hours.filter(
             ({ date }) =>
-              !(
-                isPast(new Date(date)) &&
-                differenceInHours(new Date(), new Date(date)) >= 4
-              )
+              differenceInHours(new Date(date), new Date()) >= -2 &&
+              differenceInHours(new Date(date), new Date()) < 24
           )}
         />
       );

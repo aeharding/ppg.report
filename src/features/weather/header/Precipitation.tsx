@@ -6,7 +6,7 @@ import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { useMemo } from "react";
 import { outputP3ColorFromRGBA } from "../../../helpers/colors";
-import { findValue } from "../../../services/weather";
+import { findValue } from "../../../services/nwsWeather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import PrecipitationAnimation from "./precipitationAnimation/PrecipitationAnimation";
@@ -42,45 +42,44 @@ export default function Precipitation({
   date,
   weather,
 }: PrecipitationProps) {
-  const chance = useMemo(
-    () =>
-      typeof weather === "object"
-        ? findValue(
-            new Date(date),
+  const chance = useMemo(() => {
+    if (typeof weather !== "object") return undefined;
 
-            weather.properties.probabilityOfPrecipitation
-          )
-        : undefined,
-    [date, weather]
-  );
+    if ("properties" in weather)
+      return findValue(
+        new Date(date),
 
-  if (!chance) return <></>;
+        weather.properties.probabilityOfPrecipitation
+      )?.value;
 
-  const body = <>{chance.value}%</>;
+    return weather.byUnixTimestamp[new Date(date).getTime() / 1000]
+      ?.precipitationChance;
+  }, [date, weather]);
 
-  if (chance.value < 5) return <></>;
+  if (chance == null) return <></>;
+
+  const body = <>{chance}%</>;
+
+  if (chance < 5) return <></>;
 
   return (
     <>
-      {chance.value > 50 && (
+      {chance > 50 && (
         <PrecipitationAnimation
-          chance={chance.value / 100}
+          chance={chance / 100}
           isSnow={false}
           hasOverlay={headerType !== HeaderType.Normal}
         />
       )}
 
-      <Tippy
-        content={`${chance.value}% chance precipitation`}
-        placement="bottom"
-      >
+      <Tippy content={`${chance}% chance precipitation`} placement="bottom">
         <div>
           <Micro
             icon={
               <RainIcon
                 headerType={headerType}
                 icon={faRaindrops}
-                chance={chance.value}
+                chance={chance}
               />
             }
           >

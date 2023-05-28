@@ -6,6 +6,8 @@ import { store } from "./store";
 import { tippyStyles } from "./tippy";
 
 import "./setupViewport";
+import "./i18n";
+
 import { render } from "react-dom";
 
 const globalStyles = css`

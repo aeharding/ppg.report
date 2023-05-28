@@ -6,7 +6,7 @@ import { shearIndicator } from "./WindDirection";
 import { outputP3ColorFromLab } from "../../../helpers/colors";
 import { useMemo } from "react";
 import { useAppSelector } from "../../../hooks";
-import { SpeedUnit } from "../../user/userSlice";
+import { SpeedUnit } from "../extra/settings/settingEnums";
 
 const colorScale = chroma
   .scale([
@@ -21,7 +21,7 @@ const colorScale = chroma
     "#AD2AFF",
     "white",
   ])
-  .domain([0, 3, 9.5, 10, 14, 30, 35, 75, 100, 160])
+  .domain([0, 5.56, 17.59, 18.52, 25.93, 55.56, 64.82, 138.9, 185.2, 296.32])
   .mode("lab");
 
 const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`
@@ -40,7 +40,7 @@ const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`
 
 interface WindSpeedProps {
   // todo: check wind units provided on rap
-  curr: number; // in knots, usually
+  curr: number; // in kph
   prev?: number;
 }
 
@@ -51,13 +51,13 @@ export default function WindSpeed({ curr, prev }: WindSpeedProps) {
     const formattedWindSpeed = (() => {
       switch (speedUnit) {
         case SpeedUnit.Knots:
-          return curr;
+          return curr * 0.539957;
         case SpeedUnit.MPH:
-          return curr * 1.15078;
+          return curr * 0.621371;
         case SpeedUnit.KPH:
-          return curr * 1.852;
+          return curr;
         case SpeedUnit.mps:
-          return curr * 0.514444;
+          return curr * 0.277778;
       }
     })();
 
@@ -66,7 +66,7 @@ export default function WindSpeed({ curr, prev }: WindSpeedProps) {
     return (
       <WindSpeedContainer
         speed={curr}
-        shear={Math.abs(curr - (prev === undefined ? curr : prev)) > 8}
+        shear={Math.abs(curr - (prev === undefined ? curr : prev)) > 15}
       >
         {Math.round(formattedWindSpeed)} <Aside>{speedUnitLabel}</Aside>
       </WindSpeedContainer>

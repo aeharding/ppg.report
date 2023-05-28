@@ -51,7 +51,7 @@ export default function WindDirection({ curr, prev }: WindDirectionProps) {
           25
         }
       >
-        {curr} <WindIndicator direction={curr} />
+        {Math.round(curr)} <WindIndicator direction={curr} />
       </Container>
     );
   }, [curr, prev]);

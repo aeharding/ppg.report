@@ -4,13 +4,22 @@ import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
 import {
   AltitudeType,
-  DistanceUnit,
   HeightUnit,
-  OnOff,
-  SpeedUnit,
   TemperatureUnit,
+  DistanceUnit,
   TimeFormat,
-} from "./userSlice";
+  SpeedUnit,
+  AltitudeLevels,
+  OnOff,
+} from "../../features/rap/extra/settings/settingEnums";
+import {
+  DEFAULT_DISTANCE_UNIT,
+  DEFAULT_HEIGHT_UNIT,
+  DEFAULT_SPEED_UNIT,
+  DEFAULT_TEMPERATURE_UNIT,
+  DEFAULT_TIME_FORMAT,
+} from "../../helpers/locale";
+import { Languages } from "../../i18n";
 
 export interface UserLocation {
   lat: number;
@@ -22,6 +31,7 @@ export interface UserLocation {
 
 const LOCATIONS_STORAGE_KEY = "user-locations";
 const ALTITUDE_STORAGE_KEY = "user-altitude";
+const ALTITUDE_LEVELS_STORAGE_KEY = "user-altitude-levels";
 const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
 const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
 const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
@@ -32,6 +42,7 @@ const READ_ALERTS = "read-alerts";
 const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
+const LANGUAGE_STORAGE_KEY = "user-language";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -116,6 +127,23 @@ export function getAltitude(): AltitudeType {
   return savedValue;
 }
 
+export function setAltitudeLevels(altitudeLevels: AltitudeLevels): void {
+  localStorage.setItem(ALTITUDE_LEVELS_STORAGE_KEY, altitudeLevels);
+}
+
+export function getAltitudeLevels(): AltitudeLevels {
+  const savedValue = localStorage.getItem(ALTITUDE_LEVELS_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== AltitudeLevels.Default &&
+      savedValue !== AltitudeLevels.Normalized)
+  )
+    return AltitudeLevels.Default;
+
+  return savedValue;
+}
+
 export function setAltitude(altitude: AltitudeType): void {
   localStorage.setItem(ALTITUDE_STORAGE_KEY, altitude);
 }
@@ -127,7 +155,7 @@ export function getHeightUnit(): HeightUnit {
     typeof savedValue !== "string" ||
     (savedValue !== HeightUnit.Feet && savedValue !== HeightUnit.Meters)
   )
-    return HeightUnit.Feet;
+    return DEFAULT_HEIGHT_UNIT;
 
   return savedValue;
 }
@@ -145,7 +173,7 @@ export function getSpeedUnit(): SpeedUnit {
       savedValue !== SpeedUnit.Knots &&
       savedValue !== SpeedUnit.MPH)
   )
-    return SpeedUnit.MPH;
+    return DEFAULT_SPEED_UNIT;
 
   return savedValue;
 }
@@ -162,7 +190,7 @@ export function getTemperatureUnit(): TemperatureUnit {
     (savedValue !== TemperatureUnit.Celsius &&
       savedValue !== TemperatureUnit.Fahrenheit)
   )
-    return TemperatureUnit.Fahrenheit;
+    return DEFAULT_TEMPERATURE_UNIT;
 
   return savedValue;
 }
@@ -179,7 +207,7 @@ export function getDistanceUnit(): DistanceUnit {
     (savedValue !== DistanceUnit.Kilometers &&
       savedValue !== DistanceUnit.Miles)
   )
-    return DistanceUnit.Miles;
+    return DEFAULT_DISTANCE_UNIT;
 
   return savedValue;
 }
@@ -195,7 +223,7 @@ export function getTimeFormat(): TimeFormat {
     typeof savedValue !== "string" ||
     (savedValue !== TimeFormat.Twelve && savedValue !== TimeFormat.TwentyFour)
   )
-    return TimeFormat.Twelve;
+    return DEFAULT_TIME_FORMAT;
 
   return savedValue;
 }
@@ -314,4 +342,24 @@ export function setGAirmetRead(gAirmetRead: OnOff): OnOff {
   localStorage.setItem(G_AIRMET_READ_STORAGE_KEY, gAirmetRead);
 
   return gAirmetRead;
+}
+
+export function getLanguage(): Languages {
+  const savedValue = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+  if (
+    savedValue !== Languages.Auto &&
+    savedValue !== Languages.EN &&
+    savedValue !== Languages.FR &&
+    savedValue !== Languages.NL &&
+    savedValue !== Languages.ES &&
+    savedValue !== Languages.DE
+  )
+    return Languages.EN;
+
+  return savedValue;
+}
+
+export function setLanguage(language: Languages): void {
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
 }

@@ -3,7 +3,8 @@ import chroma from "chroma-js";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { Aside } from "./Altitude";
 import { useAppSelector } from "../../../hooks";
-import { TemperatureUnit } from "../../user/userSlice";
+import { cToF } from "../../weather/aviation/DetailedAviationReport";
+import { TemperatureUnit } from "../extra/settings/settingEnums";
 
 const colorScale = chroma
   .scale(["rgb(176, 38, 255)", "#0084ff", "#00ff00", "yellow", "red"])
@@ -15,22 +16,20 @@ const TemperatureContainer = styled.div<{ temperatureInFarenheit: number }>`
 `;
 
 interface TemperatureProps {
-  temperature: number; // tenths of a degree Celsius
+  temperature: number; // Celsius
 }
 
 export default function Temperature({
-  temperature: tenthsDegC,
+  temperature: inCelsius,
 }: TemperatureProps) {
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
-
-  const inFahrenheit = getFahrenheitFromCelsius(tenthsDegC / 10);
 
   const temperature = (() => {
     switch (temperatureUnit) {
       case TemperatureUnit.Celsius:
-        return tenthsDegC / 10;
+        return inCelsius;
       case TemperatureUnit.Fahrenheit:
-        return inFahrenheit;
+        return cToF(inCelsius);
     }
   })();
 
@@ -44,12 +43,8 @@ export default function Temperature({
   })();
 
   return (
-    <TemperatureContainer temperatureInFarenheit={inFahrenheit}>
+    <TemperatureContainer temperatureInFarenheit={cToF(inCelsius)}>
       {Math.round(temperature)} <Aside>°{temperatureUnitLabel}</Aside>
     </TemperatureContainer>
   );
-}
-
-function getFahrenheitFromCelsius(celsius: number): number {
-  return celsius * (9 / 5) + 32;
 }

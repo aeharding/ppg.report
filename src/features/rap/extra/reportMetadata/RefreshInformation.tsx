@@ -10,7 +10,9 @@ import capitalize from "lodash/capitalize";
 const Label = styled.div``;
 
 export default function RefreshInformation() {
-  const rapUpdated = useAppSelector((state) => state.rap.rapUpdated);
+  const windsAloftUpdated = useAppSelector(
+    (state) => state.weather.windsAloftUpdated
+  );
 
   return (
     <>
@@ -19,16 +21,17 @@ export default function RefreshInformation() {
         <div
           css={{
             color:
-              rapUpdated &&
-              Math.abs(differenceInMinutes(new Date(rapUpdated), new Date())) >
-                30
+              windsAloftUpdated &&
+              Math.abs(
+                differenceInMinutes(new Date(windsAloftUpdated), new Date())
+              ) > 30
                 ? "red"
                 : undefined,
           }}
         >
-          {rapUpdated
+          {windsAloftUpdated
             ? capitalize(
-                formatDistanceToNow(new Date(rapUpdated), {
+                formatDistanceToNow(new Date(windsAloftUpdated), {
                   addSuffix: true,
                 })
               )

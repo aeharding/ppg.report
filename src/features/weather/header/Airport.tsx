@@ -23,9 +23,13 @@ import {
   getFlightCategory,
   getFlightCategoryCssColor,
 } from "../../../helpers/taf";
-import { DistanceUnit, HeightUnit } from "../../user/userSlice";
 import { useAppSelector } from "../../../hooks";
 import { heightValueFormatter } from "../../rap/cells/Altitude";
+import { useTranslation } from "react-i18next";
+import {
+  DistanceUnit,
+  HeightUnit,
+} from "../../rap/extra/settings/settingEnums";
 
 interface AirportContainerProps {
   category: FlightCategory;
@@ -50,6 +54,7 @@ interface AirportProps {
 }
 
 export default function Airport({ taf, date }: AirportProps) {
+  const { t } = useTranslation();
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
 
@@ -114,7 +119,11 @@ export default function Airport({ taf, date }: AirportProps) {
   const tip = (
     <>
       <div>
-        Forecasted to be {category} by TAF report from {taf.station}:
+        {t("TAF forecast overview", {
+          flightCategory: category,
+          airportStationIdentifier: taf.station,
+        })}
+        :
       </div>
       {buildTooltip(
         visibility,

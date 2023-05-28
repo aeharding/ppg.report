@@ -5,11 +5,12 @@ import { findRelatedAlerts } from "../../helpers/weather";
 import {
   AviationAlertFeature,
   GAirmetFeature,
+  ISigmetFeature,
   SigmetFeature,
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
+import { WeatherAlertFeature } from "../../services/nwsWeather";
 import { RootState } from "../../store";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
 
 const weatherAlertsSelector = (state: RootState) => state.weather.alerts;
 const tfrsSelector = (state: RootState) => state.faa.tfrs;
@@ -35,7 +36,9 @@ const allAlertsSelector = createSelector(
       return;
 
     return [
-      ...(weatherAlerts === "failed" ? [] : weatherAlerts.features),
+      ...(weatherAlerts === "failed" || weatherAlerts === "not-available"
+        ? []
+        : weatherAlerts.features),
       ...(tfrs === "failed" ? [] : tfrs),
       ...(aviationAlerts === "failed" ? [] : aviationAlerts),
     ];
@@ -74,6 +77,10 @@ export function isTFRAlert(alert: Alert): alert is TFRFeature {
 
 export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
   return "data" in alert.properties && alert.properties.data === "SIGMET";
+}
+
+export function isISigmetAlert(alert: Alert): alert is ISigmetFeature {
+  return "data" in alert.properties && alert.properties.data === "ISIGMET";
 }
 
 export function isGAirmetAlert(alert: Alert): alert is GAirmetFeature {

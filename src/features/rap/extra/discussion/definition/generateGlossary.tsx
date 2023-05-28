@@ -1,5 +1,5 @@
 import { Fragment, ReactNode } from "react";
-import { GlossaryTerm } from "../../../../../services/weather";
+import { GlossaryTerm } from "../../../../../services/nwsWeather";
 import Definition from "./Definition";
 
 const SEPARATOR_REGEX = /\s|\.|,|'|"|\//;

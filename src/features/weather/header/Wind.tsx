@@ -6,12 +6,13 @@ import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { useMemo } from "react";
 import { outputP3ColorFromRGBA } from "../../../helpers/colors";
-import { findValue } from "../../../services/weather";
+import { findValue } from "../../../services/nwsWeather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import { useAppSelector } from "../../../hooks";
 import { SpeedUnit as MetarTafSpeedUnit } from "metar-taf-parser";
 import { formatWind } from "../../../helpers/taf";
+import { useTranslation } from "react-i18next";
 
 // When a gust is considered worth displaying
 const GUST_DELTA_THRESHOLD = 2;
@@ -44,31 +45,38 @@ interface WindProps {
 }
 
 export default function Wind({ headerType, date, weather }: WindProps) {
+  const { t } = useTranslation();
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
-  const wind = useMemo(
-    () =>
-      typeof weather === "object"
-        ? {
-            speed: findValue(new Date(date), weather.properties.windSpeed),
-            gust: findValue(new Date(date), weather.properties.windGust),
-          }
-        : undefined,
-    [date, weather]
-  );
+  const wind = useMemo(() => {
+    if (typeof weather !== "object") return undefined;
+
+    if ("properties" in weather)
+      return {
+        speed: findValue(new Date(date), weather.properties.windSpeed)?.value,
+        gust: findValue(new Date(date), weather.properties.windGust)?.value,
+      };
+
+    const hour = weather.byUnixTimestamp[new Date(date).getTime() / 1_000];
+    if (!hour) return undefined;
+    return {
+      speed: hour.windSpeed,
+      gust: hour.windGust,
+    };
+  }, [date, weather]);
 
   if (!wind || wind.speed == null || wind.gust == null) return <></>;
 
-  const speed = Math.round(toMph(wind.speed.value));
-  const gust = Math.round(toMph(wind.gust.value));
+  const speed = Math.round(toMph(wind.speed));
+  const gust = Math.round(toMph(wind.gust));
 
   const speedFormatted = formatWind(
-    wind.speed.value,
+    wind.speed,
     MetarTafSpeedUnit.KilometersPerHour,
     speedUnit,
     false
   );
   const gustFormatted = formatWind(
-    wind.gust.value,
+    wind.gust,
     MetarTafSpeedUnit.KilometersPerHour,
     speedUnit,
     false
@@ -79,21 +87,26 @@ export default function Wind({ headerType, date, weather }: WindProps) {
       <>{speedFormatted}</>
     ) : (
       <>
-        {speedFormatted}G{gustFormatted}
+        {speedFormatted}
+        {t("WindGustAsOneLetter")}
+        {gustFormatted}
       </>
     );
 
   return (
     <Tippy
-      content={`Wind ${formatWind(
-        wind.speed.value,
-        MetarTafSpeedUnit.KilometersPerHour,
-        speedUnit
-      )} gusting to ${formatWind(
-        wind.gust.value,
-        MetarTafSpeedUnit.KilometersPerHour,
-        speedUnit
-      )}`}
+      content={t("WindSpeedGustingToWindSpeed", {
+        baseWindSpeed: formatWind(
+          wind.speed,
+          MetarTafSpeedUnit.KilometersPerHour,
+          speedUnit
+        ),
+        gustWindSpeed: formatWind(
+          wind.gust,
+          MetarTafSpeedUnit.KilometersPerHour,
+          speedUnit
+        ),
+      })}
       placement="bottom"
     >
       <div>

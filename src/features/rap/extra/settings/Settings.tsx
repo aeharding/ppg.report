@@ -2,24 +2,38 @@ import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { hiddenAlertsSelector } from "../../../alerts/alertsSlice";
 import {
-  AltitudeType,
   resetHiddenAlerts,
   setAltitude,
   setSwipeInertia,
-  OnOff,
   setGAirmetRead,
-  SpeedUnit,
-  HeightUnit,
-  TemperatureUnit,
   setHeightUnit,
   setSpeedUnit,
   setTemperatureUnit,
-  DistanceUnit,
   setDistanceUnit,
-  TimeFormat,
   setTimeFormat,
+  setAltitudeLevels,
+  setLanguage,
 } from "../../../user/userSlice";
+import {
+  AltitudeType,
+  OnOff,
+  HeightUnit,
+  TemperatureUnit,
+  DistanceUnit,
+  TimeFormat,
+  SpeedUnit,
+  AltitudeLevels,
+} from "./settingEnums";
 import { Radio } from "./Radio";
+import { Languages } from "../../../../i18n";
+import { useTranslation } from "react-i18next";
+import {
+  DEFAULT_DISTANCE_UNIT,
+  DEFAULT_HEIGHT_UNIT,
+  DEFAULT_SPEED_UNIT,
+  DEFAULT_TEMPERATURE_UNIT,
+  DEFAULT_TIME_FORMAT,
+} from "../../../../helpers/locale";
 
 const Container = styled.div`
   padding: 0.5rem 1rem 2rem;
@@ -36,7 +50,9 @@ const Hr = styled.hr`
 
 export default function Settings() {
   const dispatch = useAppDispatch();
+  const language = useAppSelector((state) => state.user.language);
   const altitudeType = useAppSelector((state) => state.user.altitude);
+  const altitudeLevels = useAppSelector((state) => state.user.altitudeLevels);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const speedUnit = useAppSelector((state) => state.user.speedUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
@@ -46,58 +62,95 @@ export default function Settings() {
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
   const hiddenAlertsNumber = Object.keys(hiddenAlerts).length;
+  const { t } = useTranslation();
 
   return (
     <Container>
       <Radio
-        label="Altitude format"
+        label={t("Altitude format")}
         options={[AltitudeType.AGL, AltitudeType.MSL]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
       />
       <Radio
-        label="Altitude unit"
-        options={[HeightUnit.Feet, HeightUnit.Meters]}
+        label={t("Altitude levels")}
+        tip={t("Altitude levels tip")}
+        options={[AltitudeLevels.Default, AltitudeLevels.Normalized]}
+        value={altitudeLevels}
+        onChange={(value) => dispatch(setAltitudeLevels(value))}
+      />
+      <Radio
+        label={t("Altitude unit")}
+        options={sortDefault(
+          [HeightUnit.Feet, HeightUnit.Meters],
+          DEFAULT_HEIGHT_UNIT
+        )}
         value={heightUnit}
         onChange={(value) => dispatch(setHeightUnit(value))}
       />
       <Radio
-        label="Speed"
-        options={[SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps]}
+        label={t("Speed")}
+        options={sortDefault(
+          [SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps],
+          DEFAULT_SPEED_UNIT
+        )}
         value={speedUnit}
         onChange={(value) => dispatch(setSpeedUnit(value))}
       />
       <Radio
         label="Temperature"
-        options={[TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius]}
+        options={sortDefault(
+          [TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius],
+          DEFAULT_TEMPERATURE_UNIT
+        )}
         value={temperatureUnit}
         onChange={(value) => dispatch(setTemperatureUnit(value))}
       />
       <Radio
-        label="Distance"
-        options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
+        label={t("Distance")}
+        options={sortDefault(
+          [DistanceUnit.Miles, DistanceUnit.Kilometers],
+          DEFAULT_DISTANCE_UNIT
+        )}
         value={distanceUnit}
         onChange={(value) => dispatch(setDistanceUnit(value))}
       />{" "}
       <Radio
-        label="Time format"
-        options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
+        label={t("Time format")}
+        options={sortDefault(
+          [TimeFormat.Twelve, TimeFormat.TwentyFour],
+          DEFAULT_TIME_FORMAT
+        )}
         value={timeFormat}
         onChange={(value) => dispatch(setTimeFormat(value))}
       />
       <Radio
-        label="Swipe Inertia"
+        label={t("Language")}
+        options={[
+          Languages.EN,
+          Languages.Auto,
+          Languages.FR,
+          Languages.NL,
+          Languages.ES,
+          Languages.DE,
+        ]}
+        tip={t("Localization in progress")}
+        value={language}
+        onChange={(value) => dispatch(setLanguage(value))}
+      />
+      <Radio
+        label={t("Swipe Inertia")}
         options={[OnOff.On, OnOff.Off]}
         value={swipeInertia}
         onChange={(value) => dispatch(setSwipeInertia(value))}
-        tip="If turned off, swiping quickly will not skip hours. Useful especially on Android devices."
+        tip={t("Swipe inertia tip")}
       />
       <Radio
-        label="Hush G-AIRMETs"
+        label={t("Hush G-AIRMETs")}
         options={[OnOff.On, OnOff.Off]}
         value={gAirmetRead}
         onChange={(value) => dispatch(setGAirmetRead(value))}
-        tip="If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy."
+        tip={t("Hush G-Airmets tip")}
       />{" "}
       <Hr />
       <div onClick={() => dispatch(resetHiddenAlerts())}>
@@ -118,4 +171,16 @@ export default function Settings() {
       <Radio label="Elevation" options={["ft", "m"]} /> */}
     </Container>
   );
+}
+
+function sortDefault<S extends string>(settings: S[], defaultSetting: S): S[] {
+  const sortedSettings = [...settings];
+  const defaultIndex = sortedSettings.indexOf(defaultSetting);
+
+  if (defaultIndex !== -1) {
+    sortedSettings.splice(defaultIndex, 1);
+    sortedSettings.unshift(defaultSetting);
+  }
+
+  return sortedSettings;
 }

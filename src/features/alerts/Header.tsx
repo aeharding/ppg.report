@@ -11,11 +11,12 @@ import { findRelatedAlerts, isAlertDangerous } from "../../helpers/weather";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { AviationAlertFeature } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
+import { WeatherAlertFeature } from "../../services/nwsWeather";
 import { readAlert } from "../user/userSlice";
-import { WeatherAlertFeature } from "../weather/weatherSlice";
 import {
   Alert,
   isGAirmetAlert,
+  isISigmetAlert,
   isSigmetAlert,
   isTFRAlert,
   isWeatherAlert,
@@ -232,6 +233,9 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
       if (alert.properties.airSigmetType === "OUTLOOK")
         return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=5&time=2&level=sfc&basemap=dark`;
 
+      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+    }
+    if (isISigmetAlert(alert)) {
       return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
     }
     if (isGAirmetAlert(alert))

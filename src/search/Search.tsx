@@ -8,7 +8,8 @@ import { search } from "../services/geocode";
 import { isTouchDevice } from "../helpers/device";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 import SubmitButton, { State } from "./SubmitButton";
-import axios from "axios";
+import { AxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   position: relative;
@@ -92,6 +93,7 @@ const Error = styled.div`
 `;
 
 export default function Search({ ...rest }) {
+  const { t } = useTranslation();
   const locationsLength = useAppSelector(
     (state) => state.user.recentLocations.length
   );
@@ -116,7 +118,7 @@ export default function Search({ ...rest }) {
 
       navigate(`/${getTrimmedCoordinates(lat, lon)}`);
     } catch (e) {
-      if (axios.isAxiosError(e)) {
+      if (e instanceof AxiosError) {
         setError("Please check your internet connection and try again.");
       } else {
         setError("Nothing found, please try again.");
@@ -138,7 +140,7 @@ export default function Search({ ...rest }) {
             type="text"
             enterKeyHint="go"
             autoCorrect="off"
-            placeholder="Search locations"
+            placeholder={t("Search locations")}
             autoFocus={locationsLength === 0 || !isTouchDevice()}
             value={query}
             onChange={(e) => setQuery(e.target.value)}

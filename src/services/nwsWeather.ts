@@ -1,15 +1,144 @@
 import axios from "axios";
 import { addSeconds } from "date-fns";
-import {
-  Alerts,
-  Discussion,
-  Property,
-  Value,
-  Weather,
-} from "../features/weather/weatherSlice";
+import { Discussion } from "../features/weather/weatherSlice";
 import { parse, toSeconds } from "iso8601-duration";
 import axiosRetryEnhancer from "axios-retry";
 import { isWithinInterval } from "../helpers/date";
+import { GeoJsonObject } from "geojson";
+
+interface Coordinates {
+  lat: number;
+  lon: number;
+}
+
+export interface NWSWeather extends Coordinates {
+  properties: {
+    probabilityOfPrecipitation: Property;
+    skyCover: Property;
+    weather: Property<NWSWeatherObservation[]>;
+    windSpeed: Property;
+    windGust: Property;
+    windDirection: Property;
+
+    /**
+     * The NWS office, like "MKX"
+     */
+    gridId: string;
+  };
+  geometry: GeoJsonObject | null;
+}
+
+export interface NWSWeatherObservation {
+  coverage?:
+    | "areas"
+    | "brief"
+    | "chance"
+    | "definite"
+    | "few"
+    | "frequent"
+    | "intermittent"
+    | "isolated"
+    | "likely"
+    | "numerous"
+    | "occasional"
+    | "patchy"
+    | "periods"
+    | "scattered"
+    | "slight_chance"
+    | "widespread";
+  weather?:
+    | "fog_mist"
+    | "dust_storm"
+    | "dust"
+    | "drizzle"
+    | "funnel_cloud"
+    | "fog"
+    | "smoke"
+    | "hail"
+    | "snow_pellets"
+    | "haze"
+    | "ice_crystals"
+    | "ice_pellets"
+    | "dust_whirls"
+    | "spray"
+    | "rain_showers"
+    | "rain"
+    | "sand"
+    | "snow_grains"
+    | "snow"
+    | "squalls"
+    | "sand_storm"
+    | "thunderstorms"
+    | "unknown"
+    | "volcanic_ash"
+    | "snow_showers";
+  intensity?: "light" | "very_light" | "moderate" | "heavy";
+  attributes: (
+    | "damaging_wind"
+    | "dry_thunderstorms"
+    | "flooding"
+    | "gusty_wind"
+    | "heavy_rain"
+    | "large_hail"
+    | "small_hail"
+    | "tornadoes"
+  )[];
+}
+
+export interface Property<T = number> {
+  uom: string;
+  values: Value<T>[];
+}
+
+export interface Value<T = unknown> {
+  validTime: string;
+  value: T;
+}
+
+export interface Alerts {
+  features: WeatherAlertFeature[];
+}
+
+export interface WeatherAlertFeature {
+  properties: {
+    id: string;
+    sent: string;
+    effective: string;
+    onset: string;
+    expires: string;
+    ends: string;
+    category:
+      | "Met"
+      | "Geo"
+      | "Safety"
+      | "Security"
+      | "Rescue"
+      | "Fire"
+      | "Health"
+      | "Env"
+      | "Transport"
+      | "Infra"
+      | "CBRNE"
+      | "Other";
+    severity: "Extreme" | "Severe" | "Moderate" | "Minor" | "Unknown";
+    certainty: "Observed" | "Likely" | "Possible" | "Unlikely" | "Unknown";
+    urgency: "Immediate" | "Expected" | "Future" | "Past" | "Unknown";
+    event: string;
+    headline?: string;
+    description: string;
+    instruction?: string;
+    parameters: {
+      AWIPSidentifier: string[];
+      WMOidentifier: string[];
+      NWSheadline: string[];
+      eventMotionDescription: string[];
+      BLOCKCHANNEL: string[];
+      "EAS-ORG": string[];
+      expiredReferences: string[];
+    };
+  };
+  geometry: GeoJsonObject | null;
+}
 
 const axiosRetry = axios.create();
 
@@ -30,7 +159,7 @@ axiosRetryEnhancer(axiosRetry, {
 
 export async function getGridData(
   forecastGridDataUrl: string
-): Promise<Weather> {
+): Promise<NWSWeather> {
   let { data } = await axiosRetry.get(forecastGridDataUrl);
 
   return data;

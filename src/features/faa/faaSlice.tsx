@@ -3,6 +3,7 @@ import { differenceInMinutes } from "date-fns";
 import { TFRFeature } from "../../services/faa";
 import { AppDispatch, RootState } from "../../store";
 import * as faa from "../../services/faa";
+import { isPossiblyWithinUSA } from "../../helpers/geo";
 
 interface FaaState {
   tfrs?: TFRResult;
@@ -88,6 +89,8 @@ export default faaReducer.reducer;
 export const getTFRs =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!isPossiblyWithinUSA(lat, lon)) return;
+
     loadAlerts();
 
     async function loadAlerts() {

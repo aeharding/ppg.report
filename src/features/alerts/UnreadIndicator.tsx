@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { isAlertRead } from "../../helpers/alert";
 import { useAppSelector } from "../../hooks";
-import { OnOff } from "../user/userSlice";
 import { Alert } from "./alertsSlice";
+import { OnOff } from "../rap/extra/settings/settingEnums";
 
 const Bubble = styled.div<{ read: boolean }>`
   width: 10px;

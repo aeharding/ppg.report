@@ -7,8 +7,8 @@ import Loading from "../../../../shared/Loading";
 import { setDiscussionViewed } from "../../../weather/weatherSlice";
 import * as storage from "../../../user/storage";
 import { Opts } from "linkifyjs";
-import { GlossaryTerm } from "../../../../services/weather";
-import { getGlossary } from "../../../../services/weather";
+import { GlossaryTerm } from "../../../../services/nwsWeather";
+import { getGlossary } from "../../../../services/nwsWeather";
 import { generateGlossary } from "./definition/generateGlossary";
 import DiscussionPart from "./DiscussionPart";
 
@@ -20,6 +20,10 @@ export const linkifyOptions: Opts = {
   ignoreTags: ["a"],
   validate: (value) => value.toLowerCase().indexOf("ppg.report") === -1,
 };
+
+const Container = styled.div`
+  margin-bottom: 2rem;
+`;
 
 const Overflow = styled.div`
   overflow: hidden;
@@ -79,7 +83,7 @@ export default function Discussion() {
       );
     default:
       return (
-        <>
+        <Container>
           {parseDiscussion(
             undoFixedWidthText(discussion.productText.trim())
           ).map((part, index) => {
@@ -110,7 +114,7 @@ export default function Discussion() {
                 );
             }
           })}
-        </>
+        </Container>
       );
   }
 }

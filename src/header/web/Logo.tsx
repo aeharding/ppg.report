@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { ReactComponent as Icon } from "../icon.svg";
+import { useTranslation } from "react-i18next";
 
 const LogoContainer = styled.span`
   display: flex;
@@ -30,6 +31,8 @@ const Aside = styled.aside`
 `;
 
 export default function Logo() {
+  const { t } = useTranslation();
+
   return (
     <LogoContainer>
       <Text>
@@ -37,7 +40,7 @@ export default function Logo() {
           <Icon />
           PPG.report
         </Title>
-        <Aside>Weather report for Paramotor Pilots</Aside>
+        <Aside>{t("Weather report for Paramotor Pilots")}</Aside>
       </Text>
     </LogoContainer>
   );

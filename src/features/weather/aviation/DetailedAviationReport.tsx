@@ -10,7 +10,7 @@ import Forecast, {
   formatWithTomorrowIfNeeded,
   getTimeFormatString,
 } from "./Forecast";
-import { TemperatureUnit } from "../../user/userSlice";
+import { TemperatureUnit } from "../../rap/extra/settings/settingEnums";
 
 const Container = styled.div`
   overflow: hidden;
@@ -134,6 +134,6 @@ export default function DetailedAviationReport({
   );
 }
 
-function cToF(celsius: number): number {
+export function cToF(celsius: number): number {
   return Math.round((celsius * 9) / 5 + 32);
 }

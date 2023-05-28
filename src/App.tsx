@@ -9,6 +9,7 @@ import { css, Global } from "@emotion/react";
 import { writeVariables } from "./theme";
 import { isInstalled } from "./helpers/device";
 import WindowInstallEventSetup from "./features/install/WindowInstallEventSetup";
+import SyncLanguage from "./SyncLanguage";
 
 const Background = styled.div`
   position: fixed;
@@ -65,6 +66,8 @@ function App() {
       <WindowInstallEventSetup />
 
       <Background />
+
+      <SyncLanguage />
 
       <AppContainer>
         <AppContents>

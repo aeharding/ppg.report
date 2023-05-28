@@ -90,6 +90,55 @@ export type SigmetFeature = AbstractAviationAlertFeature<{
   rawAirSigmet: string;
 }>;
 
+export type ISigmetFeature = AbstractAviationAlertFeature<{
+  data: "ISIGMET";
+
+  validTimeFrom: string;
+  validTimeTo: string;
+
+  icaoId: string;
+
+  firId: string;
+  firName: string;
+
+  hazard:
+    | "TS"
+    | "TURB"
+    | "ICE"
+    | "IFR"
+    | "PCPN"
+    | "VA"
+    | "SS"
+    | "MTW"
+    | "DS"
+    | "TSGR"
+    | "ICE"
+    | "TC";
+
+  qualifier:
+    | "ISOL"
+    | "SEV"
+    | "EMBD"
+    | "MOD"
+    | "FRQ"
+    | "SQL"
+    | "HVY"
+    | "RDOACT CLD"
+    | "OBSC";
+
+  geom: "AREA";
+
+  dir: "NE";
+
+  alphaChar?: string;
+
+  chng: "NC";
+
+  top: number;
+
+  rawSigmet: string;
+}>;
+
 // https://www.aviationweather.gov/dataserver/fields?datatype=gairmet
 export type GAirmetFeature = AbstractAviationAlertFeature<{
   data: "GAIRMET";
@@ -180,7 +229,11 @@ export type CwaFeature = AbstractAviationAlertFeature<{
   hazard: "TS" | "TURB" | "ICE" | "IFR" | "PCPN";
 }>;
 
-export type AviationAlertFeature = SigmetFeature | GAirmetFeature | CwaFeature;
+export type AviationAlertFeature =
+  | SigmetFeature
+  | ISigmetFeature
+  | GAirmetFeature
+  | CwaFeature;
 
 export async function getAviationAlerts({
   lat,

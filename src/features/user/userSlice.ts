@@ -4,57 +4,23 @@ import { AppDispatch, RootState } from "../../store";
 import { Alert } from "../alerts/alertsSlice";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
-
-export enum AltitudeType {
-  AGL = "AGL",
-  MSL = "MSL",
-}
-
-// CSS scroll-snap-stop
-export enum OnOff {
-  On = "On",
-  Off = "Off",
-}
-
-export enum SpeedUnit {
-  KPH = "km/h",
-  MPH = "mph",
-  Knots = "knots",
-  mps = "m/s",
-}
-
-export enum HeightUnit {
-  Feet = "ft",
-  Meters = "m",
-}
-
-export enum TemperatureUnit {
-  Celsius = "°C",
-  Fahrenheit = "°F",
-}
-
-export enum DistanceUnit {
-  Miles = "miles",
-  Kilometers = "km",
-}
-
-export enum TimeFormat {
-  TwentyFour = "24-hour",
-  Twelve = "12-hour",
-}
-
-export function toggle(altitude: AltitudeType): AltitudeType {
-  switch (altitude) {
-    case AltitudeType.AGL:
-      return AltitudeType.MSL;
-    case AltitudeType.MSL:
-      return AltitudeType.AGL;
-  }
-}
+import { Languages } from "../../i18n";
+import { toggleAltitudeType } from "../../helpers/locale";
+import {
+  AltitudeType,
+  OnOff,
+  HeightUnit,
+  TemperatureUnit,
+  DistanceUnit,
+  TimeFormat,
+  SpeedUnit,
+  AltitudeLevels,
+} from "../rap/extra/settings/settingEnums";
 
 interface UserState {
   recentLocations: UserLocation[];
   altitude: AltitudeType;
+  altitudeLevels: AltitudeLevels;
   heightUnit: HeightUnit;
   speedUnit: SpeedUnit;
   temperatureUnit: TemperatureUnit;
@@ -64,12 +30,14 @@ interface UserState {
   hiddenAlerts: Record<string, true>;
   swipeInertia: OnOff;
   gAirmetRead: OnOff;
+  language: Languages;
 }
 
 // Define the initial state using that type
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
   altitude: storage.getAltitude(),
+  altitudeLevels: storage.getAltitudeLevels(),
   heightUnit: storage.getHeightUnit(),
   speedUnit: storage.getSpeedUnit(),
   temperatureUnit: storage.getTemperatureUnit(),
@@ -79,6 +47,7 @@ const initialState: UserState = {
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
   gAirmetRead: storage.getGAirmetRead(),
+  language: storage.getLanguage(),
 };
 
 /**
@@ -92,10 +61,13 @@ export const userReducer = createSlice({
       state.recentLocations = action.payload;
     },
     toggleAltitude(state) {
-      state.altitude = toggle(state.altitude);
+      state.altitude = toggleAltitudeType(state.altitude);
     },
     updateAltitude(state, action: PayloadAction<AltitudeType>) {
       state.altitude = action.payload;
+    },
+    updateAltitudeLevels(state, action: PayloadAction<AltitudeLevels>) {
+      state.altitudeLevels = action.payload;
     },
     updateHeightUnit(state, action: PayloadAction<HeightUnit>) {
       state.heightUnit = action.payload;
@@ -128,6 +100,9 @@ export const userReducer = createSlice({
     setGAirmetRead(state, action: PayloadAction<OnOff>) {
       state.gAirmetRead = storage.setGAirmetRead(action.payload);
     },
+    updateLanguage(state, action: PayloadAction<Languages>) {
+      state.language = action.payload;
+    },
   },
 });
 
@@ -153,6 +128,14 @@ export const setAltitude =
     dispatch(userReducer.actions.updateAltitude(altitude));
 
     storage.setAltitude(getState().user.altitude);
+  };
+
+export const setAltitudeLevels =
+  (altitudeLevels: AltitudeLevels) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateAltitudeLevels(altitudeLevels));
+
+    storage.setAltitudeLevels(getState().user.altitudeLevels);
   };
 
 export const setHeightUnit =
@@ -210,6 +193,14 @@ export const removeLocation =
     const updatedLocations = storage.removeLocation(location);
 
     dispatch(updateLocations(updatedLocations));
+  };
+
+export const setLanguage =
+  (language: Languages) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userReducer.actions.updateLanguage(language));
+
+    storage.setLanguage(getState().user.language);
   };
 
 export default userReducer.reducer;
