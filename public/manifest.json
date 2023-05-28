@@ -20,7 +20,7 @@
   "background_color": "#001931",
   "display": "standalone",
   "orientation": "any",
-  "description": "Weather report tailored for paramotor pilots. Combines NOAA rapid refresh Op40 analysis, nearby Terminal Aerodrome Forecasts, NWS hourly forecast for 2.5km grid areas and NWS active alerts.",
+  "description": "Weather report tailored for paramotor pilots, worldwide. Combines winds aloft, nearby Terminal Aerodrome Forecasts, hourly forecasts, NWS active alerts and TFRs.",
   "categories": ["weather"],
   "screenshots": [
     {
