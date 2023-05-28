@@ -7,10 +7,12 @@ import {
   heightUnitFormatter,
   heightValueFormatter,
 } from "../../cells/Altitude";
+import { getTimezoneOffsetLabel } from "../../../../helpers/date";
 
 export default function PointInfo() {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const heightUnitLabel = heightUnitFormatter(heightUnit);
+  const timeZone = useAppSelector((state) => state.weather.timeZone);
 
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const { location } = useParams<"location">();
@@ -19,6 +21,7 @@ export default function PointInfo() {
   if (!lat || !lon) throw new Error("lat or lon not defined!");
   if (!windsAloft || typeof windsAloft !== "object")
     throw new Error("RAP not defined");
+  if (!timeZone) throw new Error("timeZone not defined");
 
   const altitudeInM = windsAloft.hours[0].altitudes[0].altitudeInM;
 
@@ -89,6 +92,12 @@ export default function PointInfo() {
       <DataListItem>
         <div>Source/model</div>
         <div>{source}</div>
+      </DataListItem>
+      <DataListItem>
+        <div>Time zone</div>
+        <div>
+          {timeZone} ({getTimezoneOffsetLabel(timeZone)})
+        </div>
       </DataListItem>
     </>
   );

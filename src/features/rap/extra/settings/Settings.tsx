@@ -21,6 +21,11 @@ import {
   AltitudeLevels,
   setAltitudeLevels,
   setLanguage,
+  DEFAULT_HEIGHT_UNIT,
+  DEFAULT_TEMPERATURE_UNIT,
+  DEFAULT_DISTANCE_UNIT,
+  DEFAULT_TIME_FORMAT,
+  DEFAULT_SPEED_UNIT,
 } from "../../../user/userSlice";
 import { Radio } from "./Radio";
 import { Languages } from "../../../../i18n";
@@ -72,39 +77,54 @@ export default function Settings() {
       />
       <Radio
         label={t("Altitude unit")}
-        options={[HeightUnit.Feet, HeightUnit.Meters]}
+        options={sortDefault(
+          [HeightUnit.Feet, HeightUnit.Meters],
+          DEFAULT_HEIGHT_UNIT
+        )}
         value={heightUnit}
         onChange={(value) => dispatch(setHeightUnit(value))}
       />
       <Radio
         label={t("Speed")}
-        options={[SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps]}
+        options={sortDefault(
+          [SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps],
+          DEFAULT_SPEED_UNIT
+        )}
         value={speedUnit}
         onChange={(value) => dispatch(setSpeedUnit(value))}
       />
       <Radio
         label="Temperature"
-        options={[TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius]}
+        options={sortDefault(
+          [TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius],
+          DEFAULT_TEMPERATURE_UNIT
+        )}
         value={temperatureUnit}
         onChange={(value) => dispatch(setTemperatureUnit(value))}
       />
       <Radio
         label={t("Distance")}
-        options={[DistanceUnit.Miles, DistanceUnit.Kilometers]}
+        options={sortDefault(
+          [DistanceUnit.Miles, DistanceUnit.Kilometers],
+          DEFAULT_DISTANCE_UNIT
+        )}
         value={distanceUnit}
         onChange={(value) => dispatch(setDistanceUnit(value))}
       />{" "}
       <Radio
         label={t("Time format")}
-        options={[TimeFormat.Twelve, TimeFormat.TwentyFour]}
+        options={sortDefault(
+          [TimeFormat.Twelve, TimeFormat.TwentyFour],
+          DEFAULT_TIME_FORMAT
+        )}
         value={timeFormat}
         onChange={(value) => dispatch(setTimeFormat(value))}
       />
       <Radio
         label={t("Language")}
         options={[
-          Languages.Auto,
           Languages.EN,
+          Languages.Auto,
           Languages.FR,
           Languages.NL,
           Languages.ES,
@@ -119,7 +139,7 @@ export default function Settings() {
         options={[OnOff.On, OnOff.Off]}
         value={swipeInertia}
         onChange={(value) => dispatch(setSwipeInertia(value))}
-        tip={t("Swipe intertia tip")}
+        tip={t("Swipe inertia tip")}
       />
       <Radio
         label={t("Hush G-AIRMETs")}
@@ -147,4 +167,16 @@ export default function Settings() {
       <Radio label="Elevation" options={["ft", "m"]} /> */}
     </Container>
   );
+}
+
+function sortDefault<S extends string>(settings: S[], defaultSetting: S): S[] {
+  const sortedSettings = [...settings];
+  const defaultIndex = sortedSettings.indexOf(defaultSetting);
+
+  if (defaultIndex !== -1) {
+    sortedSettings.splice(defaultIndex, 1);
+    sortedSettings.unshift(defaultSetting);
+  }
+
+  return sortedSettings;
 }
