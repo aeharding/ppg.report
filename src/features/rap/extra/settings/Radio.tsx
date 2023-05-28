@@ -5,6 +5,7 @@ import {
 } from "../../../../helpers/colors";
 import React, { InputHTMLAttributes, useEffect, useRef, useState } from "react";
 import { scrollIntoViewIfNeeded } from "../../../../helpers/dom";
+import DraggableScrollView from "../../../../shared/DraggableScrollView";
 
 const GroupLabel = styled.div`
   margin-bottom: 0.75rem;
@@ -17,26 +18,22 @@ const GroupTip = styled.div`
   margin-bottom: 0.75rem;
 `;
 
-const Options = styled.div`
+const Options = styled(DraggableScrollView)`
   display: flex;
   overflow-x: auto;
   gap: 0.5rem;
   margin: 0 -1rem;
   padding: 0 1rem;
   scroll-padding: 2rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 
   > * {
     flex-shrink: 0;
   }
 
-  @media (hover: none) {
-    scrollbar-width: none;
+  scrollbar-width: none;
 
-    ::-webkit-scrollbar {
-      display: none;
-    }
+  ::-webkit-scrollbar {
+    display: none;
   }
 `;
 
