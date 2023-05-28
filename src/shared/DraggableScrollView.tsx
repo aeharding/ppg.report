@@ -47,22 +47,33 @@ const DraggableScrollView: React.FC<DraggableScrollViewProps> = ({
   }, []);
 
   useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const container = containerRef.current;
+      if (
+        !container ||
+        container.scrollWidth <= container.clientWidth ||
+        !isDragging
+      )
+        return;
+
+      const deltaX = event.clientX - dragStartX;
+      container.scrollLeft = scrollLeftStart - deltaX;
+    };
+
     const handleMouseUp = () => {
       setIsDragging(false);
     };
 
-    const handleMouseLeave = () => {
-      setIsDragging(false);
-    };
-
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("mouseleave", handleMouseLeave);
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
 
     return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, []);
+  }, [isDragging, dragStartX, scrollLeftStart]);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     const container = containerRef.current;
@@ -73,25 +84,11 @@ const DraggableScrollView: React.FC<DraggableScrollViewProps> = ({
     }
   };
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (
-      !container ||
-      container.scrollWidth <= container.clientWidth ||
-      !isDragging
-    )
-      return;
-
-    const deltaX = event.clientX - dragStartX;
-    container.scrollLeft = scrollLeftStart - deltaX;
-  };
-
   return (
     <Container
       ref={containerRef}
       hasOverflow={hasOverflow}
       onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
       {...rest}
     >
       {children}
