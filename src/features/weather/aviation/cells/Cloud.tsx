@@ -1,6 +1,6 @@
 import { ICloud } from "metar-taf-parser";
-import { formatCloud } from "../../../helpers/taf";
-import { useAppSelector } from "../../../hooks";
+import { formatCloud } from "../../../../helpers/taf";
+import { useAppSelector } from "../../../../hooks";
 
 interface CloudProps {
   data: ICloud;

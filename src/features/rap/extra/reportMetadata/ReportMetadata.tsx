@@ -128,7 +128,7 @@ const MapController = () => {
   ];
   const airportPosition: LatLngExpression | undefined =
     aviationWeather && typeof aviationWeather === "object"
-      ? [aviationWeather.lat, aviationWeather.lon]
+      ? [aviationWeather.taf.lat, aviationWeather.taf.lon]
       : undefined;
 
   useEffect(() => {

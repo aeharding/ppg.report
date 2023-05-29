@@ -11,6 +11,8 @@ import Forecast, {
   getTimeFormatString,
 } from "./Forecast";
 import { TemperatureUnit } from "../../rap/extra/settings/settingEnums";
+import { metarReport } from "../weatherSliceLazy";
+import MetarDetail from "./MetarDetail";
 
 const Container = styled.div`
   overflow: hidden;
@@ -29,7 +31,7 @@ const Description = styled.div`
   margin: 0 1rem 1rem;
 `;
 
-const Forecasts = styled.div`
+export const Forecasts = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -60,13 +62,14 @@ export default function DetailedAviationReport({
   const timeZone = useAppSelector(timeZoneSelector);
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
+  const metar = useAppSelector(metarReport);
 
   function formatTemperature(temperatureInC: number): string {
     switch (temperatureUnit) {
       case TemperatureUnit.Celsius:
         return `${temperatureInC}℃`;
       case TemperatureUnit.Fahrenheit:
-        return `${cToF(temperatureInC)}℉`;
+        return `${Math.round(cToF(temperatureInC))}℉`;
     }
   }
 
@@ -74,6 +77,8 @@ export default function DetailedAviationReport({
 
   return (
     <Container>
+      {metar ? <MetarDetail metar={metar} /> : ""}
+
       <Title>Forecast</Title>
 
       <Description>
@@ -135,5 +140,5 @@ export default function DetailedAviationReport({
 }
 
 export function cToF(celsius: number): number {
-  return Math.round((celsius * 9) / 5 + 32);
+  return (celsius * 9) / 5 + 32;
 }

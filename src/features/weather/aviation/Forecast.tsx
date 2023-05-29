@@ -12,7 +12,6 @@ import React from "react";
 import { notEmpty } from "../../../helpers/array";
 import { capitalizeFirstLetter } from "../../../helpers/string";
 import {
-  determineCeilingFromClouds,
   FlightCategory,
   formatDescriptive,
   formatHeight,
@@ -26,12 +25,15 @@ import {
 } from "../../../helpers/taf";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
-import Cloud from "./Cloud";
 import Wind from "./cells/Wind";
 import WindShear from "./cells/WindShear";
 import { TimeFormat } from "../../rap/extra/settings/settingEnums";
+import Clouds from "./cells/Clouds";
+import Ceiling from "./cells/Ceiling";
 
-const Container = styled.div<{ type: WeatherChangeType | undefined }>`
+export const Container = styled.div<{
+  type: WeatherChangeType | undefined | "METAR";
+}>`
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -54,22 +56,26 @@ const Container = styled.div<{ type: WeatherChangeType | undefined }>`
         return css`
           border-left-color: #0095ff5d;
         `;
+      case "METAR":
+        return css`
+          border-left-color: #6d0050;
+        `;
     }
   }}
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: -0.25rem;
 `;
 
-const Text = styled.p`
+export const Text = styled.p`
   margin: 0;
 `;
 
-const Category = styled.div<{ category: FlightCategory }>`
+export const Category = styled.div<{ category: FlightCategory }>`
   display: inline-block;
   padding: 2px 8px;
 
@@ -79,7 +85,7 @@ const Category = styled.div<{ category: FlightCategory }>`
   ${({ category }) => getFlightCategoryCssColor(category)}
 `;
 
-const Table = styled.table`
+export const Table = styled.table`
   width: 100%;
   table-layout: fixed;
 
@@ -95,7 +101,7 @@ const Table = styled.table`
   }
 `;
 
-const Raw = styled.div`
+export const Raw = styled.div`
   padding: 0.5rem;
 
   background: rgba(0, 0, 0, 0.5);
@@ -114,7 +120,6 @@ export default function Forecast({ data }: ForecastProps) {
 
   if (!timeZone) throw new Error("timezone undefined");
 
-  const ceiling = determineCeilingFromClouds(data.clouds);
   const category = getFlightCategory(
     data.visibility,
     data.clouds,
@@ -200,15 +205,10 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Clouds</td>
               <td>
-                {data.clouds.map((cloud, index) => (
-                  <React.Fragment key={index}>
-                    <Cloud data={cloud} />
-                    <br />
-                  </React.Fragment>
-                ))}
-                {data.verticalVisibility != null ? (
-                  <>Obscured sky</>
-                ) : undefined}
+                <Clouds
+                  clouds={data.clouds}
+                  verticalVisibility={data.verticalVisibility}
+                />
               </td>
             </tr>
           ) : (
@@ -229,14 +229,10 @@ export default function Forecast({ data }: ForecastProps) {
             <tr>
               <td>Ceiling</td>
               <td>
-                {ceiling?.height != null
-                  ? `${formatHeight(ceiling.height, heightUnit)} AGL`
-                  : data.verticalVisibility
-                  ? `Vertical visibility ${formatHeight(
-                      data.verticalVisibility,
-                      heightUnit
-                    )} AGL`
-                  : `At least ${formatHeight(12_000, heightUnit)} AGL`}
+                <Ceiling
+                  clouds={data.clouds}
+                  verticalVisibility={data.verticalVisibility}
+                />
               </td>
             </tr>
           ) : (
@@ -305,7 +301,9 @@ export default function Forecast({ data }: ForecastProps) {
                 ))}
               </td>
             </tr>
-          ) : undefined}
+          ) : (
+            ""
+          )}
         </tbody>
       </Table>
       <Raw>{data.raw}</Raw>
@@ -313,7 +311,7 @@ export default function Forecast({ data }: ForecastProps) {
   );
 }
 
-function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
+export function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
   return (
     <>
       {capitalizeFirstLetter(

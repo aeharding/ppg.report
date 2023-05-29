@@ -9,6 +9,7 @@ export interface TAFReport {
   issued: string;
   lat: number;
   lon: number;
+  stationId: string;
 }
 
 // Proxy to https://www.aviationweather.gov/adds/dataserver_current/httpparam
@@ -27,7 +28,13 @@ export async function getTAF({
       radialDistance: `35;${lon},${lat}`,
       hoursBeforeNow: 3,
       mostRecent: true,
-      fields: ["raw_text", "issue_time", "latitude", "longitude"].join(","),
+      fields: [
+        "raw_text",
+        "issue_time",
+        "latitude",
+        "longitude",
+        "station_id",
+      ].join(","),
     },
   });
   const parsed = parser.parse(response.data);
@@ -39,6 +46,49 @@ export async function getTAF({
     issued: parsed.response.data.TAF.issue_time,
     lat: +parsed.response.data.TAF.latitude,
     lon: +parsed.response.data.TAF.longitude,
+    stationId: parsed.response.data.TAF.station_id,
+  };
+}
+
+export interface METARReport {
+  raw: string;
+  observed: string;
+  lat: number;
+  lon: number;
+  stationId: string;
+}
+
+// Proxy to https://www.aviationweather.gov/adds/dataserver_current/httpparam
+export async function getMETAR(
+  stationId: string
+): Promise<METARReport | undefined> {
+  const response = await axios.get("/api/aviationweather", {
+    params: {
+      dataSource: "metars",
+      requestType: "retrieve",
+      format: "xml",
+      mostRecentForEachStation: "constraint",
+      hoursBeforeNow: 3,
+      stationString: stationId,
+      fields: [
+        "raw_text",
+        "observation_time",
+        "latitude",
+        "longitude",
+        "station_id",
+      ].join(","),
+    },
+  });
+  const parsed = parser.parse(response.data);
+
+  if (!parsed.response.data?.METAR) return;
+
+  return {
+    raw: parsed.response.data.METAR.raw_text,
+    observed: parsed.response.data.METAR.observation_time,
+    lat: +parsed.response.data.METAR.latitude,
+    lon: +parsed.response.data.METAR.longitude,
+    stationId: parsed.response.data.METAR.station_id,
   };
 }
 

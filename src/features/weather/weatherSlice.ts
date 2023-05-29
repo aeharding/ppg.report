@@ -43,12 +43,17 @@ export type AlertsResult =
   // Request failed
   | "failed";
 
+interface AviationWeather {
+  taf: aviationWeatherService.TAFReport;
+  metar?: aviationWeatherService.METARReport;
+}
+
 type AviationWeatherResult =
   // component has requested a weather, to be batched in next bulk request
   | "pending"
 
   // the weather data (finished resolving)
-  | aviationWeatherService.TAFReport
+  | AviationWeather
 
   // Request failed
   | "failed"
@@ -317,7 +322,7 @@ export const weatherReducer = createSlice({
      */
     aviationWeatherReceived: (
       state,
-      action: PayloadAction<aviationWeatherService.TAFReport>
+      action: PayloadAction<AviationWeather>
     ) => {
       if (state.aviationWeather === "pending") {
         state.aviationWeather = action.payload;
@@ -732,7 +737,11 @@ export const getWeather =
         if (!rawTAF) {
           dispatch(aviationWeatherNotAvailable());
         } else {
-          dispatch(aviationWeatherReceived(rawTAF));
+          const rawMETAR = await aviationWeatherService.getMETAR(
+            rawTAF?.stationId
+          );
+
+          dispatch(aviationWeatherReceived({ taf: rawTAF, metar: rawMETAR }));
         }
       } catch (e: unknown) {
         dispatch(aviationWeatherFailed());
