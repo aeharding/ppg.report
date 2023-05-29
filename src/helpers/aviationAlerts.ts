@@ -2,6 +2,7 @@ import sortBy from "lodash/sortBy";
 import {
   isGAirmetAlert,
   isISigmetAlert,
+  isSigmetOutlookAlert,
   isSigmetAlert,
 } from "../features/alerts/alertsSlice";
 import {
@@ -31,11 +32,10 @@ export function getAviationAlertName(alert: AviationAlertFeature): string {
 }
 
 function getSigmetAlertName(alert: SigmetFeature): string {
-  return [
-    formatHazard(alert.properties.hazard),
-    getSigmetAlertType(alert),
-    "SIGMET",
-  ]
+  if (isSigmetOutlookAlert(alert))
+    return `${formatHazard(alert.properties.hazard)} SIGMET Outlook`;
+
+  return [formatHazard(alert.properties.hazard), getSigmetAlertType(alert)]
     .filter((a) => a)
     .join(" ");
 }
@@ -54,10 +54,6 @@ function getISigmetAlertName(alert: ISigmetFeature): string {
 }
 
 function getSigmetAlertType(alert: SigmetFeature): string {
-  if (alert.properties.airSigmetType === "OUTLOOK") {
-    return "SIGMET Outlook";
-  }
-
   return alert.properties.airSigmetType;
 }
 

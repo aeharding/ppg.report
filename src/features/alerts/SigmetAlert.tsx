@@ -97,7 +97,7 @@ export function formatSigmetDescription(alert: SigmetFeature) {
     return (
       <>
         <p>
-          A Convective Outlook SIGMET is a weather advisory concerning predicted
+          A Convective SIGMET Outlook is a weather advisory concerning predicted
           and/or possible future widespread convective weather (such as
           thunderstorms and/or tornadoes) significant to the safety of all
           aircraft. Outlooks are valid for four hours, and may be renewed.

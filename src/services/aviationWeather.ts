@@ -90,6 +90,10 @@ export type SigmetFeature = AbstractAviationAlertFeature<{
   rawAirSigmet: string;
 }>;
 
+export interface SigmetOutlookFeature extends SigmetFeature {
+  airSigmetType: "OUTLOOK";
+}
+
 export type ISigmetFeature = AbstractAviationAlertFeature<{
   data: "ISIGMET";
 
