@@ -7,6 +7,7 @@ import {
   GAirmetFeature,
   ISigmetFeature,
   SigmetFeature,
+  SigmetOutlookFeature,
 } from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { WeatherAlertFeature } from "../../services/nwsWeather";
@@ -77,6 +78,12 @@ export function isTFRAlert(alert: Alert): alert is TFRFeature {
 
 export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
   return "data" in alert.properties && alert.properties.data === "SIGMET";
+}
+
+export function isSigmetOutlookAlert(
+  alert: Alert
+): alert is SigmetOutlookFeature {
+  return isSigmetAlert(alert) && alert.properties.airSigmetType === "OUTLOOK";
 }
 
 export function isISigmetAlert(alert: Alert): alert is ISigmetFeature {
@@ -152,8 +159,5 @@ export function filterDuplicateAlertsForHour(alerts: Alert[]): Alert[] {
 
   if (!hasConvectiveSigmet) return alerts;
 
-  return alerts.filter(
-    (alert) =>
-      !(isSigmetAlert(alert) && alert.properties.airSigmetType === "OUTLOOK")
-  );
+  return alerts.filter((alert) => !isSigmetOutlookAlert(alert));
 }

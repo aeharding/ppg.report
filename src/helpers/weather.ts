@@ -4,6 +4,8 @@ import {
   Alert,
   isGAirmetAlert,
   isISigmetAlert,
+  isSigmetOutlookAlert,
+  isSigmetAlert,
   isTFRAlert,
   isWeatherAlert,
 } from "../features/alerts/alertsSlice";
@@ -23,10 +25,10 @@ export function isAlertDangerous(alert: Alert): boolean {
 
   if (isISigmetAlert(alert)) return true;
 
-  return (
-    alert.properties.data === "SIGMET" &&
-    alert.properties.airSigmetType !== "OUTLOOK"
-  );
+  if (isSigmetOutlookAlert(alert)) return false;
+  if (isSigmetAlert(alert)) return true;
+
+  return false;
 }
 
 /**

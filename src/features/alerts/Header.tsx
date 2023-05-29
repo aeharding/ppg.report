@@ -17,6 +17,7 @@ import {
   Alert,
   isGAirmetAlert,
   isISigmetAlert,
+  isSigmetOutlookAlert,
   isSigmetAlert,
   isTFRAlert,
   isWeatherAlert,
@@ -229,15 +230,15 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
 
   // https://www.aviationweather.gov/cwamis/help?page=inter
   function buildUrl() {
-    if (isSigmetAlert(alert)) {
-      if (alert.properties.airSigmetType === "OUTLOOK")
-        return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=5&time=2&level=sfc&basemap=dark`;
+    if (isSigmetOutlookAlert(alert))
+      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=5&time=2&level=sfc&basemap=dark`;
 
+    if (isSigmetAlert(alert))
       return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
-    }
-    if (isISigmetAlert(alert)) {
+
+    if (isISigmetAlert(alert))
       return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
-    }
+
     if (isGAirmetAlert(alert))
       return `https://www.aviationweather.gov/gairmet?center=${lat},${lon}&zoom=5&level=sfc&basemap=dark&time=${alert.properties.forecast}`;
 
