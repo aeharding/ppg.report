@@ -22,6 +22,7 @@ import { outputP3ColorFromRGB } from "../../../../helpers/colors";
 import { css } from "@emotion/react";
 import OSMAttribution from "../../../../map/OSMAttribution";
 import MyPosition from "../../../../map/MyPosition";
+import Parallax from "../../../../shared/Parallax";
 
 const Container = styled.div`
   overflow: hidden;
@@ -65,37 +66,45 @@ export default function ReportMetadata() {
 
   return (
     <Container>
-      <StyledMapContainer
-        center={[41.683, -86.25]}
-        zoomControl={false}
-        attributionControl={false}
-        scrollWheelZoom={false}
-        dragging={false}
-        doubleClickZoom={false}
-        trackResize={false}
-        boxZoom={false}
-        maxZoom={9.25}
-        zoom={9}
-        zoomSnap={undefined}
+      <Parallax>
+        <StyledMapContainer
+          center={[41.683, -86.25]}
+          zoomControl={false}
+          attributionControl={false}
+          scrollWheelZoom={false}
+          dragging={false}
+          doubleClickZoom={false}
+          trackResize={false}
+          boxZoom={false}
+          maxZoom={9.25}
+          zoom={9}
+          zoomSnap={undefined}
+        >
+          <OSMAttribution />
+          <BaseLayer />
+          <MapController />
+        </StyledMapContainer>
+      </Parallax>
+
+      <div
+        css={css`
+          background: var(--bg-bottom-sheet);
+        `}
       >
-        <OSMAttribution />
-        <BaseLayer />
-        <MapController />
-      </StyledMapContainer>
+        <Legend
+          showTaf={!!(aviationWeather && typeof aviationWeather === "object")}
+          showNws={
+            !!(weather && typeof weather === "object" && "geometry" in weather)
+          }
+          showOp40={showOp40}
+        />
 
-      <Legend
-        showTaf={!!(aviationWeather && typeof aviationWeather === "object")}
-        showNws={
-          !!(weather && typeof weather === "object" && "geometry" in weather)
-        }
-        showOp40={showOp40}
-      />
+        <StyledDataList>
+          <RefreshInformation />
 
-      <StyledDataList>
-        <RefreshInformation />
-
-        <PointInfo />
-      </StyledDataList>
+          <PointInfo />
+        </StyledDataList>
+      </div>
     </Container>
   );
 }
