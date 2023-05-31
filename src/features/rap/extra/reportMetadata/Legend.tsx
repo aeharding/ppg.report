@@ -4,7 +4,7 @@ import { outputP3ColorFromRGB } from "../../../../helpers/colors";
 import { ReactComponent as PlaneSvg } from "./plane.svg";
 
 const Container = styled.div`
-  margin: 0.5rem 1rem 1rem;
+  padding: 0.5rem 1rem 0;
 
   display: flex;
   flex-direction: column;

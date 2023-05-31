@@ -65,8 +65,6 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     return <Navigate to={`/${getTrimmedCoordinates(+lat, +lon)}`} replace />;
   }
 
-  if (timeZoneLoading || elevationLoading) return <Loading />;
-
   switch (windsAloft) {
     case "pending":
     case undefined:
@@ -74,6 +72,8 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
     case "failed":
       return connectionError;
     default:
+      if (timeZoneLoading || elevationLoading) return <Loading />;
+
       if (!timeZone || elevation == null) return connectionError;
 
       if (

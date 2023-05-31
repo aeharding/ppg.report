@@ -120,7 +120,7 @@ function calculateScrollTop(
   return parentScroll.scrollTop;
 }
 
-function getScrollParent(
+export function getScrollParent(
   node: HTMLElement | undefined
 ): HTMLElement | undefined {
   if (!node) return;

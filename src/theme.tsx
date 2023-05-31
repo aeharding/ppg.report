@@ -8,6 +8,7 @@ export function writeVariables(): SerializedStyles {
     --text: #eee;
     --softText: rgba(255, 255, 255, 0.3);
     --overscroll-background: #111;
+    --bg-bottom-sheet: #111317;
 
     --edge-padding: 1rem;
 

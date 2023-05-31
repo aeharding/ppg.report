@@ -9,7 +9,7 @@ import "react-spring-bottom-sheet/dist/style.css";
 
 const StyledBottomSheet = styled(SpringBottomSheet)`
   --rsbs-handle-bg: transparent;
-  --rsbs-bg: #111317;
+  --rsbs-bg: var(--bg-bottom-sheet);
   --rsbs-max-w: 500px;
 
   --rsbs-ml: auto;

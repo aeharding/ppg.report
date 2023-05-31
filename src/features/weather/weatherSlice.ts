@@ -122,6 +122,8 @@ interface WeatherState {
 
   windsAloft: WindsAloftResult | undefined;
   windsAloftUpdated: string | undefined;
+
+  coordinates?: { lat: number; lon: number };
 }
 
 // Define the initial state using that type
@@ -144,6 +146,8 @@ const initialState: WeatherState = {
 
   windsAloft: undefined,
   windsAloftUpdated: undefined,
+
+  coordinates: undefined,
 };
 
 /**
@@ -503,6 +507,13 @@ export const weatherReducer = createSlice({
       }
     },
 
+    updateCoordinates: (
+      state,
+      action: PayloadAction<{ lat: number; lon: number }>
+    ) => {
+      state.coordinates = action.payload;
+    },
+
     clear: () => initialState,
   },
 });
@@ -538,11 +549,14 @@ export const {
   windsAloftLoading,
   windsAloftReceived,
   windsAloftFailed,
+
+  updateCoordinates,
 } = weatherReducer.actions;
 
 export const getWeather =
   (lat: number, lon: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(updateCoordinates({ lat, lon }));
     dispatch(windsAloftLoading());
 
     const isPending = getState().weather.windsAloft === "pending";
@@ -562,8 +576,24 @@ export const getWeather =
       dispatch(windsAloftLoading());
       dispatch(weatherLoading());
 
-      const { windsAloft, weather, elevationInM } =
-        await openMeteo.getWindsAloft(lat, lon);
+      let windsAloft, weather, elevationInM;
+
+      try {
+        ({ windsAloft, weather, elevationInM } = await openMeteo.getWindsAloft(
+          lat,
+          lon
+        ));
+      } catch (error) {
+        if (!isStale()) {
+          dispatch(windsAloftFailed());
+          dispatch(weatherFailed());
+          dispatch(elevationFailed());
+        }
+
+        throw error;
+      }
+
+      if (isStale()) return;
 
       dispatch(windsAloftReceived(windsAloft));
       dispatch(weatherReceived(weather));
@@ -574,6 +604,8 @@ export const getWeather =
 
     // Open Meteo can provide weather and elevation alongside winds aloft
     const windsAloft = await loadWindsAloft();
+
+    if (isStale()) return;
 
     if (!windsAloft) return; // pending
     const { elevation, weather } = windsAloft;
@@ -590,7 +622,12 @@ export const getWeather =
           dispatch(discussionNotAvailable());
 
           dispatch(weatherResetLoading());
-          dispatch(weatherReceived(await openMeteo.getWeather(lat, lon)));
+
+          const weather = await openMeteo.getWeather(lat, lon);
+
+          if (isStale()) return;
+
+          dispatch(weatherReceived(weather));
 
           dispatch(alertsFailed());
 
@@ -617,6 +654,8 @@ export const getWeather =
       }
     }
 
+    if (isStale()) return;
+
     loadAviationWeather();
     loadAviationAlerts();
 
@@ -632,8 +671,12 @@ export const getWeather =
       try {
         const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
 
+        if (isStale()) return;
+
         dispatch(windsAloftReceived(windsAloft));
       } catch (error) {
+        if (isStale()) return;
+
         return fallback();
       }
 
@@ -648,11 +691,13 @@ export const getWeather =
             lon
           );
 
+          if (isStale()) return;
+
           dispatch(windsAloftReceived(windsAloft));
 
           return { elevation: windsAloft.elevationInM, weather };
         } catch (error) {
-          dispatch(windsAloftFailed());
+          if (!isStale()) dispatch(windsAloftFailed());
 
           throw error;
         }
@@ -671,6 +716,8 @@ export const getWeather =
 
           forecastGridDataUrl = data.forecastGridDataUrl;
 
+          if (isStale()) return;
+
           dispatch(timeZoneReceived(data.timeZone));
         } catch (e) {
           // Likely Mexico or Canada
@@ -683,12 +730,14 @@ export const getWeather =
         if (forecastGridDataUrl) {
           const data = await nwsWeather.getGridData(forecastGridDataUrl);
 
+          if (isStale()) return;
+
           dispatch(weatherReceived(data));
 
           return data.properties.gridId;
         }
       } catch (e) {
-        dispatch(weatherFailed());
+        if (!isStale()) dispatch(weatherFailed());
         throw e;
       }
     }
@@ -698,11 +747,14 @@ export const getWeather =
 
       try {
         let timeZone = await timezoneService.get({ lat, lon });
+
+        if (isStale()) return;
+
         dispatch(timeZoneReceived(timeZone));
       } catch (e) {
         if (!(e instanceof AxiosError)) throw e;
 
-        dispatch(timeZoneFailed());
+        if (!isStale()) dispatch(timeZoneFailed());
 
         throw e;
       }
@@ -715,9 +767,12 @@ export const getWeather =
 
       try {
         const alerts = await nwsWeather.getAlerts({ lat, lon });
+
+        if (isStale()) return;
+
         dispatch(alertsReceived(alerts));
       } catch (e: unknown) {
-        dispatch(alertsFailed());
+        if (!isStale()) dispatch(alertsFailed());
         throw e;
       }
     }
@@ -729,13 +784,16 @@ export const getWeather =
 
       try {
         const rawTAF = await aviationWeatherService.getTAF({ lat, lon });
+
+        if (isStale()) return;
+
         if (!rawTAF) {
           dispatch(aviationWeatherNotAvailable());
         } else {
           dispatch(aviationWeatherReceived(rawTAF));
         }
       } catch (e: unknown) {
-        dispatch(aviationWeatherFailed());
+        if (!isStale()) dispatch(aviationWeatherFailed());
         throw e;
       }
     }
@@ -750,9 +808,12 @@ export const getWeather =
           lat,
           lon,
         });
+
+        if (isStale()) return;
+
         dispatch(aviationAlertsReceived(payload));
       } catch (e: unknown) {
-        dispatch(aviationAlertsFailed());
+        if (!isStale()) dispatch(aviationAlertsFailed());
         throw e;
       }
     }
@@ -764,6 +825,9 @@ export const getWeather =
 
       try {
         const elevation = await elevationService.getElevation({ lat, lon });
+
+        if (isStale()) return;
+
         dispatch(elevationReceived(elevation));
       } catch (e: unknown) {
         try {
@@ -771,9 +835,12 @@ export const getWeather =
             lat,
             lon,
           });
+
+          if (isStale()) return;
+
           dispatch(elevationReceived(elevation));
         } catch (e) {
-          dispatch(elevationFailed());
+          if (!isStale()) dispatch(elevationFailed());
           throw e;
         }
 
@@ -788,9 +855,12 @@ export const getWeather =
 
       try {
         const gridId = await loadPointData();
+
+        if (isStale()) return;
+
         if (gridId) loadDiscussionFromGridId(gridId);
       } catch (error) {
-        dispatch(discussionFailed());
+        if (!isStale()) dispatch(discussionFailed());
         throw error;
       }
     }
@@ -798,15 +868,30 @@ export const getWeather =
     async function loadDiscussionFromGridId(gridId: string) {
       try {
         const discussion = await nwsWeather.getDiscussion(gridId);
+
+        if (isStale()) return;
+
         if (!discussion) {
           dispatch(discussionNotAvailable());
         } else {
           dispatch(discussionReceived(discussion));
         }
       } catch (e: unknown) {
-        dispatch(discussionFailed());
+        if (!isStale()) dispatch(discussionFailed());
         throw e;
       }
+    }
+
+    function isStale() {
+      if (!getState().weather.coordinates) return true;
+
+      if (
+        getState().weather.coordinates?.lat !== lat ||
+        getState().weather.coordinates?.lon !== lon
+      )
+        return true;
+
+      return false;
     }
   };
 

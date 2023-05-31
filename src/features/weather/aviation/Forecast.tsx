@@ -284,7 +284,7 @@ export default function Forecast({ data }: ForecastProps) {
                       ? formatHeight(icing.baseHeight, heightUnit)
                       : "surface"}{" "}
                     to{" "}
-                    {formatHeight(icing.baseHeight + icing.depth, heightUnit)}
+                    {formatHeight(icing.baseHeight + icing.depth, heightUnit)}{" "}
                     AGL.
                     <br />
                   </>

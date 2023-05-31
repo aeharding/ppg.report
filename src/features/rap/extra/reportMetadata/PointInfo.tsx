@@ -15,6 +15,7 @@ export default function PointInfo() {
   const timeZone = useAppSelector((state) => state.weather.timeZone);
 
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
+  const weather = useAppSelector((state) => state.weather.weather);
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
   const elevation = useAppSelector((state) => state.weather.elevation);
@@ -28,7 +29,7 @@ export default function PointInfo() {
   const showOp40 =
     typeof windsAloft === "object" && windsAloft.source === "rucSounding";
 
-  const source = (() => {
+  const aloftSource = (() => {
     switch (windsAloft.source) {
       case "openMeteo":
         return (
@@ -57,6 +58,31 @@ export default function PointInfo() {
           </>
         );
     }
+  })();
+
+  const hourlySource = (() => {
+    if (!weather || typeof weather !== "object") return;
+
+    if ("byUnixTimestamp" in weather)
+      return (
+        <a
+          href="https://open-meteo.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          open-meteo.com / Best model
+        </a>
+      );
+
+    return (
+      <a
+        href="https://www.weather.gov/documentation/services-web-api"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        api.weather.gov
+      </a>
+    );
   })();
 
   return (
@@ -90,8 +116,12 @@ export default function PointInfo() {
         </DataListItem>
       )}
       <DataListItem>
-        <div>Source/model</div>
-        <div>{source}</div>
+        <div>Winds aloft</div>
+        <div>{aloftSource}</div>
+      </DataListItem>
+      <DataListItem>
+        <div>Hourly weather</div>
+        <div>{hourlySource}</div>
       </DataListItem>
       <DataListItem>
         <div>Time zone</div>
