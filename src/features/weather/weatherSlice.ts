@@ -683,23 +683,20 @@ export const getWeather =
         } catch (e) {
           if (!(e instanceof AxiosError)) throw e;
 
-          // Likely Mexico or Canada
-          // We still need the timezone, so try to fall back anyways
-
-          const weather =
-            fallbackWeather ?? (await openMeteo.getWeather(lat, lon));
-
-          if (isStale()) return;
-
-          dispatch(weatherReceived(weather));
-
-          loadTimezoneIfNeeded();
-
+          await fallback();
           return;
         }
 
         if (forecastGridDataUrl) {
-          const data = await nwsWeather.getGridData(forecastGridDataUrl);
+          let data;
+          try {
+            data = await nwsWeather.getGridData(forecastGridDataUrl);
+          } catch (e) {
+            if (!(e instanceof AxiosError)) throw e;
+
+            await fallback();
+            return;
+          }
 
           if (isStale()) return;
 
@@ -710,6 +707,20 @@ export const getWeather =
       } catch (e) {
         if (!isStale()) dispatch(weatherFailed());
         throw e;
+      }
+
+      async function fallback() {
+        // Likely Mexico or Canada
+        // We still need the timezone, so try to fall back anyways
+
+        const weather =
+          fallbackWeather ?? (await openMeteo.getWeather(lat, lon));
+
+        if (isStale()) return;
+
+        dispatch(weatherReceived(weather));
+
+        loadTimezoneIfNeeded();
       }
     }
 
