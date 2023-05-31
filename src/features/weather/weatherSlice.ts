@@ -681,7 +681,11 @@ export const getWeather =
 
           dispatch(timeZoneReceived(data.timeZone));
         } catch (e) {
-          if (!(e instanceof AxiosError)) throw e;
+          if (
+            !(e instanceof AxiosError) &&
+            !(e instanceof nwsWeather.InvalidPointResourceError)
+          )
+            throw e;
 
           await fallback();
           return;

@@ -194,6 +194,18 @@ export async function getAlerts({
   return data;
 }
 
+export class InvalidPointResourceError extends Error {
+  constructor(message: string) {
+    super(message);
+    Object.setPrototypeOf(this, InvalidPointResourceError.prototype);
+    this.name = this.constructor.name;
+  }
+}
+
+/**
+ *
+ * @throws InvalidPointResourceError
+ */
 export async function getPointResources({
   lat,
   lon,
@@ -206,7 +218,9 @@ export async function getPointResources({
   const forecastGridDataUrl = data.properties.forecastGridData;
 
   if (!forecastGridDataUrl)
-    throw new Error("forecastGridData not defined in response!");
+    throw new InvalidPointResourceError(
+      "forecastGridData not defined in response!"
+    );
 
   return {
     forecastGridDataUrl: normalize(data.properties.forecastGridData),
