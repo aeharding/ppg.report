@@ -613,51 +613,12 @@ export const getWeather =
     if (elevation == null) loadElevation();
     else dispatch(elevationReceived(elevation));
 
-    if (weather == null) {
-      (async () => {
-        try {
-          await Promise.all([loadNWSAlerts(), loadNWSWeather()]);
-        } catch (error) {
-          dispatch(discussionLoading());
-          dispatch(discussionNotAvailable());
-
-          dispatch(weatherResetLoading());
-
-          const weather = await openMeteo.getWeather(lat, lon);
-
-          if (isStale()) return;
-
-          dispatch(weatherReceived(weather));
-
-          dispatch(alertsFailed());
-
-          loadTimezoneIfNeeded();
-
-          throw error;
-        }
-      })();
-    } else {
-      try {
-        await Promise.all([loadNWSAlerts(), loadNWSWeather()]);
-      } catch (error) {
-        dispatch(discussionLoading());
-        dispatch(discussionNotAvailable());
-
-        dispatch(weatherResetLoading());
-        dispatch(weatherReceived(weather));
-
-        dispatch(alertsNotAvailable());
-
-        loadTimezoneIfNeeded();
-
-        throw error;
-      }
-    }
-
-    if (isStale()) return;
-
-    loadAviationWeather();
-    loadAviationAlerts();
+    await Promise.all([
+      loadNWSAlerts(),
+      loadWeatherAndDiscussion(weather),
+      loadAviationWeather(),
+      loadAviationAlerts(),
+    ]);
 
     async function loadWindsAloft(): Promise<
       | {
@@ -704,7 +665,7 @@ export const getWeather =
       }
     }
 
-    async function loadPointData() {
+    async function loadPointData(fallbackWeather?: Weather) {
       if (getState().weather.weather === "pending") return;
       dispatch(weatherLoading());
       if (getState().weather.weather !== "pending") return;
@@ -720,15 +681,22 @@ export const getWeather =
 
           dispatch(timeZoneReceived(data.timeZone));
         } catch (e) {
-          // Likely Mexico or Canada
-          // We still need the timezone, so try to fall back anyways
-          loadTimezoneIfNeeded();
+          if (!(e instanceof AxiosError)) throw e;
 
-          throw e;
+          await fallback();
+          return;
         }
 
         if (forecastGridDataUrl) {
-          const data = await nwsWeather.getGridData(forecastGridDataUrl);
+          let data;
+          try {
+            data = await nwsWeather.getGridData(forecastGridDataUrl);
+          } catch (e) {
+            if (!(e instanceof AxiosError)) throw e;
+
+            await fallback();
+            return;
+          }
 
           if (isStale()) return;
 
@@ -739,6 +707,20 @@ export const getWeather =
       } catch (e) {
         if (!isStale()) dispatch(weatherFailed());
         throw e;
+      }
+
+      async function fallback() {
+        // Likely Mexico or Canada
+        // We still need the timezone, so try to fall back anyways
+
+        const weather =
+          fallbackWeather ?? (await openMeteo.getWeather(lat, lon));
+
+        if (isStale()) return;
+
+        dispatch(weatherReceived(weather));
+
+        loadTimezoneIfNeeded();
       }
     }
 
@@ -772,7 +754,14 @@ export const getWeather =
 
         dispatch(alertsReceived(alerts));
       } catch (e: unknown) {
-        if (!isStale()) dispatch(alertsFailed());
+        if (isStale()) throw e;
+        if (
+          e instanceof AxiosError &&
+          e.response?.status === 400 &&
+          e.response.data.detail?.includes("out of bounds")
+        )
+          dispatch(alertsNotAvailable());
+        else dispatch(alertsFailed());
         throw e;
       }
     }
@@ -848,24 +837,23 @@ export const getWeather =
       }
     }
 
-    async function loadNWSWeather() {
-      if (getState().weather.discussion === "pending") return;
-      dispatch(discussionLoading());
-      if (getState().weather.discussion !== "pending") return;
+    async function loadWeatherAndDiscussion(fallbackWeather?: Weather) {
+      const gridId = await loadPointData(fallbackWeather);
 
-      try {
-        const gridId = await loadPointData();
+      if (isStale()) return;
 
-        if (isStale()) return;
-
-        if (gridId) loadDiscussionFromGridId(gridId);
-      } catch (error) {
-        if (!isStale()) dispatch(discussionFailed());
-        throw error;
+      if (gridId) await loadDiscussionFromGridId(gridId);
+      else {
+        dispatch(discussionLoading());
+        dispatch(discussionNotAvailable());
       }
     }
 
     async function loadDiscussionFromGridId(gridId: string) {
+      if (getState().weather.discussion === "pending") return;
+      dispatch(discussionLoading());
+      if (getState().weather.discussion !== "pending") return;
+
       try {
         const discussion = await nwsWeather.getDiscussion(gridId);
 
