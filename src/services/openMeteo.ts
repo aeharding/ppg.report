@@ -1,7 +1,7 @@
 import axios from "axios";
 import { WindsAloftAltitude, WindsAloftReport } from "../models/WindsAloft";
 import {
-  convertToInterpolator,
+  convertToInterpolatorWithHeight,
   interpolateWindVectors,
 } from "../helpers/interpolate";
 import { notEmpty } from "../helpers/array";
@@ -158,8 +158,8 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
             2;
 
           const { height, speed, direction } = interpolateWindVectors(
-            convertToInterpolator(hour.altitudes[i]),
-            convertToInterpolator(hour.altitudes[i + 1]),
+            convertToInterpolatorWithHeight(hour.altitudes[i]),
+            convertToInterpolatorWithHeight(hour.altitudes[i + 1]),
             middleAltitude
           );
 
@@ -216,6 +216,7 @@ function convertOpenMeteoToWindsAloft(
         openMeteoResponse.hourly[`winddirection_${pressureAltitude}hPa`][index],
       temperatureInC:
         openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index],
+      pressure: pressureAltitude,
     }))
   );
 

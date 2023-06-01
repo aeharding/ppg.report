@@ -120,7 +120,9 @@ export function getAltitude(): AltitudeType {
 
   if (
     typeof savedValue !== "string" ||
-    (savedValue !== AltitudeType.AGL && savedValue !== AltitudeType.MSL)
+    (savedValue !== AltitudeType.AGL &&
+      savedValue !== AltitudeType.MSL &&
+      savedValue !== AltitudeType.Pressure)
   )
     return AltitudeType.AGL;
 

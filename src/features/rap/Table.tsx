@@ -8,8 +8,10 @@ import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
-import { findNormalizedAltitude } from "../../helpers/interpolate";
-import uniqBy from "lodash/uniqBy";
+import {
+  findNormalizedAltitude,
+  findNormalizedPressure,
+} from "../../helpers/interpolate";
 import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 import {
@@ -19,6 +21,7 @@ import {
 } from "./extra/settings/settingEnums";
 import { toggleAltitude } from "../user/userSlice";
 import { toggleAltitudeType } from "../../helpers/locale";
+import { notEmpty } from "../../helpers/array";
 
 const TableEl = styled.table`
   width: 100%;
@@ -60,6 +63,11 @@ const NORMALIZED_ALTITUDES_AGL_M = [
   2700, 3000, 3300, 3600, 3900, 4200,
 ];
 
+const NORMALIZED_PRESSURE_MB = [
+  1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400,
+  350, 300, 250,
+];
+
 export default function Table({
   windsAloftHour,
   rows,
@@ -81,6 +89,21 @@ export default function Table({
   const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
   let displayedRapData: WindsAloftAltitude[] = useMemo(() => {
+    if (altitudeType === AltitudeType.Pressure) {
+      const filteredPressures = windsAloftHour.altitudes.filter(
+        (alt) => alt.pressure != null && alt.pressure >= 250
+      );
+
+      switch (altitudeLevels) {
+        case AltitudeLevels.Default:
+          return filteredPressures;
+        case AltitudeLevels.Normalized:
+          return NORMALIZED_PRESSURE_MB.map((pressure) =>
+            findNormalizedPressure(pressure, filteredPressures)
+          ).filter(notEmpty);
+      }
+    }
+
     switch (altitudeLevels) {
       case AltitudeLevels.Default:
         return windsAloftHour.altitudes
@@ -104,15 +127,12 @@ export default function Table({
           }
         })();
 
-        return uniqBy(
-          NORMALIZED_ALTITUDES.map((altitude) =>
-            findNormalizedAltitude(
-              altitude + surfaceLevel,
-              windsAloftHour.altitudes
-            )
-          ),
-          (alt) => alt.altitudeInM
-        );
+        return NORMALIZED_ALTITUDES.map((altitude) =>
+          findNormalizedAltitude(
+            altitude + surfaceLevel,
+            windsAloftHour.altitudes
+          )
+        ).filter(notEmpty);
     }
   }, [
     altitudeLevels,
@@ -142,7 +162,11 @@ export default function Table({
                 dispatch(toggleAltitude());
               }}
             >
-              Alt. ({altitudeType})
+              {altitudeType === AltitudeType.Pressure ? (
+                <>Pressure</>
+              ) : (
+                <>Alt. ({altitudeType})</>
+              )}
             </InteractTh>
           </Tippy>
           <th>{t("Temp")}</th>
@@ -158,10 +182,24 @@ export default function Table({
               <Altitude
                 heightInMeters={datum.altitudeInM}
                 surfaceLevelInMeters={surfaceLevel}
+                pressure={datum.pressure}
               />
             </td>
             <td>
-              <Temperature temperature={datum.temperatureInC} />
+              <Temperature
+                temperature={datum.temperatureInC}
+                dewpoint={datum.dewpointInC}
+                lapseRate={
+                  displayedRapData[index - 1]
+                    ? (displayedRapData[index - 1].temperatureInC -
+                        datum.temperatureInC) /
+                      (displayedRapData[index - 1].altitudeInM -
+                        datum.altitudeInM)
+                    : undefined
+                }
+                pressure={datum.pressure}
+                rowNumber={index}
+              />
             </td>
             <td>
               <WindDirection

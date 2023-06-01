@@ -68,7 +68,7 @@ export default function Settings() {
     <Container>
       <Radio
         label={t("Altitude format")}
-        options={[AltitudeType.AGL, AltitudeType.MSL]}
+        options={[AltitudeType.AGL, AltitudeType.MSL, AltitudeType.Pressure]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
       />

@@ -61,11 +61,21 @@ export function interpolateWindVectors(
   };
 }
 
-export function convertToInterpolator(
+export function convertToInterpolatorWithHeight(
   windAltitude: WindsAloftAltitude
 ): WindVector {
   return {
     height: windAltitude.altitudeInM,
+    speed: windAltitude.windSpeedInKph,
+    direction: windAltitude.windDirectionInDeg,
+  };
+}
+
+export function convertToInterpolatorWithPressure(
+  windAltitude: WindsAloftAltitude
+): WindVector {
+  return {
+    height: windAltitude.pressure!,
     speed: windAltitude.windSpeedInKph,
     direction: windAltitude.windDirectionInDeg,
   };
@@ -77,15 +87,15 @@ export function convertToInterpolator(
 export function findNormalizedAltitude(
   altitudeInM: number,
   altitudes: WindsAloftAltitude[]
-): WindsAloftAltitude {
+): WindsAloftAltitude | undefined {
   for (let i = 0; i < altitudes.length; i++) {
     const altitude = altitudes[i];
     if (altitude.altitudeInM > altitudeInM) {
-      if (!altitudes[i - 1]) return altitude;
+      if (!altitudes[i - 1]) return;
 
       const { speed, direction } = interpolateWindVectors(
-        convertToInterpolator(altitudes[i - 1]),
-        convertToInterpolator(altitudes[i]),
+        convertToInterpolatorWithHeight(altitudes[i - 1]),
+        convertToInterpolatorWithHeight(altitudes[i]),
         altitudeInM
       );
 
@@ -101,6 +111,47 @@ export function findNormalizedAltitude(
           {
             value: altitudes[i].temperatureInC,
             point: altitudes[i].altitudeInM,
+          }
+        ),
+        windSpeedInKph: speed,
+      };
+    }
+  }
+
+  return altitudes[altitudes.length - 1];
+}
+
+/**
+ * @param altitudes Assumed to be sorted, lowest to highest
+ */
+export function findNormalizedPressure(
+  pressure: number,
+  altitudes: WindsAloftAltitude[]
+): WindsAloftAltitude | undefined {
+  for (let i = 0; i < altitudes.length; i++) {
+    const altitude = altitudes[i];
+    if (altitude.pressure! <= pressure) {
+      if (!altitudes[i - 1]) return;
+
+      const { speed, direction } = interpolateWindVectors(
+        convertToInterpolatorWithPressure(altitudes[i - 1]),
+        convertToInterpolatorWithPressure(altitudes[i]),
+        pressure
+      );
+
+      return {
+        pressure,
+        altitudeInM: altitudes[i].altitudeInM,
+        windDirectionInDeg: direction,
+        temperatureInC: interpolate(
+          pressure,
+          {
+            value: altitudes[i - 1].temperatureInC,
+            point: altitudes[i - 1].pressure!,
+          },
+          {
+            value: altitudes[i].temperatureInC,
+            point: altitudes[i].pressure!,
           }
         ),
         windSpeedInKph: speed,

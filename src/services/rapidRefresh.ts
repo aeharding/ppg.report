@@ -37,12 +37,16 @@ function transformRapToWindsAloft(rap: Rap[]): WindsAloftReport {
       date,
       cape,
       cin,
-      altitudes: data.map(({ height, temp, windDir, windSpd }) => ({
-        windSpeedInKph: windSpd * 1.852,
-        windDirectionInDeg: windDir,
-        temperatureInC: temp / 10,
-        altitudeInM: height,
-      })),
+      altitudes: data.map(
+        ({ height, temp, windDir, windSpd, pressure, dewpt }) => ({
+          windSpeedInKph: windSpd * 1.852,
+          windDirectionInDeg: windDir,
+          temperatureInC: temp / 10,
+          altitudeInM: height,
+          pressure: Math.round(pressure / 10),
+          dewpointInC: dewpt / 10,
+        })
+      ),
     })),
   };
 }
