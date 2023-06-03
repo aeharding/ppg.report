@@ -1,13 +1,6 @@
-import { useState } from "react";
 import { DefinitionTooltipProps, definitionStyles } from "./Definition";
-import {
-  offset,
-  shift,
-  useFloating,
-  useHover,
-  useInteractions,
-} from "@floating-ui/react";
 import styled from "@emotion/styled";
+import Tooltip from "../../../../../shared/Tooltip";
 
 export const TooltipContainer = styled.div`
   z-index: 1000;
@@ -30,30 +23,14 @@ export default function DefinitionTooltip({
   definition,
   children,
 }: DefinitionTooltipProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    middleware: [shift(), offset(5)],
-  });
-
-  const hover = useHover(context, {
-    delay: {
-      open: 100,
-      close: 0,
-    },
-  });
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
-
   const href = `https://forecast.weather.gov/glossary.php?word=${term}`;
 
   return (
-    <>
+    <Tooltip
+      inline
+      contents={() => <div dangerouslySetInnerHTML={{ __html: definition }} />}
+    >
       <DefinitionLink
-        ref={refs.setReference}
-        {...getReferenceProps()}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -68,14 +45,6 @@ export default function DefinitionTooltip({
       >
         {children}
       </DefinitionLink>
-      {isOpen && (
-        <TooltipContainer
-          ref={refs.setFloating}
-          style={floatingStyles}
-          {...getFloatingProps()}
-          dangerouslySetInnerHTML={{ __html: definition }}
-        />
-      )}
-    </>
+    </Tooltip>
   );
 }

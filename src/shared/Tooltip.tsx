@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  FloatingArrow,
+  arrow,
   flip,
+  inline,
   offset,
   shift,
   useFloating,
@@ -11,6 +14,7 @@ import {
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { FloatingPortal } from "@floating-ui/react";
+import { notEmpty } from "../helpers/array";
 
 export const TooltipContainer = styled.div<{ interactive: boolean }>`
   position: absolute;
@@ -19,7 +23,7 @@ export const TooltipContainer = styled.div<{ interactive: boolean }>`
   z-index: 1000;
 
   width: max-content;
-  max-width: 250px;
+  max-width: 300px;
 
   background: black;
   font-size: 0.8em;
@@ -50,6 +54,8 @@ interface TooltipProps {
   contents: () => React.ReactNode;
   mouseOnly?: boolean;
   interactive?: boolean;
+  offset?: number;
+  inline?: boolean;
 }
 
 export default function Tooltip({
@@ -57,14 +63,23 @@ export default function Tooltip({
   contents,
   mouseOnly,
   interactive,
+  offset: customOffset,
+  inline: isInline,
 }: TooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [delayedMounted, setDelayedMounted] = useState(isOpen);
+  const arrowRef = useRef(null);
 
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [shift(), offset(5), flip()],
+    middleware: [
+      isInline ? inline() : undefined,
+      shift(),
+      offset(customOffset ?? 8),
+      flip(),
+      arrow({ element: arrowRef }),
+    ].filter(notEmpty),
   });
   const { isMounted, status } = useTransitionStatus(context);
 
@@ -92,13 +107,13 @@ export default function Tooltip({
 
   return (
     <>
-      <div
+      <span
         ref={refs.setReference}
         {...getReferenceProps()}
         className={delayedMounted ? "tooltip" : undefined}
       >
         {children}
-      </div>
+      </span>
       {isMounted && (
         <FloatingPortal>
           <TooltipContainer
@@ -110,6 +125,7 @@ export default function Tooltip({
             interactive={interactive ?? false}
           >
             {contents()}
+            <FloatingArrow ref={arrowRef} context={context} />
           </TooltipContainer>
         </FloatingPortal>
       )}

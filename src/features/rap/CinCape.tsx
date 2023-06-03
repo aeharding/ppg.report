@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import chroma from "chroma-js";
 import { outputP3ColorFromLab } from "../../helpers/colors";
-import Tooltip from "./cells/Tooltip";
+import Tooltip from "../../shared/Tooltip";
 
 export const headerText = css`
   text-transform: uppercase;

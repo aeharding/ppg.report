@@ -1,5 +1,5 @@
 import { relativeHumidityFromDewPoint } from "velitherm";
-import Tooltip from "../../Tooltip";
+import Tooltip from "../../../../../shared/Tooltip";
 import styled from "@emotion/styled";
 import RH from "./RH";
 import Temp from "./Temp";

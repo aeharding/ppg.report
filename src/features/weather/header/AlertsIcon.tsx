@@ -22,7 +22,7 @@ import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 import { isAlertRead } from "../../../helpers/alert";
 import { getTimeFormatString } from "../aviation/Forecast";
 import { OnOff } from "../../rap/extra/settings/settingEnums";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 

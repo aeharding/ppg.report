@@ -16,7 +16,7 @@ import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 import { NWSWeatherObservation } from "../../../services/nwsWeather";
 import { WeatherIcon } from "./Weather";
 import styled from "@emotion/styled";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 const Flex = styled.div`
   display: flex;

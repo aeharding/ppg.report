@@ -14,7 +14,7 @@ import { findValue } from "../../../services/nwsWeather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import { useTranslation } from "react-i18next";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 const SkyIcon = styled(FontAwesomeIcon)<{ chance: number }>`
   &.fa-sun {

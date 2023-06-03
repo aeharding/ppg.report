@@ -9,7 +9,7 @@ import { findValue } from "../../../services/nwsWeather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import PrecipitationAnimation from "./precipitationAnimation/PrecipitationAnimation";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 const colorScale = chroma
   .scale(["#ffffff88", "#ffffffff", "#006affff"])

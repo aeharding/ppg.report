@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import Tooltip from "../../Tooltip";
+import Tooltip from "../../../../../shared/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloud } from "@fortawesome/pro-duotone-svg-icons";
 import { css } from "@emotion/react";
@@ -139,5 +139,9 @@ export default function LapseRateTooltip({
     );
   }
 
-  return <Tooltip contents={renderContents}>{children}</Tooltip>;
+  return (
+    <Tooltip contents={renderContents} offset={-5}>
+      {children}
+    </Tooltip>
+  );
 }

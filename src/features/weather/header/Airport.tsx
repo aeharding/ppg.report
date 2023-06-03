@@ -28,7 +28,7 @@ import {
   DistanceUnit,
   HeightUnit,
 } from "../../rap/extra/settings/settingEnums";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 interface AirportContainerProps {
   category: FlightCategory;

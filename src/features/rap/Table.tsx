@@ -21,7 +21,7 @@ import {
 import { toggleAltitude } from "../user/userSlice";
 import { toggleAltitudeType } from "../../helpers/locale";
 import { notEmpty } from "../../helpers/array";
-import Tooltip from "./cells/Tooltip";
+import Tooltip from "../../shared/Tooltip";
 
 const TableEl = styled.table`
   width: 100%;

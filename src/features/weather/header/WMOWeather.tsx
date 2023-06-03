@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 import { convertTitleCaseToSpaces } from "../../../helpers/string";
-import Tooltip from "../../rap/cells/Tooltip";
+import Tooltip from "../../../shared/Tooltip";
 
 const Flex = styled.div`
   display: flex;
