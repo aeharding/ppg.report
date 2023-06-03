@@ -64,7 +64,7 @@ const thunderAnimate = keyframes`
 export const WeatherIcon = styled(FontAwesomeIcon, {
   shouldForwardProp: (prop) => prop !== "lightning",
 })<{
-  lightning: boolean;
+  lightning?: boolean;
 }>`
   font-size: 1.4em;
   margin-right: 0.5rem;

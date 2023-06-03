@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "noImplicitAny": true,
-    "types": ["vitest/globals"]
+    "types": ["@emotion/react/types/css-prop", "vitest/globals"]
   },
   "include": ["src", "src/custom.d.ts"]
 }

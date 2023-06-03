@@ -114,6 +114,28 @@ export function findNormalizedAltitude(
           }
         ),
         windSpeedInKph: speed,
+        dewpointInC: interpolate(
+          altitudeInM,
+          {
+            value: altitudes[i - 1].dewpointInC,
+            point: altitudes[i - 1].altitudeInM,
+          },
+          {
+            value: altitudes[i].dewpointInC,
+            point: altitudes[i].altitudeInM,
+          }
+        ),
+        pressure: interpolate(
+          altitudeInM,
+          {
+            value: altitudes[i - 1].pressure,
+            point: altitudes[i - 1].altitudeInM,
+          },
+          {
+            value: altitudes[i].pressure,
+            point: altitudes[i].altitudeInM,
+          }
+        ),
       };
     }
   }
@@ -141,7 +163,7 @@ export function findNormalizedPressure(
 
       return {
         pressure,
-        altitudeInM: altitudes[i].altitudeInM,
+        altitudeInM: altitudes[i].altitudeInM, // TODO make this a real value
         windDirectionInDeg: direction,
         temperatureInC: interpolate(
           pressure,
@@ -155,6 +177,17 @@ export function findNormalizedPressure(
           }
         ),
         windSpeedInKph: speed,
+        dewpointInC: interpolate(
+          altitudes[i].altitudeInM, // TODO make this a real value
+          {
+            value: altitudes[i - 1].dewpointInC,
+            point: altitudes[i - 1].altitudeInM,
+          },
+          {
+            value: altitudes[i].dewpointInC,
+            point: altitudes[i].altitudeInM,
+          }
+        ),
       };
     }
   }

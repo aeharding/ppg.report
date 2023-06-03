@@ -43,6 +43,7 @@ const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
 const LANGUAGE_STORAGE_KEY = "user-language";
+const LAPSE_RATE_STORAGE_KEY = "lapse-rate";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -364,4 +365,20 @@ export function getLanguage(): Languages {
 
 export function setLanguage(language: Languages): void {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+}
+
+export function getLapseRate(): OnOff {
+  const savedValue = localStorage.getItem(LAPSE_RATE_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== OnOff.Off && savedValue !== OnOff.On)
+  )
+    return OnOff.Off;
+
+  return savedValue;
+}
+
+export function setLapseRate(lapseRate: OnOff): void {
+  localStorage.setItem(LAPSE_RATE_STORAGE_KEY, lapseRate);
 }

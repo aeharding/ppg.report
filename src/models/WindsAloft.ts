@@ -21,7 +21,7 @@ export interface WindsAloftAltitude {
   windSpeedInKph: number;
   windDirectionInDeg: number;
   temperatureInC: number;
-  dewpointInC?: number;
+  dewpointInC: number;
   altitudeInM: number;
-  pressure?: number;
+  pressure: number;
 }

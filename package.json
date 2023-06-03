@@ -52,6 +52,7 @@
     "react-transition-group": "^4.4.2",
     "suncalc": "^1.9.0",
     "typescript": "^5.0.2",
+    "velitherm": "^1.2.0",
     "workbox-background-sync": "^6.5.0",
     "workbox-broadcast-update": "^6.5.0",
     "workbox-cacheable-response": "^6.5.0",

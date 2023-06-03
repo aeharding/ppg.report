@@ -7,6 +7,7 @@ import {
 import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
 import { Dictionary } from "@reduxjs/toolkit";
+import * as velitherm from "velitherm";
 
 const FORECAST_DAYS = 2;
 
@@ -22,6 +23,7 @@ const PRESSURE_ALTITUDE_METRICS = [
   "windspeed",
   "winddirection",
   "geopotential_height",
+  "relativehumidity",
 ] as const;
 
 /**
@@ -35,6 +37,10 @@ const SPECIAL_ALOFT_VARIABLES = [
   "cape",
 
   "temperature_2m",
+  "dewpoint_2m",
+  "relativehumidity_2m",
+  "surface_pressure",
+  "pressure_msl",
 
   // No temperature_10m, so have to break it out from AGL_ALTITUDES
   // (will fudge it and use temperature_2m)
@@ -163,14 +169,24 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
             middleAltitude
           );
 
+          const temperatureInC = Math.round(
+            (hour.altitudes[i].temperatureInC +
+              hour.altitudes[i + 1].temperatureInC) /
+              2
+          );
+
           ditheredAltitudes.push({
             windSpeedInKph: Math.round(speed * 10) / 10,
             windDirectionInDeg: Math.round(direction),
             altitudeInM: Math.round(height),
-            temperatureInC: Math.round(
-              (hour.altitudes[i].temperatureInC +
-                hour.altitudes[i + 1].temperatureInC) /
+            temperatureInC,
+            dewpointInC: Math.round(
+              (hour.altitudes[i].dewpointInC +
+                hour.altitudes[i + 1].dewpointInC) /
                 2
+            ),
+            pressure: Math.round(
+              (hour.altitudes[i].pressure + hour.altitudes[i + 1].pressure) / 2
             ),
           });
         }
@@ -217,6 +233,12 @@ function convertOpenMeteoToWindsAloft(
       temperatureInC:
         openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index],
       pressure: pressureAltitude,
+      dewpointInC: velitherm.dewPoint(
+        openMeteoResponse.hourly[`relativehumidity_${pressureAltitude}hPa`][
+          index
+        ],
+        openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index]
+      ),
     }))
   );
 
@@ -256,6 +278,10 @@ function convertOpenMeteoToWindsAloft(
             windDirectionInDeg:
               openMeteoResponse.hourly.winddirection_10m[index],
             temperatureInC: openMeteoResponse.hourly.temperature_2m[index],
+            dewpointInC: openMeteoResponse.hourly.dewpoint_2m[index],
+            pressure: Math.round(
+              openMeteoResponse.hourly.surface_pressure[index]
+            ),
           },
         ]
           .concat(
@@ -267,6 +293,21 @@ function convertOpenMeteoToWindsAloft(
                 openMeteoResponse.hourly[`winddirection_${agl}m`][index],
               temperatureInC:
                 openMeteoResponse.hourly[`temperature_${agl}m`][index],
+              dewpointInC: velitherm.dewPoint(
+                calculateRelativeHumidity(
+                  agl,
+                  openMeteoResponse.hourly[`surface_pressure`][index],
+                  openMeteoResponse.hourly[`temperature_${agl}m`][index],
+                  openMeteoResponse.hourly[`relativehumidity_2m`][index]
+                ),
+                openMeteoResponse.hourly[`temperature_${agl}m`][index]
+              ),
+              pressure: Math.round(
+                velitherm.pressureFromAltitude(
+                  agl,
+                  openMeteoResponse.hourly["pressure_msl"][index]
+                )
+              ),
             }))
           )
           .concat(pressureAltitudeHours[index]),
@@ -305,4 +346,37 @@ function generateWindsAloftParams(): HourlyPressureParams[] {
 
 function generateWeatherParams(): HourlyWeatherParams[] {
   return WEATHER_VARIABLES.slice();
+}
+
+function calculateRelativeHumidity(
+  altitude: number,
+  basePressure: number,
+  baseTemperature: number,
+  baseRH: number
+): number {
+  // Calculate the pressure at the given altitude
+  const pressure = velitherm.pressureFromAltitude(
+    altitude,
+    basePressure,
+    baseTemperature
+  );
+
+  // Calculate the temperature at the given altitude
+  const temperature = baseTemperature - altitude * velitherm.gamma;
+
+  // Calculate the specific humidity at the given temperature and pressure
+  const specificHumidity = velitherm.specificHumidity(
+    baseRH,
+    pressure,
+    temperature
+  );
+
+  // Calculate the new relative humidity at the given altitude
+  const relativeHumidity = velitherm.relativeHumidity(
+    specificHumidity,
+    pressure,
+    temperature
+  );
+
+  return relativeHumidity;
 }

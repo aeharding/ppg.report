@@ -191,14 +191,16 @@ export default function Table({
                 dewpoint={datum.dewpointInC}
                 lapseRate={
                   displayedRapData[index - 1]
-                    ? (displayedRapData[index - 1].temperatureInC -
-                        datum.temperatureInC) /
-                      (displayedRapData[index - 1].altitudeInM -
-                        datum.altitudeInM)
+                    ? -(
+                        (datum.temperatureInC -
+                          displayedRapData[index - 1].temperatureInC) /
+                        (datum.altitudeInM -
+                          displayedRapData[index - 1].altitudeInM)
+                      )
                     : undefined
                 }
                 pressure={datum.pressure}
-                rowNumber={index}
+                hour={new Date(windsAloftHour.date)}
               />
             </td>
             <td>
