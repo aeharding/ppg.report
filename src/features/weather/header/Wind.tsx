@@ -96,6 +96,8 @@ export default function Wind({ headerType, date, weather }: WindProps) {
   return (
     <Tooltip
       contents={() =>
+        wind.speed != null &&
+        wind.gust != null &&
         t("WindSpeedGustingToWindSpeed", {
           baseWindSpeed: formatWind(
             wind.speed,
