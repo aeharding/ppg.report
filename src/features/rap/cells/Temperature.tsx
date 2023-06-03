@@ -38,8 +38,6 @@ const DropletIcon = styled(FontAwesomeIcon)<{ opacity: number }>`
   filter: ${({ opacity }) => (opacity >= 1 ? "blur(0)" : "blur(1px)")};
 `;
 
-export const DRY_LAPSE_RATE = 9.8 / 1_000; // C/m
-
 const AirStabilityContainer = styled.div`
   position: absolute;
   right: 0;
@@ -50,10 +48,6 @@ const AirStabilityContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &:hover {
-    z-index: 20; // kinda a hack for the tooltip
-  }
 `;
 
 const AirStabilityIconContainer = styled.div`
@@ -134,7 +128,7 @@ export default function Temperature({
       return <InversionIcon icon={faArrowToTop} />;
     }
 
-    if (lapseRate >= DRY_LAPSE_RATE) {
+    if (lapseRate >= velitherm.gamma) {
       return <LapseDangerIcon icon={faArrowUp} type="danger" />;
     }
 
@@ -157,7 +151,10 @@ export default function Temperature({
         <TemperatureText temperature={inCelsius}>
           {Math.round(temperature)} <Aside>°{temperatureUnitLabel}</Aside>{" "}
         </TemperatureText>
-        {dewpoint != null && inCelsius - dewpoint <= 2.5 && inCelsius > 0 ? (
+        {lapseRate &&
+        dewpoint != null &&
+        inCelsius - dewpoint <= 2.5 &&
+        inCelsius > 0 ? (
           <DropletIcon
             icon={faDewpoint}
             opacity={1 - scaleValue(inCelsius - dewpoint, 0, 1.5)}

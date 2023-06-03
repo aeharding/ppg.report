@@ -2,7 +2,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { faWindsock } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { useMemo } from "react";
 import { outputP3ColorFromRGBA } from "../../../helpers/colors";
@@ -13,6 +12,7 @@ import { useAppSelector } from "../../../hooks";
 import { SpeedUnit as MetarTafSpeedUnit } from "metar-taf-parser";
 import { formatWind } from "../../../helpers/taf";
 import { useTranslation } from "react-i18next";
+import Tooltip from "../../rap/cells/Tooltip";
 
 // When a gust is considered worth displaying
 const GUST_DELTA_THRESHOLD = 2;
@@ -94,20 +94,21 @@ export default function Wind({ headerType, date, weather }: WindProps) {
     );
 
   return (
-    <Tippy
-      content={t("WindSpeedGustingToWindSpeed", {
-        baseWindSpeed: formatWind(
-          wind.speed,
-          MetarTafSpeedUnit.KilometersPerHour,
-          speedUnit
-        ),
-        gustWindSpeed: formatWind(
-          wind.gust,
-          MetarTafSpeedUnit.KilometersPerHour,
-          speedUnit
-        ),
-      })}
-      placement="bottom"
+    <Tooltip
+      contents={() =>
+        t("WindSpeedGustingToWindSpeed", {
+          baseWindSpeed: formatWind(
+            wind.speed,
+            MetarTafSpeedUnit.KilometersPerHour,
+            speedUnit
+          ),
+          gustWindSpeed: formatWind(
+            wind.gust,
+            MetarTafSpeedUnit.KilometersPerHour,
+            speedUnit
+          ),
+        })
+      }
     >
       <div>
         <Micro
@@ -123,7 +124,7 @@ export default function Wind({ headerType, date, weather }: WindProps) {
           {body}
         </Micro>
       </div>
-    </Tippy>
+    </Tooltip>
   );
 }
 

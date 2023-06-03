@@ -2,7 +2,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { faRaindrops } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { useMemo } from "react";
 import { outputP3ColorFromRGBA } from "../../../helpers/colors";
@@ -10,6 +9,7 @@ import { findValue } from "../../../services/nwsWeather";
 import { HeaderType, Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import PrecipitationAnimation from "./precipitationAnimation/PrecipitationAnimation";
+import Tooltip from "../../rap/cells/Tooltip";
 
 const colorScale = chroma
   .scale(["#ffffff88", "#ffffffff", "#006affff"])
@@ -72,7 +72,7 @@ export default function Precipitation({
         />
       )}
 
-      <Tippy content={`${chance}% chance precipitation`} placement="bottom">
+      <Tooltip contents={() => `${chance}% chance precipitation`}>
         <div>
           <Micro
             icon={
@@ -86,7 +86,7 @@ export default function Precipitation({
             {body}
           </Micro>
         </div>
-      </Tippy>
+      </Tooltip>
     </>
   );
 }

@@ -8,13 +8,13 @@ import {
   faMoon,
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from "@tippyjs/react";
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { findValue } from "../../../services/nwsWeather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
 import { useTranslation } from "react-i18next";
+import Tooltip from "../../rap/cells/Tooltip";
 
 const SkyIcon = styled(FontAwesomeIcon)<{ chance: number }>`
   &.fa-sun {
@@ -72,13 +72,10 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
   // }
 
   return (
-    <Tippy
-      content={t("Sky Coverage", { percentage: `${chance}%` })}
-      placement="bottom"
-    >
+    <Tooltip contents={() => t("Sky Coverage", { percentage: `${chance}%` })}>
       <div>
         <Micro icon={<SkyIcon icon={icon} chance={chance} />}>{body}</Micro>
       </div>
-    </Tippy>
+    </Tooltip>
   );
 }

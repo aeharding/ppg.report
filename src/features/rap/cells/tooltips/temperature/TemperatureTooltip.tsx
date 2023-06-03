@@ -6,6 +6,8 @@ import Temp from "./Temp";
 import Dewpt from "./Dewpt";
 import Spread from "./Spread";
 import { css } from "@emotion/react";
+import { useAppSelector } from "../../../../../hooks";
+import { OnOff } from "../../../extra/settings/settingEnums";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -35,6 +37,8 @@ export default function TemperatureTooltip({
   dewpoint,
   temperature,
 }: TemperatureTooltipProps) {
+  const lapseRate = useAppSelector((state) => state.user.lapseRate);
+
   function renderContents() {
     return (
       <Table>
@@ -64,5 +68,9 @@ export default function TemperatureTooltip({
     );
   }
 
-  return <Tooltip contents={renderContents}>{children}</Tooltip>;
+  return (
+    <Tooltip contents={renderContents} mouseOnly={lapseRate === OnOff.Off}>
+      {children}
+    </Tooltip>
+  );
 }

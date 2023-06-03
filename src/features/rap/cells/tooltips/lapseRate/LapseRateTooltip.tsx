@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import Tooltip from "../../Tooltip";
-import { DRY_LAPSE_RATE } from "../../Temperature";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloud } from "@fortawesome/pro-duotone-svg-icons";
 import { css } from "@emotion/react";
@@ -8,6 +7,7 @@ import { outputP3ColorFromRGB } from "../../../../../helpers/colors";
 import { useState } from "react";
 import SunCalc from "suncalc";
 import { useParams } from "react-router-dom";
+import * as velitherm from "velitherm";
 
 const About = styled.div`
   margin-top: 1rem;
@@ -79,7 +79,7 @@ export default function LapseRateTooltip({
       );
     }
 
-    if (lapseRate > DRY_LAPSE_RATE)
+    if (lapseRate > velitherm.gamma)
       return (
         <>
           Unstable air. Greater than 9.8 °C / km (
@@ -111,7 +111,7 @@ export default function LapseRateTooltip({
   ): [number, number, number] {
     if (lapseRate < 0) return [0, 255, 0];
 
-    if (lapseRate > DRY_LAPSE_RATE) return [255, 0, 0];
+    if (lapseRate > velitherm.gamma) return [255, 0, 0];
 
     if (saturated && lapseRate > saturatedLapseRateThreshold)
       return [255, 0, 0];

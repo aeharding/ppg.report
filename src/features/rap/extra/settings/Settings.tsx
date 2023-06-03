@@ -156,11 +156,11 @@ export default function Settings() {
       />{" "}
       <Hr />
       <Radio
-        label={`🧪 ${t("Lapse rate and inversion indicators")}`}
+        label={`🧪 ${t("Advanced features")}`}
         options={[OnOff.On, OnOff.Off]}
         value={lapseRate}
         onChange={(value) => dispatch(setLapseRate(value))}
-        tip={t("Lapse rate and inversion indicators tip")}
+        tip={t("Advanced features tip")}
       />{" "}
       <Hr />
       <div onClick={() => dispatch(resetHiddenAlerts())}>

@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import Tippy from "@tippyjs/react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import Altitude from "./cells/Altitude";
 import Temperature from "./cells/Temperature";
@@ -22,6 +21,7 @@ import {
 import { toggleAltitude } from "../user/userSlice";
 import { toggleAltitudeType } from "../../helpers/locale";
 import { notEmpty } from "../../helpers/array";
+import Tooltip from "./cells/Tooltip";
 
 const TableEl = styled.table`
   width: 100%;
@@ -151,10 +151,10 @@ export default function Table({
     <TableEl>
       <thead>
         <tr>
-          <Tippy
-            content={`Switch to altitude ${toggleAltitudeType(altitudeType)}`}
-            placement="top"
-            hideOnClick={false}
+          <Tooltip
+            contents={() =>
+              `Switch to altitude ${toggleAltitudeType(altitudeType)}`
+            }
           >
             <InteractTh
               onClick={(e) => {
@@ -168,7 +168,7 @@ export default function Table({
                 <>Alt. ({altitudeType})</>
               )}
             </InteractTh>
-          </Tippy>
+          </Tooltip>
           <th>{t("Temp")}</th>
           <th>{t("Direction")}</th>
           <th>{t("Speed")}</th>

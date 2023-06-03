@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import Tippy from "@tippyjs/react";
 import { WeatherIcon } from "./Weather";
 import {
   faCloudRain,
@@ -8,6 +7,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 import { convertTitleCaseToSpaces } from "../../../helpers/string";
+import Tooltip from "../../rap/cells/Tooltip";
 
 const Flex = styled.div`
   display: flex;
@@ -50,8 +50,6 @@ interface WMOWeatherCodeProps {
 }
 
 export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
-  let tooltip = convertTitleCaseToSpaces(WMOWeatherCode[wmoCode]);
-
   const icon = (() => {
     switch (wmoCode) {
       case WMOWeatherCode.LightRainShowers:
@@ -87,10 +85,10 @@ export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
   if (!icon) return <></>;
 
   return (
-    <Tippy content={tooltip} placement="bottom">
+    <Tooltip contents={() => convertTitleCaseToSpaces(WMOWeatherCode[wmoCode])}>
       <Flex>
         <WeatherIcon icon={icon} lightning />
       </Flex>
-    </Tippy>
+    </Tooltip>
   );
 }

@@ -32,6 +32,6 @@
   "Localization in progress": "Localization is in progress. To help, please email hello@ppg.report",
   "Default": "Default",
   "Normalized": "Normalized",
-  "Lapse rate and inversion indicators": "Lapse rate and inversion indicators",
-  "Lapse rate and inversion indicators tip": "EXPERIMENTAL. Show an icon to represent lapse rate (thresholds for DALR, MALR, and temperature inversion) next to the temperature indication. Feedback welcome — hello@ppg.report"
+  "Advanced features": "Advanced features",
+  "Advanced features tip": "EXPERIMENTAL. Current features include: <ul><li>Icon to represent lapse rate (thresholds for DALR, MALR, and temperature inversion).</li><li>Relative humidity saturation indicator.</li><li>Tap temperature cell to open temperature details tooltip on mobile.</li></ul> Feedback welcome — hello@ppg.report"
 }

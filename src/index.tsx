@@ -3,7 +3,6 @@ import { css, Global } from "@emotion/react";
 import App from "./App";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { tippyStyles } from "./tippy";
 
 import "./setupViewport";
 import "./i18n";
@@ -85,8 +84,6 @@ const globalStyles = css`
       text-decoration: underline;
     }
   }
-
-  ${tippyStyles}
 `;
 
 const rootNode = document.getElementById("root");
