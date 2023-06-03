@@ -13,7 +13,7 @@ import {
   setTimeFormat,
   setAltitudeLevels,
   setLanguage,
-  setLapseRate,
+  setAdvanced,
 } from "../../../user/userSlice";
 import {
   AltitudeType,
@@ -61,7 +61,7 @@ export default function Settings() {
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
-  const lapseRate = useAppSelector((state) => state.user.lapseRate);
+  const advanced = useAppSelector((state) => state.user.advanced);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
   const hiddenAlertsNumber = Object.keys(hiddenAlerts).length;
   const { t } = useTranslation();
@@ -158,8 +158,8 @@ export default function Settings() {
       <Radio
         label={`🧪 ${t("Advanced features")}`}
         options={[OnOff.On, OnOff.Off]}
-        value={lapseRate}
-        onChange={(value) => dispatch(setLapseRate(value))}
+        value={advanced}
+        onChange={(value) => dispatch(setAdvanced(value))}
         tip={t("Advanced features tip")}
       />{" "}
       <Hr />

@@ -37,7 +37,7 @@ export default function TemperatureTooltip({
   dewpoint,
   temperature,
 }: TemperatureTooltipProps) {
-  const lapseRate = useAppSelector((state) => state.user.lapseRate);
+  const advanced = useAppSelector((state) => state.user.advanced);
 
   function renderContents() {
     return (
@@ -69,7 +69,7 @@ export default function TemperatureTooltip({
   }
 
   return (
-    <Tooltip contents={renderContents} mouseOnly={lapseRate === OnOff.Off}>
+    <Tooltip contents={renderContents} mouseOnly={advanced === OnOff.Off}>
       {children}
     </Tooltip>
   );

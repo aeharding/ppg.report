@@ -97,8 +97,7 @@ export default function Temperature({
   hour,
 }: TemperatureProps) {
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
-  const lapseRateEnabled =
-    useAppSelector((state) => state.user.lapseRate) === OnOff.On;
+  const advanced = useAppSelector((state) => state.user.advanced) === OnOff.On;
 
   const temperature = (() => {
     switch (temperatureUnit) {
@@ -163,7 +162,7 @@ export default function Temperature({
           ""
         )}
       </TemperatureTooltip>
-      {lapseRateEnabled && (
+      {advanced && (
         <AirStabilityContainer>
           {airStabilityIcon ? (
             <LapseRateTooltip

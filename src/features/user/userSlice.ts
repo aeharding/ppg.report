@@ -31,7 +31,7 @@ interface UserState {
   swipeInertia: OnOff;
   gAirmetRead: OnOff;
   language: Languages;
-  lapseRate: OnOff;
+  advanced: OnOff;
 }
 
 // Define the initial state using that type
@@ -49,7 +49,7 @@ const initialState: UserState = {
   swipeInertia: storage.getSwipeInertia(),
   gAirmetRead: storage.getGAirmetRead(),
   language: storage.getLanguage(),
-  lapseRate: storage.getLapseRate(),
+  advanced: storage.getAdvanced(),
 };
 
 /**
@@ -105,8 +105,8 @@ export const userReducer = createSlice({
     updateLanguage(state, action: PayloadAction<Languages>) {
       state.language = action.payload;
     },
-    updateLapseRate(state, action: PayloadAction<OnOff>) {
-      state.lapseRate = action.payload;
+    updateAdvanced(state, action: PayloadAction<OnOff>) {
+      state.advanced = action.payload;
     },
   },
 });
@@ -118,7 +118,7 @@ export const {
   resetHiddenAlerts,
   setSwipeInertia,
   setGAirmetRead,
-  updateLapseRate,
+  updateAdvanced,
 } = userReducer.actions;
 
 export const toggleAltitude =
@@ -209,12 +209,11 @@ export const setLanguage =
     storage.setLanguage(getState().user.language);
   };
 
-export const setLapseRate =
-  (lapseRate: OnOff) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(userReducer.actions.updateLapseRate(lapseRate));
+export const setAdvanced =
+  (advanced: OnOff) => async (dispatch: AppDispatch) => {
+    dispatch(userReducer.actions.updateAdvanced(advanced));
 
-    storage.setLapseRate(lapseRate);
+    storage.setAdvanced(advanced);
   };
 
 export default userReducer.reducer;
