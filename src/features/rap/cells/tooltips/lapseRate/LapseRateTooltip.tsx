@@ -8,6 +8,8 @@ import { useState } from "react";
 import SunCalc from "suncalc";
 import { useParams } from "react-router-dom";
 import * as velitherm from "velitherm";
+import { useAppSelector } from "../../../../../hooks";
+import { renderLapseRate } from "../../../../../helpers/lapseRate";
 
 const About = styled.div`
   margin-top: 1rem;
@@ -37,6 +39,8 @@ export default function LapseRateTooltip({
   const { location } = useParams<"location">();
   const [lat, lon] = location!.split(",");
   const [times] = useState(SunCalc.getPosition(hour, +lat, +lon));
+  const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
+  const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const isDay = times.altitude > 0;
 
   function renderExplanation() {
@@ -65,8 +69,13 @@ export default function LapseRateTooltip({
           <strong>
             <Moist>moist adiabatic lapse rate</Moist>
           </strong>{" "}
-          of {(Math.round(saturatedLapseRateThreshold * 10000) / 10).toFixed(1)}{" "}
-          °C / km,
+          of{" "}
+          {renderLapseRate(
+            saturatedLapseRateThreshold,
+            temperatureUnit,
+            heightUnit
+          )}
+          ,
           <br />
           with a{" "}
           <strong>
@@ -82,7 +91,8 @@ export default function LapseRateTooltip({
     if (lapseRate > velitherm.gamma)
       return (
         <>
-          Unstable air. Greater than 9.8 °C / km (
+          Unstable air. Greater than{" "}
+          {renderLapseRate(velitherm.gamma, temperatureUnit, heightUnit)} (
           <strong>dry adiabatic lapse rate</strong>), this indicates{" "}
           <strong>turbulence</strong> and <strong>thermals</strong>, especially
           when found over a large altitude range. Warmer air parcels will
@@ -97,9 +107,14 @@ export default function LapseRateTooltip({
           <strong>
             <Moist>moist adiabatic lapse rate</Moist>
           </strong>{" "}
-          of {(Math.round(saturatedLapseRateThreshold * 10000) / 10).toFixed(1)}{" "}
-          °C / km for this height. Any cumulus{" "}
-          <FontAwesomeIcon icon={faCloud} /> may continue to grow.
+          of{" "}
+          {renderLapseRate(
+            saturatedLapseRateThreshold,
+            temperatureUnit,
+            heightUnit
+          )}{" "}
+          for this height. Any cumulus <FontAwesomeIcon icon={faCloud} /> may
+          continue to grow.
         </>
       );
   }
@@ -131,7 +146,7 @@ export default function LapseRateTooltip({
               )}
             `}
           >
-            {(Math.round(lapseRate * 10000) / 10).toFixed(1)} °C / km
+            {renderLapseRate(lapseRate, temperatureUnit, heightUnit)}
           </strong>
         </div>
         <About>{renderExplanation()}</About>
