@@ -8,6 +8,7 @@ import Spread from "./Spread";
 import { css } from "@emotion/react";
 import { useAppSelector } from "../../../../../hooks";
 import { OnOff } from "../../../extra/settings/settingEnums";
+import { useTranslation } from "react-i18next";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -37,6 +38,7 @@ export default function TemperatureTooltip({
   dewpoint,
   temperature,
 }: TemperatureTooltipProps) {
+  const { t } = useTranslation();
   const advanced = useAppSelector((state) => state.user.advanced);
 
   function renderContents() {
@@ -44,7 +46,7 @@ export default function TemperatureTooltip({
       <Table>
         <tbody>
           <tr>
-            <td>Temp</td>
+            <td>{t("Temp")}</td>
             <Temp inCelsius={temperature} />
           </tr>
           <tr
@@ -52,15 +54,15 @@ export default function TemperatureTooltip({
               opacity: 0.6;
             `}
           >
-            <td>Spread</td>
+            <td>{t("Spread")}</td>
             <Spread inCelsius={temperature - dewpoint} />
           </tr>
           <tr>
-            <td>Dewpt</td>
+            <td>{t("Dewpt")}</td>
             <Dewpt inCelsius={dewpoint} />
           </tr>
           <tr>
-            <td>RH</td>
+            <td>{t("Relative humidity acronym")}</td>
             <RH rh={relativeHumidityFromDewPoint(dewpoint, temperature)} />
           </tr>
         </tbody>

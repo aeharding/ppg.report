@@ -31,5 +31,16 @@
   "Hush G-Airmets tip": "Si está activado, los nuevos G-AIRMETs no activarán el banner de notificaciones de alertas no leídas y se mostrarán al final de la lista de alertas. Esto puede ser útil si encuentras los G-AIRMETs demasiado ruidosos. [Solo EE. UU.]",
   "Localization in progress": "La localización está en curso. Para ayudar, envía un correo electrónico a hello@ppg.report",
   "Default": "Predeterminado",
-  "Normalized": "Normalizado"
+  "Normalized": "Normalizado",
+  "Advanced features": "Funciones avanzadas",
+  "Advanced features tip": "EXPERIMENTAL. Las características actuales incluyen: <ul><li>Icono para representar la tasa de enfriamiento adiabático (umbrales para DALR, MALR e inversión de temperatura).</li><li>Indicador de saturación de humedad relativa.</li><li>Toca la celda de temperatura para abrir información detallada en dispositivos móviles.</li></ul> Tus comentarios son bienvenidos: hello@ppg.report",
+  "Nocturnal temperature inversion information": "<strong>Inversiones de temperatura nocturnas</strong> indican condiciones de calma, pero se disipan rápidamente después del amanecer.",
+  "Inversion information": "Indica una <strong>inversión</strong>.<br />Normalmente tranquila, a veces con niebla.",
+  "Saturated unstable air information": "Aire inestable. Mayor que la <0>tasa de enfriamiento adiabático húmedo</0> de {{saturatedLapseRateThreshold}}, con una <strong>atmósfera saturada (HR ≥ 100%)</strong> a esta altitud.",
+  "Unstable air information": "Aire inestable. Mayor que {{dryAbiaticLapseRate}} (<strong>tasa de enfriamiento adiabático seco</strong>), esto indica <strong>turbulencia</strong> y <strong>térmicas</strong>, especialmente cuando se encuentran a lo largo de un rango de altitud amplio. Las masas de aire más cálidas continuarán ascendiendo.",
+  "Conditionally unstable air information": "Aire condicionalmente inestable. Mayor que la <0>tasa de enfriamiento adiabático húmedo</0> de {{saturatedLapseRateThreshold}} a esta altitud. Cualquier cumulonimbo <1 /> puede seguir creciendo.",
+  "Lapse rate value information": "Tasa de enfriamiento adiabático <0>{{lapseRate}}</0>",
+  "Spread": "Diferencia",
+  "Dewpt": "Écart",
+  "Relative humidity acronym": "HR"
 }

@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import * as velitherm from "velitherm";
 import { useAppSelector } from "../../../../../hooks";
 import { renderLapseRate } from "../../../../../helpers/lapseRate";
+import { Trans, useTranslation } from "react-i18next";
 
 const About = styled.div`
   margin-top: 1rem;
@@ -36,6 +37,7 @@ export default function LapseRateTooltip({
 
   children,
 }: LapseRateTooltipProps) {
+  const { t } = useTranslation();
   const { location } = useParams<"location">();
   const [lat, lon] = location!.split(",");
   const [times] = useState(SunCalc.getPosition(hour, +lat, +lon));
@@ -46,76 +48,60 @@ export default function LapseRateTooltip({
   function renderExplanation() {
     if (lapseRate < 0) {
       if (!isDay) {
-        return (
-          <>
-            <strong>Nocturnal temperature inversions</strong> indicate calm
-            conditions, but quickly erode after sunrise.
-          </>
-        );
+        return <>{t("Nocturnal temperature inversion information")}</>;
       }
 
-      return (
-        <>
-          Indicates an <strong>inversion</strong>.<br />
-          Usually calm, sometimes fog.
-        </>
-      );
+      return <>{t("Inversion information")}</>;
     }
 
     if (lapseRate > saturatedLapseRateThreshold && saturated) {
       return (
         <>
-          Unstable air. Greater than the{" "}
-          <strong>
+          <Trans
+            i18nKey="Saturated unstable air information"
+            values={{
+              saturatedLapseRateThreshold: renderLapseRate(
+                saturatedLapseRateThreshold,
+                temperatureUnit,
+                heightUnit
+              ),
+            }}
+          >
             <Moist>moist adiabatic lapse rate</Moist>
-          </strong>{" "}
-          of{" "}
-          {renderLapseRate(
-            saturatedLapseRateThreshold,
-            temperatureUnit,
-            heightUnit
-          )}
-          ,
-          <br />
-          with a{" "}
-          <strong>
-            saturated atmosphere
-            <br />
-            (RH ≥ 100%)
-          </strong>{" "}
-          for this height.
+          </Trans>
         </>
       );
     }
 
     if (lapseRate > velitherm.gamma)
       return (
-        <>
-          Unstable air. Greater than{" "}
-          {renderLapseRate(velitherm.gamma, temperatureUnit, heightUnit)} (
-          <strong>dry adiabatic lapse rate</strong>), this indicates{" "}
-          <strong>turbulence</strong> and <strong>thermals</strong>, especially
-          when found over a large altitude range. Warmer air parcels will
-          continue rising.
-        </>
+        <Trans
+          i18nKey="Unstable air information"
+          values={{
+            dryAbiaticLapseRate: renderLapseRate(
+              velitherm.gamma,
+              temperatureUnit,
+              heightUnit
+            ),
+          }}
+        />
       );
 
     if (lapseRate > saturatedLapseRateThreshold)
       return (
-        <>
-          Conditionally unstable air. Greater than the{" "}
-          <strong>
-            <Moist>moist adiabatic lapse rate</Moist>
-          </strong>{" "}
-          of{" "}
-          {renderLapseRate(
-            saturatedLapseRateThreshold,
-            temperatureUnit,
-            heightUnit
-          )}{" "}
-          for this height. Any cumulus <FontAwesomeIcon icon={faCloud} /> may
-          continue to grow.
-        </>
+        <Trans
+          i18nKey="Conditionally unstable air information"
+          values={{
+            saturatedLapseRateThreshold: renderLapseRate(
+              saturatedLapseRateThreshold,
+              temperatureUnit,
+              heightUnit
+            ),
+          }}
+        >
+          <Moist>moist adiabatic lapse rate</Moist>
+          <FontAwesomeIcon icon={faCloud} />
+        </Trans>
       );
   }
 
@@ -138,16 +124,24 @@ export default function LapseRateTooltip({
     return (
       <>
         <div>
-          Lapse rate{" "}
-          <strong
-            css={css`
-              ${outputP3ColorFromRGB(
-                lapseColor(lapseRate, saturatedLapseRateThreshold, saturated)
-              )}
-            `}
+          <Trans
+            i18nKey="Lapse rate value information"
+            values={{
+              lapseRate: renderLapseRate(
+                lapseRate,
+                temperatureUnit,
+                heightUnit
+              ),
+            }}
           >
-            {renderLapseRate(lapseRate, temperatureUnit, heightUnit)}
-          </strong>
+            <strong
+              css={css`
+                ${outputP3ColorFromRGB(
+                  lapseColor(lapseRate, saturatedLapseRateThreshold, saturated)
+                )}
+              `}
+            />
+          </Trans>
         </div>
         <About>{renderExplanation()}</About>
       </>

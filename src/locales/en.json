@@ -33,5 +33,14 @@
   "Default": "Default",
   "Normalized": "Normalized",
   "Advanced features": "Advanced features",
-  "Advanced features tip": "EXPERIMENTAL. Current features include: <ul><li>Icon to represent lapse rate (thresholds for DALR, MALR, and temperature inversion).</li><li>Relative humidity saturation indicator.</li><li>Tap temperature cell to open temperature details tooltip on mobile.</li></ul> Feedback welcome — hello@ppg.report"
+  "Advanced features tip": "EXPERIMENTAL. Current features include: <ul><li>Icon to represent lapse rate (thresholds for DALR, MALR, and temperature inversion).</li><li>Relative humidity saturation indicator.</li><li>Tap temperature cell to open temperature details tooltip on mobile.</li></ul> Feedback welcome — hello@ppg.report",
+  "Nocturnal temperature inversion information": "<strong>Nocturnal temperature inversions</strong> indicate calm conditions, but quickly erode after sunrise.",
+  "Inversion information": "Indicates an <strong>inversion</strong>.<br />Usually calm, sometimes fog.",
+  "Saturated unstable air information": "Unstable air. Greater than the <0>moist adiabatic lapse rate</0> of {{saturatedLapseRateThreshold}},<br />with a <strong>saturated atmosphere<br />(RH ≥ 100%)</strong> for this height.",
+  "Unstable air information": "Unstable air. Greater than {{dryAbiaticLapseRate}} (<strong>dry adiabatic lapse rate</strong>), this indicates <strong>turbulence</strong> and <strong>thermals</strong>, especially when found over a large altitude range. Warmer air parcels will continue rising.",
+  "Conditionally unstable air information": "Conditionally unstable air. Greater than the <0>moist adiabatic lapse rate</0> of {{saturatedLapseRateThreshold}} for this height. Any cumulus <1 /> may continue to grow.",
+  "Lapse rate value information": "Lapse rate <0>{{lapseRate}}</0>",
+  "Spread": "Spread",
+  "Dewpt": "Dewpt",
+  "Relative humidity acronym": "RH"
 }
