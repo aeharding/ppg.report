@@ -33,7 +33,7 @@
   "Default": "Par défaut",
   "Normalized": "Normalisé",
   "Advanced features": "Fonctionnalités avancées",
-  "Advanced features tip": "EXPÉRIMENTAL. Les fonctionnalités actuelles comprennent : <ul><li>Icône représentant le gradient adiabatique (seuils pour DALR, MALR et inversion de température).</li><li>Indicateur de saturation de l'humidité relative.</li><li>Appuyez sur une cellule de température pour ouvrir une info-bulle détaillée sur les appareils mobiles.</li></ul> Vos commentaires sont les bienvenus : hello@ppg.report",
+  "Advanced features tip": "EXPÉRIMENTAL. Les fonctionnalités actuelles comprennent : <ul><li>Icône pour représenter le gradient de température (seuils pour DALR, MALR et inversion de température).</li><li>Indicateur de saturation de l'humidité relative.</li><li>Appuyez sur la cellule de température pour ouvrir les détails de température.</li></ul> Vos commentaires sont les bienvenus - hello@ppg.report",
   "Nocturnal temperature inversion information": "<strong>Inversions de température nocturnes</strong> indiquent des conditions calmes, mais disparaissent rapidement après le lever du soleil.",
   "Inversion information": "Indique une <strong>inversion</strong>.<br />Généralement calme, parfois brumeux.",
   "Saturated unstable air information": "Air instable. Supérieur au <0>gradient adiabatique saturé</0> de {{saturatedLapseRateThreshold}}, avec une <strong>atmosphère saturée (HR ≥ 100%)</strong> à cette altitude.",

@@ -150,7 +150,8 @@ export default function Temperature({
         <TemperatureText temperature={inCelsius}>
           {Math.round(temperature)} <Aside>°{temperatureUnitLabel}</Aside>{" "}
         </TemperatureText>
-        {lapseRate &&
+        {advanced &&
+        lapseRate &&
         dewpoint != null &&
         inCelsius - dewpoint <= 2.5 &&
         inCelsius > 0 ? (

@@ -33,7 +33,7 @@
   "Default": "Standard",
   "Normalized": "Normalisiert",
   "Advanced features": "Erweiterte Funktionen",
-  "Advanced features tip": "EXPERIMENTELL. Aktuelle Funktionen umfassen: <ul><li>Symbol zur Darstellung der Temperaturinversion (Schwellenwerte für DALR, MALR und Temperaturinversion).</li><li>Anzeige für relative Luftfeuchtigkeitssättigung.</li><li>Auf Mobilgeräten auf Temperaturzelle tippen, um Details zur Temperatur anzuzeigen.</li></ul> Feedback willkommen – hello@ppg.report",
+  "Advanced features tip": "EXPERIMENTELL. Aktuelle Funktionen umfassen: <ul><li>Symbol zur Darstellung der Temperaturabnahme (Schwellenwerte für DALR, MALR und Temperaturinversion).</li><li>Indikator für gesättigte relative Luftfeuchtigkeit.</li><li>Auf Temperaturzelle tippen, um Temperaturdetails anzuzeigen.</li></ul> Feedback willkommen - hello@ppg.report",
   "Nocturnal temperature inversion information": "<strong>Nächtliche Temperaturinversionen</strong> deuten auf ruhige Bedingungen hin, verschwinden jedoch schnell nach Sonnenaufgang.",
   "Inversion information": "Zeigt eine <strong>Inversion</strong> an.<br />Normalerweise ruhig, manchmal neblig.",
   "Saturated unstable air information": "Instabile Luft. Größer als die <0>feuchte adiabatische Temperaturabnahme</0> von {{saturatedLapseRateThreshold}}, mit einer <strong>gesättigten Atmosphäre (LF ≥ 100%)</strong> in dieser Höhe.",

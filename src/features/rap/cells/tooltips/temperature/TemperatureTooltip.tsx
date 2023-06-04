@@ -70,9 +70,9 @@ export default function TemperatureTooltip({
     );
   }
 
-  return (
-    <Tooltip contents={renderContents} mouseOnly={advanced === OnOff.Off}>
-      {children}
-    </Tooltip>
+  return advanced === OnOff.On ? (
+    <Tooltip contents={renderContents}>{children}</Tooltip>
+  ) : (
+    <>{children}</>
   );
 }

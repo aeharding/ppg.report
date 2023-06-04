@@ -33,7 +33,7 @@
   "Default": "Predeterminado",
   "Normalized": "Normalizado",
   "Advanced features": "Funciones avanzadas",
-  "Advanced features tip": "EXPERIMENTAL. Las características actuales incluyen: <ul><li>Icono para representar la tasa de enfriamiento adiabático (umbrales para DALR, MALR e inversión de temperatura).</li><li>Indicador de saturación de humedad relativa.</li><li>Toca la celda de temperatura para abrir información detallada en dispositivos móviles.</li></ul> Tus comentarios son bienvenidos: hello@ppg.report",
+  "Advanced features tip": "EXPERIMENTAL. Las características actuales incluyen: <ul><li>Icono para representar la tasa de enfriamiento (umbrales para DALR, MALR e inversión de temperatura).</li><li>Indicador de saturación de humedad relativa.</li><li>Toca la celda de temperatura para abrir detalles de temperatura.</li></ul> Comentarios bienvenidos - hello@ppg.report",
   "Nocturnal temperature inversion information": "<strong>Inversiones de temperatura nocturnas</strong> indican condiciones de calma, pero se disipan rápidamente después del amanecer.",
   "Inversion information": "Indica una <strong>inversión</strong>.<br />Normalmente tranquila, a veces con niebla.",
   "Saturated unstable air information": "Aire inestable. Mayor que la <0>tasa de enfriamiento adiabático húmedo</0> de {{saturatedLapseRateThreshold}}, con una <strong>atmósfera saturada (HR ≥ 100%)</strong> a esta altitud.",

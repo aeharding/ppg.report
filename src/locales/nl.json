@@ -33,7 +33,7 @@
   "Default": "Standaard",
   "Normalized": "Gestandaardiseerd",
   "Advanced features": "Geavanceerde functies",
-  "Advanced features tip": "EXPERIMENTEEL. Huidige functies omvatten: <ul><li>Pictogram om de dalingsnelheid aan te geven (drempels voor DALR, MALR en temperatuurinversie).</li><li>Indicator voor verzadiging van de relatieve luchtvochtigheid.</li><li>Tik op een temperatuurcel om temperatuurdetails weer te geven op mobiele apparaten.</li></ul> Feedback is welkom - hello@ppg.report",
+  "Advanced features tip": "EXPERIMENTEEL. Huidige functies omvatten: <ul><li>Pictogram om de temperatuurdaling aan te geven (drempels voor DALR, MALR en temperatuurinversie).</li><li>Indicator voor verzadiging van de relatieve luchtvochtigheid.</li><li>Tik op de temperatuurcel om temperatuurdetails weer te geven.</li></ul> Feedback is welkom - hello@ppg.report",
   "Nocturnal temperature inversion information": "<strong>Nocturnale temperatuurinversies</strong> duiden op rustige omstandigheden, maar verdwijnen snel na zonsopgang.",
   "Inversion information": "Geeft een <strong>inversie</strong> aan.<br />Meestal rustig, soms mistig.",
   "Saturated unstable air information": "Onstabiele lucht. Groter dan de <0>vochtige adiabatische dalingsnelheid</0> van {{saturatedLapseRateThreshold}}, met een <strong>verzadigde atmosfeer (RV ≥ 100%)</strong> op deze hoogte.",
