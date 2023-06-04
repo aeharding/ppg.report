@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import * as velitherm from "velitherm";
 import { useAppSelector } from "../../../../../hooks";
 import { renderLapseRate } from "../../../../../helpers/lapseRate";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 const About = styled.div`
   margin-top: 1rem;
@@ -37,7 +37,6 @@ export default function LapseRateTooltip({
 
   children,
 }: LapseRateTooltipProps) {
-  const { t } = useTranslation();
   const { location } = useParams<"location">();
   const [lat, lon] = location!.split(",");
   const [times] = useState(SunCalc.getPosition(hour, +lat, +lon));
