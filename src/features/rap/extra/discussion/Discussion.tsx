@@ -61,7 +61,15 @@ export default function Discussion() {
 
   useEffect(() => {
     (async () => {
-      setGlossary(await getGlossary());
+      const glossary = await getGlossary();
+
+      const timeoutId = setTimeout(() => {
+        setGlossary(glossary);
+      }, 350);
+
+      return () => {
+        if (timeoutId != null) clearTimeout(timeoutId);
+      };
     })();
   }, []);
 

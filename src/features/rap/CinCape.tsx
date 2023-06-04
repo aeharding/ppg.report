@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import Tippy from "@tippyjs/react";
 import chroma from "chroma-js";
 import { outputP3ColorFromLab } from "../../helpers/colors";
+import Tooltip from "../../shared/Tooltip";
 
 export const headerText = css`
   text-transform: uppercase;
@@ -68,8 +68,8 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
   return (
     <Container>
       {cin != null && (
-        <Tippy
-          content={
+        <Tooltip
+          contents={() => (
             <Description>
               <p>
                 <a
@@ -93,18 +93,17 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
                 chance of a very large storm!
               </p>
             </Description>
-          }
+          )}
           interactive
-          placement="bottom"
         >
           <Cin cin={cin}>
             <h4>CIN</h4>
             {cin}
           </Cin>
-        </Tippy>
+        </Tooltip>
       )}
-      <Tippy
-        content={
+      <Tooltip
+        contents={() => (
           <Description>
             <p>
               <a
@@ -132,15 +131,14 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
               a very volatile atmosphere that could produce severe storms.
             </p>
           </Description>
-        }
+        )}
         interactive
-        placement="bottom"
       >
         <Cape cape={cape}>
           <h4>CAPE</h4>
           {cape}
         </Cape>
-      </Tippy>
+      </Tooltip>
     </Container>
   );
 }

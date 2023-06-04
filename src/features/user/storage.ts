@@ -43,6 +43,7 @@ const HIDDEN_ALERTS = "hidden-alerts";
 const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
 const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
 const LANGUAGE_STORAGE_KEY = "user-language";
+const ADVANCED_STORAGE_KEY = "advanced-mode";
 const MAX_LOCATIONS = 5;
 const MAX_DISTANCE_MATCH = 1000; // meters
 
@@ -120,7 +121,9 @@ export function getAltitude(): AltitudeType {
 
   if (
     typeof savedValue !== "string" ||
-    (savedValue !== AltitudeType.AGL && savedValue !== AltitudeType.MSL)
+    (savedValue !== AltitudeType.AGL &&
+      savedValue !== AltitudeType.MSL &&
+      savedValue !== AltitudeType.Pressure)
   )
     return AltitudeType.AGL;
 
@@ -362,4 +365,20 @@ export function getLanguage(): Languages {
 
 export function setLanguage(language: Languages): void {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+}
+
+export function getAdvanced(): OnOff {
+  const savedValue = localStorage.getItem(ADVANCED_STORAGE_KEY);
+
+  if (
+    typeof savedValue !== "string" ||
+    (savedValue !== OnOff.Off && savedValue !== OnOff.On)
+  )
+    return OnOff.Off;
+
+  return savedValue;
+}
+
+export function setAdvanced(advanced: OnOff): void {
+  localStorage.setItem(ADVANCED_STORAGE_KEY, advanced);
 }

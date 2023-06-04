@@ -14,11 +14,13 @@ interface HeightProps {
   surfaceLevelInMeters: number; // surface above MSL in meters
   heightUnitLabel: string;
   heightValueFormatter: (heightInMeters: number) => number;
+  pressure: number | undefined;
 }
 
 export default function Altitude({
   heightInMeters,
   surfaceLevelInMeters,
+  pressure,
 }: Omit<HeightProps, "heightUnitLabel" | "heightValueFormatter">) {
   const altitudeType = useAppSelector((state) => state.user.altitude);
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
@@ -46,7 +48,17 @@ export default function Altitude({
           heightValueFormatter={_heightValueFormatter}
         />
       );
+    case AltitudeType.Pressure:
+      return <Pressure pressure={pressure} />;
   }
+}
+
+function Pressure({ pressure }: Pick<HeightProps, "pressure">) {
+  return (
+    <>
+      {pressure} <Aside>mb</Aside>
+    </>
+  );
 }
 
 function AltitudeAGL({
@@ -54,7 +66,7 @@ function AltitudeAGL({
   surfaceLevelInMeters,
   heightUnitLabel,
   heightValueFormatter,
-}: HeightProps) {
+}: Omit<HeightProps, "pressure">) {
   const { t } = useTranslation();
   const agl = heightInMeters - surfaceLevelInMeters;
 
@@ -72,7 +84,7 @@ function AltitudeMSL({
   heightInMeters,
   heightUnitLabel,
   heightValueFormatter,
-}: Omit<HeightProps, "surfaceLevelInMeters">) {
+}: Omit<HeightProps, "surfaceLevelInMeters" | "pressure">) {
   return (
     <>
       {Math.round(heightValueFormatter(heightInMeters)).toLocaleString()}{" "}

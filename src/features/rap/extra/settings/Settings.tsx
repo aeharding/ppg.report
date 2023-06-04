@@ -13,6 +13,7 @@ import {
   setTimeFormat,
   setAltitudeLevels,
   setLanguage,
+  setAdvanced,
 } from "../../../user/userSlice";
 import {
   AltitudeType,
@@ -60,6 +61,7 @@ export default function Settings() {
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const swipeInertia = useAppSelector((state) => state.user.swipeInertia);
   const gAirmetRead = useAppSelector((state) => state.user.gAirmetRead);
+  const advanced = useAppSelector((state) => state.user.advanced);
   const hiddenAlerts = useAppSelector(hiddenAlertsSelector);
   const hiddenAlertsNumber = Object.keys(hiddenAlerts).length;
   const { t } = useTranslation();
@@ -68,7 +70,7 @@ export default function Settings() {
     <Container>
       <Radio
         label={t("Altitude format")}
-        options={[AltitudeType.AGL, AltitudeType.MSL]}
+        options={[AltitudeType.AGL, AltitudeType.MSL, AltitudeType.Pressure]}
         value={altitudeType}
         onChange={(value) => dispatch(setAltitude(value))}
       />
@@ -151,6 +153,14 @@ export default function Settings() {
         value={gAirmetRead}
         onChange={(value) => dispatch(setGAirmetRead(value))}
         tip={t("Hush G-Airmets tip")}
+      />{" "}
+      <Hr />
+      <Radio
+        label={`🧪 ${t("Advanced features")}`}
+        options={[OnOff.On, OnOff.Off]}
+        value={advanced}
+        onChange={(value) => dispatch(setAdvanced(value))}
+        tip={t("Advanced features tip")}
       />{" "}
       <Hr />
       <div onClick={() => dispatch(resetHiddenAlerts())}>

@@ -31,5 +31,16 @@
   "Hush G-Airmets tip": "Si activée, les nouveaux G-AIRMETs ne déclencheront pas la bannière de notifications des alertes non lues, et ils seront poussés en bas de la liste des alertes. Ceci peut être utile si vous trouvez les G-AIRMETs trop bruyants. [Uniquement aux États-Unis]",
   "Localization in progress": "La localisation est en cours. Pour aider, veuillez envoyer un e-mail à hello@ppg.report",
   "Default": "Par défaut",
-  "Normalized": "Normalisé"
+  "Normalized": "Normalisé",
+  "Advanced features": "Fonctionnalités avancées",
+  "Advanced features tip": "EXPÉRIMENTAL. Les fonctionnalités actuelles comprennent : <ul><li>Icône pour représenter le gradient de température (seuils pour DALR, MALR et inversion de température).</li><li>Indicateur de saturation de l'humidité relative.</li><li>Appuyez sur la cellule de température pour ouvrir les détails de température.</li></ul> Vos commentaires sont les bienvenus - hello@ppg.report",
+  "Nocturnal temperature inversion information": "<strong>Inversions de température nocturnes</strong> indiquent des conditions calmes, mais disparaissent rapidement après le lever du soleil.",
+  "Inversion information": "Indique une <strong>inversion</strong>.<br />Généralement calme, parfois brumeux.",
+  "Saturated unstable air information": "Air instable. Supérieur au <0>gradient adiabatique saturé</0> de {{saturatedLapseRateThreshold}}, avec une <strong>atmosphère saturée (HR ≥ 100%)</strong> à cette altitude.",
+  "Unstable air information": "Air instable. Supérieur à {{dryAbiaticLapseRate}} (<strong>gradient adiabatique sec</strong>), cela indique des <strong>turbulences</strong> et des <strong>thermiques</strong>, notamment lorsqu'ils se trouvent sur une large plage d'altitude. Les masses d'air plus chaudes continueront de monter.",
+  "Conditionally unstable air information": "Air conditionnellement instable. Supérieur au <0>gradient adiabatique saturé</0> de {{saturatedLapseRateThreshold}} à cette altitude. Tout cumulus <1 /> peut continuer à croître.",
+  "Lapse rate value information": "Valeur du gradient adiabatique <0>{{lapseRate}}</0>",
+  "Spread": "Écart",
+  "Dewpt": "P. rosée",
+  "Relative humidity acronym": "HR"
 }

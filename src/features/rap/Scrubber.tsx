@@ -236,7 +236,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
   return (
     <div
       onClick={() => {
-        if (!enabled && document.querySelector(".tippy-content")) return;
+        if (!enabled && document.querySelector(".tooltip")) return;
 
         setEnabled(!enabled);
       }}

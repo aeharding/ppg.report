@@ -135,5 +135,9 @@ export default function DetailedAviationReport({
 }
 
 export function cToF(celsius: number): number {
-  return Math.round((celsius * 9) / 5 + 32);
+  return (celsius * 9) / 5 + 32;
+}
+
+export function fToC(fahrenheit: number): number {
+  return Math.round(((fahrenheit - 32) * 5) / 9);
 }

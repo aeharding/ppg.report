@@ -200,5 +200,7 @@ export function toggleAltitudeType(altitude: AltitudeType): AltitudeType {
       return AltitudeType.MSL;
     case AltitudeType.MSL:
       return AltitudeType.AGL;
+    case AltitudeType.Pressure:
+      return AltitudeType.AGL;
   }
 }

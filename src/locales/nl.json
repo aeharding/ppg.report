@@ -31,5 +31,16 @@
   "Hush G-Airmets tip": "Als dit is ingeschakeld, zullen nieuwe G-AIRMET's de meldingsbanner voor ongelezen meldingen niet activeren en worden ze onderaan de lijst met meldingen weergegeven. Dit kan handig zijn als je de G-AIRMET's te storend vindt. [Alleen in de VS]",
   "Localization in progress": "Lokalisatie is in uitvoering. Stuur alstublieft een e-mail naar hello@ppg.report om te helpen.",
   "Default": "Standaard",
-  "Normalized": "Gestandaardiseerd"
+  "Normalized": "Gestandaardiseerd",
+  "Advanced features": "Geavanceerde functies",
+  "Advanced features tip": "EXPERIMENTEEL. Huidige functies omvatten: <ul><li>Pictogram om de temperatuurdaling aan te geven (drempels voor DALR, MALR en temperatuurinversie).</li><li>Indicator voor verzadiging van de relatieve luchtvochtigheid.</li><li>Tik op de temperatuurcel om temperatuurdetails weer te geven.</li></ul> Feedback is welkom - hello@ppg.report",
+  "Nocturnal temperature inversion information": "<strong>Nocturnale temperatuurinversies</strong> duiden op rustige omstandigheden, maar verdwijnen snel na zonsopgang.",
+  "Inversion information": "Geeft een <strong>inversie</strong> aan.<br />Meestal rustig, soms mistig.",
+  "Saturated unstable air information": "Onstabiele lucht. Groter dan de <0>vochtige adiabatische dalingsnelheid</0> van {{saturatedLapseRateThreshold}}, met een <strong>verzadigde atmosfeer (RV ≥ 100%)</strong> op deze hoogte.",
+  "Unstable air information": "Onstabiele lucht. Groter dan {{dryAbiaticLapseRate}} (<strong>droge adiabatische dalingsnelheid</strong>), dit duidt op <strong>turbulentie</strong> en <strong>thermiek</strong>, vooral wanneer het over een groot hoogtebereik voorkomt. Warmere luchtpakketten blijven stijgen.",
+  "Conditionally unstable air information": "Voorwaardelijk onstabiele lucht. Groter dan de <0>vochtige adiabatische dalingsnelheid</0> van {{saturatedLapseRateThreshold}} op deze hoogte. Elke cumuluswolk <1 /> kan blijven groeien.",
+  "Lapse rate value information": "Dalingsnelheid <0>{{lapseRate}}</0>",
+  "Spread": "Verschil",
+  "Dewpt": "Dauwpnt",
+  "Relative humidity acronym": "RV"
 }

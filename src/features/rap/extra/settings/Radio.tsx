@@ -85,7 +85,11 @@ export function Radio<T extends string>({
   return (
     <div>
       <GroupLabel>{label}</GroupLabel>
-      {tip ? <GroupTip>{tip}</GroupTip> : ""}
+      {tip ? (
+        <GroupTip dangerouslySetInnerHTML={{ __html: tip }}></GroupTip>
+      ) : (
+        ""
+      )}
       <Options>
         {options.map((option) => (
           <React.Fragment key={option}>

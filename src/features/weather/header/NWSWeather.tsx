@@ -1,4 +1,3 @@
-import Tippy from "@tippyjs/react";
 import lowerCase from "lodash/lowerCase";
 import capitalize from "lodash/capitalize";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -17,6 +16,7 @@ import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 import { NWSWeatherObservation } from "../../../services/nwsWeather";
 import { WeatherIcon } from "./Weather";
 import styled from "@emotion/styled";
+import Tooltip from "../../../shared/Tooltip";
 
 const Flex = styled.div`
   display: flex;
@@ -33,20 +33,22 @@ export default function NWSWeather({ observations }: NWSWeatherProps) {
 
   if (!observation) return <></>;
 
-  let tooltip = capitalize(
-    observations
-      .map((observation) =>
-        [observation.coverage, observation.weather].map(lowerCase).join(" ")
-      )
-      .join(", ")
-  );
+  function renderTooltip() {
+    return capitalize(
+      observations
+        .map((observation) =>
+          [observation.coverage, observation.weather].map(lowerCase).join(" ")
+        )
+        .join(", ")
+    );
+  }
 
   const icon = findIconFor(observation);
 
   if (!icon) return <></>;
 
   return (
-    <Tippy content={tooltip} placement="bottom">
+    <Tooltip contents={renderTooltip}>
       <Flex>
         <WeatherIcon
           icon={icon}
@@ -56,7 +58,7 @@ export default function NWSWeather({ observations }: NWSWeatherProps) {
           }
         />
       </Flex>
-    </Tippy>
+    </Tooltip>
   );
 }
 

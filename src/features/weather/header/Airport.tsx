@@ -9,11 +9,9 @@ import {
   Visibility,
 } from "metar-taf-parser";
 import { Micro } from "../WeatherHeader";
-import Tippy from "@tippyjs/react";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
 import DetailedAviationReport from "../aviation/DetailedAviationReport";
 import { notEmpty } from "../../../helpers/array";
-import { isTouchDevice } from "../../../helpers/device";
 import {
   convertHeightToMeters,
   FlightCategory,
@@ -30,6 +28,7 @@ import {
   DistanceUnit,
   HeightUnit,
 } from "../../rap/extra/settings/settingEnums";
+import Tooltip from "../../../shared/Tooltip";
 
 interface AirportContainerProps {
   category: FlightCategory;
@@ -116,33 +115,35 @@ export default function Airport({ taf, date }: AirportProps) {
     <AirportContainer category={category}>{taf.station}</AirportContainer>
   );
 
-  const tip = (
-    <>
-      <div>
-        {t("TAF forecast overview", {
-          flightCategory: category,
-          airportStationIdentifier: taf.station,
-        })}
-        :
-      </div>
-      {buildTooltip(
-        visibility,
-        clouds,
-        verticalVisbility,
-        heightUnit,
-        distanceUnit
-      )}
-    </>
-  );
+  function renderTip() {
+    return (
+      <>
+        <div>
+          {t("TAF forecast overview", {
+            flightCategory: category,
+            airportStationIdentifier: taf.station,
+          })}
+          :
+        </div>
+        {buildTooltip(
+          visibility,
+          clouds,
+          verticalVisbility,
+          heightUnit,
+          distanceUnit
+        )}
+      </>
+    );
+  }
 
   return (
     <BottomSheet
       openButton={
-        <Tippy content={tip} placement="bottom" disabled={isTouchDevice()}>
+        <Tooltip contents={renderTip} mouseOnly>
           <div>
             <StyledMicro icon={badge}>{cloudLabel}</StyledMicro>
           </div>
-        </Tippy>
+        </Tooltip>
       }
       title={`${taf.station} Aviation Weather Report`}
     >

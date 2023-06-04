@@ -31,5 +31,16 @@
   "Hush G-Airmets tip": "Wenn aktiviert, lösen neue G-AIRMETs keinen Hinweis für ungelesene Benachrichtigungen aus und werden am Ende der Liste der Benachrichtigungen angezeigt. Dies kann nützlich sein, wenn Sie G-AIRMETs als zu laut empfinden. [Nur USA]",
   "Localization in progress": "Die Lokalisierung läuft. Um zu helfen, senden Sie bitte eine E-Mail an hello@ppg.report",
   "Default": "Standard",
-  "Normalized": "Normalisiert"
+  "Normalized": "Normalisiert",
+  "Advanced features": "Erweiterte Funktionen",
+  "Advanced features tip": "EXPERIMENTELL. Aktuelle Funktionen umfassen: <ul><li>Symbol zur Darstellung der Temperaturabnahme (Schwellenwerte für DALR, MALR und Temperaturinversion).</li><li>Indikator für gesättigte relative Luftfeuchtigkeit.</li><li>Auf Temperaturzelle tippen, um Temperaturdetails anzuzeigen.</li></ul> Feedback willkommen - hello@ppg.report",
+  "Nocturnal temperature inversion information": "<strong>Nächtliche Temperaturinversionen</strong> deuten auf ruhige Bedingungen hin, verschwinden jedoch schnell nach Sonnenaufgang.",
+  "Inversion information": "Zeigt eine <strong>Inversion</strong> an.<br />Normalerweise ruhig, manchmal neblig.",
+  "Saturated unstable air information": "Instabile Luft. Größer als die <0>feuchte adiabatische Temperaturabnahme</0> von {{saturatedLapseRateThreshold}}, mit einer <strong>gesättigten Atmosphäre (LF ≥ 100%)</strong> in dieser Höhe.",
+  "Unstable air information": "Instabile Luft. Größer als {{dryAbiaticLapseRate}} (<strong>trockene adiabatische Temperaturabnahme</strong>), was auf <strong>Turbulenzen</strong> und <strong>Thermik</strong> hinweist, insbesondere wenn sie über einen großen Höhenbereich vorliegt. Wärmere Luftmassen werden weiter aufsteigen.",
+  "Conditionally unstable air information": "Bedingt instabile Luft. Größer als die <0>feuchte adiabatische Temperaturabnahme</0> von {{saturatedLapseRateThreshold}} in dieser Höhe. Jegliche Kumuluswolken <1 /> können weiter wachsen.",
+  "Lapse rate value information": "Temperaturabnahme <0>{{lapseRate}}</0>",
+  "Spread": "Differenz",
+  "Dewpt": "Taupkt",
+  "Relative humidity acronym": "LF"
 }

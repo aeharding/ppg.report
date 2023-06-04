@@ -1,6 +1,7 @@
 export enum AltitudeType {
   AGL = "AGL",
   MSL = "MSL",
+  Pressure = "Pressure",
 }
 
 export enum AltitudeLevels {

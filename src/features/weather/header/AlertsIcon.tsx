@@ -1,9 +1,7 @@
 import styled from "@emotion/styled";
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Tippy from "@tippyjs/react";
 import { timeZoneSelector } from "../weatherSlice";
-import { isTouchDevice } from "../../../helpers/device";
 import BottomSheet from "../../../bottomSheet/BottomSheet";
 import { lazy, Suspense } from "react";
 import Loading from "../../../shared/Loading";
@@ -24,6 +22,7 @@ import { getAviationAlertName } from "../../../helpers/aviationAlerts";
 import { isAlertRead } from "../../../helpers/alert";
 import { getTimeFormatString } from "../aviation/Forecast";
 import { OnOff } from "../../rap/extra/settings/settingEnums";
+import Tooltip from "../../../shared/Tooltip";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -114,32 +113,27 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
         return <></>;
       case 1:
         return (
-          <Tippy
-            disabled={isTouchDevice()}
-            content={getAlertName(alerts[0])}
-            placement="bottom"
-          >
+          <Tooltip mouseOnly contents={() => getAlertName(alerts[0])}>
             <Container type={type}>{icon}</Container>
-          </Tippy>
+          </Tooltip>
         );
       default:
         return (
-          <Tippy
-            disabled={isTouchDevice()}
-            content={
+          <Tooltip
+            mouseOnly
+            contents={() => (
               <ol>
                 {alerts.map((alert, index) => (
                   <li key={index}>{getAlertName(alert)}</li>
                 ))}
               </ol>
-            }
-            placement="bottom"
+            )}
           >
             <Container type={type}>
               {icon}
               <Sup>x{alerts.length}</Sup>
             </Container>
-          </Tippy>
+          </Tooltip>
         );
     }
   }

@@ -31,6 +31,7 @@ interface UserState {
   swipeInertia: OnOff;
   gAirmetRead: OnOff;
   language: Languages;
+  advanced: OnOff;
 }
 
 // Define the initial state using that type
@@ -48,6 +49,7 @@ const initialState: UserState = {
   swipeInertia: storage.getSwipeInertia(),
   gAirmetRead: storage.getGAirmetRead(),
   language: storage.getLanguage(),
+  advanced: storage.getAdvanced(),
 };
 
 /**
@@ -103,6 +105,9 @@ export const userReducer = createSlice({
     updateLanguage(state, action: PayloadAction<Languages>) {
       state.language = action.payload;
     },
+    updateAdvanced(state, action: PayloadAction<OnOff>) {
+      state.advanced = action.payload;
+    },
   },
 });
 
@@ -113,6 +118,7 @@ export const {
   resetHiddenAlerts,
   setSwipeInertia,
   setGAirmetRead,
+  updateAdvanced,
 } = userReducer.actions;
 
 export const toggleAltitude =
@@ -201,6 +207,13 @@ export const setLanguage =
     dispatch(userReducer.actions.updateLanguage(language));
 
     storage.setLanguage(getState().user.language);
+  };
+
+export const setAdvanced =
+  (advanced: OnOff) => async (dispatch: AppDispatch) => {
+    dispatch(userReducer.actions.updateAdvanced(advanced));
+
+    storage.setAdvanced(advanced);
   };
 
 export default userReducer.reducer;
