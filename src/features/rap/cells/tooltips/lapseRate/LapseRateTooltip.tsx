@@ -48,10 +48,10 @@ export default function LapseRateTooltip({
   function renderExplanation() {
     if (lapseRate < 0) {
       if (!isDay) {
-        return <>{t("Nocturnal temperature inversion information")}</>;
+        return <Trans i18nKey="Nocturnal temperature inversion information" />;
       }
 
-      return <>{t("Inversion information")}</>;
+      return <Trans i18nKey="Inversion information" />;
     }
 
     if (lapseRate > saturatedLapseRateThreshold && saturated) {
