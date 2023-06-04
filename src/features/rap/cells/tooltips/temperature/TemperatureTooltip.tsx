@@ -21,9 +21,7 @@ const Table = styled.table`
   td:nth-child(2) {
     text-align: right;
 
-    font-family: "Courier New", Courier, monospace;
-    font-weight: 600;
-    font-size: 1.2em;
+    font-variant-numeric: tabular-nums;
   }
 `;
 
