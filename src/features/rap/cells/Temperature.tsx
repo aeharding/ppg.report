@@ -20,6 +20,9 @@ import LapseRateTooltip from "./tooltips/lapseRate/LapseRateTooltip";
 
 const TemperatureContainer = styled.div`
   position: relative;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const DropletIcon = styled(FontAwesomeIcon)<{ opacity: number }>`
@@ -77,8 +80,26 @@ const colorScale = chroma
   .scale(["rgb(176, 38, 255)", "#0084ff", "#00ff00", "yellow", "red"])
   .domain([-5, 32, 60, 86, 95].map(fToC));
 
-export const TemperatureText = styled.div<{ temperature: number }>`
-  ${({ temperature }) => outputP3ColorFromRGB(colorScale(temperature).rgb())}
+export const TemperatureText = styled.div<{
+  temperature: number;
+}>`
+  width: 100%;
+  height: 100%;
+
+  ${({ temperature, theme }) =>
+    theme
+      ? outputP3ColorFromRGB(colorScale(temperature).rgb(), "background")
+      : outputP3ColorFromRGB(colorScale(temperature).rgb())}
+
+  tr:first-of-type & {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  tr:last-of-type & {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
 `;
 
 interface TemperatureProps {

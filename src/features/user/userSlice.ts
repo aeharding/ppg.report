@@ -16,6 +16,7 @@ import {
   SpeedUnit,
   AltitudeLevels,
 } from "../rap/extra/settings/settingEnums";
+import { ThemeMode } from "../../theme";
 
 interface UserState {
   recentLocations: UserLocation[];
@@ -32,6 +33,8 @@ interface UserState {
   gAirmetRead: OnOff;
   language: Languages;
   advanced: OnOff;
+
+  theme: ThemeMode;
 }
 
 // Define the initial state using that type
@@ -50,6 +53,8 @@ const initialState: UserState = {
   gAirmetRead: storage.getGAirmetRead(),
   language: storage.getLanguage(),
   advanced: storage.getAdvanced(),
+
+  theme: "light",
 };
 
 /**

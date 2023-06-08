@@ -25,7 +25,7 @@ const Card = styled.div`
   padding: 0.75em 0;
 
   border-radius: 1em;
-  box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+  box-shadow: var(--card-box-shadow);
 `;
 
 const Header = styled.div`
@@ -87,18 +87,18 @@ export default function Hour({
     if (!isValidDate(times.sunrise)) return chroma.scale(["#ffffff0a"]);
     return chroma
       .scale([
-        "#0000004d",
-        "#6666660e",
+        "#0088ff4d",
+        "#7430000a",
         "#ffffff0a",
         "#ffffff0a",
-        "#6666660e",
-        "#0000004d",
-        "#0000004d",
-        "#6666660e",
+        "#7430000a",
+        "#0088ff4d",
+        "#0088ff4d",
+        "#7430000a",
         "#ffffff0a",
         "#ffffff0a",
-        "#6666660e",
-        "#0000004d",
+        "#7430000a",
+        "#0088ff4d",
       ])
       .mode("lch")
       .domain([

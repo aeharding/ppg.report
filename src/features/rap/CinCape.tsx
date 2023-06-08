@@ -7,7 +7,7 @@ import Tooltip from "../../shared/Tooltip";
 export const headerText = css`
   text-transform: uppercase;
   font-size: 0.7em;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 `;
 
 const Container = styled.div`

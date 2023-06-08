@@ -29,9 +29,35 @@ const TableEl = styled.table`
   overflow: hidden;
   table-layout: fixed;
   padding: 0 0 0 8px;
+  border-collapse: collapse;
 
   th {
     ${headerText}
+  }
+
+  th,
+  td,
+  tr {
+    border: 0;
+    padding: 0;
+  }
+
+  td {
+    position: relative;
+    height: 25px;
+
+    > * {
+      height: 25px;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      bottom: -0.5px;
+      left: 0;
+      right: 0;
+    }
   }
 `;
 

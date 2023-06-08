@@ -17,6 +17,17 @@ export function outputP3ColorFromLab(
   `;
 }
 
+export function outputJustP3ColorFromLab(lab: [number, number, number]) {
+  const {
+    values: [r, g, b],
+  } = convertColorToSpace(
+    { type: ColorSpace.Lab, values: lab },
+    ColorSpace.sRGB
+  );
+
+  return `color(display-p3 ${r} ${g} ${b})`;
+}
+
 export function outputP3ColorFromRGB(
   [r, g, b]: [number, number, number],
   cssProperty = "color"

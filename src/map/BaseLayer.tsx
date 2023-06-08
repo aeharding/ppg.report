@@ -6,7 +6,7 @@ import { TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 const InvertedTileLayer = styled(TileLayer)`
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  /* filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); */
 `;
 
 export default function BaseLayer() {

@@ -1,7 +1,6 @@
 import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useMemo } from "react";
-import { outputP3ColorFromRGB } from "../../helpers/colors";
 import { useAppSelector } from "../../hooks";
 import Precipitation from "./header/Precipitation";
 import { isWithinInterval } from "../../helpers/date";
@@ -34,7 +33,8 @@ const Container = styled.div<{ type: HeaderType }>`
   width: 100%;
   margin-top: -0.75rem;
   padding: 0 1.25rem;
-  margin-bottom: 0.3rem;
+  margin: calc(-0.75rem - 1px) -1px 0.3rem;
+  width: calc(100% + 2px);
   height: 3rem;
   overflow: hidden;
   position: relative;
@@ -50,21 +50,19 @@ const Container = styled.div<{ type: HeaderType }>`
     switch (type) {
       case HeaderType.Danger:
         return css`
-          ${outputP3ColorFromRGB([255, 0, 0])}
-          background: #260101a3;
-          border-color: #640000;
+          background: #ffc5c5a2;
+          border-color: #ff0000;
         `;
       case HeaderType.Warning:
         return css`
-          ${outputP3ColorFromRGB([255, 255, 0])}
-          background: #1c2601a2;
-          border-color: #5f6400;
+          background: #ffd500a0;
+          border-color: #f2ff00;
         `;
       case HeaderType.Normal:
         return css`
           color: #ffffff;
-          background: rgba(255, 255, 255, 0.05);
-          color: #ffffffec;
+          background: rgba(0, 0, 0, 0.05);
+          color: #000000ec;
         `;
     }
   }}
