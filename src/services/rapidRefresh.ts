@@ -44,7 +44,10 @@ function transformRapToWindsAloft(rap: Rap[]): WindsAloftReport {
           temperatureInC: temp / 10,
           altitudeInM: height,
           pressure: Math.round(pressure / 10),
-          dewpointInC: dewpt / 10,
+
+          // Based on everything I've seen, invalid dewpt values are
+          // due to extremely low dewpts. So just set to -100°C.
+          dewpointInC: dewpt != null ? dewpt / 10 : -100,
         })
       ),
     })),
