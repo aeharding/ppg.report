@@ -1,13 +1,22 @@
 import styled from "@emotion/styled";
 import fig11f from "./Ch2-Fig11f.png";
+import fig12fi from "./Ch2-Fig12fi.png";
+import fig13 from "./Ch2-Fig13.png";
+import fig14 from "./Ch2-Fig14.png";
+import fig15 from "./Ch2-Fig15.png";
+import { css } from "@emotion/react";
 
 const BookExtract = styled.div`
   padding: 0 1rem;
   text-align: justify;
 
+  line-height: 1.5;
+
+  --primary: #00a2ff;
+
   h2 {
     font-size: 1.1rem;
-    color: #00a2ff;
+    color: var(--primary);
   }
 `;
 
@@ -23,15 +32,30 @@ const Figure = styled.figure`
 
     aside {
       display: inline;
-      color: #00a2ff;
+      color: var(--primary);
       font-weight: bold;
     }
   }
 `;
 
-const Img = styled.img`
+const DefinitionList = styled.ul`
+  font-style: italic;
+  color: var(--primary);
+
+  li:not(:last-of-type) {
+    margin-bottom: 1rem;
+  }
+`;
+
+const Img = styled.img<{ padding?: boolean }>`
   width: 100%;
-  filter: invert(1) brightness(0.8);
+
+  ${({ padding }) =>
+    !padding &&
+    css`
+      margin: 0 -1rem;
+      width: calc(100% + 2rem);
+    `}
 `;
 
 export default function LapseRate() {
@@ -79,7 +103,13 @@ export default function LapseRate() {
         </p>
 
         <Figure>
-          <Img src={fig11f} alt="" />
+          <Img
+            src={fig11f}
+            css={css`
+              filter: invert(1) brightness(0.8);
+            `}
+            padding
+          />
 
           <figcaption>
             {" "}
@@ -139,6 +169,28 @@ export default function LapseRate() {
           added heat.
         </p>
 
+        <Figure>
+          <Img
+            src={fig12fi}
+            css={css`
+              filter: invert(1) brightness(0.8) hue-rotate(180deg);
+            `}
+            padding
+          />
+
+          <figcaption>
+            {" "}
+            <aside>Fig. 12: THE MEANING OF STABILITY</aside> A bubble of air
+            (bottom) is rising in an atmosphere whose lapse rate cools off less
+            than 5.5&#160;&deg;/1,000 ft (1&#160;&deg;C/100 m). The bubble is
+            cooling faster than the surrounding air as it climbs. Eventually it
+            reaches a height where it is the same temperature as its
+            surroundings (middle). If it is forced to go higher than this
+            equilibrium level it would drop back down because it would be cooler
+            than the surrounding air.
+          </figcaption>
+        </Figure>
+
         <p>
           The rate of cooling a rising parcel of air undergoes &ndash;
           5.5&#160;&deg;F /1,000 ft (1 &deg;C/100 m) &ndash; is known as the Dry
@@ -170,7 +222,7 @@ export default function LapseRate() {
           if it was forced to go higher than this equilibrium point it would get
           the urge to drop back down to the equilibrium level because it would
           be cooler, and thus heavier, than the surrounding air. This is the
-          meaning of stability.&#160;
+          meaning of stability.
         </p>
 
         <p>
@@ -184,10 +236,39 @@ export default function LapseRate() {
           Unstable air wants to turn turtle to distribute the heat upward.
         </p>
 
+        <Figure>
+          <Img
+            src={fig13}
+            css={css`
+              filter: invert(1) brightness(0.8) hue-rotate(180deg);
+            `}
+            padding
+          />
+
+          <figcaption>
+            {" "}
+            <aside>Fig. 13: THE MEANING OF INSTABILITY</aside> Instability of
+            the air means that it is out of balance, for the air in the lower
+            layers is too warm for it to remain tranquil in the vertical
+            dimension. If the lapse rate of the air cools more than
+            5.5&#8239;&deg;F/ 1,000&#8239;ft (1&#8239;&deg;C/100 m), a parcel of
+            air forced upward will not cool as much as the surrounding air so it
+            will continue to rise.
+          </figcaption>
+        </Figure>
+
         <p>
-          We can now form the concise definitions: Stable air occurs when the
-          lapse rate is less than the DALR (5.5 &deg;F/ 1,000 ft [1 &deg;C/100
-          m]). Unstable air occurs when the lapse rate is greater than the DALR.
+          We can now form the concise definitions:
+          <DefinitionList>
+            <li>
+              <strong>Stable air</strong> occurs when the lapse rate is less
+              than the DALR (5.5 &deg;F/ 1,000 ft [1 &deg;C/100 m]).
+            </li>
+            <li>
+              <strong>Unstable air</strong> occurs when the lapse rate is
+              greater than the DALR.
+            </li>
+          </DefinitionList>
         </p>
 
         <p>
@@ -249,6 +330,31 @@ export default function LapseRate() {
           air. These effects are summarized in figure 14.
         </p>
 
+        <Figure>
+          <Img
+            src={fig14}
+            css={css`
+              filter: brightness(0.8);
+            `}
+          />
+
+          <figcaption>
+            {" "}
+            <aside>Fig. 14: STABILITY INDICATIONS</aside> Cloud types are
+            indicators of how stable an air mass is.
+            <br />
+            Top: Stratus or layer clouds are usually signs of stability.
+            Likewise, smoke that rises to a certain level then spreads out
+            signifies stable conditions. Steady winds, fog layers and haze and
+            smoke denote stable air.
+            <br />
+            Bottom: High rising smoke means unstable conditions. Cumulus or
+            tumbled clouds are caused by vertical currents and always imply
+            instability. Dust devils, gusty winds and good visibility are also
+            signs of unstable air.
+          </figcaption>
+        </Figure>
+
         <h2>THE STABILITY OF LAYERS</h2>
 
         <p>
@@ -301,6 +407,24 @@ export default function LapseRate() {
           entire air mass (3.5&#160;&deg;F/1,000 feet). As it rises the layer
           cools at the dry adiabatic rate (DALR) of 5.5&#160;&deg;F/1,000 ft.
         </p>
+
+        <Figure>
+          <Img
+            src={fig15}
+            css={css`
+              filter: brightness(2);
+            `}
+          />
+
+          <figcaption>
+            {" "}
+            <aside>Fig. 15: LAYER STABILITY CHANGES</aside> As a rising layer of
+            air is lifted it stretches vertically and the top expands faster
+            than the bottom, thus cooling more. Therefore, the lifted layer is
+            considerably less stable than before. A sinking layer will become
+            more stable in the same manner.
+          </figcaption>
+        </Figure>
 
         <p>
           After some time the bottom of the layer reaches 15,000 ft but the top
@@ -376,44 +500,6 @@ export default function LapseRate() {
           wind sources. We can think of water vapor as a transporter of heat in
           our atmosphere that causes heat imbalances that &ldquo;weather&rdquo;
           works to straighten out. Water is the great modifier.
-        </p>
-
-        <p>
-          &#61569;FIG. 12: The Meaning of Stability A bubble of air (bottom) is
-          rising in an atmosphere whose lapse rate cools off less than
-          5.5&#160;&deg;/1,000 ft (1&#160;&deg;C/100 m). The bubble is cooling
-          faster than the surrounding air as it climbs. Eventually it reaches a
-          height where it is the same temperature as its surroundings (middle).
-          If it is forced to go higher than this equilibrium level it would drop
-          back down because it would be cooler than the surrounding air.
-        </p>
-
-        <p>
-          &#61569;FIG. 13 : The Meaning of Instability Instability of the air
-          means that it is out of balance, for the air in the lower layers is
-          too warm for it to remain tranquil in the vertical dimension. If the
-          lapse rate of the air cools more than 5.5&#8239;&deg;F/ 1,000&#8239;ft
-          (1&#8239;&deg;C/100 m), a parcel of air forced upward will not cool as
-          much as the surrounding air so it will continue to rise.
-        </p>
-
-        <p>
-          &#61569;FIG. 14: Stability Indications Cloud types are indicators of
-          how stable an air mass is. Top: Stratus or layer clouds are usually
-          signs of stability. Likewise, smoke that rises to a certain level then
-          spreads out signifies stable conditions. Steady winds, fog layers and
-          haze and smoke denote stable air. Bottom: High rising smoke means
-          unstable conditions. Cumulus or tumbled clouds are caused by vertical
-          currents and always imply instability. Dust devils, gusty winds and
-          good visibility are also signs of unstable air.
-        </p>
-
-        <p>
-          &#61569;FIG. 15: Layer Stability Changes As a rising layer of air is
-          lifted it stretches vertically and the top expands faster than the
-          bottom, thus cooling more. Therefore, the lifted layer is considerably
-          less stable than before. A sinking layer will become more stable in
-          the same manner.
         </p>
 
         <p>
