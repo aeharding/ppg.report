@@ -15,6 +15,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { FloatingPortal } from "@floating-ui/react";
 import { notEmpty } from "../helpers/array";
+import useGestureClose from "../helpers/useGestureClose";
 
 export const TooltipContainer = styled.div<{ interactive: boolean }>`
   position: absolute;
@@ -82,6 +83,7 @@ export default function Tooltip({
     ].filter(notEmpty),
   });
   const { isMounted, status } = useTransitionStatus(context);
+  const gestureClose = useGestureClose(context, { interactive });
 
   const hover = useHover(context, {
     delay: {
@@ -91,7 +93,10 @@ export default function Tooltip({
     mouseOnly,
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    hover,
+    gestureClose,
+  ]);
 
   useEffect(() => {
     if (isMounted) {
