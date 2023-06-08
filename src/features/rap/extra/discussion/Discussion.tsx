@@ -22,6 +22,7 @@ export const linkifyOptions: Opts = {
 };
 
 const Container = styled.div`
+  margin-top: 1rem;
   margin-bottom: 2rem;
 `;
 
