@@ -5006,10 +5006,10 @@ graphemer@^1.4.0:
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
 
-gsl-parser@^2.0.0:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-2.0.3.tgz#6bd0c1564ef6e64ef45c470be0253daefd9e9485"
-  integrity sha512-bkYMVgW6s8KZ6Qne8mQ2Nrkl3nmjOiuScMbYtqjJe+Z9myRTzcLsMdRt1e3vmHWOJRd3yHFUS79P7T8qCJk3vA==
+gsl-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/gsl-parser/-/gsl-parser-3.0.0.tgz#fbdef891ec6726316a8c9dcda01ebd6225efa4b8"
+  integrity sha512-xa9FEilxqwHm1ZtcH07AeuwDexVmbdEtdSkGrHaDpbS3LG+X0+mZC1dA6gqi4PRXNcOguBjiOdGTSL8JrLlWcA==
 
 gzip-size@^6.0.0:
   version "6.0.0"

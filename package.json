@@ -28,7 +28,7 @@
     "emotion": "^11.0.0",
     "fast-xml-parser": "^4.0.7",
     "geolib": "^3.3.3",
-    "gsl-parser": "^2.0.0",
+    "gsl-parser": "^3.0.0",
     "i18next": "^22.5.0",
     "i18next-browser-languagedetector": "^7.0.1",
     "iso8601-duration": "^2.1.1",

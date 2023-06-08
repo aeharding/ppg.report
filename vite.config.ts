@@ -8,7 +8,7 @@ import eslint from "vite-plugin-eslint";
 export default defineConfig(() => {
   return {
     optimizeDeps: {
-      include: ["metar-taf-parser"],
+      include: ["metar-taf-parser", "gsl-parser"],
     },
     build: {
       outDir: "build",
