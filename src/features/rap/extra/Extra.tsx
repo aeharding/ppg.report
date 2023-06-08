@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
   faFileAlt,
+  faInfoCircle,
   faLongArrowRight,
   IconDefinition,
 } from "@fortawesome/pro-light-svg-icons";
@@ -19,6 +20,7 @@ import InstallPrompt from "../../install/InstallPrompt";
 import { isAfter } from "date-fns";
 import Spinner from "../../../shared/Spinner";
 import { useTranslation } from "react-i18next";
+import Help from "../../help/Help";
 
 const ReportMetadata = lazy(() => import("./reportMetadata/ReportMetadata"));
 
@@ -35,6 +37,15 @@ const Container = styled.div`
   max-width: 570px;
   width: 100%;
   margin: 0 auto;
+`;
+
+const Line = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  > * {
+    flex: 1;
+  }
 `;
 
 export default function Extra() {
@@ -95,16 +106,28 @@ export default function Extra() {
         </Suspense>
       </BottomSheet>
 
-      <BottomSheet
-        openButton={
-          <Item icon={faCog} iconBg={[20, 20, 20]}>
-            {t("Settings")}
-          </Item>
-        }
-        title={t("Settings")}
-      >
-        <Settings />
-      </BottomSheet>
+      <Line>
+        <BottomSheet
+          openButton={
+            <Item icon={faCog} iconBg={[20, 20, 20]}>
+              {t("Settings")}
+            </Item>
+          }
+          title={t("Settings")}
+        >
+          <Settings />
+        </BottomSheet>
+        <BottomSheet
+          openButton={
+            <Item icon={faInfoCircle} iconBg={[0, 112, 255]}>
+              {t("Help")}
+            </Item>
+          }
+          title={t("Help")}
+        >
+          <Help />
+        </BottomSheet>
+      </Line>
     </Container>
   );
 }

@@ -88,7 +88,7 @@ export default function ReportMetadata() {
 
       <div
         css={css`
-          background: var(--bg-bottom-sheet);
+          backdrop-filter: blur(3rem);
         `}
       >
         <Legend
