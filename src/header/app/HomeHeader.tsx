@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ReactComponent as Icon } from "../icon.svg";
+import Icon from "../Icon";
 
 const Container = styled.div`
   margin: auto;
