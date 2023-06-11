@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { BottomSheet as SpringBottomSheet } from "react-spring-bottom-sheet";
-import { faTimes } from "@fortawesome/pro-light-svg-icons";
+import { faTimes } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isTouchDevice } from "../helpers/device";
 
@@ -31,12 +31,27 @@ const Header = styled.div`
   align-items: center;
   gap: 1rem;
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 600;
+
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(-0.75rem + 6px);
+    height: 5px;
+    width: 36px;
+    transform: translateX(-50%);
+
+    border-radius: 2.5px;
+    background: rgba(255, 255, 255, 0.2);
+  }
 `;
 
 const CloseContainer = styled.button`
-  width: 2rem;
-  height: 2rem;
+  width: 30px;
+  height: 30px;
   background: rgba(255, 255, 255, 0.05);
 
   display: flex;
@@ -58,6 +73,8 @@ const CloseContainer = styled.button`
 const CloseIcon = styled(FontAwesomeIcon)`
   width: 16px;
   height: 16px;
+
+  color: rgba(255, 255, 255, 0.5);
 `;
 
 export interface BottomSheetProps {
