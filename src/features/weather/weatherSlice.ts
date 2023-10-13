@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as nwsWeather from "../../services/nwsWeather";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, isPast } from "date-fns";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
@@ -631,6 +631,14 @@ export const getWeather =
 
       try {
         const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
+
+        if (
+          windsAloft.hours.filter(({ date }) => !isPast(new Date(date)))
+            .length < 10
+        ) {
+          console.info("Stale NWS rapid refresh data");
+          throw new Error("Rapid Refresh is too old");
+        }
 
         if (isStale()) return;
 
