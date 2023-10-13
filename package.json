@@ -1,6 +1,6 @@
 {
   "name": "ppg.report",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "license": "MIT",
   "private": true,
   "packageManager": "yarn@1.22.11",
