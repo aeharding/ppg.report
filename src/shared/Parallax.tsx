@@ -9,7 +9,6 @@ interface ParallaxProps {
 
 const Container = styled.div`
   position: relative;
-  z-index: -1;
 `;
 
 export default function Parallax({ speed = 0.5, children }: ParallaxProps) {

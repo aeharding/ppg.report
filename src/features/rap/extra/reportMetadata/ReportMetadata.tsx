@@ -54,6 +54,12 @@ const StyledDataList = styled(DataList)`
   margin: 2rem 1rem 1rem;
 `;
 
+const LegendContainer = styled.div`
+  position: relative;
+  z-index: 1;
+  background: var(--bg-bottom-sheet);
+`;
+
 export default function ReportMetadata() {
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather
@@ -86,11 +92,7 @@ export default function ReportMetadata() {
         </StyledMapContainer>
       </Parallax>
 
-      <div
-        css={css`
-          background: var(--bg-bottom-sheet);
-        `}
-      >
+      <LegendContainer>
         <Legend
           showTaf={!!(aviationWeather && typeof aviationWeather === "object")}
           showNws={
@@ -104,7 +106,7 @@ export default function ReportMetadata() {
 
           <PointInfo />
         </StyledDataList>
-      </div>
+      </LegendContainer>
     </Container>
   );
 }
