@@ -42,8 +42,8 @@ const Description = styled.div`
 `;
 
 const cinColorScale = chroma
-  .scale(["white", "white", "yellow", "red"])
-  .domain([0, -20, -50, -90]);
+  .scale(["red", "yellow", "white", "white"])
+  .domain([0, -51, -200, -300]);
 
 const Cin = styled.span<{ cin: number }>`
   ${({ cin }) => outputP3ColorFromLab(cinColorScale(cin).lab())};
@@ -84,13 +84,14 @@ export default function CinCape({ cin, cape }: CinCapeProps) {
               </p>
               <p>
                 CIN values between <Cin cin={0}>0</Cin> and{" "}
-                <Cin cin={-25}>-25</Cin> are classified as weak inhibition.
+                <Cin cin={-50}>-50</Cin> are classified as weak inhibition and
+                mean you have a chance of a very large storm if CAPE is present!
               </p>{" "}
               <p>
-                CIN values between <Cin cin={-25}>-25</Cin> and{" "}
-                <Cin cin={-50}>-50</Cin>, typically qualify as moderate. When
-                you see CIN values of <Cin cin={-100}>-100</Cin>, you have a
-                chance of a very large storm!
+                CIN values between <Cin cin={-51}>-51</Cin> and{" "}
+                <Cin cin={-199}>-199</Cin>, typically qualify as moderate. CIN 
+                values of <Cin cin={-200}>-200</Cin> are classified as strong
+                inhibition which means more stable air with less chance of convection.
               </p>
             </Description>
           )}
