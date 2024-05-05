@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.15]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,11 +24,11 @@ jobs:
       - run: |
           npm config set '@fortawesome:registry' '${{ secrets.FONTAWESOME_REGISTRY }}'
           npm config set '//harding.dev:23435/:_authToken' '${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}'
-          yarn --frozen-lockfile
+          pnpm install
 
       # TODO: code coverage, reporting, break these steps up
-      - run: yarn format
-      - run: yarn lint
-      - run: yarn test
-      - run: yarn typecheck
-      - run: yarn build
+      - run: pnpm format
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm typecheck
+      - run: pnpm build
