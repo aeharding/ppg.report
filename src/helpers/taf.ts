@@ -98,7 +98,7 @@ export function formatPhenomenon(phenomenon: Phenomenon): string {
 
 export function formatDescriptive(
   descriptive: Descriptive | undefined,
-  hasPhenomenon: boolean
+  hasPhenomenon: boolean,
 ): string {
   switch (descriptive) {
     case Descriptive.SHOWERS:
@@ -137,7 +137,7 @@ export function formatIntensity(intensity: Intensity | undefined): string {
 
 export function convertSpeedToKph(
   speed: number,
-  unit: MetarTafSpeedUnit
+  unit: MetarTafSpeedUnit,
 ): number {
   switch (unit) {
     case MetarTafSpeedUnit.KilometersPerHour:
@@ -151,7 +151,7 @@ export function convertSpeedToKph(
 
 function convertKphToUserSpeed(
   speedInKph: number,
-  speedUnit: SpeedUnit
+  speedUnit: SpeedUnit,
 ): number {
   switch (speedUnit) {
     case SpeedUnit.KPH:
@@ -169,7 +169,7 @@ export function formatWind(
   speed: number,
   unit: MetarTafSpeedUnit,
   speedUnit: SpeedUnit,
-  withUnits = true
+  withUnits = true,
 ) {
   const speedInKph = convertSpeedToKph(speed, unit);
   const convertedSpeed = convertKphToUserSpeed(speedInKph, speedUnit);
@@ -184,7 +184,7 @@ export function formatWind(
 
 export function formatVisibility(
   visibility: Visibility | undefined,
-  distanceUnit: DistanceUnit
+  distanceUnit: DistanceUnit,
 ): string {
   if (!visibility) return "Unknown visibility";
 
@@ -199,7 +199,7 @@ export function formatVisibility(
 
 function convertDistanceToMiles(
   distance: number,
-  unit: MetarTafDistanceUnit
+  unit: MetarTafDistanceUnit,
 ): number {
   switch (unit) {
     case MetarTafDistanceUnit.Meters:
@@ -212,7 +212,7 @@ function convertDistanceToMiles(
 
 function convertMilesToUserDistance(
   distanceInMiles: number,
-  distanceUnit: DistanceUnit
+  distanceUnit: DistanceUnit,
 ): number {
   switch (distanceUnit) {
     case DistanceUnit.Kilometers: {
@@ -227,12 +227,12 @@ function convertMilesToUserDistance(
 export function formatDistance(
   distance: number,
   unit: MetarTafDistanceUnit,
-  distanceUnit: DistanceUnit
+  distanceUnit: DistanceUnit,
 ): string {
   const distanceAsMiles = convertDistanceToMiles(distance, unit);
   const distanceAsUserDistance = convertMilesToUserDistance(
     distanceAsMiles,
-    distanceUnit
+    distanceUnit,
   );
 
   return `${(
@@ -255,7 +255,7 @@ export function convertHeightToMeters(heightInFeet: number): number {
 
 export function formatCeiling(
   clouds: ICloud[],
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ): string {
   const ceiling = determineCeilingOrLowestLayerFromClouds(clouds);
 
@@ -270,13 +270,13 @@ export function formatCeiling(
 
 export function formatVerticalVisbility(
   verticalVisibility: number | undefined,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ): string | undefined {
   if (verticalVisibility == null) return;
 
   return `${formatHeight(
     verticalVisibility,
-    heightUnit
+    heightUnit,
   )} AGL vertical visibility`;
 }
 
@@ -312,12 +312,12 @@ export function formatCloud(cloud: ICloud, heightUnit: HeightUnit): string {
 
 export function formatHeight(
   heightInFeet: number,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ): string {
   return `${(
     Math.round(
       heightValueFormatter(convertHeightToMeters(heightInFeet), heightUnit) /
-        100
+        100,
     ) * 100
   ).toLocaleString()}${heightUnitFormatter(heightUnit)}`;
 }
@@ -351,7 +351,7 @@ function formatCloudType(type: CloudType): string {
 export function getFlightCategory(
   visibility: Visibility | undefined,
   clouds: ICloud[],
-  verticalVisibility?: number
+  verticalVisibility?: number,
 ): FlightCategory {
   const convertedVisibility = convertToMiles(visibility);
   const distance = convertedVisibility != null ? convertedVisibility : Infinity;
@@ -373,7 +373,7 @@ export function getFlightCategory(
  * Finds the ceiling. If no ceiling exists, returns the lowest cloud layer.
  */
 function determineCeilingOrLowestLayerFromClouds(
-  clouds: ICloud[]
+  clouds: ICloud[],
 ): ICloud | undefined {
   let ceiling: ICloud | undefined;
 
@@ -401,7 +401,7 @@ function determineCeilingOrLowestLayerFromClouds(
  * Finds the ceiling. If no ceiling exists, returns the lowest cloud layer.
  */
 export function determineCeilingFromClouds(
-  clouds: ICloud[]
+  clouds: ICloud[],
 ): ICloud | undefined {
   let ceiling: ICloud | undefined;
 
@@ -424,18 +424,19 @@ function convertToMiles(visibility?: Visibility): number | undefined {
   switch (visibility.unit) {
     case MetarTafDistanceUnit.StatuteMiles:
       return visibility.value;
-    case MetarTafDistanceUnit.Meters:
+    case MetarTafDistanceUnit.Meters: {
       const distance = visibility.value * 0.000621371;
 
       if (visibility.value % 1000 === 0 || visibility.value === 9999)
         return Math.round(distance);
 
       return +distance.toFixed(2);
+    }
   }
 }
 
 export function getFlightCategoryCssColor(
-  category: FlightCategory
+  category: FlightCategory,
 ): SerializedStyles {
   switch (category) {
     case FlightCategory.LIFR:
@@ -458,7 +459,7 @@ export function getFlightCategoryCssColor(
 }
 
 export function formatTurbulenceIntensity(
-  turbulenceIntensity: TurbulenceIntensity
+  turbulenceIntensity: TurbulenceIntensity,
 ): string {
   switch (turbulenceIntensity) {
     case TurbulenceIntensity.None:

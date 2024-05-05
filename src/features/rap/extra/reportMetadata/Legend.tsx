@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
-import { ReactComponent as PlaneSvg } from "./plane.svg";
+import PlaneSvg from "./plane.svg?react";
 
 const Container = styled.div`
   padding: 0.5rem 1rem 0;

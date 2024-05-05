@@ -13,19 +13,19 @@ import {
 export function renderLapseRate(
   lapseRate: number,
   temperatureUnit: TemperatureUnit,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ): string {
   return `${renderLapseRateValue(
     lapseRate,
     temperatureUnit,
-    heightUnit
+    heightUnit,
   )} ${renderLapseRateUnit(temperatureUnit, heightUnit)}`;
 }
 
 function renderLapseRateValue(
   lapseRate: number,
   temperatureUnit: TemperatureUnit,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ) {
   const heightUnitFactor = (() => {
     switch (heightUnit) {
@@ -50,7 +50,7 @@ function renderLapseRateValue(
 
 function renderLapseRateUnit(
   temperatureUnit: TemperatureUnit,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ) {
   const temp = (() => {
     switch (temperatureUnit) {

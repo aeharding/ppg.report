@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import Location, { Button } from "../features/location/Location";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -75,7 +73,6 @@ interface AsideButtonProps {
 export default function SubmitButton({
   state,
   onLocationFail,
-  ...props
 }: AsideButtonProps) {
   const contents = (() => {
     switch (state) {

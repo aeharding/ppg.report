@@ -99,7 +99,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
   const userState = useAppSelector((state) => state.user);
   const hiddenAlertsForLocation = useAppSelector(
-    hiddenAlertsForLocationSelector
+    hiddenAlertsForLocationSelector,
   );
 
   const type = alerts.filter(isAlertDangerous).length
@@ -149,7 +149,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
               {formatInTimeZone(
                 new Date(date),
                 timeZone,
-                getTimeFormatString(timeFormat, true)
+                getTimeFormatString(timeFormat, true),
               )}
             </div>
             <Subtext>
@@ -160,7 +160,7 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
                     !isAlertRead(alert, {
                       ...userState,
                       gAirmetRead: OnOff.Off,
-                    })
+                    }),
                 ).length
               }{" "}
               Unread

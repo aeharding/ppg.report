@@ -9,9 +9,11 @@ export interface WindVector {
 export function interpolateWindVectors(
   vector1: WindVector,
   vector2: WindVector,
-  height: number
+  height: number,
 ): WindVector {
+  // eslint-disable-next-line prefer-const
   let { height: height1, speed: speed1, direction: direction1 } = vector1;
+  // eslint-disable-next-line prefer-const
   let { height: height2, speed: speed2, direction: direction2 } = vector2;
 
   // Calculate the interpolation factor
@@ -25,8 +27,7 @@ export function interpolateWindVectors(
     angularDifference += 360;
   }
 
-  if (Math.abs(angularDifference) <= 180) {
-  } else {
+  if (Math.abs(angularDifference) > 180) {
     if (direction2 > direction1) {
       direction2 -= 360;
     } else {
@@ -44,7 +45,7 @@ export function interpolateWindVectors(
 
   // Calculate magnitude of the interpolated wind vector
   const interpolatedSpeed = Math.sqrt(
-    interpolatedX * interpolatedX + interpolatedY * interpolatedY
+    interpolatedX * interpolatedX + interpolatedY * interpolatedY,
   );
 
   // Calculate direction of the interpolated wind vector
@@ -62,7 +63,7 @@ export function interpolateWindVectors(
 }
 
 export function convertToInterpolatorWithHeight(
-  windAltitude: WindsAloftAltitude
+  windAltitude: WindsAloftAltitude,
 ): WindVector {
   return {
     height: windAltitude.altitudeInM,
@@ -72,7 +73,7 @@ export function convertToInterpolatorWithHeight(
 }
 
 export function convertToInterpolatorWithPressure(
-  windAltitude: WindsAloftAltitude
+  windAltitude: WindsAloftAltitude,
 ): WindVector {
   return {
     height: windAltitude.pressure!,
@@ -86,7 +87,7 @@ export function convertToInterpolatorWithPressure(
  */
 export function findNormalizedAltitude(
   altitudeInM: number,
-  altitudes: WindsAloftAltitude[]
+  altitudes: WindsAloftAltitude[],
 ): WindsAloftAltitude | undefined {
   for (let i = 0; i < altitudes.length; i++) {
     const altitude = altitudes[i];
@@ -96,7 +97,7 @@ export function findNormalizedAltitude(
       const { speed, direction } = interpolateWindVectors(
         convertToInterpolatorWithHeight(altitudes[i - 1]),
         convertToInterpolatorWithHeight(altitudes[i]),
-        altitudeInM
+        altitudeInM,
       );
 
       return {
@@ -111,7 +112,7 @@ export function findNormalizedAltitude(
           {
             value: altitudes[i].temperatureInC,
             point: altitudes[i].altitudeInM,
-          }
+          },
         ),
         windSpeedInKph: speed,
         dewpointInC: interpolate(
@@ -123,7 +124,7 @@ export function findNormalizedAltitude(
           {
             value: altitudes[i].dewpointInC,
             point: altitudes[i].altitudeInM,
-          }
+          },
         ),
         pressure: interpolate(
           altitudeInM,
@@ -134,7 +135,7 @@ export function findNormalizedAltitude(
           {
             value: altitudes[i].pressure,
             point: altitudes[i].altitudeInM,
-          }
+          },
         ),
       };
     }
@@ -148,7 +149,7 @@ export function findNormalizedAltitude(
  */
 export function findNormalizedPressure(
   pressure: number,
-  altitudes: WindsAloftAltitude[]
+  altitudes: WindsAloftAltitude[],
 ): WindsAloftAltitude | undefined {
   for (let i = 0; i < altitudes.length; i++) {
     const altitude = altitudes[i];
@@ -158,7 +159,7 @@ export function findNormalizedPressure(
       const { speed, direction } = interpolateWindVectors(
         convertToInterpolatorWithPressure(altitudes[i - 1]),
         convertToInterpolatorWithPressure(altitudes[i]),
-        pressure
+        pressure,
       );
 
       return {
@@ -174,7 +175,7 @@ export function findNormalizedPressure(
           {
             value: altitudes[i].temperatureInC,
             point: altitudes[i].pressure!,
-          }
+          },
         ),
         windSpeedInKph: speed,
         dewpointInC: interpolate(
@@ -186,7 +187,7 @@ export function findNormalizedPressure(
           {
             value: altitudes[i].dewpointInC,
             point: altitudes[i].altitudeInM,
-          }
+          },
         ),
       };
     }

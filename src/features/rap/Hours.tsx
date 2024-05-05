@@ -129,10 +129,10 @@ const StyledHour = styled(Hour)`
       css += `
         @media (min-width: ${i * minHourWidth}px) {
           width: calc(${100 / i}vw - var(--hours-gutter) - calc(${
-        1 / i
-      } * var(--hours-gutter)) - calc(${
-        1 / i
-      } * var(--right-safe-area)) - calc(${1 / i} * var(--left-safe-area)));
+            1 / i
+          } * var(--hours-gutter)) - calc(${
+            1 / i
+          } * var(--right-safe-area)) - calc(${1 / i} * var(--left-safe-area)));
         }
       `;
     }
@@ -170,7 +170,7 @@ export default function Hours({ hours }: TableProps) {
 
   const scrollViewRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(
-    ScrollPosition.Beginning
+    ScrollPosition.Beginning,
   );
 
   if (elevation == null) throw new Error("Elevation not found");
@@ -180,7 +180,7 @@ export default function Hours({ hours }: TableProps) {
   // Each report can have a different # of rows. This normalizes that
   const rows = Math.max(
     hours[0].altitudes.filter(({ altitudeInM }) => altitudeInM < 5800).length,
-    16
+    16,
   );
 
   const data = useMemo(
@@ -197,7 +197,7 @@ export default function Hours({ hours }: TableProps) {
           />
         </HourContainer>
       )),
-    [hours, rows, elevation, lowestReportedAltitude]
+    [hours, rows, elevation, lowestReportedAltitude],
   );
 
   useEffect(() => {
@@ -266,7 +266,7 @@ export default function Hours({ hours }: TableProps) {
     if (!scrollView) return;
 
     const index = hours.findIndex((hour) =>
-      isEqual(new Date(hour.date), startOfHour(new Date()))
+      isEqual(new Date(hour.date), startOfHour(new Date())),
     );
 
     if (index === -1 || scrollView.scrollLeft) return;
@@ -337,14 +337,14 @@ export default function Hours({ hours }: TableProps) {
           case Direction.Back: {
             scrollViewRef.current.scrollBy(
               -scrollViewRef.current.clientWidth + HACKY_OFFSET,
-              0
+              0,
             );
             break;
           }
           case Direction.Forward: {
             scrollViewRef.current.scrollBy(
               scrollViewRef.current.clientWidth - HACKY_OFFSET,
-              0
+              0,
             );
           }
         }

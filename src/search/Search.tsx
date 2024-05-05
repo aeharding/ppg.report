@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { getTrimmedCoordinates } from "../helpers/coordinates";
 import { useAppSelector } from "../hooks";
 import { search } from "../services/geocode";
@@ -95,7 +95,7 @@ const Error = styled.div`
 export default function Search({ ...rest }) {
   const { t } = useTranslation();
   const locationsLength = useAppSelector(
-    (state) => state.user.recentLocations.length
+    (state) => state.user.recentLocations.length,
   );
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -129,7 +129,7 @@ export default function Search({ ...rest }) {
   }
 
   let state = State.Location;
-  if (!!query) state = State.Submit;
+  if (query) state = State.Submit;
   if (loading) state = State.Loading;
 
   return (
@@ -150,7 +150,7 @@ export default function Search({ ...rest }) {
             state={state}
             onLocationFail={() =>
               setError(
-                "Fetching current location failed. Please check app permissions."
+                "Fetching current location failed. Please check app permissions.",
               )
             }
           />

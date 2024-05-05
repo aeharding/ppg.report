@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { startOfTomorrow } from "date-fns";
-import { formatInTimeZone, zonedTimeToUtc } from "date-fns-tz";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import {
   Forecast as IForecast,
   Intensity,
@@ -118,7 +118,7 @@ export default function Forecast({ data }: ForecastProps) {
   const category = getFlightCategory(
     data.visibility,
     data.clouds,
-    data.verticalVisibility
+    data.verticalVisibility,
   );
   const periodRemark = getPeriodRemark(data, timeZone, timeFormat);
 
@@ -149,7 +149,7 @@ export default function Forecast({ data }: ForecastProps) {
           {formatWithTomorrowIfNeeded(
             data.start,
             timeZone,
-            getTimeFormatString(timeFormat)
+            getTimeFormatString(timeFormat),
           )}{" "}
           {data.end ? (
             <>
@@ -157,7 +157,7 @@ export default function Forecast({ data }: ForecastProps) {
               {formatWithTomorrowIfNeeded(
                 data.end,
                 timeZone,
-                getTimeFormatString(timeFormat)
+                getTimeFormatString(timeFormat),
               )}
             </>
           ) : (
@@ -232,11 +232,11 @@ export default function Forecast({ data }: ForecastProps) {
                 {ceiling?.height != null
                   ? `${formatHeight(ceiling.height, heightUnit)} AGL`
                   : data.verticalVisibility
-                  ? `Vertical visibility ${formatHeight(
-                      data.verticalVisibility,
-                      heightUnit
-                    )} AGL`
-                  : `At least ${formatHeight(12_000, heightUnit)} AGL`}
+                    ? `Vertical visibility ${formatHeight(
+                        data.verticalVisibility,
+                        heightUnit,
+                      )} AGL`
+                    : `At least ${formatHeight(12_000, heightUnit)} AGL`}
               </td>
             </tr>
           ) : (
@@ -263,7 +263,7 @@ export default function Forecast({ data }: ForecastProps) {
                     to{" "}
                     {formatHeight(
                       turbulence.baseHeight + turbulence.depth,
-                      heightUnit
+                      heightUnit,
                     )}{" "}
                     AGL.
                     <br />
@@ -325,7 +325,7 @@ function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
                 : undefined,
               formatDescriptive(
                 condition.descriptive,
-                !!condition.phenomenons.length
+                !!condition.phenomenons.length,
               ),
               condition.phenomenons
                 .map((phenomenon) => formatPhenomenon(phenomenon))
@@ -335,11 +335,11 @@ function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
                 : undefined,
             ]
               .filter(notEmpty)
-              .join(" ")
+              .join(" "),
           )
           .join(", ")
           .toLowerCase()
-          .trim()
+          .trim(),
       )}
     </>
   );
@@ -348,14 +348,14 @@ function formatWeather(weather: IWeatherCondition[]): React.ReactNode {
 function getPeriodRemark(
   forecast: IForecast,
   timeZone: string,
-  timeFormat: TimeFormat
+  timeFormat: TimeFormat,
 ): string | undefined {
   switch (forecast.type) {
     case WeatherChangeType.BECMG:
       return `Conditions expected to become as follows by ${formatWithTomorrowIfNeeded(
         forecast.by,
         timeZone,
-        getTimeFormatString(timeFormat)
+        getTimeFormatString(timeFormat),
       )}.`;
     case WeatherChangeType.TEMPO:
       return "The following changes expected for less than half the time period.";
@@ -365,11 +365,11 @@ function getPeriodRemark(
 export function formatWithTomorrowIfNeeded(
   date: Date,
   timeZone: string,
-  formatStr: string
+  formatStr: string,
 ): string {
   return `${formatInTimeZone(date, timeZone, formatStr)}${
     new Date(date).getTime() >=
-    zonedTimeToUtc(startOfTomorrow(), timeZone).getTime()
+    fromZonedTime(startOfTomorrow(), timeZone).getTime()
       ? " tomorrow"
       : ""
   }`;
@@ -377,7 +377,7 @@ export function formatWithTomorrowIfNeeded(
 
 export function getTimeFormatString(
   timeFormat: TimeFormat,
-  condensed = false
+  condensed = false,
 ): string {
   switch (timeFormat) {
     case TimeFormat.Twelve:

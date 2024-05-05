@@ -65,7 +65,7 @@ interface AlertProps {
 export default function GAirmetAlert({ alert, index, total }: AlertProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   const aviationAlerts = useAppSelector(
-    (state) => state.weather.aviationAlerts
+    (state) => state.weather.aviationAlerts,
   );
 
   if (!timeZone) throw new Error("timeZone must be defined");
@@ -111,13 +111,13 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
                     {formatInTimeZone(
                       getAlertStart(relatedAlert),
                       timeZone,
-                      "haaa"
+                      "haaa",
                     )}
                     –
                     {formatInTimeZone(
                       getAlertEnd(relatedAlert)!,
                       timeZone,
-                      "haaa"
+                      "haaa",
                     )}
                   </GeometryTime>
                 ))}
@@ -139,9 +139,9 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
               <p>
                 A G‑AIRMET is a graphical advisory of weather that may be
                 hazardous to aircraft, but are less severe than SIGMETs. They
-                are only valid at specific time "snapshots". Forecasters create
-                graphical objects depicting the areas and attributes of AIRMET
-                hazards.
+                are only valid at specific time &quot;snapshots&quot;.
+                Forecasters create graphical objects depicting the areas and
+                attributes of AIRMET hazards.
               </p>
               <p>
                 G‑AIRMETs are issued at discrete times 3 hours apart for a
@@ -164,7 +164,7 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
  * Shamelessly stolen from https://www.aviationweather.gov/gairmet/help
  */
 function getHazardHelp(
-  hazard: GAirmetFeature["properties"]["hazard"]
+  hazard: GAirmetFeature["properties"]["hazard"],
 ): React.ReactElement {
   switch (hazard) {
     case "IFR":

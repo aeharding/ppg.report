@@ -32,7 +32,7 @@ const WindIcon = styled(FontAwesomeIcon, {
     headerType === HeaderType.Normal
       ? css`
           ${outputP3ColorFromRGBA(
-            colorScale(getCompositeWindValue(speed, gust)).rgba()
+            colorScale(getCompositeWindValue(speed, gust)).rgba(),
           )}
         `
       : ""}
@@ -73,13 +73,13 @@ export default function Wind({ headerType, date, weather }: WindProps) {
     wind.speed,
     MetarTafSpeedUnit.KilometersPerHour,
     speedUnit,
-    false
+    false,
   );
   const gustFormatted = formatWind(
     wind.gust,
     MetarTafSpeedUnit.KilometersPerHour,
     speedUnit,
-    false
+    false,
   );
 
   const body =
@@ -102,12 +102,12 @@ export default function Wind({ headerType, date, weather }: WindProps) {
           baseWindSpeed: formatWind(
             wind.speed,
             MetarTafSpeedUnit.KilometersPerHour,
-            speedUnit
+            speedUnit,
           ),
           gustWindSpeed: formatWind(
             wind.gust,
             MetarTafSpeedUnit.KilometersPerHour,
-            speedUnit
+            speedUnit,
           ),
         })
       }

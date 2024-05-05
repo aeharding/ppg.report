@@ -37,7 +37,7 @@ export function isAlertDangerous(alert: Alert): boolean {
 export function sortAlerts(
   alerts: Alert[],
   allAlerts: Alert[],
-  gAirmetRead: OnOff
+  gAirmetRead: OnOff,
 ): Alert[] {
   return sortBy(alerts, (alert) => {
     // If the setting for always marking G-Airmets as read is on,
@@ -46,7 +46,7 @@ export function sortAlerts(
     if (gAirmetRead === OnOff.On && isGAirmetAlert(alert))
       return (
         -new Date(
-          extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts))
+          extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts)),
         ).getTime() +
         1000 * 60 * 60 * 60
       );
@@ -56,11 +56,11 @@ export function sortAlerts(
 
     if (isTFRAlert(alert))
       return -new Date(
-        alert.properties.coreNOTAMData.notam.effectiveStart
+        alert.properties.coreNOTAMData.notam.effectiveStart,
       ).getTime();
 
     return -new Date(
-      extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts))
+      extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts)),
     ).getTime();
   });
 }
@@ -91,7 +91,7 @@ export function undoFixedWidthText(text: string): string {
  */
 export function findRelatedAlerts(
   alert: Alert,
-  alerts: Alert[]
+  alerts: Alert[],
 ): GAirmetFeature[] {
   if (!isGAirmetAlert(alert)) return [];
 
@@ -105,14 +105,14 @@ export function findRelatedAlerts(
   }) as GAirmetFeature[];
 
   const baseAlertIndex = potential.findIndex(
-    (potentialAlert) => potentialAlert.id === alert.id
+    (potentialAlert) => potentialAlert.id === alert.id,
   );
 
   if (baseAlertIndex === -1) return [alert];
 
   potential.sort(
     (a, b) =>
-      Date.parse(a.properties.issueTime) - Date.parse(b.properties.issueTime)
+      Date.parse(a.properties.issueTime) - Date.parse(b.properties.issueTime),
   );
 
   return [
@@ -123,7 +123,7 @@ export function findRelatedAlerts(
 
   function findNext(
     alert: GAirmetFeature,
-    alerts: GAirmetFeature[]
+    alerts: GAirmetFeature[],
   ): GAirmetFeature[] {
     const ret: GAirmetFeature[] = [];
     let validTime = new Date(alert.properties.validTime);
@@ -140,7 +140,7 @@ export function findRelatedAlerts(
 
   function findPrev(
     alert: GAirmetFeature,
-    alerts: GAirmetFeature[]
+    alerts: GAirmetFeature[],
   ): GAirmetFeature[] {
     const ret: GAirmetFeature[] = [];
     let validTime = new Date(alert.properties.validTime);

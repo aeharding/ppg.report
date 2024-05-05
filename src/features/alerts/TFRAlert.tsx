@@ -61,7 +61,7 @@ export default function TFRAlert({ alert, index, total }: AlertProps) {
 
   function confirmHide() {
     const confirmed = window.confirm(
-      `Permanently hide this TFR? You can reset hidden TFRs in the settings.`
+      `Permanently hide this TFR? You can reset hidden TFRs in the settings.`,
     );
 
     if (!confirmed) return;

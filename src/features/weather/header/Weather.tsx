@@ -95,7 +95,7 @@ export default function Weather({ date, weather }: WeatherProps) {
       return findValue(
         new Date(date),
 
-        weather.properties.weather
+        weather.properties.weather,
       )?.value;
 
     return weather.byUnixTimestamp[new Date(date).getTime() / 1_000]?.weather;

@@ -3,6 +3,7 @@ import Geocode from "../models/Geocode";
 
 export async function reverse(lat: number, lon: number): Promise<Geocode> {
   // TODO type response (it's weird)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let data: any;
 
   try {
@@ -68,7 +69,7 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
 }
 
 export async function search(q: string): Promise<{ lat: number; lon: number }> {
-  let { data } = await axios.get("/api/position/search", {
+  const { data } = await axios.get("/api/position/search", {
     params: {
       format: "jsonv2",
       limit: 1,

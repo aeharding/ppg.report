@@ -11,7 +11,7 @@ const Failed = styled.div`
 export default function Errors() {
   const weatherAlerts = useAppSelector((state) => state.weather.alerts);
   const aviationAlerts = useAppSelector(
-    (state) => state.weather.aviationAlerts
+    (state) => state.weather.aviationAlerts,
   );
   const tfrs = useAppSelector((state) => state.faa.tfrs);
   const weather = useAppSelector((state) => state.weather.weather);

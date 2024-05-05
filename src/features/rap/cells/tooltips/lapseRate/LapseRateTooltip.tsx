@@ -6,7 +6,7 @@ import { css } from "@emotion/react";
 import { outputP3ColorFromRGB } from "../../../../../helpers/colors";
 import { useState } from "react";
 import SunCalc from "suncalc";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import * as velitherm from "velitherm";
 import { useAppSelector } from "../../../../../hooks";
 import { renderLapseRate } from "../../../../../helpers/lapseRate";
@@ -62,7 +62,7 @@ export default function LapseRateTooltip({
               saturatedLapseRateThreshold: renderLapseRate(
                 saturatedLapseRateThreshold,
                 temperatureUnit,
-                heightUnit
+                heightUnit,
               ),
             }}
           >
@@ -80,7 +80,7 @@ export default function LapseRateTooltip({
             dryAbiaticLapseRate: renderLapseRate(
               velitherm.gamma,
               temperatureUnit,
-              heightUnit
+              heightUnit,
             ),
           }}
         />
@@ -94,7 +94,7 @@ export default function LapseRateTooltip({
             saturatedLapseRateThreshold: renderLapseRate(
               saturatedLapseRateThreshold,
               temperatureUnit,
-              heightUnit
+              heightUnit,
             ),
           }}
         >
@@ -107,7 +107,7 @@ export default function LapseRateTooltip({
   function lapseColor(
     lapseRate: number,
     saturatedLapseRateThreshold: number,
-    saturated: boolean
+    saturated: boolean,
   ): [number, number, number] {
     if (lapseRate < 0) return [0, 255, 0];
 
@@ -129,14 +129,14 @@ export default function LapseRateTooltip({
               lapseRate: renderLapseRate(
                 lapseRate,
                 temperatureUnit,
-                heightUnit
+                heightUnit,
               ),
             }}
           >
             <strong
               css={css`
                 ${outputP3ColorFromRGB(
-                  lapseColor(lapseRate, saturatedLapseRateThreshold, saturated)
+                  lapseColor(lapseRate, saturatedLapseRateThreshold, saturated),
                 )}
               `}
             />

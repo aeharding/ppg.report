@@ -36,7 +36,7 @@ export default function JumpActions() {
     let currentSectionIndex = sections.findIndex(
       (section) =>
         Math.max(scrollView!.scrollTop, 0) <
-        section.offsetTop - (scrollView?.offsetTop || 0)
+        section.offsetTop - (scrollView?.offsetTop || 0),
     );
 
     if (currentSectionIndex === -1) currentSectionIndex = sections.length;
@@ -81,7 +81,7 @@ export default function JumpActions() {
       let currentSectionIndex = sections.findIndex(
         (section) =>
           Math.max(scrollView!.scrollTop, 0) <
-          section.offsetTop - (scrollView?.offsetTop || 0)
+          section.offsetTop - (scrollView?.offsetTop || 0),
       );
 
       if (currentSectionIndex === -1) currentSectionIndex = sections.length;

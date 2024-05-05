@@ -1,6 +1,6 @@
 import { faMapMarkerAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import styled from "@emotion/styled";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
 import Sun from "./Sun";

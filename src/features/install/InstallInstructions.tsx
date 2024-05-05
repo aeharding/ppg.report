@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { isInApp, isThirdPartyIosBrowser } from "../../helpers/device";
-import { ReactComponent as ShareIcon } from "./share.svg";
-import { ReactComponent as AddIcon } from "./add.svg";
+import ShareIcon from "./share.svg?react";
+import AddIcon from "./add.svg?react";
 import CopyLink from "./CopyLink";
 
 const Container = styled.div`
@@ -93,8 +93,8 @@ export default function InstallInstructions() {
     return (
       <>
         <Description>
-          It looks like you're {browserType}. To install PPG.report, open this
-          link in <strong>Safari</strong>.
+          It looks like you&apos;re {browserType}. To install PPG.report, open
+          this link in <strong>Safari</strong>.
         </Description>
         <CopyLink />
       </>

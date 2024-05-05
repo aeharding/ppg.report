@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ReactComponent as Icon } from "../icon.svg";
+import Icon from "../icon.svg?react";
 import { useTranslation } from "react-i18next";
 
 const LogoContainer = styled.span`

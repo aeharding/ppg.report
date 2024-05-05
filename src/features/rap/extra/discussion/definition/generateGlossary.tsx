@@ -34,7 +34,7 @@ export function generateGlossary(section: string, glossary: GlossaryTerm[]) {
           <Definition term={term} definition={definition}>
             {part.slice(location, location + term.length)}
           </Definition>,
-          part.slice(location + term.length)
+          part.slice(location + term.length),
         );
 
         resultLwr.splice(
@@ -42,7 +42,7 @@ export function generateGlossary(section: string, glossary: GlossaryTerm[]) {
           1,
           partLwr.slice(0, location),
           <></>, // placeholder/not needed for rendering
-          partLwr.slice(location + term.length)
+          partLwr.slice(location + term.length),
         );
         i = i + 1;
 
@@ -67,7 +67,7 @@ export function generateGlossary(section: string, glossary: GlossaryTerm[]) {
  */
 function searchAll(text: string, match: string): number[] {
   let part = text;
-  let indexes: number[] = [];
+  const indexes: number[] = [];
   let offset = 0;
 
   while (true) {

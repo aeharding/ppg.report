@@ -3,7 +3,7 @@ import useInterval from "../../helpers/useInterval";
 import { usePageVisibility } from "react-page-visibility";
 import { useEffect, useState } from "react";
 import { getWeather } from "../weather/weatherSlice";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { WindsAloftHour } from "../../models/WindsAloft";
 
 interface ReportWatchdogProps {

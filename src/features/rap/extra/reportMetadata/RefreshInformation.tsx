@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import differenceInMinutes from "date-fns/differenceInMinutes";
+import { differenceInMinutes, formatDistanceToNow } from "date-fns";
 import { useAppSelector } from "../../../../hooks";
 import styled from "@emotion/styled";
 import { DataListItem } from "../../../../DataList";
@@ -11,7 +8,7 @@ const Label = styled.div``;
 
 export default function RefreshInformation() {
   const windsAloftUpdated = useAppSelector(
-    (state) => state.weather.windsAloftUpdated
+    (state) => state.weather.windsAloftUpdated,
   );
 
   return (
@@ -23,7 +20,7 @@ export default function RefreshInformation() {
             color:
               windsAloftUpdated &&
               Math.abs(
-                differenceInMinutes(new Date(windsAloftUpdated), new Date())
+                differenceInMinutes(new Date(windsAloftUpdated), new Date()),
               ) > 30
                 ? "red"
                 : undefined,
@@ -33,7 +30,7 @@ export default function RefreshInformation() {
             ? capitalize(
                 formatDistanceToNow(new Date(windsAloftUpdated), {
                   addSuffix: true,
-                })
+                }),
               )
             : "Never"}
         </div>

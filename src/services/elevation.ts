@@ -12,7 +12,7 @@ export async function getElevation({
   lat: number;
   lon: number;
 }): Promise<number> {
-  let { data } = await axios.get("/api/pqs", {
+  const { data } = await axios.get("/api/pqs", {
     params: {
       x: lon,
       y: lat,
@@ -36,7 +36,7 @@ export async function getBackupElevation({
   lat: number;
   lon: number;
 }): Promise<number> {
-  let { data } = await axios.get("/api/googleelevation", {
+  const { data } = await axios.get("/api/googleelevation", {
     params: {
       locations: [lat, lon].join(","),
     },

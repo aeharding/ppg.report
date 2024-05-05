@@ -3,7 +3,7 @@ import { isPossiblyWithinUSA, isWithinNWSRAPModelBoundary } from "./geo";
 describe("isPossiblyWithinUSA", () => {
   describe("should return true", () => {
     describe("when given coordinates within the United States", () => {
-      it("for coordinates within different CONUS cities", () => {
+      describe("for coordinates within different CONUS cities", () => {
         it("e.g. San Francisco, California (West)", () => {
           expect(isPossiblyWithinUSA(37.7749, -122.4194)).toBe(true);
         });
@@ -21,7 +21,7 @@ describe("isPossiblyWithinUSA", () => {
         });
       });
 
-      it("for coordinates within Alaska", () => {
+      describe("for coordinates within Alaska", () => {
         it("e.g. Anchorage, Alaska", () => {
           expect(isPossiblyWithinUSA(61.2181, -149.9003)).toBe(true);
         });

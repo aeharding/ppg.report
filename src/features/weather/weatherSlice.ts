@@ -180,8 +180,8 @@ export const weatherReducer = createSlice({
             Math.abs(
               differenceInMinutes(
                 new Date(state.weatherLastUpdated),
-                new Date()
-              )
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.weather = "pending";
@@ -252,7 +252,10 @@ export const weatherReducer = createSlice({
           if (
             !state.alertsLastUpdated ||
             Math.abs(
-              differenceInMinutes(new Date(state.alertsLastUpdated), new Date())
+              differenceInMinutes(
+                new Date(state.alertsLastUpdated),
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.alerts = "pending";
@@ -306,8 +309,8 @@ export const weatherReducer = createSlice({
             Math.abs(
               differenceInMinutes(
                 new Date(state.aviationWeatherLastUpdated),
-                new Date()
-              )
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.aviationWeather = "pending";
@@ -321,7 +324,7 @@ export const weatherReducer = createSlice({
      */
     aviationWeatherReceived: (
       state,
-      action: PayloadAction<aviationWeatherService.TAFReport>
+      action: PayloadAction<aviationWeatherService.TAFReport>,
     ) => {
       if (state.aviationWeather === "pending") {
         state.aviationWeather = action.payload;
@@ -366,8 +369,8 @@ export const weatherReducer = createSlice({
             Math.abs(
               differenceInMinutes(
                 new Date(state.aviationAlertsLastUpdated),
-                new Date()
-              )
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.aviationAlerts = "pending";
@@ -381,7 +384,7 @@ export const weatherReducer = createSlice({
      */
     aviationAlertsReceived: (
       state,
-      action: PayloadAction<aviationWeatherService.AviationAlertFeature[]>
+      action: PayloadAction<aviationWeatherService.AviationAlertFeature[]>,
     ) => {
       if (state.aviationAlerts === "pending") {
         state.aviationAlerts = action.payload;
@@ -417,8 +420,8 @@ export const weatherReducer = createSlice({
             Math.abs(
               differenceInMinutes(
                 new Date(state.discussionLastUpdated),
-                new Date()
-              )
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.discussion = "pending";
@@ -435,7 +438,7 @@ export const weatherReducer = createSlice({
         state.discussion = action.payload;
         state.discussionLastUpdated = new Date().toISOString();
         state.discussionLastViewed = getDiscussionLastViewed(
-          action.payload.issuingOffice
+          action.payload.issuingOffice,
         );
       }
     },
@@ -479,7 +482,10 @@ export const weatherReducer = createSlice({
           if (
             !state.windsAloftUpdated ||
             Math.abs(
-              differenceInMinutes(new Date(state.windsAloftUpdated), new Date())
+              differenceInMinutes(
+                new Date(state.windsAloftUpdated),
+                new Date(),
+              ),
             ) > UPDATE_INTERVAL_MINUTES
           ) {
             state.windsAloft = "pending";
@@ -509,7 +515,7 @@ export const weatherReducer = createSlice({
 
     updateCoordinates: (
       state,
-      action: PayloadAction<{ lat: number; lon: number }>
+      action: PayloadAction<{ lat: number; lon: number }>,
     ) => {
       state.coordinates = action.payload;
     },
@@ -581,7 +587,7 @@ export const getWeather =
       try {
         ({ windsAloft, weather, elevationInM } = await openMeteo.getWindsAloft(
           lat,
-          lon
+          lon,
         ));
       } catch (error) {
         if (!isStale()) {
@@ -657,7 +663,7 @@ export const getWeather =
           // instead of trial and error (and, it would be faster)
           const { windsAloft, weather } = await openMeteo.getWindsAloft(
             lat,
-            lon
+            lon,
           );
 
           if (isStale()) return;
@@ -740,7 +746,7 @@ export const getWeather =
       if (getState().weather.timeZone) return;
 
       try {
-        let timeZone = await timezoneService.get({ lat, lon });
+        const timeZone = await timezoneService.get({ lat, lon });
 
         if (isStale()) return;
 

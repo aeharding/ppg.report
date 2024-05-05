@@ -39,7 +39,7 @@ describe("interpolateWindVectors", () => {
     });
   });
 
-  it("should interpolate wind vectors correctly with same speed and slightly different directions", () => {
+  describe("should interpolate wind vectors correctly with same speed and slightly different directions", () => {
     const vector1: WindVector = { height: 200, speed: 30, direction: 45 };
     const vector2: WindVector = { height: 400, speed: 30, direction: 50 };
 

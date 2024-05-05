@@ -6,19 +6,19 @@ export function doesFontExist(fontName: string) {
   if (!context) throw new Error("Context not available");
 
   // the text whose final pixel size I want to measure
-  var text = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const text = "abcdefghijklmnopqrstuvwxyz0123456789";
 
   // specifying the baseline font
   context.font = "72px monospace";
 
   // checking the size of the baseline text
-  var baselineSize = context.measureText(text).width;
+  const baselineSize = context.measureText(text).width;
 
   // specifying the font whose existence we want to check
   context.font = "72px '" + fontName + "', monospace";
 
   // checking the size of the font we want to check
-  var newSize = context.measureText(text).width;
+  const newSize = context.measureText(text).width;
 
   // removing the Canvas element we created
   canvas = null;

@@ -10,10 +10,10 @@ test("renders learn react link", async () => {
   render(
     <Provider store={store}>
       <App />
-    </Provider>
+    </Provider>,
   );
 
   expect(
-    await screen.findByText("Weather report for Paramotor Pilots")
+    await screen.findByText("Weather report for Paramotor Pilots"),
   ).toBeVisible();
 });

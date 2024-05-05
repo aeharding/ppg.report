@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GeoJsonObject } from "geojson";
+import type { GeoJsonObject } from "geojson";
 import uniqWith from "lodash/uniqWith";
 import isEqual from "lodash/isEqual";
 
@@ -56,7 +56,7 @@ export async function getTFRs({
       isEqual(a.geometry, b.geometry) &&
       isEqual(
         a.properties.coreNOTAMData.notam.text,
-        b.properties.coreNOTAMData.notam.text
-      )
+        b.properties.coreNOTAMData.notam.text,
+      ),
   );
 }

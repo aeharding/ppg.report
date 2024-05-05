@@ -17,7 +17,7 @@ export function headerIsFixed(): boolean {
 
 function parseCookies(): Record<string, string | undefined> {
   return Object.fromEntries(
-    document.cookie.split("; ").map((x) => x.split("="))
+    document.cookie.split("; ").map((x) => x.split("=")),
   );
 }
 
@@ -50,7 +50,7 @@ export function isThirdPartyIosBrowser() {
  */
 export function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
-    navigator.userAgent
+    navigator.userAgent,
   );
 }
 
@@ -77,7 +77,7 @@ function getIosVersion() {
 }
 
 export function isBrowserLocaleClockType24h(
-  languages: string | string[] = navigator.language
+  languages: string | string[] = navigator.language,
 ): boolean {
   // "In basic use without specifying a locale, DateTimeFormat
   // uses the default locale and default options."

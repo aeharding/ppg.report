@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ReactComponent as WindSvg } from "./wind.svg";
+import WindSvg from "./wind.svg?react";
 
 const WindContainer = styled.div`
   svg {

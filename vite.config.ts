@@ -1,9 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
-import pluginRewriteAll from "vite-plugin-rewrite-all";
 import { VitePWA } from "vite-plugin-pwa";
-import eslint from "vite-plugin-eslint";
 
 export default defineConfig(() => {
   return {
@@ -15,7 +13,6 @@ export default defineConfig(() => {
       sourcemap: true,
     },
     plugins: [
-      pluginRewriteAll(),
       react({
         jsxImportSource: "@emotion/react",
         babel: {
@@ -28,8 +25,63 @@ export default defineConfig(() => {
         srcDir: "src",
         filename: "service-worker.ts",
         registerType: "autoUpdate",
+        manifest: {
+          name: "PPG.report",
+          short_name: "PPG.report",
+          start_url: "/",
+          icons: [
+            {
+              src: "manifest-icon-192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "maskable any",
+            },
+            {
+              src: "manifest-icon-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable any",
+            },
+          ],
+          theme_color: "#001931",
+          background_color: "#001931",
+          display: "standalone",
+          orientation: "any",
+          description:
+            "Weather report tailored for paramotor pilots, worldwide. Combines winds aloft, nearby Terminal Aerodrome Forecasts, hourly forecasts, NWS active alerts and TFRs.",
+          categories: ["weather"],
+          screenshots: [
+            {
+              src: "/screenshots/android/1.png",
+              sizes: "1284x2778",
+              type: "image/png",
+              platform: "narrow",
+              label: "Winds aloft for your favorite flying sites",
+            },
+            {
+              src: "/screenshots/android/2.png",
+              sizes: "1284x2778",
+              type: "image/png",
+              platform: "narrow",
+              label: "NWS hourly forecast and nearby TAF seamlessly integrated",
+            },
+            {
+              src: "/screenshots/android/3.png",
+              sizes: "1284x2778",
+              type: "image/png",
+              platform: "narrow",
+              label: "Why. Not just what.",
+            },
+            {
+              src: "/screenshots/android/4.png",
+              sizes: "1284x2778",
+              type: "image/png",
+              platform: "narrow",
+              label: "Weather alerts, font and center",
+            },
+          ],
+        },
       }),
-      eslint(),
     ],
     server: {
       proxy: {

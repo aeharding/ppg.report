@@ -21,7 +21,7 @@ const open = (() => {
 export default function InstallPrompt() {
   const dispatch = useAppDispatch();
   const beforeInstallEvent = useAppSelector(
-    (state) => state.install.beforeInstallEvent
+    (state) => state.install.beforeInstallEvent,
   );
 
   function renderiPhonePromo() {

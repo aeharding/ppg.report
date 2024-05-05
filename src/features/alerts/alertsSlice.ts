@@ -43,7 +43,7 @@ const allAlertsSelector = createSelector(
       ...(tfrs === "failed" ? [] : tfrs),
       ...(aviationAlerts === "failed" ? [] : aviationAlerts),
     ];
-  }
+  },
 );
 
 export const alertsSelector = createSelector(
@@ -52,18 +52,18 @@ export const alertsSelector = createSelector(
     const isHidden = generateIsHiddenFunction(hiddenAlerts);
 
     return allAlerts?.filter((alert) => !isHidden(alert));
-  }
+  },
 );
 
 export const hiddenAlertsForLocationSelector = createSelector(
   [allAlertsSelector, hiddenAlertsSelector],
   (allAlerts, hiddenAlerts) => {
     return allAlerts?.filter(generateIsHiddenFunction(hiddenAlerts));
-  }
+  },
 );
 
 function generateIsHiddenFunction(
-  hiddenAlerts: Record<string, true>
+  hiddenAlerts: Record<string, true>,
 ): (alert: Alert) => boolean {
   return (alert) => hiddenAlerts[getAlertId(alert)];
 }
@@ -81,7 +81,7 @@ export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
 }
 
 export function isSigmetOutlookAlert(
-  alert: Alert
+  alert: Alert,
 ): alert is SigmetOutlookFeature {
   return isSigmetAlert(alert) && alert.properties.airSigmetType === "OUTLOOK";
 }
@@ -124,7 +124,7 @@ export function getAlertEnd(alert: Alert) {
 
 export function getGroupedGAirmetAlertStart(
   alert: GAirmetFeature,
-  alerts: Alert[]
+  alerts: Alert[],
 ) {
   const related = findRelatedAlerts(alert, alerts);
 
@@ -133,7 +133,7 @@ export function getGroupedGAirmetAlertStart(
 
 export function getGroupedGAirmetAlertEnd(
   alert: GAirmetFeature,
-  alerts: Alert[]
+  alerts: Alert[],
 ) {
   const related = findRelatedAlerts(alert, alerts);
 
@@ -154,7 +154,7 @@ export function filterDuplicateAlertsForHour(alerts: Alert[]): Alert[] {
     (alert) =>
       isSigmetAlert(alert) &&
       alert.properties.airSigmetType === "SIGMET" &&
-      alert.properties.hazard === "CONVECTIVE"
+      alert.properties.hazard === "CONVECTIVE",
   );
 
   if (!hasConvectiveSigmet) return alerts;

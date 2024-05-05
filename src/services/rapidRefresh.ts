@@ -23,7 +23,7 @@ const BASE_PARAMS = {
 export async function getWindsAloft(
   lat: number,
   lon: number,
-  data_source: "Op40" | "GFS" = "Op40"
+  data_source: "Op40" | "GFS" = "Op40",
 ): Promise<WindsAloftReport> {
   return transformRapToWindsAloft(await getRap(lat, lon, data_source));
 }
@@ -48,7 +48,7 @@ function transformRapToWindsAloft(rap: Rap[]): WindsAloftReport {
           // Based on everything I've seen, invalid dewpt values are
           // due to extremely low dewpts. So just set to -100°C.
           dewpointInC: dewpt != null ? dewpt / 10 : -100,
-        })
+        }),
       ),
     })),
   };
@@ -57,7 +57,7 @@ function transformRapToWindsAloft(rap: Rap[]): WindsAloftReport {
 async function getRap(
   lat: number,
   lon: number,
-  data_source: "Op40" | "GFS" = "Op40"
+  data_source: "Op40" | "GFS" = "Op40",
 ): Promise<Rap[]> {
   const report = await _getRap(lat, lon, data_source);
 
@@ -70,14 +70,14 @@ async function getRap(
         lon,
         data_source,
         hoursStale - 2,
-        addHours(new Date(report[report.length - 1].date), 1)
+        addHours(new Date(report[report.length - 1].date), 1),
       );
 
       return [...report, ...reportAdditional];
     } catch (e) {
       console.error(
         "Error fetching additional rapidRefresh data (are you offline?)",
-        e
+        e,
       );
     }
   }
@@ -90,7 +90,7 @@ async function _getRap(
   lon: number,
   data_source: "Op40" | "GFS" = "Op40",
   hours = 30,
-  start?: Date
+  start?: Date,
 ) {
   const { data: asciiReports } = await axios.get<string>(API_PATH, {
     params: {
@@ -117,7 +117,7 @@ async function _getRap(
 
 function generateStartParams(
   hours: number,
-  start?: Date
+  start?: Date,
 ): Record<string, string | number> {
   if (!start)
     return {

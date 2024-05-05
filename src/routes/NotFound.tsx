@@ -1,5 +1,5 @@
 import Error from "../shared/Error";
-import { ReactComponent as Question } from "../assets/question.svg";
+import Question from "../assets/question.svg?react";
 
 export default function NotFound() {
   return (

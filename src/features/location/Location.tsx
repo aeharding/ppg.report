@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { faLocationArrow } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { getTrimmedCoordinates } from "../../helpers/coordinates";
 import { getPosition } from "../../services/position";
 import * as storage from "../user/storage";
@@ -55,8 +55,8 @@ export default function Location({ onLocationFail, ...rest }: LocationProps) {
       navigate(
         `/${getTrimmedCoordinates(
           position.coords.latitude,
-          position.coords.longitude
-        )}`
+          position.coords.longitude,
+        )}`,
       );
     }
   }, [navigate, onLocationFail]);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import SunCalc from "suncalc";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../../features/weather/weatherSlice";
-import formatInTimeZone from "date-fns-tz/formatInTimeZone";
+import { formatInTimeZone } from "date-fns-tz";
 import { getTimeFormatString } from "../../features/weather/aviation/Forecast";
 import { isValidDate } from "../../helpers/date";
 import { faSunrise, faSunset } from "@fortawesome/pro-duotone-svg-icons";
@@ -43,7 +43,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           times.sunrise,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunrise} />
       </div>
@@ -51,7 +51,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           times.sunsetStart,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunset} />
       </div>

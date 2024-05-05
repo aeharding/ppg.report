@@ -1,15 +1,37 @@
 {
-  "extends": ["react-app", "react-app/jest"],
-  "plugins": ["testing-library"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+  ],
+  "plugins": ["react", "@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+    },
+    "sourceType": "module",
+    "ecmaVersion": 2022,
+  },
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
   "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
+    "no-constant-condition": "off",
     // use @emotion/styled and @emotion/react without macro
     //
     // Use "lodash/component" instead of "lodash" for tree shaking
     "no-restricted-imports": [
       "warn",
       {
-        "paths": ["@emotion/styled/macro", "@emotion/react/macro", "lodash"]
-      }
-    ]
-  }
+        "paths": ["@emotion/styled/macro", "@emotion/react/macro", "lodash"],
+      },
+    ],
+  },
 }

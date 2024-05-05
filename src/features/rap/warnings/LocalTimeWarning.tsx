@@ -10,7 +10,7 @@ const StyledWarningMessage = styled(WarningMessage)`
 
 export default function ReportStale() {
   const usingLocalTime = useAppSelector(
-    (state) => state.weather.usingLocalTime
+    (state) => state.weather.usingLocalTime,
   );
 
   if (!usingLocalTime) return <></>;

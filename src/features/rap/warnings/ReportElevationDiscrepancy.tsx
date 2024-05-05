@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { faMountains, faTimes } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { useAppSelector } from "../../../hooks";
 import { metersToFeet } from "../cells/Altitude";

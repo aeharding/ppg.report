@@ -6,10 +6,10 @@ interface GestureCloseOptions {
 }
 
 export default function useGestureClose<
-  RT extends ReferenceType = ReferenceType
+  RT extends ReferenceType = ReferenceType,
 >(
   context: FloatingContext<RT>,
-  { interactive }: GestureCloseOptions = { interactive: false }
+  { interactive }: GestureCloseOptions = { interactive: false },
 ) {
   const { open, onOpenChange } = context;
 

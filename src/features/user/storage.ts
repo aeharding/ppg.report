@@ -49,7 +49,7 @@ const MAX_DISTANCE_MATCH = 1000; // meters
 
 export function getLocations(): UserLocation[] {
   const locations: UserLocation[] = JSON.parse(
-    localStorage.getItem(LOCATIONS_STORAGE_KEY) || "[]"
+    localStorage.getItem(LOCATIONS_STORAGE_KEY) || "[]",
   );
 
   return locations;
@@ -89,7 +89,7 @@ export function removeLocation(location: UserLocation): UserLocation[] {
   const locations = getLocations();
 
   const index = locations.findIndex(
-    ({ lat, lon }) => location.lat === lat && location.lon === lon
+    ({ lat, lon }) => location.lat === lat && location.lon === lon,
   );
 
   if (index === -1) return locations;
@@ -102,7 +102,7 @@ export function removeLocation(location: UserLocation): UserLocation[] {
 }
 
 export function findLocation(
-  coords: GeolocationCoordinates
+  coords: GeolocationCoordinates,
 ): UserLocation | undefined {
   const locations = getLocations();
 
@@ -250,7 +250,7 @@ export function setDiscussionViewed(stationId: string, date: string) {
     if (
       differenceInHours(
         new Date(discussionsLastViewed[stationId]),
-        new Date()
+        new Date(),
       ) > 24
     )
       delete discussionsLastViewed[stationId];
@@ -260,7 +260,7 @@ export function setDiscussionViewed(stationId: string, date: string) {
 
   localStorage.setItem(
     DISCUSSION_LAST_VIEWED_STORAGE_KEY,
-    JSON.stringify(discussionsLastViewed)
+    JSON.stringify(discussionsLastViewed),
   );
 }
 

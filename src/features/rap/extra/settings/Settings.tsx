@@ -85,7 +85,7 @@ export default function Settings() {
         label={t("Altitude unit")}
         options={sortDefault(
           [HeightUnit.Feet, HeightUnit.Meters],
-          DEFAULT_HEIGHT_UNIT
+          DEFAULT_HEIGHT_UNIT,
         )}
         value={heightUnit}
         onChange={(value) => dispatch(setHeightUnit(value))}
@@ -94,7 +94,7 @@ export default function Settings() {
         label={t("Speed")}
         options={sortDefault(
           [SpeedUnit.MPH, SpeedUnit.KPH, SpeedUnit.Knots, SpeedUnit.mps],
-          DEFAULT_SPEED_UNIT
+          DEFAULT_SPEED_UNIT,
         )}
         value={speedUnit}
         onChange={(value) => dispatch(setSpeedUnit(value))}
@@ -103,7 +103,7 @@ export default function Settings() {
         label="Temperature"
         options={sortDefault(
           [TemperatureUnit.Fahrenheit, TemperatureUnit.Celsius],
-          DEFAULT_TEMPERATURE_UNIT
+          DEFAULT_TEMPERATURE_UNIT,
         )}
         value={temperatureUnit}
         onChange={(value) => dispatch(setTemperatureUnit(value))}
@@ -112,7 +112,7 @@ export default function Settings() {
         label={t("Distance")}
         options={sortDefault(
           [DistanceUnit.Miles, DistanceUnit.Kilometers],
-          DEFAULT_DISTANCE_UNIT
+          DEFAULT_DISTANCE_UNIT,
         )}
         value={distanceUnit}
         onChange={(value) => dispatch(setDistanceUnit(value))}
@@ -121,7 +121,7 @@ export default function Settings() {
         label={t("Time format")}
         options={sortDefault(
           [TimeFormat.Twelve, TimeFormat.TwentyFour],
-          DEFAULT_TIME_FORMAT
+          DEFAULT_TIME_FORMAT,
         )}
         value={timeFormat}
         onChange={(value) => dispatch(setTimeFormat(value))}

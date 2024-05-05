@@ -131,7 +131,7 @@ const aviationAlerts: AviationAlertFeature[] = [
 describe("findRelatedAlerts", () => {
   test("finds all adjoined related alerts (12:00, 15:00, 18:00, 21:00)", () => {
     expect(findRelatedAlerts(aviationAlerts[0], aviationAlerts)).toHaveLength(
-      4
+      4,
     );
   });
 
@@ -140,7 +140,7 @@ describe("findRelatedAlerts", () => {
     modifiedAlerts.splice(1, 1);
 
     expect(findRelatedAlerts(modifiedAlerts[0], modifiedAlerts)).toHaveLength(
-      1
+      1,
     );
   });
 
@@ -149,7 +149,7 @@ describe("findRelatedAlerts", () => {
     modifiedAlerts.splice(1, 1);
 
     expect(findRelatedAlerts(modifiedAlerts[1], modifiedAlerts)).toHaveLength(
-      2
+      2,
     );
   });
 
@@ -158,7 +158,7 @@ describe("findRelatedAlerts", () => {
     modifiedAlerts.splice(1, 1);
 
     expect(findRelatedAlerts(modifiedAlerts[2], modifiedAlerts)).toHaveLength(
-      2
+      2,
     );
   });
 });

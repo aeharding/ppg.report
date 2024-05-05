@@ -56,7 +56,7 @@ export default function Discussion() {
     dispatch(setDiscussionViewed(discussion.issuanceTime));
     storage.setDiscussionViewed(
       discussion.issuingOffice,
-      discussion.issuanceTime
+      discussion.issuanceTime,
     );
   }, [dispatch, discussion]);
 
@@ -94,7 +94,7 @@ export default function Discussion() {
       return (
         <Container>
           {parseDiscussion(
-            undoFixedWidthText(discussion.productText.trim())
+            undoFixedWidthText(discussion.productText.trim()),
           ).map((part, index) => {
             switch (typeof part) {
               case "string":
@@ -136,7 +136,7 @@ interface DiscussionPartResult {
 const headerRegex = /(\n\.(?:[^\n.])+\.{3})/;
 
 function parseDiscussion(
-  discussion: string
+  discussion: string,
 ): (string | DiscussionPartResult)[] {
   const splits = discussion.split(headerRegex);
 

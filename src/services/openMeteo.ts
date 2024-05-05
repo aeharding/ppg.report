@@ -6,7 +6,6 @@ import {
 } from "../helpers/interpolate";
 import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
-import { Dictionary } from "@reduxjs/toolkit";
 import * as velitherm from "velitherm";
 
 const FORECAST_DAYS = 2;
@@ -74,7 +73,7 @@ interface OpenMeteoResponse<Params extends string> {
 }
 
 export interface OpenMeteoWeather {
-  byUnixTimestamp: Dictionary<OpenMeteoWeatherHour>;
+  byUnixTimestamp: Record<string, OpenMeteoWeatherHour | undefined>;
 }
 
 interface OpenMeteoWeatherHour {
@@ -89,7 +88,7 @@ interface OpenMeteoWeatherHour {
 
 export async function getWeather(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): Promise<OpenMeteoWeather> {
   return convertOpenMeteoToWeather(
     (
@@ -102,13 +101,13 @@ export async function getWeather(
           hourly: generateWeatherParams().join(","),
         },
       })
-    ).data
+    ).data,
   );
 }
 
 export async function getWindsAloft(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): Promise<{
   windsAloft: WindsAloftReport;
   weather: OpenMeteoWeather;
@@ -124,7 +123,7 @@ export async function getWindsAloft(
 }
 
 function convertOpenMeteoToWeather(
-  openMeteoResponse: OpenMeteoResponse<HourlyWeatherParams>
+  openMeteoResponse: OpenMeteoResponse<HourlyWeatherParams>,
 ): OpenMeteoWeather {
   return {
     byUnixTimestamp: zipObject(
@@ -136,7 +135,7 @@ function convertOpenMeteoToWeather(
         windSpeed: openMeteoResponse.hourly.windspeed_10m[index],
         windGust: openMeteoResponse.hourly.windgusts_10m[index],
         cloudCover: openMeteoResponse.hourly.cloudcover[index],
-      }))
+      })),
     ),
   };
 }
@@ -166,13 +165,13 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
           const { height, speed, direction } = interpolateWindVectors(
             convertToInterpolatorWithHeight(hour.altitudes[i]),
             convertToInterpolatorWithHeight(hour.altitudes[i + 1]),
-            middleAltitude
+            middleAltitude,
           );
 
           const temperatureInC = Math.round(
             (hour.altitudes[i].temperatureInC +
               hour.altitudes[i + 1].temperatureInC) /
-              2
+              2,
           );
 
           ditheredAltitudes.push({
@@ -183,10 +182,10 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
             dewpointInC: Math.round(
               (hour.altitudes[i].dewpointInC +
                 hour.altitudes[i + 1].dewpointInC) /
-                2
+                2,
             ),
             pressure: Math.round(
-              (hour.altitudes[i].pressure + hour.altitudes[i + 1].pressure) / 2
+              (hour.altitudes[i].pressure + hour.altitudes[i + 1].pressure) / 2,
             ),
           });
         }
@@ -199,7 +198,7 @@ function interpolate(report: WindsAloftReport): WindsAloftReport {
 
 async function getOpenMeteoWindsAloft(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): Promise<OpenMeteoResponse<HourlyPressureParams | HourlyWeatherParams>> {
   return (
     await axios.get("/api/openmeteo/forecast", {
@@ -218,7 +217,7 @@ async function getOpenMeteoWindsAloft(
 }
 
 function convertOpenMeteoToWindsAloft(
-  openMeteoResponse: OpenMeteoResponse<HourlyPressureParams>
+  openMeteoResponse: OpenMeteoResponse<HourlyPressureParams>,
 ): WindsAloftReport {
   let pressureAltitudeHours = openMeteoResponse.hourly.time.map((time, index) =>
     PRESSURE_ALTITUDES.map((pressureAltitude) => ({
@@ -237,9 +236,9 @@ function convertOpenMeteoToWindsAloft(
         openMeteoResponse.hourly[`relativehumidity_${pressureAltitude}hPa`][
           index
         ],
-        openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index]
+        openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index],
       ),
-    }))
+    })),
   );
 
   const lowestAltitudeMsl =
@@ -255,11 +254,11 @@ function convertOpenMeteoToWindsAloft(
 
         return undefined;
       })
-      .filter(notEmpty)
+      .filter(notEmpty),
   );
 
   pressureAltitudeHours = pressureAltitudeHours.map((hour) =>
-    hour.slice(lowestElgibleIndexToShow)
+    hour.slice(lowestElgibleIndexToShow),
   );
 
   return {
@@ -280,7 +279,7 @@ function convertOpenMeteoToWindsAloft(
             temperatureInC: openMeteoResponse.hourly.temperature_2m[index],
             dewpointInC: openMeteoResponse.hourly.dewpoint_2m[index],
             pressure: Math.round(
-              openMeteoResponse.hourly.surface_pressure[index]
+              openMeteoResponse.hourly.surface_pressure[index],
             ),
           },
         ]
@@ -298,17 +297,17 @@ function convertOpenMeteoToWindsAloft(
                   agl,
                   openMeteoResponse.hourly[`surface_pressure`][index],
                   openMeteoResponse.hourly[`temperature_${agl}m`][index],
-                  openMeteoResponse.hourly[`relativehumidity_2m`][index]
+                  openMeteoResponse.hourly[`relativehumidity_2m`][index],
                 ),
-                openMeteoResponse.hourly[`temperature_${agl}m`][index]
+                openMeteoResponse.hourly[`temperature_${agl}m`][index],
               ),
               pressure: Math.round(
                 velitherm.pressureFromAltitude(
                   agl,
-                  openMeteoResponse.hourly["pressure_msl"][index]
-                )
+                  openMeteoResponse.hourly["pressure_msl"][index],
+                ),
               ),
-            }))
+            })),
           )
           .concat(pressureAltitudeHours[index]),
       };
@@ -324,7 +323,7 @@ function generateWindsAloftParams(): HourlyPressureParams[] {
       result.push(
         `${metric as (typeof PRESSURE_ALTITUDE_METRICS)[number]}_${
           pressure as unknown as (typeof PRESSURE_ALTITUDES)[number]
-        }hPa`
+        }hPa`,
       );
     }
   }
@@ -334,7 +333,7 @@ function generateWindsAloftParams(): HourlyPressureParams[] {
       result.push(
         `${metric as (typeof AGL_METRICS)[number]}_${
           pressure as unknown as (typeof AGL_ALTITUDES)[number]
-        }m`
+        }m`,
       );
     }
   }
@@ -352,13 +351,13 @@ function calculateRelativeHumidity(
   altitude: number,
   basePressure: number,
   baseTemperature: number,
-  baseRH: number
+  baseRH: number,
 ): number {
   // Calculate the pressure at the given altitude
   const pressure = velitherm.pressureFromAltitude(
     altitude,
     basePressure,
-    baseTemperature
+    baseTemperature,
   );
 
   // Calculate the temperature at the given altitude
@@ -368,14 +367,14 @@ function calculateRelativeHumidity(
   const specificHumidity = velitherm.specificHumidity(
     baseRH,
     pressure,
-    temperature
+    temperature,
   );
 
   // Calculate the new relative humidity at the given altitude
   const relativeHumidity = velitherm.relativeHumidity(
     specificHumidity,
     pressure,
-    temperature
+    temperature,
   );
 
   return relativeHumidity;

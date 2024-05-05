@@ -15,13 +15,13 @@ interface ReverseLocationProps {
 export default function ReverseLocation({ lat, lon }: ReverseLocationProps) {
   const dispatch = useAppDispatch();
   const geocodeByCoordinates = useAppSelector(
-    (state) => state.geocode.geocodeByCoordinates
+    (state) => state.geocode.geocodeByCoordinates,
   );
   const geocode = geocodeByCoordinates[getTrimmedCoordinates(+lat, +lon)];
 
   useEffect(() => {
     document.title = generatePageTitle(
-      geocode && typeof geocode !== "string" ? geocode.label : undefined
+      geocode && typeof geocode !== "string" ? geocode.label : undefined,
     );
 
     return () => {

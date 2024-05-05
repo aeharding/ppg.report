@@ -63,9 +63,9 @@ export default function CwaAlert({ alert, index, total }: AlertProps) {
               <p>
                 CWAs are valid for up to 2 hours and may include forecasts of
                 conditions expected to begin within 2 hours of issuance. If
-                conditions are expected to persist after the advisory's valid
-                period, a statement to that effect is included in the last line
-                of the text. Additional CWAs will subsequently be issued as
+                conditions are expected to persist after the advisory&apos;s
+                valid period, a statement to that effect is included in the last
+                line of the text. Additional CWAs will subsequently be issued as
                 appropriate.
               </p>
             </More>

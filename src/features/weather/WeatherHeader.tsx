@@ -20,7 +20,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../alerts/alertsSlice";
-import { addHours } from "date-fns/esm";
+import { addHours } from "date-fns";
 import { isAlertRead } from "../../helpers/alert";
 import Weather from "./header/Weather";
 
@@ -136,15 +136,15 @@ export default function WeatherHeader({ date }: WeatherHeaderProps) {
             sortAlerts(
               alerts.filter((alert) => isAlertActive(alert, date)),
               alerts,
-              userState.gAirmetRead
-            )
+              userState.gAirmetRead,
+            ),
           )
         : [],
-    [alerts, date, userState.gAirmetRead]
+    [alerts, date, userState.gAirmetRead],
   );
 
   const unreadAlerts = relevantAlerts.filter(
-    (alert) => !isAlertRead(alert, userState)
+    (alert) => !isAlertRead(alert, userState),
   );
 
   if (
@@ -202,14 +202,14 @@ function isAlertActive(alert: Alert, date: string): boolean {
   if (isTFRAlert(alert)) {
     return isWithinInterval(new Date(date), {
       start: startOfHour(
-        new Date(alert.properties.coreNOTAMData.notam.effectiveStart)
+        new Date(alert.properties.coreNOTAMData.notam.effectiveStart),
       ),
       end:
         alert.properties.coreNOTAMData.notam.effectiveEnd === "PERM"
           ? addYears(new Date(), 10)
           : addMinutes(
               new Date(alert.properties.coreNOTAMData.notam.effectiveEnd),
-              -1
+              -1,
             ),
     });
   }

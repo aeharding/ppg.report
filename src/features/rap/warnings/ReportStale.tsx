@@ -19,7 +19,7 @@ export default function ReportStale() {
 
   const difference = differenceInHours(
     new Date(),
-    new Date(windsAloft.hours[0].date)
+    new Date(windsAloft.hours[0].date),
   );
 
   if (difference < 4) return <></>;

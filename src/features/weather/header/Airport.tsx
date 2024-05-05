@@ -57,7 +57,7 @@ export default function Airport({ taf, date }: AirportProps) {
   const heightUnit = useAppSelector((state) => state.user.heightUnit);
   const distanceUnit = useAppSelector((state) => state.user.distanceUnit);
 
-  let composedForecast: ICompositeForecast | undefined = useMemo(() => {
+  const composedForecast: ICompositeForecast | undefined = useMemo(() => {
     let result: ICompositeForecast | undefined;
     try {
       result = getCompositeForecastForDate(new Date(date), taf);
@@ -69,7 +69,7 @@ export default function Airport({ taf, date }: AirportProps) {
     return result;
   }, [date, taf]);
 
-  let clouds: ICloud[] = useMemo(() => {
+  const clouds: ICloud[] = useMemo(() => {
     if (!composedForecast) return [];
 
     return [
@@ -100,16 +100,16 @@ export default function Airport({ taf, date }: AirportProps) {
           Math.round(
             (heightValueFormatter(
               convertHeightToMeters(lowestCloud.height),
-              heightUnit
+              heightUnit,
             ) /
               1_000) *
-              10
+              10,
           ) / 10
         }k`
       : lowestCloud.quantity
     : verticalVisbility
-    ? "OBSC"
-    : "SKC";
+      ? "OBSC"
+      : "SKC";
 
   const badge = (
     <AirportContainer category={category}>{taf.station}</AirportContainer>
@@ -130,7 +130,7 @@ export default function Airport({ taf, date }: AirportProps) {
           clouds,
           verticalVisbility,
           heightUnit,
-          distanceUnit
+          distanceUnit,
         )}
       </>
     );
@@ -157,7 +157,7 @@ function buildTooltip(
   clouds: ICloud[],
   verticalVisibility: number | undefined,
   heightUnit: HeightUnit,
-  distanceUnit: DistanceUnit
+  distanceUnit: DistanceUnit,
 ): React.ReactNode {
   return (
     <ul>
