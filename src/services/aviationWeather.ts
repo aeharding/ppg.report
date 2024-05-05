@@ -1,6 +1,6 @@
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
-import { GeometryObject } from "geojson";
+import type { GeometryObject } from "geojson";
 
 const parser = new XMLParser();
 

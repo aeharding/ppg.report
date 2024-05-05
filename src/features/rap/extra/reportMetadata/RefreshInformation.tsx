@@ -1,5 +1,4 @@
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import differenceInMinutes from "date-fns/differenceInMinutes";
+import { differenceInMinutes, formatDistanceToNow } from "date-fns";
 import { useAppSelector } from "../../../../hooks";
 import styled from "@emotion/styled";
 import { DataListItem } from "../../../../DataList";

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GeoJsonObject } from "geojson";
+import type { GeoJsonObject } from "geojson";
 import uniqWith from "lodash/uniqWith";
 import isEqual from "lodash/isEqual";
 

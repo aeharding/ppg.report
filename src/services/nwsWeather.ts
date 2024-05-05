@@ -4,7 +4,7 @@ import { Discussion } from "../features/weather/weatherSlice";
 import { parse, toSeconds } from "iso8601-duration";
 import axiosRetryEnhancer from "axios-retry";
 import { isWithinInterval } from "../helpers/date";
-import { GeoJsonObject } from "geojson";
+import type { GeoJsonObject } from "geojson";
 
 interface Coordinates {
   lat: number;
