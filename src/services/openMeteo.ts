@@ -6,7 +6,6 @@ import {
 } from "../helpers/interpolate";
 import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
-import { Dictionary } from "@reduxjs/toolkit";
 import * as velitherm from "velitherm";
 
 const FORECAST_DAYS = 2;
@@ -74,7 +73,7 @@ interface OpenMeteoResponse<Params extends string> {
 }
 
 export interface OpenMeteoWeather {
-  byUnixTimestamp: Dictionary<OpenMeteoWeatherHour>;
+  byUnixTimestamp: Record<string, OpenMeteoWeatherHour | undefined>;
 }
 
 interface OpenMeteoWeatherHour {
