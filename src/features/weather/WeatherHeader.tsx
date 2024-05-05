@@ -20,7 +20,7 @@ import {
   isTFRAlert,
   isWeatherAlert,
 } from "../alerts/alertsSlice";
-import { addHours } from "date-fns/esm";
+import { addHours } from "date-fns";
 import { isAlertRead } from "../../helpers/alert";
 import Weather from "./header/Weather";
 

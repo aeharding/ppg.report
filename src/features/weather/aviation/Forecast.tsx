@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { startOfTomorrow } from "date-fns";
-import { formatInTimeZone, zonedTimeToUtc } from "date-fns-tz";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import {
   Forecast as IForecast,
   Intensity,
@@ -369,7 +369,7 @@ export function formatWithTomorrowIfNeeded(
 ): string {
   return `${formatInTimeZone(date, timeZone, formatStr)}${
     new Date(date).getTime() >=
-    zonedTimeToUtc(startOfTomorrow(), timeZone).getTime()
+    fromZonedTime(startOfTomorrow(), timeZone).getTime()
       ? " tomorrow"
       : ""
   }`;

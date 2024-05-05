@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SunCalc from "suncalc";
 import { faSunrise, faSunset } from "@fortawesome/pro-duotone-svg-icons";
-import formatInTimeZone from "date-fns-tz/formatInTimeZone";
+import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../../features/weather/weatherSlice";
 import { getTimeFormatString } from "../../features/weather/aviation/Forecast";

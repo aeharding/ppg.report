@@ -3,13 +3,13 @@ import { useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
-import subDays from "date-fns/subDays";
-import formatInTimeZone from "date-fns-tz/formatInTimeZone";
+import { subDays } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import Table from "./Table";
 import WeatherHeader from "../weather/WeatherHeader";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector, windsAloft } from "../weather/weatherSlice";
-import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
 import { getTimeFormatString } from "../weather/aviation/Forecast";
 import { WindsAloftHour } from "../../models/WindsAloft";
 import { isValidDate } from "../../helpers/date";
@@ -153,8 +153,8 @@ export default function Hour({
 }
 
 function startOfTomorrowInTimeZone(timeZone: string): Date {
-  return zonedTimeToUtc(
-    startOfDay(utcToZonedTime(addDays(new Date(), 1), timeZone)),
+  return fromZonedTime(
+    startOfDay(toZonedTime(addDays(new Date(), 1), timeZone)),
     timeZone,
   );
 }
