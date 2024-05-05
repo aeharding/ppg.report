@@ -7,7 +7,7 @@ import { store } from "./store";
 import "./setupViewport";
 import "./i18n";
 
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
 const globalStyles = css`
   :root {
@@ -87,12 +87,12 @@ const globalStyles = css`
 `;
 
 const rootNode = document.getElementById("root");
-render(
+const root = createRoot(rootNode!);
+root.render(
   <>
     <Global styles={globalStyles} />
     <Provider store={store}>
       <App />
     </Provider>
   </>,
-  rootNode,
 );
