@@ -21,10 +21,111 @@ export default defineConfig(() => {
       }),
       svgr(),
       VitePWA({
-        strategies: "injectManifest",
         srcDir: "src",
-        filename: "service-worker.ts",
         registerType: "autoUpdate",
+        workbox: {
+          runtimeCaching: [
+            {
+              handler: "CacheFirst",
+              urlPattern: /\/api\/position.*/,
+              options: {
+                cacheName: "apiPositionCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/rap.*/,
+              options: {
+                cacheName: "apiRapCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/weather.*/,
+              options: {
+                cacheName: "apiWeatherCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/weather.*/,
+              options: {
+                cacheName: "apiWeatherCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/tfr.*/,
+              options: {
+                cacheName: "apiTfrCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/pqs.*/,
+              options: {
+                cacheName: "apiElevationCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/googleelevation.*/,
+              options: {
+                cacheName: "apiGoogleElevationCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/aviationweather.*/,
+              options: {
+                cacheName: "apiAviationWeatherCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/aviationalerts.*/,
+              options: {
+                cacheName: "apiAviationAlertsCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+          ],
+        },
         manifest: {
           name: "PPG.report",
           short_name: "PPG.report",
