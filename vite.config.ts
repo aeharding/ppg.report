@@ -23,6 +23,7 @@ export default defineConfig(() => {
       VitePWA({
         srcDir: "src",
         registerType: "autoUpdate",
+        filename: "service-worker.js",
         workbox: {
           runtimeCaching: [
             {
