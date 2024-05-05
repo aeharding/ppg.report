@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router";
 import Hours from "../features/rap/Hours";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Loading from "../shared/Loading";
 import { getTrimmedCoordinates, isLatLonTrimmed } from "../helpers/coordinates";
 import Error from "../shared/Error";
-import { ReactComponent as ErrorSvg } from "../assets/error.svg";
+import ErrorSvg from "../assets/error.svg?react";
 import NotFound from "./NotFound";
 import {
   getWeather,
@@ -34,10 +34,10 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const timeZone = useAppSelector(timeZoneSelector);
   const timeZoneLoading = useAppSelector(
-    (state) => state.weather.timeZoneLoading
+    (state) => state.weather.timeZoneLoading,
   );
   const elevationLoading = useAppSelector(
-    (state) => state.weather.elevationLoading
+    (state) => state.weather.elevationLoading,
   );
   const elevation = useAppSelector((state) => state.weather.elevation);
 
@@ -87,7 +87,7 @@ function ValidParamsReport({ lat, lon }: ValidParamsReportProps) {
           hours={windsAloft.hours.filter(
             ({ date }) =>
               differenceInHours(new Date(date), new Date()) >= -2 &&
-              differenceInHours(new Date(date), new Date()) < 24
+              differenceInHours(new Date(date), new Date()) < 24,
           )}
         />
       );

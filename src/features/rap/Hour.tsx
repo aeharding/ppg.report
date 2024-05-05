@@ -72,15 +72,15 @@ export default function Hour({
     SunCalc.getTimes(
       subDays(new Date(hour.date), 1),
       windsAloftResult.latitude,
-      windsAloftResult.longitude
-    )
+      windsAloftResult.longitude,
+    ),
   );
   const [times] = useState(
     SunCalc.getTimes(
       new Date(hour.date),
       windsAloftResult.latitude,
-      windsAloftResult.longitude
-    )
+      windsAloftResult.longitude,
+    ),
   );
 
   const [colorScale] = useState(() => {
@@ -127,7 +127,7 @@ export default function Hour({
           {formatInTimeZone(
             new Date(hour.date),
             timeZone,
-            getTimeFormatString(timeFormat, true)
+            getTimeFormatString(timeFormat, true),
           )}
           {new Date(hour.date).getTime() >=
             startOfTomorrowInTimeZone(timeZone).getTime() && <sup>+1</sup>}
@@ -155,6 +155,6 @@ export default function Hour({
 function startOfTomorrowInTimeZone(timeZone: string): Date {
   return zonedTimeToUtc(
     startOfDay(utcToZonedTime(addDays(new Date(), 1), timeZone)),
-    timeZone
+    timeZone,
   );
 }

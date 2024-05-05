@@ -108,7 +108,7 @@ export function heightUnitFormatter(heightUnit: HeightUnit): string {
 
 export function heightValueFormatter(
   heightInMeters: number,
-  heightUnit: HeightUnit
+  heightUnit: HeightUnit,
 ): number {
   switch (heightUnit) {
     case HeightUnit.Feet:

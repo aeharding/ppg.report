@@ -30,12 +30,12 @@ const referToConvectiveOutlook =
 function replaceOccurrence(
   payload: string,
   match: string,
-  to: React.ReactNode
+  to: React.ReactNode,
 ) {
   return reactStringReplace(
     payload,
     new RegExp(`(${match.replaceAll(" ", "\\s+")})`),
-    () => to
+    () => to,
   );
 }
 
@@ -81,7 +81,7 @@ export default function SigmetAlert({ alert, index, total }: AlertProps) {
               rel="noopener noreferrer"
             >
               {referToConvectiveOutlook}
-            </a>
+            </a>,
           )}
         </StyledLinkify>
       </Title>
@@ -105,8 +105,8 @@ export function formatSigmetDescription(alert: SigmetFeature) {
           observations.
         </p>
         <p>
-          It doesn't preclude PPG — conditions may be great — but evaluate local
-          conditions carefully and be prepared for those conditions to
+          It doesn&apos;t preclude PPG — conditions may be great — but evaluate
+          local conditions carefully and be prepared for those conditions to
           deteriorate.
         </p>
       </>

@@ -94,5 +94,5 @@ render(
       <App />
     </Provider>
   </>,
-  rootNode
+  rootNode,
 );

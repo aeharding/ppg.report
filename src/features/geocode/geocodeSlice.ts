@@ -54,7 +54,7 @@ export const geocodeReducer = createSlice({
     geocodeReceived: (state, action: PayloadAction<Geocode>) => {
       const coordinates = getTrimmedCoordinates(
         action.payload.lat,
-        action.payload.lon
+        action.payload.lon,
       );
 
       if (state.geocodeByCoordinates[coordinates] === "pending") {

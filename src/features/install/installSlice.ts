@@ -27,7 +27,7 @@ export const userReducer = createSlice({
   reducers: {
     saveInstallProposalEvent(
       state,
-      action: PayloadAction<IBeforeInstallPromptEvent>
+      action: PayloadAction<IBeforeInstallPromptEvent>,
     ) {
       state.beforeInstallEvent = action.payload;
     },

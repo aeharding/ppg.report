@@ -14,9 +14,11 @@ export default function WindowInstallEventSetup() {
       dispatch(saveInstallProposalEvent(e));
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     window.addEventListener("beforeinstallprompt", ready as any);
 
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       window.removeEventListener("beforeinstallprompt", ready as any);
     };
   }, [dispatch]);

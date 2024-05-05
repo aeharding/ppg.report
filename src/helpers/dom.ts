@@ -1,6 +1,6 @@
 export function scrollIntoViewIfNeeded(
   element: HTMLElement,
-  smooth = true
+  smooth = true,
 ): void {
   const parentScroll = getScrollParent(element);
 
@@ -12,19 +12,19 @@ export function scrollIntoViewIfNeeded(
 
   const scrollPaddingLeft = parseInt(
     getComputedStyle(parentScroll).scrollPaddingLeft || "0",
-    10
+    10,
   );
   const scrollPaddingRight = parseInt(
     getComputedStyle(parentScroll).scrollPaddingRight || "0",
-    10
+    10,
   );
   const scrollPaddingTop = parseInt(
     getComputedStyle(parentScroll).scrollPaddingTop || "0",
-    10
+    10,
   );
   const scrollPaddingBottom = parseInt(
     getComputedStyle(parentScroll).scrollPaddingBottom || "0",
-    10
+    10,
   );
 
   const scrollLeft = calculateScrollLeft(
@@ -32,14 +32,14 @@ export function scrollIntoViewIfNeeded(
     parentScroll,
     parentScrollRect,
     scrollPaddingLeft,
-    scrollPaddingRight
+    scrollPaddingRight,
   );
   const scrollTop = calculateScrollTop(
     element,
     parentScroll,
     parentScrollRect,
     scrollPaddingTop,
-    scrollPaddingBottom
+    scrollPaddingBottom,
   );
 
   if (
@@ -59,7 +59,7 @@ function calculateScrollLeft(
   parentScroll: HTMLElement,
   parentScrollRect: DOMRect,
   scrollPaddingLeft: number,
-  scrollPaddingRight: number
+  scrollPaddingRight: number,
 ): number {
   const elementRect = element.getBoundingClientRect();
 
@@ -93,7 +93,7 @@ function calculateScrollTop(
   parentScroll: HTMLElement,
   parentScrollRect: DOMRect,
   scrollPaddingTop: number,
-  scrollPaddingBottom: number
+  scrollPaddingBottom: number,
 ): number {
   const elementRect = element.getBoundingClientRect();
 
@@ -121,7 +121,7 @@ function calculateScrollTop(
 }
 
 export function getScrollParent(
-  node: HTMLElement | undefined
+  node: HTMLElement | undefined,
 ): HTMLElement | undefined {
   if (!node) return;
 

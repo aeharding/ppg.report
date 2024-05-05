@@ -39,7 +39,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           sunrise,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}
       </span>
       &nbsp;&nbsp;
@@ -48,7 +48,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           sunset,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}
       </span>
     </SunLine>

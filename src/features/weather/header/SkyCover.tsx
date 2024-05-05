@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { findValue } from "../../../services/nwsWeather";
 import { Micro } from "../WeatherHeader";
 import { WeatherResult } from "../weatherSlice";
@@ -40,7 +40,7 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
   const [isDay] = useState(
     lat && lon
       ? SunCalc.getPosition(new Date(date), +lat, +lon).altitude > 0
-      : true
+      : true,
   );
 
   const chance = useMemo(() => {
@@ -50,7 +50,7 @@ export default function SkyCover({ date, weather }: SkyCoverProps) {
       return findValue(
         new Date(date),
 
-        weather.properties.skyCover
+        weather.properties.skyCover,
       )?.value;
 
     return weather.byUnixTimestamp[new Date(date).getTime() / 1_000]

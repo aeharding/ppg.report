@@ -82,7 +82,7 @@ export default function DetailedAviationReport({
           {formatInTimeZone(
             taf.issued,
             timeZone,
-            getTimeFormatString(timeFormat)
+            getTimeFormatString(timeFormat),
           )}{" "}
           and is valid for{" "}
           {formatDistanceStrict(taf.end, taf.start, { unit: "hour" })} starting
@@ -90,7 +90,7 @@ export default function DetailedAviationReport({
           {formatWithTomorrowIfNeeded(
             taf.start,
             timeZone,
-            getTimeFormatString(timeFormat)
+            getTimeFormatString(timeFormat),
           )}
           .
         </p>
@@ -98,20 +98,20 @@ export default function DetailedAviationReport({
         <p>
           {taf.maxTemperature
             ? `High of ${formatTemperature(
-                taf.maxTemperature.temperature
+                taf.maxTemperature.temperature,
               )} at ${formatWithTomorrowIfNeeded(
                 taf.maxTemperature.date,
                 timeZone,
-                getTimeFormatString(timeFormat)
+                getTimeFormatString(timeFormat),
               )}.`
             : undefined}{" "}
           {taf.minTemperature
             ? `Low of ${formatTemperature(
-                taf.minTemperature.temperature
+                taf.minTemperature.temperature,
               )} at ${formatWithTomorrowIfNeeded(
                 taf.minTemperature.date,
                 timeZone,
-                getTimeFormatString(timeFormat)
+                getTimeFormatString(timeFormat),
               )}.`
             : undefined}
         </p>

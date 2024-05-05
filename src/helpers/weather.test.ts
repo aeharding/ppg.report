@@ -19,18 +19,18 @@ Ozone: The Facts www.tceq.texas.gov/airquality/monops/ozonefacts.html
 EPA AirNow: www.airnow.gov/?city=Houston&state=TX&country=USA
 Take Care of Texas: www.takecareoftexas.org/conservation-tips/keep-our-
 air-clean
-  `.trim()
+  `.trim(),
   );
 
   test("renders entire entire line", () => {
     expect(fixed).toContain(
-      "The Texas Commission on Environmental Quality (TCEQ) has issued an Ozone Action Day for the Houston, Galveston, and Brazoria area for Saturday, September 24, 2022."
+      "The Texas Commission on Environmental Quality (TCEQ) has issued an Ozone Action Day for the Houston, Galveston, and Brazoria area for Saturday, September 24, 2022.",
     );
   });
 
   test("renders with preserved link", () => {
     expect(fixed).toContain(
-      "www.takecareoftexas.org/conservation-tips/keep-our-air-clean"
+      "www.takecareoftexas.org/conservation-tips/keep-our-air-clean",
     );
   });
 });

@@ -44,7 +44,7 @@ function getISigmetAlertName(alert: ISigmetFeature): string {
   return [
     alert.properties.firId,
     formatQualifier(
-      alert.properties.qualifier as CwaFeature["properties"]["qualifier"]
+      alert.properties.qualifier as CwaFeature["properties"]["qualifier"],
     ) ?? alert.properties.qualifier,
     formatHazard(alert.properties.hazard),
     "SIGMET",
@@ -76,7 +76,7 @@ function getCwaAlertName(alert: CwaFeature): string {
 }
 
 function formatHazard(
-  hazard: AviationAlertFeature["properties"]["hazard"]
+  hazard: AviationAlertFeature["properties"]["hazard"],
 ): string {
   switch (hazard) {
     case "ASH":
@@ -125,7 +125,7 @@ function formatHazard(
 function formatQualifier(
   qualifier:
     | CwaFeature["properties"]["qualifier"]
-    | ISigmetFeature["properties"]["qualifier"]
+    | ISigmetFeature["properties"]["qualifier"],
 ): string {
   switch (qualifier) {
     case "EMBD":
@@ -151,7 +151,7 @@ function formatQualifier(
 
 export function extractIssuedTimestamp(
   alert: AviationAlertFeature,
-  relatedAlerts: GAirmetFeature[]
+  relatedAlerts: GAirmetFeature[],
 ): string {
   if (isSigmetAlert(alert)) {
     const iss = alert.properties.rawAirSigmet.split("\n")[0].split(" ")[2];
@@ -188,7 +188,7 @@ export function extractIssuedTimestamp(
   if (isGAirmetAlert(alert)) {
     const initialRelatedAlert = sortBy(
       relatedAlerts,
-      "properties.validTime"
+      "properties.validTime",
     )[0];
 
     return initialRelatedAlert.properties.validTime;
@@ -198,7 +198,7 @@ export function extractIssuedTimestamp(
 }
 
 export function formatSeverity(
-  severity: GAirmetFeature["properties"]["severity"]
+  severity: GAirmetFeature["properties"]["severity"],
 ): string | undefined {
   switch (severity) {
     case "LGT":

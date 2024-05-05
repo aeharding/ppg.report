@@ -135,7 +135,7 @@ interface ScrubberProps {
 export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
   const [enabled, setEnabled] = useState(false);
   const [interacted, setInteracted] = useState(
-    JSON.parse(localStorage.getItem(USED_SCRUBBER_STORAGE_KEY) ?? "false")
+    JSON.parse(localStorage.getItem(USED_SCRUBBER_STORAGE_KEY) ?? "false"),
   );
   const scrubberTargetRef = useRef<HTMLDivElement>(null);
 
@@ -217,6 +217,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       if (!enabled) return;
 
       if (isLandscape()) {
+        // do nothing
       } else if (headerIsFixed()) {
         await smoothScrollBodyTo(0);
       } else if (
@@ -226,7 +227,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
       )
         await smoothScrollBodyTo(
           (document.querySelector("main")?.getBoundingClientRect()?.top || 0) +
-            document.documentElement.scrollTop
+            document.documentElement.scrollTop,
         );
     })();
   }, [enabled]);

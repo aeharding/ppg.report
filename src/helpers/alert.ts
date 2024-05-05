@@ -17,7 +17,7 @@ export function getAlertId(alert: Alert): string {
 
 export function isAlertRead(
   alert: Alert,
-  userState: RootState["user"]
+  userState: RootState["user"],
 ): boolean {
   if (userState.gAirmetRead === OnOff.On && isGAirmetAlert(alert)) return true;
 

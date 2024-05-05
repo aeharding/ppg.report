@@ -56,7 +56,7 @@ export async function getTFRs({
       isEqual(a.geometry, b.geometry) &&
       isEqual(
         a.properties.coreNOTAMData.notam.text,
-        b.properties.coreNOTAMData.notam.text
-      )
+        b.properties.coreNOTAMData.notam.text,
+      ),
   );
 }

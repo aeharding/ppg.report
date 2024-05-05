@@ -141,7 +141,7 @@ function InputWithScrollTo({
     <>
       <Input {...props} checked={checked} />
       <Label htmlFor={`${label}${props.value}`} ref={labelRef}>
-        {t(props.value as any)}
+        {t(props.value as never)}
       </Label>
     </>
   );

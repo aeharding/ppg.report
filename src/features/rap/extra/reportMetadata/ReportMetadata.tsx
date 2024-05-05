@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-
 import styled from "@emotion/styled";
 import { latLng, LatLngExpression, divIcon } from "leaflet";
 import { useEffect, useRef } from "react";
@@ -62,7 +60,7 @@ const LegendContainer = styled.div`
 
 export default function ReportMetadata() {
   const aviationWeather = useAppSelector(
-    (state) => state.weather.aviationWeather
+    (state) => state.weather.aviationWeather,
   );
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
@@ -122,7 +120,7 @@ const MapController = () => {
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
   const aviationWeather = useAppSelector(
-    (state) => state.weather.aviationWeather
+    (state) => state.weather.aviationWeather,
   );
   if (!windsAloft || typeof windsAloft !== "object")
     throw new Error("RAP report must be defined");
@@ -131,6 +129,7 @@ const MapController = () => {
     typeof windsAloft === "object" && windsAloft.source === "rucSounding";
 
   const map = useMap();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupRef = useRef<any>();
 
   const rapPosition: LatLngExpression = [

@@ -37,9 +37,9 @@ export default function NWSWeather({ observations }: NWSWeatherProps) {
     return capitalize(
       observations
         .map((observation) =>
-          [observation.coverage, observation.weather].map(lowerCase).join(" ")
+          [observation.coverage, observation.weather].map(lowerCase).join(" "),
         )
-        .join(", ")
+        .join(", "),
     );
   }
 

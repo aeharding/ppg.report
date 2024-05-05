@@ -32,7 +32,7 @@ const DropletIcon = styled(FontAwesomeIcon)<{ opacity: number }>`
 
   ${({ opacity }) =>
     outputP3ColorFromRGBA(
-      opacity === 1 ? [0, 145, 255, 1] : [255, 255, 255, 0.4]
+      opacity === 1 ? [0, 145, 255, 1] : [255, 255, 255, 0.4],
     )}
   opacity: ${({ opacity }) => opacity};
   filter: ${({ opacity }) => (opacity >= 1 ? "blur(0)" : "blur(1px)")};

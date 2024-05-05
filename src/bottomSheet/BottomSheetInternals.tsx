@@ -115,7 +115,7 @@ export default function BottomSheetInternals({
                     .getPropertyValue("--sat")
                     .slice(0, -2) + 8 || 0)
               : maxHeight - maxHeight / 15,
-            minHeight
+            minHeight,
           ),
         ]}
         expandOnContentDrag

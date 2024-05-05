@@ -12,7 +12,7 @@ import {
   findNormalizedPressure,
 } from "../../helpers/interpolate";
 import { useTranslation } from "react-i18next";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   AltitudeLevels,
   AltitudeType,
@@ -88,10 +88,20 @@ export default function Table({
   // If there is a discrepancy of less than 120 meters, it's negligible
   const surfaceLevel = surfaceLevelMode ? lowestReportedAltitude : elevation;
 
-  let displayedRapData: WindsAloftAltitude[] = useMemo(() => {
+  const hiddenAltitude = useCallback(
+    (datum: WindsAloftAltitude) => {
+      return (
+        altitudeType === AltitudeType.AGL &&
+        !!(datum.altitudeInM - surfaceLevel < 0)
+      );
+    },
+    [altitudeType, surfaceLevel],
+  );
+
+  const displayedRapData: WindsAloftAltitude[] = useMemo(() => {
     if (altitudeType === AltitudeType.Pressure) {
       const filteredPressures = windsAloftHour.altitudes.filter(
-        (alt) => alt.pressure != null && alt.pressure >= 250
+        (alt) => alt.pressure != null && alt.pressure >= 250,
       );
 
       switch (altitudeLevels) {
@@ -99,7 +109,7 @@ export default function Table({
           return filteredPressures;
         case AltitudeLevels.Normalized:
           return NORMALIZED_PRESSURE_MB.map((pressure) =>
-            findNormalizedPressure(pressure, filteredPressures)
+            findNormalizedPressure(pressure, filteredPressures),
           ).filter(notEmpty);
       }
     }
@@ -110,14 +120,7 @@ export default function Table({
           .slice(0, rows)
           .filter((datum) => !hiddenAltitude(datum));
 
-        function hiddenAltitude(datum: WindsAloftAltitude): boolean {
-          return (
-            altitudeType === AltitudeType.AGL &&
-            !!(datum.altitudeInM - surfaceLevel < 0)
-          );
-        }
-
-      case AltitudeLevels.Normalized:
+      case AltitudeLevels.Normalized: {
         const NORMALIZED_ALTITUDES = (() => {
           switch (heightUnit) {
             case HeightUnit.Feet:
@@ -130,17 +133,19 @@ export default function Table({
         return NORMALIZED_ALTITUDES.map((altitude) =>
           findNormalizedAltitude(
             altitude + surfaceLevel,
-            windsAloftHour.altitudes
-          )
+            windsAloftHour.altitudes,
+          ),
         ).filter(notEmpty);
+      }
     }
   }, [
+    altitudeType,
     altitudeLevels,
     windsAloftHour.altitudes,
     rows,
-    altitudeType,
-    surfaceLevel,
+    hiddenAltitude,
     heightUnit,
+    surfaceLevel,
   ]);
 
   function negativeAltitude(datum: WindsAloftAltitude): boolean {

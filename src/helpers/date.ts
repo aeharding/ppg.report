@@ -29,7 +29,7 @@ const format_options: Intl.DateTimeFormatOptions = {
 
 const utc_f: Intl.DateTimeFormat = new Intl.DateTimeFormat(
   locale,
-  format_options
+  format_options,
 );
 
 function parseDate(date_str: string): number[] {
@@ -39,8 +39,8 @@ function parseDate(date_str: string): number[] {
 
 function diffMinutes(d1: number[], d2: number[]): number {
   let day: number = d1[1] - d2[1];
-  let hour: number = d1[3] - d2[3];
-  let min: number = d1[4] - d2[4];
+  const hour: number = d1[3] - d2[3];
+  const min: number = d1[4] - d2[4];
 
   if (day > 15) day = -1;
   if (day < -15) day = 1;
@@ -53,18 +53,18 @@ export default function getTimezoneOffset(tz_str: string, date: Date): number {
 
   const loc_f: Intl.DateTimeFormat = new Intl.DateTimeFormat(
     locale,
-    format_options
+    format_options,
   );
 
   return diffMinutes(
     parseDate(utc_f.format(date)),
-    parseDate(loc_f.format(date))
+    parseDate(loc_f.format(date)),
   );
 }
 
 export function getTimezoneOffsetLabel(
   timeZone: string,
-  date = new Date()
+  date = new Date(),
 ): string {
   const offset = getTimezoneOffset(timeZone, date);
   const offsetSign = -offset < 0 ? "-" : "+";

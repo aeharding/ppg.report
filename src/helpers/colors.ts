@@ -2,13 +2,13 @@ import { ColorSpace, convertColorToSpace } from "@color-spaces/convert";
 
 export function outputP3ColorFromLab(
   lab: [number, number, number],
-  cssProperty = "color"
+  cssProperty = "color",
 ) {
   const {
     values: [r, g, b],
   } = convertColorToSpace(
     { type: ColorSpace.Lab, values: lab },
-    ColorSpace.sRGB
+    ColorSpace.sRGB,
   );
 
   return `
@@ -19,7 +19,7 @@ export function outputP3ColorFromLab(
 
 export function outputP3ColorFromRGB(
   [r, g, b]: [number, number, number],
-  cssProperty = "color"
+  cssProperty = "color",
 ) {
   return `
     ${cssProperty}: rgb(${r}, ${g}, ${b});
@@ -29,7 +29,7 @@ export function outputP3ColorFromRGB(
 
 export function outputP3ColorFromRGBA(
   [r, g, b, a]: [number, number, number, number],
-  cssProperty = "color"
+  cssProperty = "color",
 ) {
   return `
     ${cssProperty}: rgba(${r}, ${g}, ${b}, ${a});

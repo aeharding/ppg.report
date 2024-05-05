@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { DataListItem } from "../../../../DataList";
 import { isInstalled } from "../../../../helpers/device";
 import { useAppSelector } from "../../../../hooks";
@@ -99,7 +99,7 @@ export default function PointInfo() {
         <div>Location elevation</div>
         <div>
           {Math.round(
-            heightValueFormatter(elevation ?? -1, heightUnit)
+            heightValueFormatter(elevation ?? -1, heightUnit),
           ).toLocaleString()}
           {heightUnitLabel}
         </div>
@@ -109,7 +109,7 @@ export default function PointInfo() {
           <div>Winds aloft gridpoint elevation</div>
           <div>
             {Math.round(
-              heightValueFormatter(altitudeInM, heightUnit)
+              heightValueFormatter(altitudeInM, heightUnit),
             ).toLocaleString()}
             {heightUnitLabel}
           </div>

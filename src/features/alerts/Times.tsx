@@ -29,7 +29,7 @@ interface TimesProps {
 
 export default function Times({ alert, includeYear, noEndLabel }: TimesProps) {
   const aviationAlertsResult = useAppSelector(
-    (state) => state.weather.aviationAlerts
+    (state) => state.weather.aviationAlerts,
   );
 
   const aviationAlerts =
@@ -96,7 +96,7 @@ function Time({ children, time, includeYear, noEndLabel }: TimeProps) {
           {formatInTimeZone(
             time,
             timeZone,
-            includeYear ? "eeee, MMMM do yyyy" : "eeee, MMMM do"
+            includeYear ? "eeee, MMMM do yyyy" : "eeee, MMMM do",
           )}
         </div>
       ) : (

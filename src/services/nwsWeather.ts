@@ -158,9 +158,9 @@ axiosRetryEnhancer(axiosRetry, {
 });
 
 export async function getGridData(
-  forecastGridDataUrl: string
+  forecastGridDataUrl: string,
 ): Promise<NWSWeather> {
-  let { data } = await axiosRetry.get(forecastGridDataUrl);
+  const { data } = await axiosRetry.get(forecastGridDataUrl);
 
   return data;
 }
@@ -187,8 +187,8 @@ export async function getAlerts({
         (potentialNewerFeature) =>
           potentialNewerFeature.properties.event === feature.properties.event &&
           Date.parse(potentialNewerFeature.properties.sent) >
-            Date.parse(feature.properties.sent)
-      )
+            Date.parse(feature.properties.sent),
+      ),
   );
 
   return data;
@@ -213,13 +213,13 @@ export async function getPointResources({
   lat: number;
   lon: number;
 }): Promise<{ forecastGridDataUrl: string; timeZone: string }> {
-  let { data } = await axios.get(`/api/weather/points/${lat},${lon}`);
+  const { data } = await axios.get(`/api/weather/points/${lat},${lon}`);
 
   const forecastGridDataUrl = data.properties.forecastGridData;
 
   if (!forecastGridDataUrl)
     throw new InvalidPointResourceError(
-      "forecastGridData not defined in response!"
+      "forecastGridData not defined in response!",
     );
 
   return {
@@ -229,13 +229,13 @@ export async function getPointResources({
 }
 
 export async function getDiscussion(gridId: string): Promise<Discussion> {
-  let { data: discussionsData } = await axios.get(
-    `/api/weather/products/types/AFD/locations/${gridId}`
+  const { data: discussionsData } = await axios.get(
+    `/api/weather/products/types/AFD/locations/${gridId}`,
   );
 
   const discussionUrl = normalize(discussionsData["@graph"][0]["@id"]);
 
-  let { data } = await axios.get(discussionUrl);
+  const { data } = await axios.get(discussionUrl);
 
   return data;
 }
@@ -252,10 +252,10 @@ function normalize(url: string): string {
 
 export function findValue<T>(
   date: Date,
-  property: Property<T>
+  property: Property<T>,
 ): Value<T> | undefined {
   return property.values.find(({ validTime }) =>
-    isBetweenWxTime(validTime, date)
+    isBetweenWxTime(validTime, date),
   );
 }
 
@@ -309,14 +309,14 @@ const blacklist: Record<Lowercase<string>, true> = {
 };
 
 export async function getGlossary(): Promise<GlossaryTerm[]> {
-  let { data } = await axios.get("/api/weather/glossary");
+  const { data } = await axios.get("/api/weather/glossary");
 
   return (data.glossary as GlossaryTerm[])
     .filter(
       ({ term }) =>
         !!term &&
         term.length > 1 &&
-        !blacklist[term.toLowerCase() as Lowercase<string>]
+        !blacklist[term.toLowerCase() as Lowercase<string>],
     )
     .map((item) => ({ ...item, lwrTerm: item.term.toLowerCase() }))
     .sort((a, b) => b.term.length - a.term.length);

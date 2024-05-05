@@ -34,7 +34,7 @@ export default function Description({ alerts }: DescriptionProps) {
           <p>
             {alert.properties.severity
               ? capitalizeFirstLetter(
-                  formatSeverity(alert.properties.severity)!
+                  formatSeverity(alert.properties.severity)!,
                 )
               : ""}{" "}
             non-convective turbulence exists in the{" "}
@@ -42,7 +42,7 @@ export default function Description({ alerts }: DescriptionProps) {
             atmosphere{" "}
             {alert.properties.base && alert.properties.top
               ? `(${formatFlightLevel(
-                  alert.properties.base
+                  alert.properties.base,
                 )} to ${formatFlightLevel(alert.properties.top!)})`
               : ""}
             .
@@ -72,7 +72,7 @@ export default function Description({ alerts }: DescriptionProps) {
             {capitalizeFirstLetter(
               [formatSeverity(alert.properties.severity), "icing"]
                 .filter((n) => n)
-                .join(" ")
+                .join(" "),
             )}{" "}
             from{" "}
             {alert.properties.base === "FZL"
@@ -129,7 +129,7 @@ export default function Description({ alerts }: DescriptionProps) {
             {formatInTimeZone(
               getAlertEnd(item[item.length - 1])!,
               timeZone,
-              "haaa"
+              "haaa",
             )}
           </Label>
           {renderAlertDescription(item[0])}

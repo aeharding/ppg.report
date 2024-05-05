@@ -41,7 +41,7 @@ export default function Extra() {
   const { t } = useTranslation();
   const weather = useAppSelector((state) => state.weather.weather);
   const discussionLastViewed = useAppSelector(
-    (state) => state.weather.discussionLastViewed
+    (state) => state.weather.discussionLastViewed,
   );
   const discussion = useAppSelector((state) => state.weather.discussion);
 
@@ -50,7 +50,7 @@ export default function Extra() {
       ? !discussionLastViewed ||
         isAfter(
           new Date(discussion.issuanceTime),
-          new Date(discussionLastViewed)
+          new Date(discussionLastViewed),
         )
       : false;
 

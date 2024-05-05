@@ -26,5 +26,5 @@ export const tafReport = createSelector(
       }
       throw e;
     }
-  }
+  },
 );

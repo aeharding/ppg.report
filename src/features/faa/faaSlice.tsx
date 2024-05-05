@@ -48,7 +48,7 @@ export const faaReducer = createSlice({
           if (
             !state.tfrsLastUpdated ||
             Math.abs(
-              differenceInMinutes(new Date(state.tfrsLastUpdated), new Date())
+              differenceInMinutes(new Date(state.tfrsLastUpdated), new Date()),
             ) > 30
           ) {
             state.tfrs = "pending";

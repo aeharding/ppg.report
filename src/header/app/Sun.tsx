@@ -43,7 +43,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           times.sunrise,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunrise} />
       </div>
@@ -51,7 +51,7 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
         {formatInTimeZone(
           times.sunsetStart,
           timeZone,
-          getTimeFormatString(timeFormat, true)
+          getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunset} />
       </div>

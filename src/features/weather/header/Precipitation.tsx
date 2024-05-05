@@ -49,7 +49,7 @@ export default function Precipitation({
       return findValue(
         new Date(date),
 
-        weather.properties.probabilityOfPrecipitation
+        weather.properties.probabilityOfPrecipitation,
       )?.value;
 
     return weather.byUnixTimestamp[new Date(date).getTime() / 1000]

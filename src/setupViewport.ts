@@ -10,7 +10,7 @@ const viewport = document.querySelector("meta[name=viewport]");
 if (viewport && !isInstalled())
   viewport.setAttribute(
     "content",
-    "width=device-width, initial-scale=1, viewport-fit=cover"
+    "width=device-width, initial-scale=1, viewport-fit=cover",
   );
 
 // Theme color on Android is used for the status bar when installed.

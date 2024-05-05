@@ -4,7 +4,7 @@ import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { getAviationAlertName } from "../../helpers/aviationAlerts";
 import useDebounce from "../../helpers/useDebounce";
 import { findRelatedAlerts, isAlertDangerous } from "../../helpers/weather";
@@ -116,7 +116,7 @@ export default function Header({
   const { ref, inView } = useInView({ threshold: 1 });
   const inViewDebounced = useDebounce(inView, 1000);
   const aviationAlerts = useAppSelector(
-    (state) => state.weather.aviationAlerts
+    (state) => state.weather.aviationAlerts,
   );
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export default function Header({
     if (typeof aviationAlerts !== "object") return;
 
     findRelatedAlerts(alert, aviationAlerts).forEach((relatedAlert) =>
-      dispatch(readAlert(relatedAlert))
+      dispatch(readAlert(relatedAlert)),
     );
   }, [inViewDebounced, dispatch, alert, aviationAlerts]);
 
@@ -203,7 +203,7 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
       <Link
         href={`https://tfr.faa.gov/save_pages/detail_${alert.properties.coreNOTAMData.notam.number.replace(
           /\//g,
-          "_"
+          "_",
         )}.html`}
         target="_blank"
         rel="noopener noreferrer"

@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
-
 import { css } from "@emotion/react";
 import { LatLngExpression } from "leaflet";
 import { Circle } from "react-leaflet";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 
 export default function MyPosition() {

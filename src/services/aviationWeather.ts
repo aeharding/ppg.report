@@ -44,7 +44,7 @@ export async function getTAF({
 
 // Docs https://www.aviationweather.gov/help/webservice
 
-type AbstractAviationAlertFeature<Payload = {}> = {
+type AbstractAviationAlertFeature<Payload = unknown> = {
   id: string;
   properties: Payload;
   geometry: GeometryObject | null;
@@ -253,6 +253,7 @@ export async function getAviationAlerts({
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return response.data.features.filter((feature: any) => {
     if (!feature.properties.altitudeLow1) return true;
 

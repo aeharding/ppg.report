@@ -1,9 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
-import pluginRewriteAll from "vite-plugin-rewrite-all";
 import { VitePWA } from "vite-plugin-pwa";
-import eslint from "vite-plugin-eslint";
 
 export default defineConfig(() => {
   return {
@@ -15,7 +13,6 @@ export default defineConfig(() => {
       sourcemap: true,
     },
     plugins: [
-      pluginRewriteAll(),
       react({
         jsxImportSource: "@emotion/react",
         babel: {
@@ -29,7 +26,6 @@ export default defineConfig(() => {
         filename: "service-worker.ts",
         registerType: "autoUpdate",
       }),
-      eslint(),
     ],
     server: {
       proxy: {

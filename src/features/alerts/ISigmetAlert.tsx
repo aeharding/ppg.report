@@ -56,11 +56,12 @@ export default function SigmetAlert({ alert, index, total }: AlertProps) {
             <More>
               <p>
                 International SIGMETs are defined within a specific FIR. Most
-                FIRs are aligned with a country's airspace or a subset of that
-                airspace. Ocean regions also have FIRs where SIGMETs are covered
-                by adjacent countries. The US does issue international SIGMETs
-                for Alaska and for oceanic areas off the east coast of the US,
-                Gulf of Mexico and a large part of the central northern Pacific.
+                FIRs are aligned with a country&apos;s airspace or a subset of
+                that airspace. Ocean regions also have FIRs where SIGMETs are
+                covered by adjacent countries. The US does issue international
+                SIGMETs for Alaska and for oceanic areas off the east coast of
+                the US, Gulf of Mexico and a large part of the central northern
+                Pacific.
               </p>
               {typeInfo(alert.properties.rawSigmet.slice(0, 2))}
             </More>

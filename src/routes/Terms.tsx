@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { outputP3ColorFromRGB } from "../helpers/colors";
-import { ReactComponent as Email } from "./email.svg";
+import Email from "./email.svg";
 import pJson from "../../package.json";
 
 const A = styled.a`
@@ -85,7 +85,7 @@ export default function Terms() {
         information:
         <ol>
           <li>
-            <strong>NOAA's Rapid Refresh software</strong> —{" "}
+            <strong>NOAA&apos;s Rapid Refresh software</strong> —{" "}
             <a
               href="https://rucsoundings.noaa.gov"
               target="_blank"
@@ -99,7 +99,7 @@ export default function Terms() {
           </li>
           <br />
           <li>
-            <strong>OpenStreetMap's Nominatim service</strong> —{" "}
+            <strong>OpenStreetMap&apos;s Nominatim service</strong> —{" "}
             <a
               href="https://nominatim.openstreetmap.org"
               target="_blank"
@@ -227,8 +227,8 @@ export default function Terms() {
       </p>
 
       <p>
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-        OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY
+        KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
         MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
         IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
         CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,

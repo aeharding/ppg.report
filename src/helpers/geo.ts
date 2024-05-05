@@ -1,6 +1,6 @@
 export function isPossiblyWithinUSA(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): boolean {
   // Check if latitude and longitude correspond to any specific U.S. locations or colonies
   // (Note: This is a rough approximation and may not include all locations or colonies)
@@ -73,7 +73,7 @@ export function isPossiblyWithinUSA(
 
 export function isWithinNWSRAPModelBoundary(
   latitude: number,
-  longitude: number
+  longitude: number,
 ): boolean {
   const isWithinBoundary =
     latitude >= 20 && latitude <= 55 && longitude >= -130 && longitude <= -60;

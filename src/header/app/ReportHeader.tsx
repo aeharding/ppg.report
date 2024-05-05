@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { faArrowLeft } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReverseLocation from "../../features/geocode/ReverseLocation";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import Sun from "./Sun";
 
 const BackButton = styled.div`
