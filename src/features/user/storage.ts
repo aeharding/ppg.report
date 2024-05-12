@@ -174,7 +174,8 @@ export function getSpeedUnit(): SpeedUnit {
     typeof savedValue !== "string" ||
     (savedValue !== SpeedUnit.KPH &&
       savedValue !== SpeedUnit.Knots &&
-      savedValue !== SpeedUnit.MPH)
+      savedValue !== SpeedUnit.MPH &&
+      savedValue !== SpeedUnit.mps)
   )
     return DEFAULT_SPEED_UNIT;
 
