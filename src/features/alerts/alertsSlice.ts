@@ -77,13 +77,21 @@ export function isTFRAlert(alert: Alert): alert is TFRFeature {
 }
 
 export function isSigmetAlert(alert: Alert): alert is SigmetFeature {
-  return "data" in alert.properties && alert.properties.data === "SIGMET";
+  return (
+    ("data" in alert.properties && alert.properties.data === "SIGMET") ||
+    ("airSigmetType" in alert.properties &&
+      (alert.properties.airSigmetType === "SIGMET" ||
+        alert.properties.airSigmetType === "OUTLOOK"))
+  );
 }
 
 export function isSigmetOutlookAlert(
   alert: Alert,
 ): alert is SigmetOutlookFeature {
-  return isSigmetAlert(alert) && alert.properties.airSigmetType === "OUTLOOK";
+  return (
+    "airSigmetType" in alert.properties &&
+    alert.properties.airSigmetType === "OUTLOOK"
+  );
 }
 
 export function isISigmetAlert(alert: Alert): alert is ISigmetFeature {
