@@ -99,7 +99,7 @@ export function isISigmetAlert(alert: Alert): alert is ISigmetFeature {
 }
 
 export function isGAirmetAlert(alert: Alert): alert is GAirmetFeature {
-  return "data" in alert.properties && alert.properties.data === "GAIRMET";
+  return "product" in alert.properties;
 }
 
 export function getAlertStart(alert: Alert) {
