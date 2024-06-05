@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { outputP3ColorFromRGB } from "../helpers/colors";
-import Email from "./email.svg";
+import Email from "./email.svg?react";
 import pJson from "../../package.json";
 
 const A = styled.a`
