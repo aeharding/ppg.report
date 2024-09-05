@@ -29,23 +29,25 @@ export interface UserLocation {
   isFallbackLabel?: boolean;
 }
 
-const LOCATIONS_STORAGE_KEY = "user-locations";
-const ALTITUDE_STORAGE_KEY = "user-altitude";
-const ALTITUDE_LEVELS_STORAGE_KEY = "user-altitude-levels";
-const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
-const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
-const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
-const DISTANCE_UNIT_STORAGE_KEY = "user-distance-unit";
-const TIME_FORMAT_STORAGE_KEY = "user-time-format";
-const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
-const READ_ALERTS = "read-alerts";
-const HIDDEN_ALERTS = "hidden-alerts";
-const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
-const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
-const LANGUAGE_STORAGE_KEY = "user-language";
-const ADVANCED_STORAGE_KEY = "advanced-mode";
-const MAX_LOCATIONS = 5;
-const MAX_DISTANCE_MATCH = 1000; // meters
+import {
+  LOCATIONS_STORAGE_KEY,
+  ALTITUDE_STORAGE_KEY,
+  ALTITUDE_LEVELS_STORAGE_KEY,
+  HEIGHT_UNIT_STORAGE_KEY,
+  SPEED_UNIT_STORAGE_KEY,
+  TEMPERATURE_UNIT_STORAGE_KEY,
+  DISTANCE_UNIT_STORAGE_KEY,
+  TIME_FORMAT_STORAGE_KEY,
+  DISCUSSION_LAST_VIEWED_STORAGE_KEY,
+  READ_ALERTS,
+  HIDDEN_ALERTS,
+  SWIPE_INERTIA_STORAGE_KEY,
+  G_AIRMET_READ_STORAGE_KEY,
+  LANGUAGE_STORAGE_KEY,
+  ADVANCED_STORAGE_KEY,
+  MAX_LOCATIONS,
+  MAX_DISTANCE_MATCH,
+} from "./constants";
 
 export function getLocations(): UserLocation[] {
   const locations: UserLocation[] = JSON.parse(

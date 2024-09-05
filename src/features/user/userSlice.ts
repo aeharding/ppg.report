@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Geocode from "../../models/Geocode";
 import { AppDispatch, RootState } from "../../store";
 import { Alert } from "../alerts/alertsSlice";
+import * as locationHash from "./locationHash";
 import * as storage from "./storage";
 import { UserLocation } from "./storage";
 import { Languages } from "../../i18n";
@@ -37,13 +38,15 @@ interface UserState {
 // Define the initial state using that type
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
-  altitude: storage.getAltitude(),
-  altitudeLevels: storage.getAltitudeLevels(),
-  heightUnit: storage.getHeightUnit(),
-  speedUnit: storage.getSpeedUnit(),
-  temperatureUnit: storage.getTemperatureUnit(),
-  distanceUnit: storage.getDistanceUnit(),
-  timeFormat: storage.getTimeFormat(),
+  altitude: locationHash.getAltitude() || storage.getAltitude(),
+  altitudeLevels:
+    locationHash.getAltitudeLevels() || storage.getAltitudeLevels(),
+  heightUnit: locationHash.getHeightUnit() || storage.getHeightUnit(),
+  speedUnit: locationHash.getSpeedUnit() || storage.getSpeedUnit(),
+  temperatureUnit:
+    locationHash.getTemperatureUnit() || storage.getTemperatureUnit(),
+  distanceUnit: locationHash.getDistanceUnit() || storage.getDistanceUnit(),
+  timeFormat: locationHash.getTimeFormat() || storage.getTimeFormat(),
   readAlerts: storage.getReadAlerts(),
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
