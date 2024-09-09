@@ -65,3 +65,15 @@ Using a reverse proxy such as Nginx, configure the following:
 - **IMPORTANT!** For each outgoing API request, make sure to:
   - Attach a `User-Agent` header, as per [NOAA](https://www.weather.gov/documentation/services-web-api) and [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) usage policies.
   - **Keep these free APIs free - be a good API consumer!** Add caching for each route - I recommend at least 10 minutes for `rucsoundings.noaa.gov`, and one week for `nominatim.openstreetmap.org`.
+
+## Linking to ppg.report
+
+Your app and/or website can better integrate with ppg.report by setting unit of measure and locale settings for the user.
+
+Use the following link format:
+
+```
+http://ppg.report/29.352,-95.460#user-altitude=MSL&user-speed-unit=m/s&user-temperature-unit=%C2%B0C&user-height-unit=m&user-time-format=12-hour&user-distance-unit=km
+```
+
+Options can be found in [settingEnums.ts](./src/features/rap/extra/settings/settingEnums.ts).

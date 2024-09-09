@@ -1,0 +1,17 @@
+export const LOCATIONS_STORAGE_KEY = "user-locations";
+export const ALTITUDE_STORAGE_KEY = "user-altitude";
+export const ALTITUDE_LEVELS_STORAGE_KEY = "user-altitude-levels";
+export const HEIGHT_UNIT_STORAGE_KEY = "user-height-unit";
+export const SPEED_UNIT_STORAGE_KEY = "user-speed-unit";
+export const TEMPERATURE_UNIT_STORAGE_KEY = "user-temperature-unit";
+export const DISTANCE_UNIT_STORAGE_KEY = "user-distance-unit";
+export const TIME_FORMAT_STORAGE_KEY = "user-time-format";
+export const DISCUSSION_LAST_VIEWED_STORAGE_KEY = "discussion-last-viewed";
+export const READ_ALERTS = "read-alerts";
+export const HIDDEN_ALERTS = "hidden-alerts";
+export const SWIPE_INERTIA_STORAGE_KEY = "swipe-inertia";
+export const G_AIRMET_READ_STORAGE_KEY = "g-airmet-read";
+export const LANGUAGE_STORAGE_KEY = "user-language";
+export const ADVANCED_STORAGE_KEY = "advanced-mode";
+export const MAX_LOCATIONS = 5;
+export const MAX_DISTANCE_MATCH = 1000; // meters
