@@ -38,15 +38,15 @@ interface UserState {
 // Define the initial state using that type
 const initialState: UserState = {
   recentLocations: storage.getLocations(),
-  altitude: locationHash.getAltitude() || storage.getAltitude(),
+  altitude: locationHash.getAltitude() ?? storage.getAltitude(),
   altitudeLevels:
-    locationHash.getAltitudeLevels() || storage.getAltitudeLevels(),
-  heightUnit: locationHash.getHeightUnit() || storage.getHeightUnit(),
-  speedUnit: locationHash.getSpeedUnit() || storage.getSpeedUnit(),
+    locationHash.getAltitudeLevels() ?? storage.getAltitudeLevels(),
+  heightUnit: locationHash.getHeightUnit() ?? storage.getHeightUnit(),
+  speedUnit: locationHash.getSpeedUnit() ?? storage.getSpeedUnit(),
   temperatureUnit:
-    locationHash.getTemperatureUnit() || storage.getTemperatureUnit(),
-  distanceUnit: locationHash.getDistanceUnit() || storage.getDistanceUnit(),
-  timeFormat: locationHash.getTimeFormat() || storage.getTimeFormat(),
+    locationHash.getTemperatureUnit() ?? storage.getTemperatureUnit(),
+  distanceUnit: locationHash.getDistanceUnit() ?? storage.getDistanceUnit(),
+  timeFormat: locationHash.getTimeFormat() ?? storage.getTimeFormat(),
   readAlerts: storage.getReadAlerts(),
   hiddenAlerts: storage.getHiddenAlerts(),
   swipeInertia: storage.getSwipeInertia(),
