@@ -18,18 +18,18 @@ import {
   TimeFormat,
 } from "../rap/extra/settings/settingEnums";
 
-let locationHashArray = document.location.hash
+const locationHashArray = document.location.hash
   .replace(/#/, "")
   .split(/&/)
   .map((kv) => {
-    let [k, v] = kv.split(/=/);
-    return [k, decodeURI(v)] as [string, string];
+    const [k, v] = kv.split(/=/);
+    return [k, decodeURI(v)] as const;
   });
 
-let locationHashMap: Map<string, string> = new Map(locationHashArray);
+const locationHashMap: Map<string, string> = new Map(locationHashArray);
 
 export function getAltitude() {
-  let value = locationHashMap.get(ALTITUDE_STORAGE_KEY) as AltitudeType;
+  const value = locationHashMap.get(ALTITUDE_STORAGE_KEY) as AltitudeType;
   if (
     value !== AltitudeType.AGL &&
     value !== AltitudeType.MSL &&
@@ -40,7 +40,7 @@ export function getAltitude() {
 }
 
 export function getAltitudeLevels() {
-  let value = locationHashMap.get(
+  const value = locationHashMap.get(
     ALTITUDE_LEVELS_STORAGE_KEY,
   ) as AltitudeLevels;
   if (value !== AltitudeLevels.Default && value !== AltitudeLevels.Normalized)
@@ -49,14 +49,14 @@ export function getAltitudeLevels() {
 }
 
 export function getHeightUnit() {
-  let value = locationHashMap.get(HEIGHT_UNIT_STORAGE_KEY) as HeightUnit;
+  const value = locationHashMap.get(HEIGHT_UNIT_STORAGE_KEY) as HeightUnit;
   if (value !== HeightUnit.Feet && value !== HeightUnit.Meters)
     return undefined;
   return value;
 }
 
 export function getSpeedUnit() {
-  let value = locationHashMap.get(SPEED_UNIT_STORAGE_KEY) as SpeedUnit;
+  const value = locationHashMap.get(SPEED_UNIT_STORAGE_KEY) as SpeedUnit;
   if (
     value !== SpeedUnit.KPH &&
     value !== SpeedUnit.Knots &&
@@ -68,7 +68,7 @@ export function getSpeedUnit() {
 }
 
 export function getTemperatureUnit() {
-  let value = locationHashMap.get(
+  const value = locationHashMap.get(
     TEMPERATURE_UNIT_STORAGE_KEY,
   ) as TemperatureUnit;
   if (value !== TemperatureUnit.Celsius && value !== TemperatureUnit.Fahrenheit)
@@ -77,14 +77,14 @@ export function getTemperatureUnit() {
 }
 
 export function getDistanceUnit() {
-  let value = locationHashMap.get(DISTANCE_UNIT_STORAGE_KEY) as DistanceUnit;
+  const value = locationHashMap.get(DISTANCE_UNIT_STORAGE_KEY) as DistanceUnit;
   if (value !== DistanceUnit.Kilometers && value !== DistanceUnit.Miles)
     return undefined;
   return value;
 }
 
 export function getTimeFormat() {
-  let value = locationHashMap.get(TIME_FORMAT_STORAGE_KEY) as TimeFormat;
+  const value = locationHashMap.get(TIME_FORMAT_STORAGE_KEY) as TimeFormat;
   if (value !== TimeFormat.Twelve && value !== TimeFormat.TwentyFour)
     return undefined;
   return value;
