@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import { findValue } from "../../../services/nwsWeather";
-import { WeatherResult as NWSWeatherResult } from "../weatherSlice";
+import { WeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
 import { css } from "@emotion/react";
 import NWSWeather from "./NWSWeather";
@@ -84,7 +84,7 @@ export const WeatherIcon = styled(FontAwesomeIcon, {
 
 interface WeatherProps {
   date: string;
-  weather: NWSWeatherResult | undefined;
+  weather: WeatherResult | undefined;
 }
 
 export default function Weather({ date, weather }: WeatherProps) {

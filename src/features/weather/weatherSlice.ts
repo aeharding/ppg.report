@@ -18,7 +18,7 @@ import { AxiosError } from "axios";
 
 const UPDATE_INTERVAL_MINUTES = 30;
 
-type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
+export type Weather = nwsWeather.NWSWeather | openMeteo.OpenMeteoWeather;
 
 export type WeatherResult =
   // component has requested a weather, to be batched in next bulk request

@@ -137,6 +137,6 @@ function toMph(speed: number): number {
 /**
  * @returns A "composite" wind value for gusts+sustained, similar to temperature "real feel"
  */
-function getCompositeWindValue(speed: number, gust: number): number {
+export function getCompositeWindValue(speed: number, gust: number): number {
   return Math.max((gust - speed) * 2.5, speed, gust);
 }

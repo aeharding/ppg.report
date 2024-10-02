@@ -19,10 +19,10 @@ const PRESSURE_ALTITUDES = [
 
 const PRESSURE_ALTITUDE_METRICS = [
   "temperature",
-  "windspeed",
-  "winddirection",
+  "wind_speed",
+  "wind_direction",
   "geopotential_height",
-  "relativehumidity",
+  "relative_humidity",
 ] as const;
 
 /**
@@ -30,31 +30,33 @@ const PRESSURE_ALTITUDE_METRICS = [
  */
 const AGL_ALTITUDES = [80, 120, 180] as const;
 
-const AGL_METRICS = ["windspeed", "winddirection", "temperature"] as const;
+const AGL_METRICS = ["wind_speed", "wind_direction", "temperature"] as const;
 
 const SPECIAL_ALOFT_VARIABLES = [
   "cape",
+  "convective_inhibition",
 
   "temperature_2m",
-  "dewpoint_2m",
-  "relativehumidity_2m",
+  "dew_point_2m",
+  "relative_humidity_2m",
   "surface_pressure",
   "pressure_msl",
 
   // No temperature_10m, so have to break it out from AGL_ALTITUDES
   // (will fudge it and use temperature_2m)
-  "winddirection_10m",
-  "windspeed_10m",
-  "windgusts_10m",
+  "wind_direction_10m",
+  "wind_speed_10m",
+  "wind_gusts_10m",
 ] as const;
 
 const WEATHER_VARIABLES = [
   "precipitation_probability",
-  "weathercode",
-  "cloudcover",
+  "weather_code",
+  "cloud_cover",
 
-  "windspeed_10m",
-  "windgusts_10m",
+  "wind_speed_10m",
+  "wind_gusts_10m",
+  "wind_direction_10m",
 ] as const;
 
 type HourlyPressureParams =
@@ -84,6 +86,7 @@ interface OpenMeteoWeatherHour {
   /** kph */
   windGust: number;
   cloudCover: number;
+  windDirection: number;
 }
 
 export async function getWeather(
@@ -131,10 +134,11 @@ function convertOpenMeteoToWeather(
       openMeteoResponse.hourly.time.map((_, index) => ({
         precipitationChance:
           openMeteoResponse.hourly.precipitation_probability[index],
-        weather: openMeteoResponse.hourly.weathercode[index],
-        windSpeed: openMeteoResponse.hourly.windspeed_10m[index],
-        windGust: openMeteoResponse.hourly.windgusts_10m[index],
-        cloudCover: openMeteoResponse.hourly.cloudcover[index],
+        weather: openMeteoResponse.hourly.weather_code[index],
+        windSpeed: openMeteoResponse.hourly.wind_speed_10m[index],
+        windGust: openMeteoResponse.hourly.wind_gusts_10m[index],
+        windDirection: openMeteoResponse.hourly.wind_direction_10m[index],
+        cloudCover: openMeteoResponse.hourly.cloud_cover[index],
       })),
     ),
   };
@@ -226,14 +230,16 @@ function convertOpenMeteoToWindsAloft(
           index
         ],
       windSpeedInKph:
-        openMeteoResponse.hourly[`windspeed_${pressureAltitude}hPa`][index],
+        openMeteoResponse.hourly[`wind_speed_${pressureAltitude}hPa`][index],
       windDirectionInDeg:
-        openMeteoResponse.hourly[`winddirection_${pressureAltitude}hPa`][index],
+        openMeteoResponse.hourly[`wind_direction_${pressureAltitude}hPa`][
+          index
+        ],
       temperatureInC:
         openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index],
       pressure: pressureAltitude,
       dewpointInC: velitherm.dewPoint(
-        openMeteoResponse.hourly[`relativehumidity_${pressureAltitude}hPa`][
+        openMeteoResponse.hourly[`relative_humidity_${pressureAltitude}hPa`][
           index
         ],
         openMeteoResponse.hourly[`temperature_${pressureAltitude}hPa`][index],
@@ -270,14 +276,15 @@ function convertOpenMeteoToWindsAloft(
       return {
         date: new Date(time * 1_000).toISOString(),
         cape: openMeteoResponse.hourly.cape[index],
+        cin: openMeteoResponse.hourly.convective_inhibition[index],
         altitudes: [
           {
             altitudeInM: openMeteoResponse.elevation,
-            windSpeedInKph: openMeteoResponse.hourly.windspeed_10m[index],
+            windSpeedInKph: openMeteoResponse.hourly.wind_speed_10m[index],
             windDirectionInDeg:
-              openMeteoResponse.hourly.winddirection_10m[index],
+              openMeteoResponse.hourly.wind_direction_10m[index],
             temperatureInC: openMeteoResponse.hourly.temperature_2m[index],
-            dewpointInC: openMeteoResponse.hourly.dewpoint_2m[index],
+            dewpointInC: openMeteoResponse.hourly.dew_point_2m[index],
             pressure: Math.round(
               openMeteoResponse.hourly.surface_pressure[index],
             ),
@@ -287,9 +294,9 @@ function convertOpenMeteoToWindsAloft(
             AGL_ALTITUDES.map((agl) => ({
               altitudeInM: openMeteoResponse.elevation + agl,
               windSpeedInKph:
-                openMeteoResponse.hourly[`windspeed_${agl}m`][index],
+                openMeteoResponse.hourly[`wind_speed_${agl}m`][index],
               windDirectionInDeg:
-                openMeteoResponse.hourly[`winddirection_${agl}m`][index],
+                openMeteoResponse.hourly[`wind_direction_${agl}m`][index],
               temperatureInC:
                 openMeteoResponse.hourly[`temperature_${agl}m`][index],
               dewpointInC: velitherm.dewPoint(
@@ -297,7 +304,7 @@ function convertOpenMeteoToWindsAloft(
                   agl,
                   openMeteoResponse.hourly[`surface_pressure`][index],
                   openMeteoResponse.hourly[`temperature_${agl}m`][index],
-                  openMeteoResponse.hourly[`relativehumidity_2m`][index],
+                  openMeteoResponse.hourly[`relative_humidity_2m`][index],
                 ),
                 openMeteoResponse.hourly[`temperature_${agl}m`][index],
               ),
