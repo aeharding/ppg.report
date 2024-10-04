@@ -77,10 +77,10 @@ export default function Extra() {
       <BottomSheet
         openButton={
           <Item icon={faCalendarAlt} iconBg={[50, 180, 255]} iconColor="black">
-            {t("Daily Forecast")}
+            {t("Extended Forecast")}
           </Item>
         }
-        title={t("Daily Forecast")}
+        title={t("Extended Forecast")}
       >
         <Outlook />
       </BottomSheet>

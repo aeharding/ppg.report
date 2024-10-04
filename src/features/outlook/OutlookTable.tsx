@@ -53,10 +53,15 @@ function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
         )?.value;
         const windSpeed = findValue(hour, weather.properties.windSpeed)?.value;
         const windGust = findValue(hour, weather.properties.windGust)?.value;
+        const temperature = findValue(
+          hour,
+          weather.properties.temperature,
+        )?.value;
 
         if (windDirection == null) return;
         if (windSpeed == null) return;
         if (windGust == null) return;
+        if (temperature == null) return;
 
         return (
           <OutlookRow
@@ -65,6 +70,7 @@ function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
             windDirection={windDirection}
             windSpeed={windSpeed}
             windGust={windGust}
+            temperature={temperature}
           />
         );
       }),
@@ -90,6 +96,7 @@ function OpenMeteoOutlookRows({ weather }: { weather: OpenMeteoWeather }) {
             windDirection={data.windDirection}
             windSpeed={data.windSpeed}
             windGust={data.windGust}
+            temperature={data.temperature}
           />
         );
       }),

@@ -9,6 +9,10 @@ import { faMoon, faSun } from "@fortawesome/pro-duotone-svg-icons";
 import chroma from "chroma-js";
 import { getCompositeWindValue } from "../weather/header/Wind";
 import SunCalc from "suncalc";
+import { TemperatureText } from "../rap/cells/Temperature";
+import { Aside } from "../rap/cells/Altitude";
+import { TemperatureUnit } from "../rap/extra/settings/settingEnums";
+import { cToF } from "../weather/aviation/DetailedAviationReport";
 
 export const windColorScale = chroma
   .scale([
@@ -26,11 +30,11 @@ export const windColorScale = chroma
   .mode("lab");
 
 const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
-  height: 50px;
-
   border-bottom: 1px solid #77777715;
 
-  position: relative;
+  background: ${({ day }) => (day ? "#ffffff07" : "transparent")};
+
+  /* position: relative;
   // https://github.com/w3c/csswg-drafts/issues/1899#issuecomment-338773780
   transform: scale(1);
 
@@ -47,20 +51,11 @@ const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
       ${({ day }) => (day ? "#ffffff0a" : "transparent")}
         calc(${({ speed }) => speed}% + 80px)
     );
-  }
+  } */
 `;
 
 const TimeCell = styled.td`
-  text-align: center;
-  vertical-align: middle;
-`;
-
-const Time = styled.div`
-  display: inline-block;
-  padding: 3px 5px;
   font-size: 12px;
-  background: var(--bg-bottom-sheet);
-  border-radius: 16px;
 `;
 
 interface OutlookRowProps {
@@ -68,6 +63,7 @@ interface OutlookRowProps {
   windDirection: number;
   windSpeed: number;
   windGust: number;
+  temperature: number;
 }
 
 export default function OutlookRow({
@@ -75,12 +71,15 @@ export default function OutlookRow({
   windDirection,
   windSpeed,
   windGust,
+  temperature: inCelsius,
 }: OutlookRowProps) {
   const timeZone = useAppSelector(timeZoneSelector);
   if (!timeZone) throw new Error("timeZone needed");
 
   const coordinates = useAppSelector((state) => state.weather.coordinates);
   if (!coordinates) throw new Error("coordinates not found");
+
+  const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
 
   const time = formatInTimeZone(hour, timeZone, "hha");
 
@@ -95,21 +94,42 @@ export default function OutlookRow({
   const isDay =
     SunCalc.getPosition(hour, coordinates.lat, coordinates.lon).altitude > 0;
 
+  const temperatureUnitLabel = (() => {
+    switch (temperatureUnit) {
+      case TemperatureUnit.Celsius:
+        return "C";
+      case TemperatureUnit.Fahrenheit:
+        return "F";
+    }
+  })();
+
+  const temperature = (() => {
+    switch (temperatureUnit) {
+      case TemperatureUnit.Celsius:
+        return inCelsius;
+      case TemperatureUnit.Fahrenheit:
+        return cToF(inCelsius);
+    }
+  })();
+
   return (
     <Row speed={compositeSpeed} color={color} day={isDay}>
-      <TimeCell>
-        <Time>{time}</Time>
-      </TimeCell>
-      <td>
-        <WindIndicator direction={windDirection} />
-      </td>
-      <td>
-        <WindSpeed speed={windSpeed} gust={windGust} />
-      </td>
+      <TimeCell width="20%">{time}</TimeCell>
       <td>
         <FontAwesomeIcon icon={isDay ? faSun : faMoon} />
       </td>
-      <td>47deg</td>
+      <td>
+        <TemperatureText temperature={inCelsius}>
+          {Math.round(temperature)} <Aside>°{temperatureUnitLabel}</Aside>{" "}
+        </TemperatureText>
+      </td>
+      <td style={{ textAlign: "start" }}>
+        <WindSpeed speed={windSpeed} gust={windGust} />
+      </td>
+      <td style={{ textAlign: "start" }}>
+        <WindIndicator direction={windDirection} />
+      </td>
+      <td />
     </Row>
   );
 }

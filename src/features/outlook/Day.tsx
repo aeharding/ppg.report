@@ -9,6 +9,8 @@ const Table = styled.table`
   padding: 0;
   border-collapse: collapse;
   border: none;
+
+  text-align: center;
 `;
 
 const THead = styled.thead`
@@ -36,7 +38,7 @@ export default function Day({ hours, date }: DayProps) {
     <Table>
       <THead>
         <tr>
-          <DayLabelCell colSpan={5}>
+          <DayLabelCell colSpan={6}>
             {formatInTimeZone(date, timeZone, "eeee, LLL d")}
           </DayLabelCell>
         </tr>

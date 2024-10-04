@@ -21,7 +21,7 @@ const colorScale = chroma
   .scale(["#ffffff66", "#ffffff", "#fffb00", "#ff0000"])
   .domain([10, 14, 16, 18]);
 
-const WindIcon = styled(FontAwesomeIcon, {
+export const WindIcon = styled(FontAwesomeIcon, {
   shouldForwardProp: (prop) => prop !== "headerType",
 })<{
   headerType: HeaderType;
@@ -130,7 +130,7 @@ export default function Wind({ headerType, date, weather }: WindProps) {
   );
 }
 
-function toMph(speed: number): number {
+export function toMph(speed: number): number {
   return speed * 0.621371;
 }
 

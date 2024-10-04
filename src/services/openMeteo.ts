@@ -53,6 +53,7 @@ const WEATHER_VARIABLES = [
   "precipitation_probability",
   "weather_code",
   "cloud_cover",
+  "temperature",
 
   "wind_speed_10m",
   "wind_gusts_10m",
@@ -87,6 +88,7 @@ interface OpenMeteoWeatherHour {
   windGust: number;
   cloudCover: number;
   windDirection: number;
+  temperature: number;
 }
 
 export async function getWeather(
@@ -139,6 +141,7 @@ function convertOpenMeteoToWeather(
         windGust: openMeteoResponse.hourly.wind_gusts_10m[index],
         windDirection: openMeteoResponse.hourly.wind_direction_10m[index],
         cloudCover: openMeteoResponse.hourly.cloud_cover[index],
+        temperature: openMeteoResponse.hourly.temperature[index],
       })),
     ),
   };
