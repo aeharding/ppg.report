@@ -8,7 +8,8 @@ import { notEmpty } from "../helpers/array";
 import zipObject from "lodash/zipObject";
 import * as velitherm from "velitherm";
 
-const FORECAST_DAYS = 2;
+const FORECAST_DAYS = 7;
+const FORECAST_DAYS_WINDS_ALOFT = 2;
 
 /**
  * in hPa
@@ -115,15 +116,13 @@ export async function getWindsAloft(
   longitude: number,
 ): Promise<{
   windsAloft: WindsAloftReport;
-  weather: OpenMeteoWeather;
   elevationInM: number;
 }> {
-  const openMeteoResponse = await getOpenMeteoWindsAloft(latitude, longitude);
+  const aloft = await getOpenMeteoWindsAloft(latitude, longitude);
 
   return {
-    windsAloft: interpolate(convertOpenMeteoToWindsAloft(openMeteoResponse)),
-    weather: convertOpenMeteoToWeather(openMeteoResponse),
-    elevationInM: openMeteoResponse.elevation,
+    windsAloft: interpolate(convertOpenMeteoToWindsAloft(aloft)),
+    elevationInM: aloft.elevation,
   };
 }
 
@@ -212,12 +211,9 @@ async function getOpenMeteoWindsAloft(
       params: {
         latitude,
         longitude,
-        forecast_days: FORECAST_DAYS,
+        forecast_days: FORECAST_DAYS_WINDS_ALOFT,
         timeformat: "unixtime",
-        hourly: [
-          ...generateWindsAloftParams(),
-          ...generateWeatherParams(),
-        ].join(","),
+        hourly: generateWindsAloftParams().join(","),
       },
     })
   ).data;

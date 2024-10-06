@@ -30,6 +30,12 @@ export const windColorScale = chroma
   .mode("lab");
 
 const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
+  display: flex;
+
+  > * {
+    flex: 1;
+  }
+
   border-bottom: 1px solid #77777715;
 
   background: ${({ day }) => (day ? "#ffffff07" : "transparent")};
@@ -114,8 +120,8 @@ export default function OutlookRow({
 
   return (
     <Row speed={compositeSpeed} color={color} day={isDay}>
-      <TimeCell width="20%">{time}</TimeCell>
-      <td>
+      <TimeCell>{time}</TimeCell>
+      <td style={{ flexGrow: "0" }}>
         <FontAwesomeIcon icon={isDay ? faSun : faMoon} />
       </td>
       <td>
@@ -123,13 +129,13 @@ export default function OutlookRow({
           {Math.round(temperature)} <Aside>°{temperatureUnitLabel}</Aside>{" "}
         </TemperatureText>
       </td>
+      <td style={{ maxWidth: "3%" }} />
       <td style={{ textAlign: "start" }}>
         <WindSpeed speed={windSpeed} gust={windGust} />
       </td>
-      <td style={{ textAlign: "start" }}>
+      <td style={{ textAlign: "start", maxWidth: "16%" }}>
         <WindIndicator direction={windDirection} />
       </td>
-      <td />
     </Row>
   );
 }

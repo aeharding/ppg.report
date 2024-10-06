@@ -43,7 +43,7 @@ export default function Day({ hours, date }: DayProps) {
           </DayLabelCell>
         </tr>
       </THead>
-      {hours}
+      <tbody>{hours}</tbody>
     </Table>
   );
 }

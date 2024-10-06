@@ -585,10 +585,10 @@ export const getWeather =
       let windsAloft, weather, elevationInM;
 
       try {
-        ({ windsAloft, weather, elevationInM } = await openMeteo.getWindsAloft(
-          lat,
-          lon,
-        ));
+        [{ windsAloft, elevationInM }, weather] = await Promise.all([
+          openMeteo.getWindsAloft(lat, lon),
+          openMeteo.getWeather(lat, lon),
+        ]);
       } catch (error) {
         if (!isStale()) {
           dispatch(windsAloftFailed());
@@ -614,14 +614,14 @@ export const getWeather =
     if (isStale()) return;
 
     if (!windsAloft) return; // pending
-    const { elevation, weather } = windsAloft;
+    const { elevation } = windsAloft;
 
     if (elevation == null) loadElevation();
     else dispatch(elevationReceived(elevation));
 
     await Promise.all([
       loadNWSAlerts(),
-      loadWeatherAndDiscussion(weather),
+      loadWeatherAndDiscussion(),
       loadAviationWeather(),
       loadAviationAlerts(),
     ]);
@@ -629,7 +629,6 @@ export const getWeather =
     async function loadWindsAloft(): Promise<
       | {
           elevation?: number;
-          weather?: Weather;
         }
       | undefined
     > {
@@ -661,16 +660,13 @@ export const getWeather =
         try {
           // It would be nice in the future to intelligently choose an API
           // instead of trial and error (and, it would be faster)
-          const { windsAloft, weather } = await openMeteo.getWindsAloft(
-            lat,
-            lon,
-          );
+          const { windsAloft } = await openMeteo.getWindsAloft(lat, lon);
 
           if (isStale()) return;
 
           dispatch(windsAloftReceived(windsAloft));
 
-          return { elevation: windsAloft.elevationInM, weather };
+          return { elevation: windsAloft.elevationInM };
         } catch (error) {
           if (!isStale()) dispatch(windsAloftFailed());
 
@@ -679,7 +675,7 @@ export const getWeather =
       }
     }
 
-    async function loadPointData(fallbackWeather?: Weather) {
+    async function loadPointData() {
       if (getState().weather.weather === "pending") return;
       dispatch(weatherLoading());
       if (getState().weather.weather !== "pending") return;
@@ -731,8 +727,7 @@ export const getWeather =
         // Likely Mexico or Canada
         // We still need the timezone, so try to fall back anyways
 
-        const weather =
-          fallbackWeather ?? (await openMeteo.getWeather(lat, lon));
+        const weather = await openMeteo.getWeather(lat, lon);
 
         if (isStale()) return;
 
@@ -855,8 +850,8 @@ export const getWeather =
       }
     }
 
-    async function loadWeatherAndDiscussion(fallbackWeather?: Weather) {
-      const gridId = await loadPointData(fallbackWeather);
+    async function loadWeatherAndDiscussion() {
+      const gridId = await loadPointData();
 
       if (isStale()) return;
 
