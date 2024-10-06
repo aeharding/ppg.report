@@ -126,7 +126,7 @@ export default function DetailedAviationReport({
       <OpenExternal
         target="_blank"
         rel="noopener noreferrer"
-        href={`https://www.aviationweather.gov/taf/data?ids=${taf.station}&format=decoded&metars=on`}
+        href={`https://aviationweather.gov/data/taf/?id=${taf.station}&decoded=yes&metar=yes`}
       >
         aviationweather.gov <FontAwesomeIcon icon={faExternalLink} />
       </OpenExternal>
