@@ -11,7 +11,10 @@ import { getCompositeWindValue } from "../weather/header/Wind";
 import SunCalc from "suncalc";
 import { TemperatureText } from "../rap/cells/Temperature";
 import { Aside } from "../rap/cells/Altitude";
-import { TemperatureUnit } from "../rap/extra/settings/settingEnums";
+import {
+  TemperatureUnit,
+  TimeFormat,
+} from "../rap/extra/settings/settingEnums";
 import { cToF } from "../weather/aviation/DetailedAviationReport";
 
 export const windColorScale = chroma
@@ -62,6 +65,9 @@ const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
 
 const TimeCell = styled.td`
   font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 interface OutlookRowProps {
@@ -79,6 +85,8 @@ export default function OutlookRow({
   windGust,
   temperature: inCelsius,
 }: OutlookRowProps) {
+  const timeFormat = useAppSelector((state) => state.user.timeFormat);
+
   const timeZone = useAppSelector(timeZoneSelector);
   if (!timeZone) throw new Error("timeZone needed");
 
@@ -87,7 +95,7 @@ export default function OutlookRow({
 
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
 
-  const time = formatInTimeZone(hour, timeZone, "hha");
+  const time = formatInTimeZone(hour, timeZone, timeFormatString(timeFormat));
 
   const compositeSpeed = getCompositeWindValue(windSpeed, windGust) * 0.7;
 
@@ -138,4 +146,13 @@ export default function OutlookRow({
       </td>
     </Row>
   );
+}
+
+function timeFormatString(timeFormat: TimeFormat): string {
+  switch (timeFormat) {
+    case TimeFormat.Twelve:
+      return "hha";
+    case TimeFormat.TwentyFour:
+      return "HHmm";
+  }
 }
