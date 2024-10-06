@@ -45,6 +45,7 @@ const Line = styled.div`
 
   > * {
     flex: 1;
+    min-width: 0;
   }
 `;
 
@@ -149,6 +150,8 @@ const ItemContainer = styled("div", {
   transition: 100ms linear;
   transition-property: opacity, filter;
 
+  container-type: inline-size;
+
   ${({ loading }) =>
     loading &&
     css`
@@ -171,6 +174,7 @@ const IconContainer = styled.div<{
   height: 1.85rem;
   position: relative;
   margin-right: 1rem;
+  flex-shrink: 0;
 
   &::before {
     content: "";
@@ -217,6 +221,15 @@ const IconContainer = styled.div<{
 const RightArrow = styled(FontAwesomeIcon)`
   margin-left: auto;
   opacity: 0.5;
+
+  @container (max-width: 140px) {
+    display: none;
+  }
+`;
+
+const Text = styled.span`
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 interface IconProps {
@@ -245,7 +258,7 @@ function Item({
       <IconContainer iconBg={iconBg} iconColor={iconColor} flag={flag}>
         {!loading ? <FontAwesomeIcon icon={icon} /> : <Spinner />}
       </IconContainer>
-      {children}
+      <Text>{children}</Text>
       <RightArrow icon={faLongArrowRight} />
     </ItemContainer>
   );

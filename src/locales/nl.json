@@ -42,5 +42,7 @@
   "Lapse rate value information": "Dalingsnelheid <0>{{lapseRate}}</0>",
   "Spread": "Verschil",
   "Dewpt": "Dauwpnt",
-  "Relative humidity acronym": "RV"
+  "Relative humidity acronym": "RV",
+  "Extended Forecast": "Uitgebreide Voorspelling",
+  "Metadata": "Metadata"
 }
