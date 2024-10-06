@@ -42,25 +42,6 @@ const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
   border-bottom: 1px solid #77777715;
 
   background: ${({ day }) => (day ? "#ffffff07" : "transparent")};
-
-  /* position: relative;
-  // https://github.com/w3c/csswg-drafts/issues/1899#issuecomment-338773780
-  transform: scale(1);
-
-  &::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    height: 50px;
-    inset: 0;
-    background: linear-gradient(
-      in oklab 90deg,
-      ${({ color }) => color},
-      ${({ color }) => color} ${({ speed }) => speed}%,
-      ${({ day }) => (day ? "#ffffff0a" : "transparent")}
-        calc(${({ speed }) => speed}% + 80px)
-    );
-  } */
 `;
 
 const TimeCell = styled.td`
