@@ -1,4 +1,3 @@
-import React from "react";
 import BottomSheet from "../../bottomSheet/BottomSheet";
 import { isInstalled, isMobile } from "../../helpers/device";
 import { useAppDispatch, useAppSelector } from "../../hooks";

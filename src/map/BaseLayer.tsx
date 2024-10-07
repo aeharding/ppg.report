@@ -1,8 +1,6 @@
-import React from "react";
 import styled from "@emotion/styled";
 import { TileLayer } from "react-leaflet";
 
-// eslint-disable-next-line
 import "leaflet/dist/leaflet.css";
 
 const InvertedTileLayer = styled(TileLayer)`

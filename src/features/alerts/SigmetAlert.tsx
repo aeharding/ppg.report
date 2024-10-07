@@ -7,7 +7,6 @@ import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";
 import { SigmetFeature } from "../../services/aviationWeather";
 import reactStringReplace from "react-string-replace";
-import React from "react";
 import {
   AlertContainer,
   Description,

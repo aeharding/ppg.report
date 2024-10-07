@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import React from "react";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
 import PlaneSvg from "./plane.svg?react";
 

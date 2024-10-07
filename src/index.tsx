@@ -1,4 +1,3 @@
-import React from "react";
 import { css, Global } from "@emotion/react";
 import App from "./App";
 import { Provider } from "react-redux";
