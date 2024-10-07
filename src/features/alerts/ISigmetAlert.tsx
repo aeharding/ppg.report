@@ -6,7 +6,6 @@ import OSMAttribution from "../../map/OSMAttribution";
 import MapController from "./MapController";
 import RadarLayer from "../../map/RadarLayer";
 import { ISigmetFeature } from "../../services/aviationWeather";
-import React from "react";
 import {
   AlertContainer,
   Description,

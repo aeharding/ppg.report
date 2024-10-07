@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import React from "react";
 import { isTouchDevice } from "../../helpers/device";
 
 const Container = styled.div<{ flip: boolean }>`
