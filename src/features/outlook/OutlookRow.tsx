@@ -101,8 +101,6 @@ export default function OutlookRow({
     }
   })();
 
-  console.log(observations);
-
   return (
     <Row day={isDay}>
       <TimeCell>{time}</TimeCell>
