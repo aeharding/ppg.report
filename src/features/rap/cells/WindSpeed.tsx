@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { useAppSelector } from "../../../hooks";
 import { SpeedUnit } from "../extra/settings/settingEnums";
 
-export const windColorScale = chroma
+const colorScale = chroma
   .scale([
     "#00FF00",
     "#00FF00",
@@ -27,7 +27,7 @@ export const windColorScale = chroma
 const WindSpeedContainer = styled.div<{ speed: number; shear: boolean }>`
   position: relative;
 
-  ${({ speed }) => outputP3ColorFromLab(windColorScale(speed).lab())};
+  ${({ speed }) => outputP3ColorFromLab(colorScale(speed).lab())};
 
   ${({ shear }) =>
     shear &&
