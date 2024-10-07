@@ -42,5 +42,7 @@
   "Lapse rate value information": "Tasa de enfriamiento adiabático <0>{{lapseRate}}</0>",
   "Spread": "Diferencia",
   "Dewpt": "Écart",
-  "Relative humidity acronym": "HR"
+  "Relative humidity acronym": "HR",
+  "Extended Forecast": "Pronóstico Extendido",
+  "Metadata": "Metadatos"
 }

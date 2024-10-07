@@ -42,5 +42,7 @@
   "Lapse rate value information": "Lapse rate <0>{{lapseRate}}</0>",
   "Spread": "Spread",
   "Dewpt": "Dewpt",
-  "Relative humidity acronym": "RH"
+  "Relative humidity acronym": "RH",
+  "Extended Forecast": "Extended Forecast",
+  "Metadata": "Metadata"
 }

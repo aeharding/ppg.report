@@ -19,6 +19,7 @@ export interface NWSWeather extends Coordinates {
     windSpeed: Property;
     windGust: Property;
     windDirection: Property;
+    temperature: Property;
 
     /**
      * The NWS office, like "MKX"

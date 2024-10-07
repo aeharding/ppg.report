@@ -42,5 +42,7 @@
   "Lapse rate value information": "Valeur du gradient adiabatique <0>{{lapseRate}}</0>",
   "Spread": "Écart",
   "Dewpt": "P. rosée",
-  "Relative humidity acronym": "HR"
+  "Relative humidity acronym": "HR",
+  "Extended Forecast": "Prévisions Étendues",
+  "Metadata": "Métadonnées"
 }

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faCalendarAlt,
   faCog,
   faFileAlt,
   faLongArrowRight,
@@ -19,6 +20,7 @@ import InstallPrompt from "../../install/InstallPrompt";
 import { isAfter } from "date-fns";
 import Spinner from "../../../shared/Spinner";
 import { useTranslation } from "react-i18next";
+import Outlook from "../../outlook/Outlook";
 
 const ReportMetadata = lazy(() => import("./reportMetadata/ReportMetadata"));
 
@@ -35,6 +37,16 @@ const Container = styled.div`
   max-width: 570px;
   width: 100%;
   margin: 0 auto;
+`;
+
+const Line = styled.div`
+  display: flex;
+  gap: 1rem;
+
+  > * {
+    flex: 1;
+    min-width: 0;
+  }
 `;
 
 export default function Extra() {
@@ -63,6 +75,17 @@ export default function Extra() {
     <Container>
       <InstallPrompt />
 
+      <BottomSheet
+        openButton={
+          <Item icon={faCalendarAlt} iconBg={[50, 180, 255]} iconColor="black">
+            {t("Extended Forecast")}
+          </Item>
+        }
+        title={t("Extended Forecast")}
+      >
+        <Outlook />
+      </BottomSheet>
+
       {discussion !== "not-available" ? (
         <BottomSheet
           openButton={
@@ -82,29 +105,31 @@ export default function Extra() {
         </BottomSheet>
       ) : undefined}
 
-      <BottomSheet
-        openButton={
-          <Item icon={faSearch} iconBg={[255, 0, 0]}>
-            {t("Report Metadata")}
-          </Item>
-        }
-        title={t("Report Metadata")}
-      >
-        <Suspense fallback={<Loading />}>
-          <ReportMetadata />
-        </Suspense>
-      </BottomSheet>
+      <Line>
+        <BottomSheet
+          openButton={
+            <Item icon={faSearch} iconBg={[255, 0, 0]}>
+              {t("Metadata")}
+            </Item>
+          }
+          title={t("Report Metadata")}
+        >
+          <Suspense fallback={<Loading />}>
+            <ReportMetadata />
+          </Suspense>
+        </BottomSheet>
 
-      <BottomSheet
-        openButton={
-          <Item icon={faCog} iconBg={[20, 20, 20]}>
-            {t("Settings")}
-          </Item>
-        }
-        title={t("Settings")}
-      >
-        <Settings />
-      </BottomSheet>
+        <BottomSheet
+          openButton={
+            <Item icon={faCog} iconBg={[20, 20, 20]}>
+              {t("Settings")}
+            </Item>
+          }
+          title={t("Settings")}
+        >
+          <Settings />
+        </BottomSheet>
+      </Line>
     </Container>
   );
 }
@@ -124,6 +149,8 @@ const ItemContainer = styled("div", {
 
   transition: 100ms linear;
   transition-property: opacity, filter;
+
+  container-type: inline-size;
 
   ${({ loading }) =>
     loading &&
@@ -147,6 +174,7 @@ const IconContainer = styled.div<{
   height: 1.85rem;
   position: relative;
   margin-right: 1rem;
+  flex-shrink: 0;
 
   &::before {
     content: "";
@@ -193,6 +221,15 @@ const IconContainer = styled.div<{
 const RightArrow = styled(FontAwesomeIcon)`
   margin-left: auto;
   opacity: 0.5;
+
+  @container (max-width: 140px) {
+    display: none;
+  }
+`;
+
+const Text = styled.span`
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 interface IconProps {
@@ -221,7 +258,7 @@ function Item({
       <IconContainer iconBg={iconBg} iconColor={iconColor} flag={flag}>
         {!loading ? <FontAwesomeIcon icon={icon} /> : <Spinner />}
       </IconContainer>
-      {children}
+      <Text>{children}</Text>
       <RightArrow icon={faLongArrowRight} />
     </ItemContainer>
   );

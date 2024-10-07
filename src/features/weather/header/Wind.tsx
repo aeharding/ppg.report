@@ -21,7 +21,7 @@ const colorScale = chroma
   .scale(["#ffffff66", "#ffffff", "#fffb00", "#ff0000"])
   .domain([10, 14, 16, 18]);
 
-const WindIcon = styled(FontAwesomeIcon, {
+export const WindIcon = styled(FontAwesomeIcon, {
   shouldForwardProp: (prop) => prop !== "headerType",
 })<{
   headerType: HeaderType;
@@ -130,13 +130,13 @@ export default function Wind({ headerType, date, weather }: WindProps) {
   );
 }
 
-function toMph(speed: number): number {
+export function toMph(speed: number): number {
   return speed * 0.621371;
 }
 
 /**
  * @returns A "composite" wind value for gusts+sustained, similar to temperature "real feel"
  */
-function getCompositeWindValue(speed: number, gust: number): number {
+export function getCompositeWindValue(speed: number, gust: number): number {
   return Math.max((gust - speed) * 2.5, speed, gust);
 }

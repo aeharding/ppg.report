@@ -42,5 +42,7 @@
   "Lapse rate value information": "Temperaturabnahme <0>{{lapseRate}}</0>",
   "Spread": "Differenz",
   "Dewpt": "Taupkt",
-  "Relative humidity acronym": "LF"
+  "Relative humidity acronym": "LF",
+  "Extended Forecast": "Erweiterte Vorhersage",
+  "Metadata": "Metadaten"
 }
