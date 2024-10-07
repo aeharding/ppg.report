@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useMemo } from "react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
-import { findValue } from "../../../services/nwsWeather";
+import { findValue, NWSWeatherObservation } from "../../../services/nwsWeather";
 import { WeatherResult } from "../weatherSlice";
 import { keyframes } from "@emotion/css";
 import { css } from "@emotion/react";
 import NWSWeather from "./NWSWeather";
 import WMOWeather from "./WMOWeather";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const thunderAnimate = keyframes`
   0% {
@@ -103,8 +104,17 @@ export default function Weather({ date, weather }: WeatherProps) {
 
   if (!observations) return <></>;
 
-  if (Array.isArray(observations))
-    return <NWSWeather observations={observations} />;
+  return <Observations data={observations} />;
+}
 
-  return <WMOWeather wmoCode={observations} />;
+interface ObservationsProps {
+  data: number | NWSWeatherObservation[];
+  defaultIcon?: IconProp | undefined;
+  className?: string;
+}
+
+export function Observations({ data, ...rest }: ObservationsProps) {
+  if (Array.isArray(data)) return <NWSWeather observations={data} {...rest} />;
+
+  return <WMOWeather wmoCode={data} {...rest} />;
 }

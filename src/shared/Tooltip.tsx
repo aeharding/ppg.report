@@ -52,7 +52,7 @@ export const TooltipContainer = styled.div<{ interactive: boolean }>`
 
 interface TooltipProps {
   children?: React.ReactNode;
-  contents: () => React.ReactNode;
+  contents: () => React.ReactNode | undefined;
   mouseOnly?: boolean;
   interactive?: boolean;
   offset?: number;
@@ -110,6 +110,10 @@ export default function Tooltip({
     });
   }, [isMounted]);
 
+  const renderedContent = contents();
+
+  if (!renderedContent) return children;
+
   return (
     <>
       <span
@@ -129,7 +133,7 @@ export default function Tooltip({
             className="tooltip" /* Class used by <Scrubber /> to determine if tooltip is open */
             interactive={interactive ?? false}
           >
-            {contents()}
+            {renderedContent}
             <FloatingArrow ref={arrowRef} context={context} />
           </TooltipContainer>
         </FloatingPortal>

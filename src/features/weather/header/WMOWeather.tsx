@@ -8,6 +8,7 @@ import {
 import { faSnowflake } from "@fortawesome/pro-light-svg-icons";
 import { convertTitleCaseToSpaces } from "../../../helpers/string";
 import Tooltip from "../../../shared/Tooltip";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const Flex = styled.div`
   display: flex;
@@ -47,9 +48,15 @@ enum WMOWeatherCode {
 
 interface WMOWeatherCodeProps {
   wmoCode: WMOWeatherCode;
+  defaultIcon?: IconProp;
+  className?: string;
 }
 
-export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
+export default function WMOWeather({
+  wmoCode,
+  defaultIcon,
+  ...rest
+}: WMOWeatherCodeProps) {
   const icon = (() => {
     switch (wmoCode) {
       case WMOWeatherCode.LightRainShowers:
@@ -82,13 +89,21 @@ export default function WMOWeather({ wmoCode }: WMOWeatherCodeProps) {
     }
   })();
 
-  if (!icon) return <></>;
+  if (!icon) return renderWithIcon(defaultIcon);
 
-  return (
-    <Tooltip contents={() => convertTitleCaseToSpaces(WMOWeatherCode[wmoCode])}>
-      <Flex>
-        <WeatherIcon icon={icon} lightning />
-      </Flex>
-    </Tooltip>
-  );
+  return renderWithIcon(icon);
+
+  function renderWithIcon(icon: IconProp | undefined) {
+    if (!icon) return <></>;
+
+    return (
+      <Tooltip
+        contents={() => convertTitleCaseToSpaces(WMOWeatherCode[wmoCode])}
+      >
+        <Flex>
+          <WeatherIcon icon={icon} lightning {...rest} />
+        </Flex>
+      </Tooltip>
+    );
+  }
 }

@@ -16,6 +16,7 @@ const Table = styled.table`
 const THead = styled.thead`
   position: sticky;
   top: 0;
+  transform: translateY(-0.5px);
   z-index: 1;
   background: var(--bg-bottom-sheet);
 `;
@@ -38,7 +39,7 @@ export default function Day({ hours, date }: DayProps) {
     <Table>
       <THead>
         <tr>
-          <DayLabelCell colSpan={6}>
+          <DayLabelCell>
             {formatInTimeZone(date, timeZone, "eeee, LLL d")}
           </DayLabelCell>
         </tr>

@@ -4,10 +4,15 @@ import { useAppSelector } from "../../hooks";
 import styled from "@emotion/styled";
 import WindIndicator from "../rap/WindIndicator";
 import WindSpeed from "./WindSpeed";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoon, faSun } from "@fortawesome/pro-duotone-svg-icons";
-import chroma from "chroma-js";
-import { getCompositeWindValue } from "../weather/header/Wind";
+import {
+  faCloudMoon,
+  faClouds,
+  faCloudsMoon,
+  faCloudsSun,
+  faCloudSun,
+  faMoon,
+  faSun,
+} from "@fortawesome/pro-duotone-svg-icons";
 import SunCalc from "suncalc";
 import { TemperatureText } from "../rap/cells/Temperature";
 import { Aside } from "../rap/cells/Altitude";
@@ -16,23 +21,11 @@ import {
   TimeFormat,
 } from "../rap/extra/settings/settingEnums";
 import { cToF } from "../weather/aviation/DetailedAviationReport";
+import { Observations } from "../weather/header/Weather";
+import { NWSWeatherObservation } from "../../services/nwsWeather";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-export const windColorScale = chroma
-  .scale([
-    "#00FF0099",
-    "#00FF0099",
-    "#eaff0099",
-    "#FFA50099",
-    "#FF000099",
-    "#FF000099",
-    "#FF10F0",
-    "#AD2AFF",
-    "white",
-  ])
-  .domain([0, 5.56, 18, 25.93, 55.56, 64.82, 138.9, 185.2, 296.32])
-  .mode("lab");
-
-const Row = styled.tr<{ speed: number; color: string; day: boolean }>`
+const Row = styled.tr<{ day: boolean }>`
   display: flex;
 
   > * {
@@ -51,12 +44,19 @@ const TimeCell = styled.td`
   justify-content: center;
 `;
 
+const StyledObservations = styled(Observations)`
+  font-size: 1em;
+  margin-right: 0;
+`;
+
 interface OutlookRowProps {
   hour: Date;
   windDirection: number;
   windSpeed: number;
   windGust: number;
   temperature: number;
+  observations: NWSWeatherObservation[] | number;
+  skyCover: number;
 }
 
 export default function OutlookRow({
@@ -65,6 +65,8 @@ export default function OutlookRow({
   windSpeed,
   windGust,
   temperature: inCelsius,
+  observations,
+  skyCover,
 }: OutlookRowProps) {
   const timeFormat = useAppSelector((state) => state.user.timeFormat);
 
@@ -77,14 +79,6 @@ export default function OutlookRow({
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
 
   const time = formatInTimeZone(hour, timeZone, timeFormatString(timeFormat));
-
-  const compositeSpeed = getCompositeWindValue(windSpeed, windGust) * 0.7;
-
-  const color = (() => {
-    const [r, g, b, a] = windColorScale(compositeSpeed).rgba();
-
-    return `color(display-p3 ${r / 255} ${g / 255} ${b / 255} / ${a})`;
-  })();
 
   const isDay =
     SunCalc.getPosition(hour, coordinates.lat, coordinates.lon).altitude > 0;
@@ -107,11 +101,23 @@ export default function OutlookRow({
     }
   })();
 
+  console.log(observations);
+
   return (
-    <Row speed={compositeSpeed} color={color} day={isDay}>
+    <Row day={isDay}>
       <TimeCell>{time}</TimeCell>
-      <td style={{ flexGrow: "0" }}>
-        <FontAwesomeIcon icon={isDay ? faSun : faMoon} />
+      <td
+        style={{
+          maxWidth: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <StyledObservations
+          data={observations}
+          defaultIcon={getDefaultIcon(skyCover, isDay)}
+        />
       </td>
       <td>
         <TemperatureText temperature={inCelsius}>
@@ -135,5 +141,18 @@ function timeFormatString(timeFormat: TimeFormat): string {
       return "hha";
     case TimeFormat.TwentyFour:
       return "HHmm";
+  }
+}
+
+function getDefaultIcon(skyCover: number, isDay: boolean): IconProp {
+  switch (true) {
+    case skyCover < 20:
+      return isDay ? faSun : faMoon;
+    case skyCover < 60:
+      return isDay ? faCloudSun : faCloudMoon;
+    case skyCover < 80:
+      return isDay ? faCloudsSun : faCloudsMoon;
+    default:
+      return faClouds;
   }
 }

@@ -24,16 +24,24 @@ const Flex = styled.div`
 
 interface NWSWeatherProps {
   observations: NWSWeatherObservation[];
+  defaultIcon?: IconProp;
+  className?: string;
 }
 
-export default function NWSWeather({ observations }: NWSWeatherProps) {
+export default function NWSWeather({
+  observations,
+  defaultIcon,
+  ...rest
+}: NWSWeatherProps) {
   const observation: NWSWeatherObservation | undefined =
     observations.find(({ weather }) => weather === "thunderstorms") ||
     observations[0];
 
-  if (!observation) return <></>;
+  if (!observation) return renderWithIcon(defaultIcon);
 
   function renderTooltip() {
+    if (observations.every(({ weather }) => !weather)) return;
+
     return capitalize(
       observations
         .map((observation) =>
@@ -45,21 +53,29 @@ export default function NWSWeather({ observations }: NWSWeatherProps) {
 
   const icon = findIconFor(observation);
 
-  if (!icon) return <></>;
+  if (!icon) return renderWithIcon(defaultIcon);
 
-  return (
-    <Tooltip contents={renderTooltip}>
-      <Flex>
-        <WeatherIcon
-          icon={icon}
-          lightning={
-            observation.coverage !== "chance" &&
-            observation.coverage !== "slight_chance"
-          }
-        />
-      </Flex>
-    </Tooltip>
-  );
+  return renderWithIcon(icon);
+
+  function renderWithIcon(icon: IconProp | undefined) {
+    if (!icon) return <></>;
+
+    return (
+      <Tooltip contents={renderTooltip}>
+        <Flex>
+          <WeatherIcon
+            icon={icon}
+            lightning={
+              observation &&
+              observation.coverage !== "chance" &&
+              observation.coverage !== "slight_chance"
+            }
+            {...rest}
+          />
+        </Flex>
+      </Tooltip>
+    );
+  }
 }
 
 function findIconFor(observation: NWSWeatherObservation): IconProp | undefined {

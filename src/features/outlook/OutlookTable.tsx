@@ -57,11 +57,15 @@ function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
           hour,
           weather.properties.temperature,
         )?.value;
+        const observations = findValue(hour, weather.properties.weather)?.value;
+        const skyCover = findValue(hour, weather.properties.skyCover)?.value;
 
         if (windDirection == null) return;
         if (windSpeed == null) return;
         if (windGust == null) return;
         if (temperature == null) return;
+        if (observations == null) return;
+        if (skyCover == null) return;
 
         return (
           <OutlookRow
@@ -71,6 +75,8 @@ function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
             windSpeed={windSpeed}
             windGust={windGust}
             temperature={temperature}
+            observations={observations}
+            skyCover={skyCover}
           />
         );
       }),
@@ -97,6 +103,8 @@ function OpenMeteoOutlookRows({ weather }: { weather: OpenMeteoWeather }) {
             windSpeed={data.windSpeed}
             windGust={data.windGust}
             temperature={data.temperature}
+            observations={data.weather}
+            skyCover={data.cloudCover}
           />
         );
       }),
