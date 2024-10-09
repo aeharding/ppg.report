@@ -43,7 +43,7 @@ export function getAltitudeLevels() {
   const value = locationHashMap.get(
     ALTITUDE_LEVELS_STORAGE_KEY,
   ) as AltitudeLevels;
-  if (value !== AltitudeLevels.Default && value !== AltitudeLevels.Normalized)
+  if (value !== AltitudeLevels.Raw && value !== AltitudeLevels.Normalized)
     return undefined;
   return value;
 }

@@ -5,8 +5,8 @@ export enum AltitudeType {
 }
 
 export enum AltitudeLevels {
-  Default = "Default",
   Normalized = "Normalized",
+  Raw = "Raw",
 }
 
 // CSS scroll-snap-stop
