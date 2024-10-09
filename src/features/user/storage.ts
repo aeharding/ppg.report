@@ -141,10 +141,10 @@ export function getAltitudeLevels(): AltitudeLevels {
 
   if (
     typeof savedValue !== "string" ||
-    (savedValue !== AltitudeLevels.Default &&
+    (savedValue !== AltitudeLevels.Raw &&
       savedValue !== AltitudeLevels.Normalized)
   )
-    return AltitudeLevels.Default;
+    return AltitudeLevels.Normalized;
 
   return savedValue;
 }

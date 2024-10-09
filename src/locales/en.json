@@ -31,7 +31,7 @@
   "Hush G-Airmets tip": "If turned on, new G-AIRMETs will not trigger the unread alert notifications banner, and they will be pushed to the bottom of the alerts list. This can be useful if you find G-AIRMETs too noisy. [US-only]",
   "Localization in progress": "Localization is in progress. To help, please email hello@ppg.report",
   "Default": "Default",
-  "Normalized": "Normalized",
+  "Raw": "Raw",
   "Advanced features": "Advanced features",
   "Advanced features tip": "EXPERIMENTAL. Current features include: <ul><li>Icon to represent lapse rate (thresholds for DALR, MALR, and temperature inversion).</li><li>Relative humidity saturation indicator.</li><li>Tap temperature cell to open temperature details tooltip.</li></ul> Feedback welcome — hello@ppg.report",
   "Nocturnal temperature inversion information": "<strong>Nocturnal temperature inversions</strong> indicate calm conditions, but quickly erode after sunrise.",
