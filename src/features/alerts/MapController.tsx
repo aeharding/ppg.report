@@ -17,7 +17,7 @@ interface MapControllerProps {
 export default function MapController({ alert, padding }: MapControllerProps) {
   const map = useMap();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const geoJsonRef = useRef<any>();
+  const geoJsonRef = useRef<any>(null);
 
   useEffect(() => {
     if (geoJsonRef.current)

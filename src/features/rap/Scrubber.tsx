@@ -128,7 +128,7 @@ const Finger = styled(FontAwesomeIcon)`
 const USED_SCRUBBER_STORAGE_KEY = "used-scrubber";
 
 interface ScrubberProps {
-  scrollViewRef: React.RefObject<HTMLDivElement>;
+  scrollViewRef: React.RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
 }
 
@@ -163,7 +163,9 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
     function onScrubStart(e: TouchEvent) {
       if (!scrollView || !scrubberTarget) return;
 
-      const bbox = scrubberTargetRef.current.getBoundingClientRect();
+      const bbox = scrubberTargetRef.current?.getBoundingClientRect();
+      if (!bbox) return;
+
       width = bbox.width;
       x = bbox.x;
 
