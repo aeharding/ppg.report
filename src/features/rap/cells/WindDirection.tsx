@@ -40,21 +40,27 @@ const Container = styled.div<{ shear: boolean }>`
 interface WindDirectionProps {
   curr: number;
   prev?: number;
+  shearEligible: boolean;
 }
 
-export default function WindDirection({ curr, prev }: WindDirectionProps) {
+export default function WindDirection({
+  curr,
+  prev,
+  shearEligible,
+}: WindDirectionProps) {
   const content = useMemo(() => {
     return (
       <Container
         shear={
-          Math.abs(getAngleDifference(curr, prev === undefined ? curr : prev)) >
-          25
+          !!shearEligible &&
+          !!prev &&
+          Math.abs(getAngleDifference(curr, prev)) > 25
         }
       >
         {Math.round(curr)} <WindIndicator direction={curr} />
       </Container>
     );
-  }, [curr, prev]);
+  }, [curr, prev, shearEligible]);
 
   return content;
 }
