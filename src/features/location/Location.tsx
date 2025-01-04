@@ -9,8 +9,8 @@ import * as storage from "../user/storage";
 
 export const Button = styled.button`
   font-size: 1.7em;
-  width: 2.5em;
-  height: 2.5em;
+  width: 3rem;
+  height: 3rem;
   padding: 0;
 
   appearance: none;

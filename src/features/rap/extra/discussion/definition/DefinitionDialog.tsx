@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DefinitionTooltipProps, definitionStyles } from "./Definition";
 import linkifyHtml from "linkify-html";
 import { linkifyOptions } from "../Discussion";
@@ -51,7 +51,6 @@ const Takeover = styled.div`
 
       > ${() => TakeoverContents} {
         scale: 1;
-
       }
     }
     &-exit-active {
@@ -63,6 +62,7 @@ const Takeover = styled.div`
         transition: 200ms scale;
       }
     }
+  }
 `;
 
 const ClickBlock = styled.div`
@@ -106,6 +106,7 @@ export default function DefinitionDialog({
 }: DefinitionTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [clickBlock, setClickBlock] = useState(false);
+  const takeoverRef = useRef<HTMLDivElement>(null);
 
   function open() {
     setIsOpen(true);
@@ -128,8 +129,9 @@ export default function DefinitionDialog({
         timeout={200}
         classNames="takeover"
         unmountOnExit
+        nodeRef={takeoverRef}
       >
-        <Takeover onTouchStart={close}>
+        <Takeover onTouchStart={close} ref={takeoverRef}>
           <TakeoverContents>
             <Term>{term}</Term>
             <DefinitionText
