@@ -94,9 +94,11 @@ export default function Airport({ taf, date }: AirportProps) {
   const category = getFlightCategory(visibility, clouds);
 
   const lowestCloud: ICloud | undefined = clouds[0];
-  const cloudLabel = lowestCloud
-    ? lowestCloud.height
-      ? `${lowestCloud.quantity}@${
+
+  const cloudLabel = (() => {
+    if (lowestCloud) {
+      if (lowestCloud.height)
+        return `${lowestCloud.quantity}@${
           Math.round(
             (heightValueFormatter(
               convertHeightToMeters(lowestCloud.height),
@@ -105,11 +107,15 @@ export default function Airport({ taf, date }: AirportProps) {
               1_000) *
               10,
           ) / 10
-        }k`
-      : lowestCloud.quantity
-    : verticalVisbility
-      ? "OBSC"
-      : "SKC";
+        }k`;
+
+      return lowestCloud.quantity;
+    }
+
+    if (verticalVisbility) return "OBSC";
+
+    return "SKC";
+  })();
 
   const badge = (
     <AirportContainer category={category}>{taf.station}</AirportContainer>

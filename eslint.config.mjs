@@ -1,74 +1,90 @@
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import react from "eslint-plugin-react";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+// @ts-check
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+import eslint from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
 
-export default [
-  ...fixupConfigRules(
-    compat.extends(
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
-      "plugin:prettier/recommended",
-    ),
-  ),
+import reactPlugin from "eslint-plugin-react";
+import pluginReactCompiler from "eslint-plugin-react-compiler";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import vitestPlugin from "eslint-plugin-vitest";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  eslintConfigPrettier,
+  // @ts-expect-error Malformed types
+  reactPlugin.configs.flat.recommended,
+  // @ts-expect-error Malformed types
+  reactPlugin.configs.flat["jsx-runtime"],
+  {
+    // TODO replace with https://github.com/facebook/react/pull/30774
+    name: "react-hooks/recommended",
+    // @ts-expect-error Malformed types
+    plugins: { "react-hooks": reactHooksPlugin },
+    // @ts-expect-error Malformed types
+    rules: reactHooksPlugin.configs.recommended.rules,
+  },
   {
     plugins: {
-      react: fixupPluginRules(react),
-      "@typescript-eslint": fixupPluginRules(typescriptEslint),
+      "react-compiler": pluginReactCompiler,
     },
-
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: 2022,
-      sourceType: "module",
-
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
+    rules: {
+      "react-compiler/react-compiler": "error",
     },
-
+  },
+  {
     settings: {
       react: {
         version: "detect",
       },
     },
-
     rules: {
-      "react/react-in-jsx-scope": "off",
+      "no-empty-function": "warn",
+      "no-nested-ternary": "warn",
+      "no-unreachable": "warn",
+      "object-shorthand": "warn",
+      "linebreak-style": ["warn", "unix"],
+      eqeqeq: ["warn", "smart"],
+      "no-console": [
+        "warn",
+        {
+          allow: ["warn", "error", "info"],
+        },
+      ],
 
+      "@typescript-eslint/consistent-type-definitions": "error",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          destructuredArrayIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      "react/prop-types": "off",
+      "react/jsx-fragments": ["warn", "syntax"],
+      "react/jsx-curly-brace-presence": ["warn", "never"],
       "react/no-unknown-property": [
         "error",
         {
           ignore: ["css"],
         },
       ],
-
-      "no-constant-condition": "off",
-
-      "no-restricted-imports": [
-        "warn",
-        {
-          paths: ["@emotion/styled/macro", "@emotion/react/macro", "lodash"],
-        },
+      "react/function-component-definition": [
+        "error",
+        { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
-
-      "@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "none" }],
     },
   },
-];
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx"],
+    plugins: {
+      vitest: vitestPlugin,
+    },
+    rules: {
+      ...vitestPlugin.configs.recommended.rules,
+    },
+  },
+);

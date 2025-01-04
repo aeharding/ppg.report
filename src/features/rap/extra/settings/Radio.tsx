@@ -134,6 +134,7 @@ function InputWithScrollTo({
     if (!checked) return;
 
     scrollIntoViewIfNeeded(labelRef.current, !initial);
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checked, labelRef]);
 
