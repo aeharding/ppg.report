@@ -10,7 +10,7 @@
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@floating-ui/react": "^0.26.28",
+    "@floating-ui/react": "^0.27.2",
     "@floating-ui/react-dom": "^2.1.2",
     "@fortawesome/fontawesome-pro": "^5.15.4",
     "@fortawesome/fontawesome-svg-core": "~1.2.36",
@@ -31,7 +31,7 @@
     "fast-xml-parser": "^4.5.1",
     "geolib": "^3.3.4",
     "gsl-parser": "^3.0.1",
-    "i18next": "^23.16.8",
+    "i18next": "^24.2.0",
     "i18next-browser-languagedetector": "^8.0.2",
     "iso8601-duration": "^2.1.2",
     "leaflet": "^1.9.4",
@@ -71,6 +71,13 @@
     "icon": "pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --favicon --opaque false --path-override '%PUBLIC_URL%' public/favicon-rounded.html ./public && pwa-asset-generator --type png --index public/index.html --manifest public/site.webmanifest --icon-only --path-override '' public/favicon.html ./public && prettier -w public/index.html",
     "upgrade:packageManager": "corepack use pnpm@latest"
   },
+  "pnpm": {
+    "updateConfig": {
+      "ignoreDependencies": [
+        "@fortawesome/fontawesome-svg-core"
+      ]
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -108,13 +115,13 @@
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-testing-library": "^6.5.0",
-    "happy-dom": "^15.11.7",
+    "happy-dom": "^16.3.0",
     "prettier": "^3.4.2",
     "pwa-asset-generator": "^6.4.0",
     "source-map-explorer": "^2.5.3",
-    "vite": "^5.4.11",
+    "vite": "^6.0.7",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-pwa": "^0.20.5",
+    "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^2.1.8"
   }
