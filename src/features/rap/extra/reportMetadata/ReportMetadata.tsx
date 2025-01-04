@@ -130,7 +130,7 @@ const MapController = () => {
 
   const map = useMap();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const groupRef = useRef<any>();
+  const groupRef = useRef<any>(null);
 
   const rapPosition: LatLngExpression = [
     windsAloft.latitude,
