@@ -79,6 +79,7 @@ export default function Tooltip({
       shift(),
       offset(customOffset ?? 8),
       flip(),
+      // eslint-disable-next-line react-compiler/react-compiler
       arrow({ element: arrowRef }),
     ].filter(notEmpty),
   });

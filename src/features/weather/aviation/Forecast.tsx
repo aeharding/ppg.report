@@ -138,6 +138,19 @@ export default function Forecast({ data }: ForecastProps) {
     }
   }
 
+  function renderCeiling() {
+    if (ceiling?.height != null)
+      return `${formatHeight(ceiling.height, heightUnit)} AGL`;
+
+    if (data.verticalVisibility)
+      return `Vertical visibility ${formatHeight(
+        data.verticalVisibility,
+        heightUnit,
+      )} AGL`;
+
+    return `At least ${formatHeight(12_000, heightUnit)} AGL`;
+  }
+
   return (
     <Container type={data.type}>
       <Header>
@@ -228,16 +241,7 @@ export default function Forecast({ data }: ForecastProps) {
           (data.clouds.length || data.verticalVisibility != null) ? (
             <tr>
               <td>Ceiling</td>
-              <td>
-                {ceiling?.height != null
-                  ? `${formatHeight(ceiling.height, heightUnit)} AGL`
-                  : data.verticalVisibility
-                    ? `Vertical visibility ${formatHeight(
-                        data.verticalVisibility,
-                        heightUnit,
-                      )} AGL`
-                    : `At least ${formatHeight(12_000, heightUnit)} AGL`}
-              </td>
+              <td>{renderCeiling()}</td>
             </tr>
           ) : (
             ""

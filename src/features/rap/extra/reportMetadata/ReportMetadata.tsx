@@ -116,7 +116,7 @@ const planeIcon = divIcon({
   className: "plane-icon",
 });
 
-const MapController = () => {
+function MapController() {
   const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
   const aviationWeather = useAppSelector(
@@ -193,4 +193,4 @@ const MapController = () => {
       <MyPosition />
     </FeatureGroup>
   );
-};
+}

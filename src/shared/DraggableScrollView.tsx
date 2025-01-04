@@ -27,10 +27,7 @@ const Container = styled.div<{ hasOverflow: boolean }>`
     `}
 `;
 
-const DraggableScrollView: React.FC<DraggableScrollViewProps> = ({
-  children,
-  ...rest
-}) => {
+function DraggableScrollView({ children, ...rest }: DraggableScrollViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragStartX, setDragStartX] = useState(0);
   const [scrollLeftStart, setScrollLeftStart] = useState(0);
@@ -94,6 +91,6 @@ const DraggableScrollView: React.FC<DraggableScrollViewProps> = ({
       {children}
     </Container>
   );
-};
+}
 
 export default DraggableScrollView;

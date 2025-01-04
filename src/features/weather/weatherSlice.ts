@@ -648,7 +648,7 @@ export const getWeather =
         if (isStale()) return;
 
         dispatch(windsAloftReceived(windsAloft));
-      } catch (error) {
+      } catch (_error) {
         if (isStale()) return;
 
         return fallback();

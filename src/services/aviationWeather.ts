@@ -44,11 +44,11 @@ export async function getTAF({
 
 // Docs https://www.aviationweather.gov/help/webservice
 
-type AbstractAviationAlertFeature<Payload = unknown> = {
+interface AbstractAviationAlertFeature<Payload = unknown> {
   id: string;
   properties: Payload;
   geometry: GeometryObject | null;
-};
+}
 
 export type SigmetFeature = AbstractAviationAlertFeature<{
   data: "SIGMET";

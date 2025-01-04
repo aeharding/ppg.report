@@ -9,8 +9,6 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import vitestPlugin from "eslint-plugin-vitest";
 import tseslint from "typescript-eslint";
 
-import compilerOptions from "./compilerOptions.js";
-
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -22,7 +20,9 @@ export default tseslint.config(
   {
     // TODO replace with https://github.com/facebook/react/pull/30774
     name: "react-hooks/recommended",
+    // @ts-expect-error Malformed types
     plugins: { "react-hooks": reactHooksPlugin },
+    // @ts-expect-error Malformed types
     rules: reactHooksPlugin.configs.recommended.rules,
   },
   {
@@ -30,7 +30,7 @@ export default tseslint.config(
       "react-compiler": pluginReactCompiler,
     },
     rules: {
-      "react-compiler/react-compiler": ["error", compilerOptions],
+      "react-compiler/react-compiler": "error",
     },
   },
   {
@@ -50,37 +50,6 @@ export default tseslint.config(
         "warn",
         {
           allow: ["warn", "error", "info"],
-        },
-      ],
-      "no-restricted-syntax": [
-        "warn",
-        {
-          selector: "TSEnumDeclaration",
-          message: "Don't declare enums",
-        },
-      ],
-      "no-restricted-imports": [
-        "warn",
-        {
-          paths: [
-            {
-              name: "@ionic/react",
-              importNames: ["IonHeader", "useIonToast"],
-              message:
-                "Has an App alternative. Replace 'Ion' with 'App' when importing.",
-            },
-            {
-              name: "react",
-              importNames: ["forwardRef"],
-              message: "Please use ref prop directly.",
-            },
-          ],
-          patterns: [
-            {
-              regex: "\\.\\.\\/\\w+\\/",
-              message: "Import via absolute path (e.g. #/helpers/myHelper)",
-            },
-          ],
         },
       ],
 

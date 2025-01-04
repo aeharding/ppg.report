@@ -16,7 +16,7 @@ export async function reverse(lat: number, lon: number): Promise<Geocode> {
         },
       })
     ).data;
-  } catch (e) {
+  } catch (_e) {
     data = {};
   }
 
