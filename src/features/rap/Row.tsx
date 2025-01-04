@@ -5,6 +5,9 @@ import Temperature from "./cells/Temperature";
 import WindDirection from "./cells/WindDirection";
 import WindSpeed from "./cells/WindSpeed";
 import { css } from "@emotion/react";
+import { vectorDifferenceMagnitude } from "../../helpers/vector";
+
+const DELTA_WINDSPEED_VECTOR_THRESHOLD_KPH = 10;
 
 const TableRow = styled.tr<{ opaque: boolean }>`
   ${({ opaque }) =>
@@ -40,7 +43,7 @@ export default function Row({
       datum.windDirectionInDeg,
       displayedRapData[index - 1]?.windSpeedInKph,
       displayedRapData[index - 1]?.windDirectionInDeg,
-    ) > 10;
+    ) > DELTA_WINDSPEED_VECTOR_THRESHOLD_KPH;
 
   return (
     <TableRow key={index} opaque={negativeAltitude(datum)}>
@@ -83,28 +86,4 @@ export default function Row({
       </td>
     </TableRow>
   );
-}
-
-function vectorDifferenceMagnitude(
-  speed1: number,
-  direction1: number,
-  speed2: number,
-  direction2: number,
-): number {
-  // Convert directions from degrees to radians
-  const radian1 = (Math.PI / 180) * direction1;
-  const radian2 = (Math.PI / 180) * direction2;
-
-  // Convert polar coordinates to Cartesian coordinates
-  const x1 = speed1 * Math.cos(radian1);
-  const y1 = speed1 * Math.sin(radian1);
-  const x2 = speed2 * Math.cos(radian2);
-  const y2 = speed2 * Math.sin(radian2);
-
-  // Calculate the difference in Cartesian coordinates
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-
-  // Calculate the magnitude of the difference vector
-  return Math.sqrt(dx * dx + dy * dy);
 }
