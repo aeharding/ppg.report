@@ -254,6 +254,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
         classNames={transitionName}
         unmountOnExit
         in={enabled}
+        nodeRef={scrubberTargetRef}
       >
         <ScrubberTarget
           ref={scrubberTargetRef}
