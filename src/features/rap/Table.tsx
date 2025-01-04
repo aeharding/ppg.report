@@ -1,10 +1,5 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import Altitude from "./cells/Altitude";
-import Temperature from "./cells/Temperature";
-import WindDirection from "./cells/WindDirection";
-import WindSpeed from "./cells/WindSpeed";
 import { headerText } from "./CinCape";
 import { WindsAloftAltitude, WindsAloftHour } from "../../models/WindsAloft";
 import {
@@ -22,6 +17,7 @@ import { toggleAltitude } from "../user/userSlice";
 import { toggleAltitudeType } from "../../helpers/locale";
 import { notEmpty } from "../../helpers/array";
 import Tooltip from "../../shared/Tooltip";
+import Row from "./Row";
 
 const TableEl = styled.table`
   width: 100%;
@@ -33,14 +29,6 @@ const TableEl = styled.table`
   th {
     ${headerText}
   }
-`;
-
-const Row = styled.tr<{ opaque: boolean }>`
-  ${({ opaque }) =>
-    opaque &&
-    css`
-      opacity: 0.5;
-    `}
 `;
 
 const InteractTh = styled.th`
@@ -148,10 +136,6 @@ export default function Table({
     surfaceLevel,
   ]);
 
-  function negativeAltitude(datum: WindsAloftAltitude): boolean {
-    return !!(datum.altitudeInM - surfaceLevel < 0);
-  }
-
   return (
     <TableEl>
       <thead>
@@ -182,45 +166,14 @@ export default function Table({
 
       <tbody>
         {displayedRapData.map((datum, index) => (
-          <Row key={index} opaque={negativeAltitude(datum)}>
-            <td>
-              <Altitude
-                heightInMeters={datum.altitudeInM}
-                surfaceLevelInMeters={surfaceLevel}
-                pressure={datum.pressure}
-              />
-            </td>
-            <td>
-              <Temperature
-                temperature={datum.temperatureInC}
-                dewpoint={datum.dewpointInC}
-                lapseRate={
-                  displayedRapData[index - 1]
-                    ? -(
-                        (datum.temperatureInC -
-                          displayedRapData[index - 1].temperatureInC) /
-                        (datum.altitudeInM -
-                          displayedRapData[index - 1].altitudeInM)
-                      )
-                    : undefined
-                }
-                pressure={datum.pressure}
-                hour={new Date(windsAloftHour.date)}
-              />
-            </td>
-            <td>
-              <WindDirection
-                curr={datum.windDirectionInDeg}
-                prev={displayedRapData[index - 1]?.windDirectionInDeg}
-              />
-            </td>
-            <td>
-              <WindSpeed
-                curr={datum.windSpeedInKph}
-                prev={displayedRapData[index - 1]?.windSpeedInKph}
-              />
-            </td>
-          </Row>
+          <Row
+            key={index}
+            datum={datum}
+            index={index}
+            surfaceLevel={surfaceLevel}
+            windsAloftHour={windsAloftHour}
+            displayedRapData={displayedRapData}
+          />
         ))}
       </tbody>
     </TableEl>
