@@ -7,7 +7,7 @@ import WindSpeed from "./cells/WindSpeed";
 import { css } from "@emotion/react";
 import { vectorDifferenceMagnitude } from "../../helpers/vector";
 
-const DELTA_WINDSPEED_VECTOR_THRESHOLD_KPH = 10;
+const DELTA_WINDSPEED_VECTOR_THRESHOLD_KPH = 16;
 
 const TableRow = styled.tr<{ opaque: boolean }>`
   ${({ opaque }) =>
