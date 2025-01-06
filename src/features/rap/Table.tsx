@@ -93,7 +93,7 @@ export default function Table({
       );
 
       switch (altitudeLevels) {
-        case AltitudeLevels.Default:
+        case AltitudeLevels.Raw:
           return filteredPressures;
         case AltitudeLevels.Normalized:
           return NORMALIZED_PRESSURE_MB.map((pressure) =>
@@ -103,7 +103,7 @@ export default function Table({
     }
 
     switch (altitudeLevels) {
-      case AltitudeLevels.Default:
+      case AltitudeLevels.Raw:
         return windsAloftHour.altitudes
           .slice(0, rows)
           .filter((datum) => !hiddenAltitude(datum));

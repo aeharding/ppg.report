@@ -77,7 +77,7 @@ export default function Settings() {
       <Radio
         label={t("Altitude levels")}
         tip={t("Altitude levels tip")}
-        options={[AltitudeLevels.Default, AltitudeLevels.Normalized]}
+        options={[AltitudeLevels.Normalized, AltitudeLevels.Raw]}
         value={altitudeLevels}
         onChange={(value) => dispatch(setAltitudeLevels(value))}
       />

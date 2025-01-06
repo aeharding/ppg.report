@@ -30,7 +30,7 @@
   "Hush G-AIRMETs": "Silenciar G-AIRMETs",
   "Hush G-Airmets tip": "Si está activado, los nuevos G-AIRMETs no activarán el banner de notificaciones de alertas no leídas y se mostrarán al final de la lista de alertas. Esto puede ser útil si encuentras los G-AIRMETs demasiado ruidosos. [Solo EE. UU.]",
   "Localization in progress": "La localización está en curso. Para ayudar, envía un correo electrónico a hello@ppg.report",
-  "Default": "Predeterminado",
+  "Raw": "Crudo",
   "Normalized": "Normalizado",
   "Advanced features": "Funciones avanzadas",
   "Advanced features tip": "EXPERIMENTAL. Las características actuales incluyen: <ul><li>Icono para representar la tasa de enfriamiento (umbrales para DALR, MALR e inversión de temperatura).</li><li>Indicador de saturación de humedad relativa.</li><li>Toca la celda de temperatura para abrir detalles de temperatura.</li></ul> Comentarios bienvenidos - hello@ppg.report",
