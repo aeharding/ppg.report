@@ -30,7 +30,7 @@
   "Hush G-AIRMETs": "Geluidsdemping G-AIRMET's",
   "Hush G-Airmets tip": "Als dit is ingeschakeld, zullen nieuwe G-AIRMET's de meldingsbanner voor ongelezen meldingen niet activeren en worden ze onderaan de lijst met meldingen weergegeven. Dit kan handig zijn als je de G-AIRMET's te storend vindt. [Alleen in de VS]",
   "Localization in progress": "Lokalisatie is in uitvoering. Stuur alstublieft een e-mail naar hello@ppg.report om te helpen.",
-  "Default": "Standaard",
+  "Raw": "Ruw",
   "Normalized": "Gestandaardiseerd",
   "Advanced features": "Geavanceerde functies",
   "Advanced features tip": "EXPERIMENTEEL. Huidige functies omvatten: <ul><li>Pictogram om de temperatuurdaling aan te geven (drempels voor DALR, MALR en temperatuurinversie).</li><li>Indicator voor verzadiging van de relatieve luchtvochtigheid.</li><li>Tik op de temperatuurcel om temperatuurdetails weer te geven.</li></ul> Feedback is welkom - hello@ppg.report",

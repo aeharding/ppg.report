@@ -30,7 +30,7 @@
   "Hush G-AIRMETs": "G-AIRMETs stummschalten",
   "Hush G-Airmets tip": "Wenn aktiviert, lösen neue G-AIRMETs keinen Hinweis für ungelesene Benachrichtigungen aus und werden am Ende der Liste der Benachrichtigungen angezeigt. Dies kann nützlich sein, wenn Sie G-AIRMETs als zu laut empfinden. [Nur USA]",
   "Localization in progress": "Die Lokalisierung läuft. Um zu helfen, senden Sie bitte eine E-Mail an hello@ppg.report",
-  "Default": "Standard",
+  "Raw": "Roh",
   "Normalized": "Normalisiert",
   "Advanced features": "Erweiterte Funktionen",
   "Advanced features tip": "EXPERIMENTELL. Aktuelle Funktionen umfassen: <ul><li>Symbol zur Darstellung der Temperaturabnahme (Schwellenwerte für DALR, MALR und Temperaturinversion).</li><li>Indikator für gesättigte relative Luftfeuchtigkeit.</li><li>Auf Temperaturzelle tippen, um Temperaturdetails anzuzeigen.</li></ul> Feedback willkommen - hello@ppg.report",
