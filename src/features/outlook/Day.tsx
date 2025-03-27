@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../weather/weatherSlice";
+import { TZDate } from "@date-fns/tz";
+import { format } from "date-fns";
 
 const Table = styled.table`
   width: 100%;
@@ -40,7 +41,7 @@ export default function Day({ hours, date }: DayProps) {
       <THead>
         <tr>
           <DayLabelCell>
-            {formatInTimeZone(date, timeZone, "eeee, LLL d")}
+            {format(new TZDate(date, timeZone), "eeee, LLL d")}
           </DayLabelCell>
         </tr>
       </THead>

@@ -19,12 +19,13 @@ import { findRelatedAlerts } from "../../../helpers/weather";
 import DescriptionText from "./Description";
 import { useState } from "react";
 import styled from "@emotion/styled";
-import { formatInTimeZone } from "date-fns-tz";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { timeZoneSelector } from "../../weather/weatherSlice";
 import { css } from "@emotion/react";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import MyPosition from "../../../map/MyPosition";
+import { format } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
 const MapGeometrySelector = styled.div`
   position: absolute;
@@ -108,15 +109,13 @@ export default function GAirmetAlert({ alert, index, total }: AlertProps) {
                     selected={relatedAlert.id === focusedAlert.id}
                     key={relatedAlert.id}
                   >
-                    {formatInTimeZone(
-                      getAlertStart(relatedAlert),
-                      timeZone,
+                    {format(
+                      new TZDate(getAlertStart(relatedAlert), timeZone),
                       "haaa",
                     )}
                     –
-                    {formatInTimeZone(
-                      getAlertEnd(relatedAlert)!,
-                      timeZone,
+                    {format(
+                      new TZDate(getAlertEnd(relatedAlert)!, timeZone),
                       "haaa",
                     )}
                   </GeometryTime>

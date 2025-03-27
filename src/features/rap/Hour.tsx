@@ -3,17 +3,15 @@ import { useState } from "react";
 import CinCape from "./CinCape";
 import SunCalc from "suncalc";
 import chroma from "chroma-js";
-import { subDays } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { format, startOfTomorrow, subDays } from "date-fns";
 import Table from "./Table";
 import WeatherHeader from "../weather/WeatherHeader";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector, windsAloft } from "../weather/weatherSlice";
-import { toZonedTime, fromZonedTime } from "date-fns-tz";
 import { getTimeFormatString } from "../weather/aviation/Forecast";
 import { WindsAloftHour } from "../../models/WindsAloft";
 import { isValidDate } from "../../helpers/date";
-import { addDays, startOfDay } from "date-fns";
+import { tz, TZDate } from "@date-fns/tz";
 
 const Column = styled.div`
   position: relative;
@@ -124,13 +122,12 @@ export default function Hour({
     <Column {...rest}>
       <Header>
         <HourContainer>
-          {formatInTimeZone(
-            new Date(hour.date),
-            timeZone,
+          {format(
+            new TZDate(hour.date, timeZone),
             getTimeFormatString(timeFormat, true),
           )}
           {new Date(hour.date).getTime() >=
-            startOfTomorrowInTimeZone(timeZone).getTime() && <sup>+1</sup>}
+            startOfTomorrow({ in: tz(timeZone) }).getTime() && <sup>+1</sup>}
         </HourContainer>
 
         <CinCape cin={hour.cin} cape={hour.cape} />
@@ -149,12 +146,5 @@ export default function Hour({
         />
       </Card>
     </Column>
-  );
-}
-
-function startOfTomorrowInTimeZone(timeZone: string): Date {
-  return fromZonedTime(
-    startOfDay(toZonedTime(addDays(new Date(), 1), timeZone)),
-    timeZone,
   );
 }
