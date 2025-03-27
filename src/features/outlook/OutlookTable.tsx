@@ -1,12 +1,14 @@
 import { addDays, eachHourOfInterval, startOfDay } from "date-fns";
 import { findValue, NWSWeather } from "../../services/nwsWeather";
-import { Weather } from "../weather/weatherSlice";
+import { timeZoneSelector, Weather } from "../weather/weatherSlice";
 import { OpenMeteoWeather } from "../../services/openMeteo";
 import { useMemo } from "react";
 import OutlookRow from "./OutlookRow";
 import compact from "lodash/fp/compact";
 import styled from "@emotion/styled";
 import Day from "./Day";
+import { TZDate } from "@date-fns/tz";
+import { useAppSelector } from "../../hooks";
 
 const Rows = styled.div``;
 
@@ -15,6 +17,7 @@ interface OutlookTableProps {
 }
 
 function getOutlook(
+  timeZone: string,
   mapFn: (hour: Date, index: number) => React.ReactNode | undefined,
 ) {
   const hours = eachHourOfInterval({
@@ -27,7 +30,9 @@ function getOutlook(
   );
 
   return Object.entries(
-    Object.groupBy(data, ({ hour }) => startOfDay(hour).getTime()),
+    Object.groupBy(data, ({ hour }) =>
+      startOfDay(new TZDate(hour, timeZone)).getTime(),
+    ),
   ).map(([timeStr, hours]) => ({
     date: new Date(+timeStr),
     hours: hours!.map(({ node }) => node),
@@ -35,18 +40,31 @@ function getOutlook(
 }
 
 export default function OutlookTable({ weather }: OutlookTableProps) {
+  const timeZone = useAppSelector(timeZoneSelector);
+  if (!timeZone) throw new Error("timeZone needed");
+
   const rows = (() => {
-    if ("properties" in weather) return <NWSOutlookRows weather={weather} />;
-    return <OpenMeteoOutlookRows weather={weather} />;
+    if ("properties" in weather)
+      return <NWSOutlookRows weather={weather} timeZone={timeZone} />;
+    return <OpenMeteoOutlookRows weather={weather} timeZone={timeZone} />;
   })();
 
   return <Rows>{rows}</Rows>;
 }
 
-function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
+interface BaseOutlookRowsProps {
+  timeZone: string;
+}
+
+function NWSOutlookRows({
+  weather,
+  timeZone,
+}: BaseOutlookRowsProps & {
+  weather: NWSWeather;
+}) {
   const days = useMemo(
     () =>
-      getOutlook((hour, index) => {
+      getOutlook(timeZone, (hour, index) => {
         const windDirection = findValue(
           hour,
           weather.properties.windDirection,
@@ -80,17 +98,23 @@ function NWSOutlookRows({ weather }: { weather: NWSWeather }) {
           />
         );
       }),
-    [weather],
+    [weather, timeZone],
   );
 
   return days.map(({ date, hours }, index) => (
     <Day key={index} date={date} hours={hours} />
   ));
 }
-function OpenMeteoOutlookRows({ weather }: { weather: OpenMeteoWeather }) {
+
+function OpenMeteoOutlookRows({
+  weather,
+  timeZone,
+}: BaseOutlookRowsProps & {
+  weather: OpenMeteoWeather;
+}) {
   const days = useMemo(
     () =>
-      getOutlook((hour, index) => {
+      getOutlook(timeZone, (hour, index) => {
         const data = weather.byUnixTimestamp[hour.getTime() / 1_000];
 
         if (!data) return;
@@ -108,7 +132,7 @@ function OpenMeteoOutlookRows({ weather }: { weather: OpenMeteoWeather }) {
           />
         );
       }),
-    [weather],
+    [weather, timeZone],
   );
 
   return days.map(({ date, hours }, index) => (
