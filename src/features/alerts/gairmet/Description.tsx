@@ -5,10 +5,11 @@ import React from "react";
 import omit from "lodash/omit";
 import styled from "@emotion/styled";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
-import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../../weather/weatherSlice";
 import isEqual from "lodash/isEqual";
+import { format } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
 const Label = styled.div`
   margin: 1rem 0 -1rem;
@@ -125,10 +126,9 @@ export default function Description({ alerts }: DescriptionProps) {
       {items.map((item) => (
         <React.Fragment key={item[0].id}>
           <Label>
-            From {formatInTimeZone(getAlertStart(item[0]), timeZone, "haaa")}–
-            {formatInTimeZone(
-              getAlertEnd(item[item.length - 1])!,
-              timeZone,
+            From {format(new TZDate(getAlertStart(item[0]), timeZone), "haaa")}–
+            {format(
+              new TZDate(getAlertEnd(item[item.length - 1])!, timeZone),
               "haaa",
             )}
           </Label>

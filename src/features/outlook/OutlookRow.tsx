@@ -1,4 +1,3 @@
-import { formatInTimeZone } from "date-fns-tz";
 import { timeZoneSelector } from "../weather/weatherSlice";
 import { useAppSelector } from "../../hooks";
 import styled from "@emotion/styled";
@@ -24,6 +23,8 @@ import { cToF } from "../weather/aviation/DetailedAviationReport";
 import { Observations } from "../weather/header/Weather";
 import { NWSWeatherObservation } from "../../services/nwsWeather";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { format } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
 const Row = styled.tr<{ day: boolean }>`
   display: flex;
@@ -78,7 +79,7 @@ export default function OutlookRow({
 
   const temperatureUnit = useAppSelector((state) => state.user.temperatureUnit);
 
-  const time = formatInTimeZone(hour, timeZone, timeFormatString(timeFormat));
+  const time = format(new TZDate(hour, timeZone), timeFormatString(timeFormat));
 
   const isDay =
     SunCalc.getPosition(hour, coordinates.lat, coordinates.lon).altitude > 0;

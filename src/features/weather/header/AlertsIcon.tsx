@@ -14,7 +14,6 @@ import {
 import { isAlertDangerous } from "../../../helpers/weather";
 import { HeaderType } from "../WeatherHeader";
 import { css } from "@emotion/react";
-import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../../hooks";
 import { outputP3ColorFromRGB } from "../../../helpers/colors";
 import JumpActions from "../../alerts/JumpActions";
@@ -23,6 +22,8 @@ import { isAlertRead } from "../../../helpers/alert";
 import { getTimeFormatString } from "../aviation/Forecast";
 import { OnOff } from "../../rap/extra/settings/settingEnums";
 import Tooltip from "../../../shared/Tooltip";
+import { TZDate } from "@date-fns/tz";
+import { format } from "date-fns";
 
 const Alerts = lazy(() => import("../../alerts/Alerts"));
 
@@ -146,9 +147,8 @@ export default function AlertsIcon({ alerts, date }: AlertsProps) {
           <Title>
             <div>
               {alerts.length} Alert{alerts.length === 1 ? "" : "s"} at{" "}
-              {formatInTimeZone(
-                new Date(date),
-                timeZone,
+              {format(
+                new TZDate(date, timeZone),
                 getTimeFormatString(timeFormat, true),
               )}
             </div>

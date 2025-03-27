@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
 import { faExternalLink } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatDistanceStrict } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { format, formatDistanceStrict } from "date-fns";
 import { IForecastContainer } from "metar-taf-parser";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../weatherSlice";
@@ -11,6 +10,7 @@ import Forecast, {
   getTimeFormatString,
 } from "./Forecast";
 import { TemperatureUnit } from "../../rap/extra/settings/settingEnums";
+import { TZDate } from "@date-fns/tz";
 
 const Container = styled.div`
   overflow: hidden;
@@ -79,9 +79,8 @@ export default function DetailedAviationReport({
       <Description>
         <p>
           {taf.amendment ? "Amended " : ""} TAF report from {taf.station} issued{" "}
-          {formatInTimeZone(
-            taf.issued,
-            timeZone,
+          {format(
+            new TZDate(taf.issued, timeZone),
             getTimeFormatString(timeFormat),
           )}{" "}
           and is valid for{" "}

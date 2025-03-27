@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { startOfTomorrow } from "date-fns";
-import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import { format, startOfTomorrow } from "date-fns";
 import {
   Forecast as IForecast,
   Intensity,
@@ -30,6 +29,7 @@ import Cloud from "./Cloud";
 import Wind from "./cells/Wind";
 import WindShear from "./cells/WindShear";
 import { TimeFormat } from "../../rap/extra/settings/settingEnums";
+import { tz, TZDate } from "@date-fns/tz";
 
 const Container = styled.div<{ type: WeatherChangeType | undefined }>`
   padding: 1rem;
@@ -371,9 +371,8 @@ export function formatWithTomorrowIfNeeded(
   timeZone: string,
   formatStr: string,
 ): string {
-  return `${formatInTimeZone(date, timeZone, formatStr)}${
-    new Date(date).getTime() >=
-    fromZonedTime(startOfTomorrow(), timeZone).getTime()
+  return `${format(new TZDate(date, timeZone), formatStr)}${
+    new Date(date).getTime() >= startOfTomorrow({ in: tz(timeZone) }).getTime()
       ? " tomorrow"
       : ""
   }`;

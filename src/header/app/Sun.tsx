@@ -3,12 +3,13 @@ import { useState } from "react";
 import SunCalc from "suncalc";
 import { useAppSelector } from "../../hooks";
 import { timeZoneSelector } from "../../features/weather/weatherSlice";
-import { formatInTimeZone } from "date-fns-tz";
 import { getTimeFormatString } from "../../features/weather/aviation/Forecast";
 import { isValidDate } from "../../helpers/date";
 import { faSunrise, faSunset } from "@fortawesome/pro-duotone-svg-icons";
 import styled from "@emotion/styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { format } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
 const SunsetSunrise = styled.div`
   position: absolute;
@@ -40,17 +41,15 @@ export default function Sun({ lat, lon }: ReportHeaderProps) {
   return (
     <SunsetSunrise>
       <div>
-        {formatInTimeZone(
-          times.sunrise,
-          timeZone,
+        {format(
+          new TZDate(times.sunrise, timeZone),
           getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunrise} />
       </div>
       <div>
-        {formatInTimeZone(
-          times.sunsetStart,
-          timeZone,
+        {format(
+          new TZDate(times.sunsetStart, timeZone),
           getTimeFormatString(timeFormat, true),
         )}{" "}
         <FontAwesomeIcon icon={faSunset} />

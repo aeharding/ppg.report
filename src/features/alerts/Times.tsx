@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { formatInTimeZone } from "date-fns-tz";
 import { useAppSelector } from "../../hooks";
 import {
   Alert,
@@ -10,6 +9,8 @@ import {
   isGAirmetAlert,
 } from "./alertsSlice";
 import { getTimeFormatString } from "../weather/aviation/Forecast";
+import { format } from "date-fns";
+import { TZDate } from "@date-fns/tz";
 
 const Container = styled.div`
   display: flex;
@@ -87,14 +88,13 @@ function Time({ children, time, includeYear, noEndLabel }: TimeProps) {
       <Label>{children}</Label>
       <TimeLabel>
         {time
-          ? formatInTimeZone(time, timeZone, getTimeFormatString(timeFormat))
+          ? format(new TZDate(time, timeZone), getTimeFormatString(timeFormat))
           : noEndLabel}
       </TimeLabel>
       {time ? (
         <div>
-          {formatInTimeZone(
-            time,
-            timeZone,
+          {format(
+            new TZDate(time, timeZone),
             includeYear ? "eeee, MMMM do yyyy" : "eeee, MMMM do",
           )}
         </div>
