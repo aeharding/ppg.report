@@ -15,12 +15,13 @@ jobs:
         node-version: [22.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: corepack enable
+          cache: pnpm
       - run: |
           npm config set '@fortawesome:registry' '${{ secrets.FONTAWESOME_REGISTRY }}'
           npm config set '//harding.dev:23435/:_authToken' '${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}'
