@@ -15,7 +15,8 @@ export default function WindShear({ windShear }: WindShearProps) {
     <>
       {windShear.degrees ? (
         <>
-          {windShear.degrees} <WindIndicator direction={windShear.degrees} /> at{" "}
+          {windShear.degrees} <WindIndicator direction={windShear.degrees} />{" "}
+          at{" "}
         </>
       ) : (
         "Variable direction at"
