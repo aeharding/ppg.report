@@ -24,6 +24,8 @@ import {
 } from "./alertsSlice";
 import Times from "./Times";
 import UnreadIndicator from "./UnreadIndicator";
+import { addHours, format, roundToNearestHours } from "date-fns";
+import { tz } from "@date-fns/tz";
 
 const Container = styled.div<{ warning: boolean }>`
   position: sticky;
@@ -231,18 +233,19 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
   // https://www.aviationweather.gov/cwamis/help?page=inter
   function buildUrl() {
     if (isSigmetOutlookAlert(alert))
-      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=5&time=2&level=sfc&basemap=dark`;
+      // https://aviationweather.gov/gfa/?tab=obs
+      return `https://aviationweather.gov/gfa/?tab=sigmet&center=${lat},${lon}&zoom=5&time=${format(addHours(roundToNearestHours(alert.properties.validTimeFrom), 2), "HH", { in: tz("utc") })}z&level=sfc&basemap=esriDark&sigmetoutlook=1`;
 
     if (isSigmetAlert(alert))
-      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+      return `https://aviationweather.gov/gfa/?tab=sigmet&center=${lat},${lon}&zoom=6&level=sfc&basemap=esriDark`;
 
     if (isISigmetAlert(alert))
-      return `https://www.aviationweather.gov/sigmet?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+      return `https://aviationweather.gov/gfa/?tab=sigmet&center=${lat},${lon}&zoom=6&level=sfc&basemap=esriDark`;
 
     if (isGAirmetAlert(alert))
-      return `https://www.aviationweather.gov/gairmet?center=${lat},${lon}&zoom=5&level=sfc&basemap=dark&time=${alert.properties.forecast}`;
+      return `https://aviationweather.gov/gfa/?tab=gairmet&center=${lat},${lon}&zoom=5&level=sfc&basemap=esriDark&time=${alert.properties.forecast}&gairmettype=${alert.properties.hazard}&time=30%2F${format(roundToNearestHours(alert.properties.validTime), "HH", { in: tz("utc") })}z`;
 
-    return `https://www.aviationweather.gov/cwamis?center=${lat},${lon}&zoom=6&level=sfc&basemap=dark`;
+    return `https://aviationweather.gov/gfa/?tab=cwa&center=${lat},${lon}&zoom=6&level=sfc&basemap=esriDark`;
   }
 
   return (
