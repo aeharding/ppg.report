@@ -9,8 +9,8 @@
 Weather report tailored for paramotor pilots. Consolidates data from multiple sources. Worldwide coverage, with extra information within the United States.
 
 1. 🌏 [Open-Meteo](https://Open-Meteo.com/) for international winds aloft and hourly weather forecasts
-2. 🌏 Nearby [Terminal Aerodrome Forecasts](https://www.aviationweather.gov/taf), if available
-3. 🌏 Aviation Weather Center [SIGMETs](https://www.aviationweather.gov/sigmet) (international support), [G‑AIRMETs](https://www.aviationweather.gov/gairmet), and [CWAs](https://www.aviationweather.gov/cwamis)
+2. 🌏 Nearby [Terminal Aerodrome Forecasts](https://aviationweather.gov/gfa/#taf), if available
+3. 🌏 Aviation Weather Center [SIGMETs](https://aviationweather.gov/gfa/#sigmet) (international support), [G‑AIRMETs](https://aviationweather.gov/gfa/#gairmet), and [CWAs](https://aviationweather.gov/gfa/#cwa)
 4. 🇺🇸 The [NOAA Rapid Refresh Op40 analysis](https://rucsoundings.noaa.gov/)
 5. 🇺🇸 NWS [hourly weather forecast](https://www.weather.gov/documentation/services-web-api)
 6. 🇺🇸 National Weather Service [active alerts](https://alerts.weather.gov/cap/us.php?x=1)

@@ -69,7 +69,7 @@ function getGAirmetAlertName(alert: GAirmetFeature): string {
 }
 
 function getCwaAlertName(alert: CwaFeature): string {
-  return `${alert.properties.cwsu} ${alert.properties.data}: ${[
+  return `${alert.properties.cwsu} CWA: ${[
     formatQualifier(alert.properties.qualifier),
     formatHazard(alert.properties.hazard),
   ].join(" ")}`;
