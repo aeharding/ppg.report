@@ -203,7 +203,7 @@ function TFRHeadline({ alert }: { alert: TFRFeature }) {
     <>
       <WarningIcon icon={faExclamationTriangle} />{" "}
       <Link
-        href={`https://tfr.faa.gov/save_pages/detail_${alert.properties.coreNOTAMData.notam.number.replace(
+        href={`https://tfr.faa.gov/tfr3/?page=detail_${alert.properties.coreNOTAMData.notam.number.replace(
           /\//g,
           "_",
         )}.html`}
