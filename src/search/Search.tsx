@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { getTrimmedCoordinates } from "../helpers/coordinates";
@@ -101,10 +100,6 @@ export default function Search({ ...rest }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setError("");
-  }, [query]);
-
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -142,7 +137,10 @@ export default function Search({ ...rest }) {
             placeholder={t("Search locations")}
             autoFocus={locationsLength === 0 || !isTouchDevice()}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setError("");
+            }}
             disabled={loading}
           />
           <SubmitButton

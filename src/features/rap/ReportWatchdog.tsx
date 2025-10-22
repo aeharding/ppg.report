@@ -13,7 +13,7 @@ interface ReportWatchdogProps {
 export default function ReportWatchdog({ hours }: ReportWatchdogProps) {
   const dispatch = useAppDispatch();
   const visibility = usePageVisibility();
-  const [lastUpdated, setLastUpdated] = useState(Date.now());
+  const [lastUpdated, setLastUpdated] = useState(0);
   const { location } = useParams<"location">();
   const [lat, lon] = (location ?? "").split(",");
   if (!lat || !lon) throw new Error("lat or lon not defined!");
@@ -23,14 +23,10 @@ export default function ReportWatchdog({ hours }: ReportWatchdogProps) {
   }, 5000);
 
   useEffect(() => {
-    setLastUpdated(Date.now());
-  }, [visibility]);
-
-  useEffect(() => {
     if (document.hidden) return;
 
     dispatch(getWeather(+lat, +lon));
-  }, [lastUpdated, dispatch, hours, lat, lon]);
+  }, [visibility, lastUpdated, dispatch, hours, lat, lon]);
 
   return <></>;
 }
