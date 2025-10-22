@@ -56,7 +56,7 @@ Using a reverse proxy such as Nginx, configure the following:
     - GET `/api/openmeteo/{proxy+}` ➡ `https://api.open-meteo.com/v1/{proxy}` Get worldwide winds aloft and forecast information
   - OPTIONAL endpoints (to further enhance basic global support):
     - GET `/api/rap` ➡ `https://rucsoundings.noaa.gov/get_soundings.cgi`
-    - GET `/api/aviationweather` ➡ `https://www.aviationweather.gov/adds/dataserver_current/httpparam`
+    - GET `/api/aviationweather` ➡ `https://www.aviationweather.gov/api/data/taf`
     - GET `/api/weather/{proxy+}` ➡ `https://api.weather.gov/{proxy}` Greedy path capturing, forwards to api.weather.gov.
     - GET `/api/pqs` ➡ `https://epqs.nationalmap.gov/v1/json` Get United States altitude information for a given geolocation.
     - GET `/api/googleelevation` ➡ `https://maps.googleapis.com/maps/api/elevation/json` Get global altitude information for a given geolocation (backup API).

@@ -1,8 +1,5 @@
 import axios from "axios";
-import { XMLParser } from "fast-xml-parser";
 import type { GeometryObject } from "geojson";
-
-const parser = new XMLParser();
 
 export interface TAFReport {
   raw: string;
@@ -11,7 +8,7 @@ export interface TAFReport {
   lon: number;
 }
 
-// Proxy to https://www.aviationweather.gov/adds/dataserver_current/httpparam
+// Proxy to https://www.aviationweather.gov/api/data/taf
 export async function getTAF({
   lat,
   lon,
@@ -19,26 +16,25 @@ export async function getTAF({
   lat: number;
   lon: number;
 }): Promise<TAFReport | undefined> {
+  // Create a bounding box around the point (approximately 35nm radius)
+  // 1 degree ≈ 60nm, so 35nm ≈ 0.58 degrees
+  const buffer = 0.58;
+  const bbox = `${lat - buffer},${lon - buffer},${lat + buffer},${lon + buffer}`;
+
   const response = await axios.get("/api/aviationweather", {
     params: {
-      dataSource: "tafs",
-      requestType: "retrieve",
-      format: "xml",
-      radialDistance: `35;${lon},${lat}`,
-      hoursBeforeNow: 3,
-      mostRecent: true,
-      fields: ["raw_text", "issue_time", "latitude", "longitude"].join(","),
+      bbox,
+      format: "json",
     },
   });
-  const parsed = parser.parse(response.data);
 
-  if (!parsed.response.data?.TAF) return;
+  const tafData = response.data[0];
 
   return {
-    raw: parsed.response.data.TAF.raw_text,
-    issued: parsed.response.data.TAF.issue_time,
-    lat: +parsed.response.data.TAF.latitude,
-    lon: +parsed.response.data.TAF.longitude,
+    raw: tafData.rawTAF,
+    issued: tafData.issueTime,
+    lat: tafData.lat,
+    lon: tafData.lon,
   };
 }
 
