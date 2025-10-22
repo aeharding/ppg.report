@@ -36,12 +36,19 @@ function DraggableScrollView({ children, ...rest }: DraggableScrollViewProps) {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container && container.scrollWidth > container.clientWidth) {
-      setHasOverflow(true);
-    } else {
-      setHasOverflow(false);
-    }
-  }, []);
+    if (!container) return;
+
+    const checkOverflow = () => {
+      setHasOverflow(container.scrollWidth > container.clientWidth);
+    };
+
+    checkOverflow();
+
+    const resizeObserver = new ResizeObserver(checkOverflow);
+    resizeObserver.observe(container);
+
+    return () => resizeObserver.disconnect();
+  }, [children]);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {

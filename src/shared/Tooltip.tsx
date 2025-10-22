@@ -79,7 +79,7 @@ export default function Tooltip({
       shift(),
       offset(customOffset ?? 8),
       flip(),
-      // eslint-disable-next-line react-compiler/react-compiler
+      // eslint-disable-next-line react-hooks/refs
       arrow({ element: arrowRef }),
     ].filter(notEmpty),
   });
@@ -127,6 +127,7 @@ export default function Tooltip({
       {isMounted && (
         <FloatingPortal>
           <TooltipContainer
+            // eslint-disable-next-line react-hooks/refs
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}

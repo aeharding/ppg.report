@@ -46,6 +46,7 @@ export default function CopyToClipboard({ children }: CopyToClipboardProps) {
         {children}
       </Container>
       {isOpen && (
+        // eslint-disable-next-line react-hooks/refs
         <TooltipContainer ref={refs.setFloating} style={floatingStyles}>
           Copied to clipboard
         </TooltipContainer>
