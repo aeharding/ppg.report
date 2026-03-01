@@ -2,8 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
-interface DraggableScrollViewProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DraggableScrollViewProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
