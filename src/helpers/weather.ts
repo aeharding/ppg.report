@@ -104,16 +104,16 @@ export function findRelatedAlerts(
     );
   }) as GAirmetFeature[];
 
+  potential.sort(
+    (a, b) =>
+      Date.parse(a.properties.issueTime) - Date.parse(b.properties.issueTime),
+  );
+
   const baseAlertIndex = potential.findIndex(
     (potentialAlert) => potentialAlert.id === alert.id,
   );
 
   if (baseAlertIndex === -1) return [alert];
-
-  potential.sort(
-    (a, b) =>
-      Date.parse(a.properties.issueTime) - Date.parse(b.properties.issueTime),
-  );
 
   return [
     ...findPrev(alert, potential.slice(0, baseAlertIndex)),
