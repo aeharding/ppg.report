@@ -6,7 +6,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig(() => {
   return {
     optimizeDeps: {
-      include: ["metar-taf-parser", "gsl-parser"],
+      include: ["metar-taf-parser"],
     },
     build: {
       outDir: "build",
@@ -34,17 +34,6 @@ export default defineConfig(() => {
                 expiration: {
                   maxEntries: 100,
                   maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
-                },
-              },
-            },
-            {
-              handler: "NetworkFirst",
-              urlPattern: /\/api\/rap.*/,
-              options: {
-                cacheName: "apiRapCache",
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 4, // 4 Hours
                 },
               },
             },

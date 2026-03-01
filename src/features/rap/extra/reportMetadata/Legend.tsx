@@ -24,14 +24,6 @@ const YourLocation = styled.div`
   ${outputP3ColorFromRGB([0, 255, 0], "background")}
 `;
 
-const WindsAloft = styled.div`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 2px;
-  background: rgba(50, 0, 255, 0.3);
-  border: 2px solid rgb(50, 0, 255);
-`;
-
 const NWS = styled.div`
   width: 1rem;
   height: 1rem;
@@ -49,22 +41,15 @@ const StyledPlaneSvg = styled(PlaneSvg)`
 interface LegendProps {
   showTaf: boolean;
   showNws: boolean;
-  showOp40: boolean;
 }
 
-export default function Legend({ showTaf, showNws, showOp40 }: LegendProps) {
+export default function Legend({ showTaf, showNws }: LegendProps) {
   return (
     <Container>
       <LegendItem>
         <YourLocation />
         Selected location
       </LegendItem>
-      {showOp40 && (
-        <LegendItem>
-          <WindsAloft />
-          Op40 Winds Aloft Gridpoint (approx)
-        </LegendItem>
-      )}
       {showNws && (
         <LegendItem>
           <NWS />

@@ -4,7 +4,7 @@ export interface WindsAloftReport {
   latitude: number;
   longitude: number;
 
-  source: "openMeteo" | "rucSounding";
+  source: "openMeteo";
 
   elevationInM?: number;
 }
