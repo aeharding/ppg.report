@@ -162,6 +162,8 @@ export type GAirmetFeature = AbstractAviationAlertFeature<{
 
   product: "SIERRA" | "TANGO" | "ZULU";
 
+  tag: string;
+
   hazard:
     | "TURB-HI"
     | "TURB-LO"
@@ -242,19 +244,47 @@ export async function getAviationAlerts({
   lat: number;
   lon: number;
 }): Promise<AviationAlertFeature[]> {
-  const response = await axios.get("/api/aviationalerts", {
-    params: {
-      lat,
-      lon,
-    },
-  });
+  const response = await axios.get<{
+    features: Omit<AviationAlertFeature, "id">[];
+  }>("/api/aviationalerts", { params: { lat, lon } });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return response.data.features.filter((feature: any) => {
-    if (!feature.properties.altitudeLow1) return true;
+  return response.data.features
+    .filter((feature) => {
+      if (
+        "altitudeLow1" in feature.properties &&
+        feature.properties.altitudeLow1 > 3000
+      )
+        return false;
 
-    if (feature.properties.altitudeLow1 > 3000) return false;
+      return true;
+    })
+    .map(
+      (feature) =>
+        ({
+          ...feature,
+          id: generateFeatureId(feature),
+        }) as AviationAlertFeature,
+    );
+}
 
-    return true;
-  });
+function generateFeatureId(feature: Omit<AviationAlertFeature, "id">): string {
+  const p = feature.properties;
+
+  if ("product" in p) {
+    return `gairmet-${p.product}-${p.hazard}-${p.tag}-${p.validTime}`;
+  }
+
+  if ("airSigmetType" in p) {
+    return `sigmet-${p.icaoId}-${p.alphaChar}-${p.hazard}-${p.validTimeFrom}`;
+  }
+
+  if ("data" in p && p.data === "ISIGMET") {
+    return `isigmet-${p.icaoId}-${p.hazard}-${p.validTimeFrom}`;
+  }
+
+  if ("cwsu" in p) {
+    return `cwa-${p.cwsu}-${p.seriesId}-${p.validTimeFrom}`;
+  }
+
+  return `aviation-alert-${JSON.stringify(p)}`;
 }
