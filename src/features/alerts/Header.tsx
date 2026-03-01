@@ -9,7 +9,10 @@ import { getAviationAlertName } from "../../helpers/aviationAlerts";
 import useDebounce from "../../helpers/useDebounce";
 import { findRelatedAlerts, isAlertDangerous } from "../../helpers/weather";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { AviationAlertFeature } from "../../services/aviationWeather";
+import {
+  AviationAlertFeature,
+  GAirmetFeature,
+} from "../../services/aviationWeather";
 import { TFRFeature } from "../../services/faa";
 import { WeatherAlertFeature } from "../../services/nwsWeather";
 import { readAlert } from "../user/userSlice";
@@ -243,7 +246,7 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
       return `https://aviationweather.gov/gfa/?tab=sigmet&center=${lat},${lon}&zoom=6&level=sfc&basemap=esriDark`;
 
     if (isGAirmetAlert(alert))
-      return `https://aviationweather.gov/gfa/?tab=gairmet&center=${lat},${lon}&zoom=5&level=sfc&basemap=esriDark&time=${alert.properties.forecast}&gairmettype=${alert.properties.hazard}&time=30%2F${format(roundToNearestHours(alert.properties.validTime), "HH", { in: tz("utc") })}z`;
+      return `https://aviationweather.gov/gfa/?tab=gairmet&prodType=fltcat&basemap=esriDark&center=${lat},${lon}&zoom=5&gairmettype=${gairmetTypeParam(alert.properties.hazard)}&level=all&time=${format(roundToNearestHours(alert.properties.validTime), "dd", { in: tz("utc") })}%2F${format(roundToNearestHours(alert.properties.validTime), "HH", { in: tz("utc") })}z`;
 
     return `https://aviationweather.gov/gfa/?tab=cwa&center=${lat},${lon}&zoom=6&level=sfc&basemap=esriDark`;
   }
@@ -263,4 +266,28 @@ function AirSigmetHeadline({ alert }: { alert: AviationAlertFeature }) {
       </Link>
     </>
   );
+}
+
+function gairmetTypeParam(
+  hazard: GAirmetFeature["properties"]["hazard"],
+): string {
+  switch (hazard) {
+    case "ICE":
+      return "icing";
+    case "FZLVL":
+    case "M_FZLVL":
+      return "frzlvl";
+    case "TURB-HI":
+      return "turbhi";
+    case "TURB-LO":
+      return "turblo";
+    case "IFR":
+      return "ifr";
+    case "MT_OBSC":
+      return "mtobsc";
+    case "SFC_WND":
+      return "sfcwind";
+    case "LLWS":
+      return "llws";
+  }
 }
