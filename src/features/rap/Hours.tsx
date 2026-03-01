@@ -238,7 +238,6 @@ export default function Hours({ hours }: TableProps) {
 
     document.addEventListener("keydown", callback);
     return () => document.removeEventListener("keydown", callback);
-    // eslint-disable-next-line react-compiler/react-compiler -- Waiting for useEffectEvent
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -277,7 +276,6 @@ export default function Hours({ hours }: TableProps) {
         scrollView.offsetLeft,
     });
 
-    // eslint-disable-next-line react-compiler/react-compiler -- Waiting for useEffectEvent
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -293,7 +291,6 @@ export default function Hours({ hours }: TableProps) {
       scrollView.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-    // eslint-disable-next-line react-compiler/react-compiler -- Waiting for useEffectEvent
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollViewRef]);
 
