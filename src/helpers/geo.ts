@@ -70,13 +70,3 @@ export function isPossiblyWithinUSA(
 
   return false; // Coordinates are not within the United States or its locations
 }
-
-export function isWithinNWSRAPModelBoundary(
-  latitude: number,
-  longitude: number,
-): boolean {
-  const isWithinBoundary =
-    latitude >= 20 && latitude <= 55 && longitude >= -130 && longitude <= -60;
-
-  return isWithinBoundary;
-}

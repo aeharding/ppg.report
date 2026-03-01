@@ -24,41 +24,18 @@ export default function PointInfo() {
     throw new Error("RAP not defined");
   if (!timeZone) throw new Error("timeZone not defined");
 
-  const altitudeInM = windsAloft.hours[0].altitudes[0].altitudeInM;
-
-  const showOp40 =
-    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
-
-  const aloftSource = (() => {
-    switch (windsAloft.source) {
-      case "openMeteo":
-        return (
-          <>
-            <a
-              href="https://open-meteo.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              open-meteo.com
-            </a>{" "}
-            / Best model
-          </>
-        );
-      case "rucSounding":
-        return (
-          <>
-            <a
-              href="https://rucsoundings.noaa.gov"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              rucsoundings.noaa.gov
-            </a>{" "}
-            / Op40
-          </>
-        );
-    }
-  })();
+  const aloftSource = (
+    <>
+      <a
+        href="https://open-meteo.com"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        open-meteo.com
+      </a>{" "}
+      / Best model
+    </>
+  );
 
   const hourlySource = (() => {
     if (!weather || typeof weather !== "object") return;
@@ -104,17 +81,6 @@ export default function PointInfo() {
           {heightUnitLabel}
         </div>
       </DataListItem>
-      {showOp40 && (
-        <DataListItem>
-          <div>Winds aloft gridpoint elevation</div>
-          <div>
-            {Math.round(
-              heightValueFormatter(altitudeInM, heightUnit),
-            ).toLocaleString()}
-            {heightUnitLabel}
-          </div>
-        </DataListItem>
-      )}
       <DataListItem>
         <div>Winds aloft</div>
         <div>{aloftSource}</div>

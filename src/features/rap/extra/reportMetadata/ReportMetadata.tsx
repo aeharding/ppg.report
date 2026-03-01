@@ -1,13 +1,11 @@
 import styled from "@emotion/styled";
-import { latLng, LatLngExpression, divIcon } from "leaflet";
+import { LatLngExpression, divIcon } from "leaflet";
 import { useEffect, useRef } from "react";
 import {
   MapContainer,
   GeoJSON,
   useMap,
-  Circle,
   FeatureGroup,
-  Rectangle,
   Marker,
 } from "react-leaflet";
 import { useAppSelector } from "../../../../hooks";
@@ -17,7 +15,6 @@ import Legend from "./Legend";
 import RefreshInformation from "./RefreshInformation";
 import { DataList } from "../../../../DataList";
 import { outputP3ColorFromRGB } from "../../../../helpers/colors";
-import { css } from "@emotion/react";
 import OSMAttribution from "../../../../map/OSMAttribution";
 import MyPosition from "../../../../map/MyPosition";
 import Parallax from "../../../../shared/Parallax";
@@ -62,11 +59,7 @@ export default function ReportMetadata() {
   const aviationWeather = useAppSelector(
     (state) => state.weather.aviationWeather,
   );
-  const windsAloft = useAppSelector((state) => state.weather.windsAloft);
   const weather = useAppSelector((state) => state.weather.weather);
-
-  const showOp40 =
-    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
 
   return (
     <Container>
@@ -96,7 +89,6 @@ export default function ReportMetadata() {
           showNws={
             !!(weather && typeof weather === "object" && "geometry" in weather)
           }
-          showOp40={showOp40}
         />
 
         <StyledDataList>
@@ -125,17 +117,10 @@ function MapController() {
   if (!windsAloft || typeof windsAloft !== "object")
     throw new Error("RAP report must be defined");
 
-  const showOp40 =
-    typeof windsAloft === "object" && windsAloft.source === "rucSounding";
-
   const map = useMap();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupRef = useRef<any>(null);
 
-  const rapPosition: LatLngExpression = [
-    windsAloft.latitude,
-    windsAloft.longitude,
-  ];
   const airportPosition: LatLngExpression | undefined =
     aviationWeather && typeof aviationWeather === "object"
       ? [aviationWeather.lat, aviationWeather.lon]
@@ -148,31 +133,8 @@ function MapController() {
       });
   }, [map, groupRef]);
 
-  const bounds = latLng(rapPosition).toBounds(40000); // 13km for op40 analysis
-
   return (
     <FeatureGroup ref={groupRef}>
-      {showOp40 && (
-        <>
-          <Rectangle
-            bounds={bounds}
-            css={css`
-              ${outputP3ColorFromRGB([0, 0, 255], "fill")}
-              ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
-            `}
-          />
-          <Circle
-            center={rapPosition}
-            fillOpacity={1}
-            radius={500}
-            css={css`
-              ${outputP3ColorFromRGB([0, 0, 255], "fill")}
-              ${outputP3ColorFromRGB([0, 0, 255], "stroke")}
-            `}
-          />
-        </>
-      )}
-
       {airportPosition && (
         <Marker position={airportPosition} icon={planeIcon} pane="markerPane" />
       )}

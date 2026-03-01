@@ -2,18 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { AppDispatch } from "../../store";
 import * as nwsWeather from "../../services/nwsWeather";
-import { differenceInMinutes, isPast } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 import * as timezoneService from "../../services/timezone";
 import * as aviationWeatherService from "../../services/aviationWeather";
 import * as elevationService from "../../services/elevation";
 import * as storage from "../user/storage";
 import { WindsAloftReport } from "../../models/WindsAloft";
-import * as rapidRefresh from "../../services/rapidRefresh";
 import * as openMeteo from "../../services/openMeteo";
-import {
-  isPossiblyWithinUSA,
-  isWithinNWSRAPModelBoundary,
-} from "../../helpers/geo";
+import { isPossiblyWithinUSA } from "../../helpers/geo";
 import { AxiosError } from "axios";
 
 const UPDATE_INTERVAL_MINUTES = 30;
@@ -608,13 +604,12 @@ export const getWeather =
       return;
     }
 
-    // Open Meteo can provide weather and elevation alongside winds aloft
-    const windsAloft = await loadWindsAloft();
+    const windsAloftResult = await loadWindsAloft();
 
     if (isStale()) return;
 
-    if (!windsAloft) return; // pending
-    const { elevation } = windsAloft;
+    if (!windsAloftResult) return; // pending
+    const { elevation } = windsAloftResult;
 
     if (elevation == null) loadElevation();
     else dispatch(elevationReceived(elevation));
@@ -632,46 +627,18 @@ export const getWeather =
         }
       | undefined
     > {
-      if (!isWithinNWSRAPModelBoundary(lat, lon)) return fallback();
-
       try {
-        const windsAloft = await rapidRefresh.getWindsAloft(lat, lon);
-
-        if (
-          windsAloft.hours.filter(({ date }) => !isPast(new Date(date)))
-            .length < 10
-        ) {
-          console.info("Stale NWS rapid refresh data");
-          throw new Error("Rapid Refresh is too old");
-        }
+        const { windsAloft } = await openMeteo.getWindsAloft(lat, lon);
 
         if (isStale()) return;
 
         dispatch(windsAloftReceived(windsAloft));
-      } catch (_error) {
-        if (isStale()) return;
 
-        return fallback();
-      }
+        return { elevation: windsAloft.elevationInM };
+      } catch (error) {
+        if (!isStale()) dispatch(windsAloftFailed());
 
-      return {};
-
-      async function fallback() {
-        try {
-          // It would be nice in the future to intelligently choose an API
-          // instead of trial and error (and, it would be faster)
-          const { windsAloft } = await openMeteo.getWindsAloft(lat, lon);
-
-          if (isStale()) return;
-
-          dispatch(windsAloftReceived(windsAloft));
-
-          return { elevation: windsAloft.elevationInM };
-        } catch (error) {
-          if (!isStale()) dispatch(windsAloftFailed());
-
-          throw error;
-        }
+        throw error;
       }
     }
 

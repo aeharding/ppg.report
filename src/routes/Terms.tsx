@@ -85,20 +85,6 @@ export default function Terms() {
         information:
         <ol>
           <li>
-            <strong>NOAA&apos;s Rapid Refresh software</strong> —{" "}
-            <a
-              href="https://rucsoundings.noaa.gov"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://rucsoundings.noaa.gov
-            </a>
-            <br />
-            <strong>Purpose:</strong> To show you weather information,
-            especially as it relates to conditions aloft.
-          </li>
-          <br />
-          <li>
             <strong>OpenStreetMap&apos;s Nominatim service</strong> —{" "}
             <a
               href="https://nominatim.openstreetmap.org"
