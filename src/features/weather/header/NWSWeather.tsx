@@ -1,5 +1,4 @@
-import lowerCase from "lodash/lowerCase";
-import capitalize from "lodash/capitalize";
+import { capitalize, compact, lowerCase } from "es-toolkit";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   faCloudHail,
@@ -45,7 +44,9 @@ export default function NWSWeather({
     return capitalize(
       observations
         .map((observation) =>
-          [observation.coverage, observation.weather].map(lowerCase).join(" "),
+          compact([observation.coverage, observation.weather])
+            .map(lowerCase)
+            .join(" "),
         )
         .join(", "),
     );

@@ -1,4 +1,4 @@
-import sortBy from "lodash/sortBy";
+import { sortBy } from "es-toolkit";
 import {
   isGAirmetAlert,
   isISigmetAlert,
@@ -186,10 +186,9 @@ export function extractIssuedTimestamp(
   }
 
   if (isGAirmetAlert(alert)) {
-    const initialRelatedAlert = sortBy(
-      relatedAlerts,
-      "properties.validTime",
-    )[0];
+    const initialRelatedAlert = sortBy(relatedAlerts, [
+      (a) => a.properties.validTime,
+    ])[0];
 
     return initialRelatedAlert.properties.validTime;
   }

@@ -2,12 +2,11 @@ import { GAirmetFeature } from "../../../services/aviationWeather";
 import { capitalizeFirstLetter } from "../../../helpers/string";
 import { formatSeverity } from "../../../helpers/aviationAlerts";
 import React from "react";
-import omit from "lodash/omit";
+import { isEqual, omit } from "es-toolkit";
 import styled from "@emotion/styled";
 import { getAlertEnd, getAlertStart } from "../alertsSlice";
 import { useAppSelector } from "../../../hooks";
 import { timeZoneSelector } from "../../weather/weatherSlice";
-import isEqual from "lodash/isEqual";
 import { format } from "date-fns";
 import { TZDate } from "@date-fns/tz";
 
@@ -114,7 +113,7 @@ export default function Description({ alerts }: DescriptionProps) {
 
   function hasSimilarData(a: GAirmetFeature, b: GAirmetFeature): boolean {
     const simplify = (alert: GAirmetFeature) =>
-      omit(alert.properties, "issueTime", "forecast", "validTime");
+      omit(alert.properties, ["issueTime", "forecast", "validTime"]);
 
     return isEqual(simplify(a), simplify(b));
   }

@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { faAngleDown, faAngleUp } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import throttle from "lodash/throttle";
+import { throttle } from "es-toolkit";
 import { useLayoutEffect, useState } from "react";
 
 const Button = styled(FontAwesomeIcon)<{ disabled: boolean }>`

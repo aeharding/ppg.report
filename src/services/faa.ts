@@ -1,7 +1,6 @@
 import axios from "axios";
 import type { GeoJsonObject } from "geojson";
-import uniqWith from "lodash/uniqWith";
-import isEqual from "lodash/isEqual";
+import { isEqual, uniqWith } from "es-toolkit";
 
 export interface TFRFeature {
   properties: {

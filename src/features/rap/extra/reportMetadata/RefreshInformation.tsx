@@ -2,7 +2,7 @@ import { differenceInMinutes, formatDistanceToNow } from "date-fns";
 import { useAppSelector } from "../../../../hooks";
 import styled from "@emotion/styled";
 import { DataListItem } from "../../../../DataList";
-import capitalize from "lodash/capitalize";
+import { capitalize } from "es-toolkit";
 
 const Label = styled.div``;
 

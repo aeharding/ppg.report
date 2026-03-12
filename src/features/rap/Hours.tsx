@@ -6,7 +6,7 @@ import ReportWatchdog from "./ReportWatchdog";
 import Nav from "./Nav";
 import roundedScrollbar from "./roundedScrollbar";
 import { css } from "@emotion/react";
-import throttle from "lodash/throttle";
+import { throttle } from "es-toolkit";
 import ReportElevationDiscrepancy, {
   ELEVATION_DISCREPANCY_THRESHOLD,
 } from "./warnings/ReportElevationDiscrepancy";

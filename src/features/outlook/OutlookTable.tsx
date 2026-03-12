@@ -4,7 +4,7 @@ import { timeZoneSelector, Weather } from "../weather/weatherSlice";
 import { OpenMeteoWeather } from "../../services/openMeteo";
 import { useMemo } from "react";
 import OutlookRow from "./OutlookRow";
-import compact from "lodash/fp/compact";
+import { compact } from "es-toolkit";
 import styled from "@emotion/styled";
 import Day from "./Day";
 import { TZDate } from "@date-fns/tz";
