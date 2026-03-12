@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { GeometryObject } from "geojson";
-import uniqBy from "lodash/uniqBy";
+import { uniqBy } from "es-toolkit";
 
 export interface TAFReport {
   raw: string;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { WindsAloftReport } from "../models/WindsAloft";
 import { notEmpty } from "../helpers/array";
-import zipObject from "lodash/zipObject";
+import { zipObject } from "es-toolkit";
 import * as velitherm from "velitherm";
 
 const FORECAST_DAYS = 7;

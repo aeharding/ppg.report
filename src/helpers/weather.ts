@@ -1,5 +1,5 @@
 import { addHours } from "date-fns";
-import sortBy from "lodash/sortBy";
+import { sortBy } from "es-toolkit";
 import {
   Alert,
   isGAirmetAlert,
@@ -43,36 +43,38 @@ export function sortAlerts(
   const NON_DANGEROUS_OFFSET = 1e15;
   const GAIRMET_READ_OFFSET = 2e15;
 
-  return sortBy(alerts, (alert) => {
-    const dangerousPrefix = isAlertDangerous(alert)
-      ? DANGEROUS_OFFSET
-      : NON_DANGEROUS_OFFSET;
+  return sortBy(alerts, [
+    (alert) => {
+      const dangerousPrefix = isAlertDangerous(alert)
+        ? DANGEROUS_OFFSET
+        : NON_DANGEROUS_OFFSET;
 
-    // If the setting for always marking G-Airmets as read is on,
-    // push all G-Airmets to the bottom of the list of alerts
-    if (gAirmetRead === OnOff.On && isGAirmetAlert(alert))
+      // If the setting for always marking G-Airmets as read is on,
+      // push all G-Airmets to the bottom of the list of alerts
+      if (gAirmetRead === OnOff.On && isGAirmetAlert(alert))
+        return (
+          -new Date(
+            extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts)),
+          ).getTime() + GAIRMET_READ_OFFSET
+        );
+
+      if (isWeatherAlert(alert))
+        return -new Date(alert.properties.onset).getTime() + dangerousPrefix;
+
+      if (isTFRAlert(alert))
+        return (
+          -new Date(
+            alert.properties.coreNOTAMData.notam.effectiveStart,
+          ).getTime() + dangerousPrefix
+        );
+
       return (
         -new Date(
           extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts)),
-        ).getTime() + GAIRMET_READ_OFFSET
-      );
-
-    if (isWeatherAlert(alert))
-      return -new Date(alert.properties.onset).getTime() + dangerousPrefix;
-
-    if (isTFRAlert(alert))
-      return (
-        -new Date(
-          alert.properties.coreNOTAMData.notam.effectiveStart,
         ).getTime() + dangerousPrefix
       );
-
-    return (
-      -new Date(
-        extractIssuedTimestamp(alert, findRelatedAlerts(alert, allAlerts)),
-      ).getTime() + dangerousPrefix
-    );
-  });
+    },
+  ]);
 }
 
 /**
