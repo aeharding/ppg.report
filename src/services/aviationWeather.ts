@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { GeometryObject } from "geojson";
+import uniqBy from "lodash/uniqBy";
 
 export interface TAFReport {
   raw: string;
@@ -248,23 +249,26 @@ export async function getAviationAlerts({
     features: Omit<AviationAlertFeature, "id">[];
   }>("/api/aviationalerts", { params: { lat, lon } });
 
-  return response.data.features
-    .filter((feature) => {
-      if (
-        "altitudeLow1" in feature.properties &&
-        feature.properties.altitudeLow1 > 3000
-      )
-        return false;
+  return uniqBy(
+    response.data.features
+      .filter((feature) => {
+        if (
+          "altitudeLow1" in feature.properties &&
+          feature.properties.altitudeLow1 > 3000
+        )
+          return false;
 
-      return true;
-    })
-    .map(
-      (feature) =>
-        ({
-          ...feature,
-          id: generateFeatureId(feature),
-        }) as AviationAlertFeature,
-    );
+        return true;
+      })
+      .map(
+        (feature) =>
+          ({
+            ...feature,
+            id: generateFeatureId(feature),
+          }) as AviationAlertFeature,
+      ),
+    (feature) => feature.id,
+  );
 }
 
 function generateFeatureId(feature: Omit<AviationAlertFeature, "id">): string {
@@ -275,7 +279,7 @@ function generateFeatureId(feature: Omit<AviationAlertFeature, "id">): string {
   }
 
   if ("airSigmetType" in p) {
-    return `sigmet-${p.icaoId}-${p.alphaChar}-${p.hazard}-${p.validTimeFrom}`;
+    return `sigmet-${p.alphaChar}-${p.hazard}-${p.validTimeFrom}`;
   }
 
   if ("data" in p && p.data === "ISIGMET") {
