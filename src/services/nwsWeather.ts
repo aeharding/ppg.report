@@ -176,7 +176,6 @@ export async function getAlerts({
   const { data } = await axios.get<Alerts>(`/api/weather/alerts/active`, {
     params: {
       point: `${lat},${lon}`,
-      message_type: "alert",
       status: "actual",
     },
   });
