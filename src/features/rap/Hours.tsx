@@ -18,6 +18,7 @@ import Errors from "./Errors";
 import { useAppSelector } from "../../hooks";
 import { WindsAloftHour } from "../../models/WindsAloft";
 import { OnOff } from "./extra/settings/settingEnums";
+import { isApplePlatform } from "../../helpers/device";
 
 const browser = detect();
 
@@ -162,6 +163,18 @@ interface TableProps {
   hours: WindsAloftHour[];
 }
 
+function determineScrollBehaviorByModifierKey(e: KeyboardEvent): Distance {
+  if (isApplePlatform()) {
+    if (e.metaKey) return Distance.End;
+    if (e.altKey) return Distance.Page;
+    return Distance.Hour;
+  }
+
+  if (e.ctrlKey) return Distance.End;
+  if (e.altKey || e.metaKey) return Distance.Page;
+  return Distance.Hour;
+}
+
 export default function Hours({ hours }: TableProps) {
   const elevation = useAppSelector((state) => state.weather.elevation);
 
@@ -205,9 +218,7 @@ export default function Hours({ hours }: TableProps) {
     const callback = (e: KeyboardEvent) => {
       if (!scrollViewRef.current) return;
 
-      let distance = Distance.Hour;
-      if (e.metaKey) distance = Distance.End;
-      if (e.altKey) distance = Distance.Page;
+      const distance = determineScrollBehaviorByModifierKey(e);
 
       switch (e.key) {
         case "ArrowLeft":

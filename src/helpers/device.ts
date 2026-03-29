@@ -54,6 +54,10 @@ export function isMobile() {
   );
 }
 
+export function isApplePlatform(): boolean {
+  return /Mac|iPhone|iPad/.test(navigator.userAgent);
+}
+
 /**
  * Important: Must check to make sure UA is Safari first
  */
