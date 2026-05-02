@@ -1,3 +1,28 @@
+const DEG_TO_RAD = Math.PI / 180;
+const EARTH_RADIUS_METERS = 6371000;
+
+export interface LatLon {
+  lat: number;
+  lon: number;
+}
+
+/**
+ * Great-circle distance between two points (in meters), using the
+ * haversine formula.
+ */
+export function getDistance(a: LatLon, b: LatLon): number {
+  const phi1 = a.lat * DEG_TO_RAD;
+  const phi2 = b.lat * DEG_TO_RAD;
+  const dPhi = (b.lat - a.lat) * DEG_TO_RAD;
+  const dLambda = (b.lon - a.lon) * DEG_TO_RAD;
+
+  const h =
+    Math.sin(dPhi / 2) ** 2 +
+    Math.cos(phi1) * Math.cos(phi2) * Math.sin(dLambda / 2) ** 2;
+
+  return 2 * EARTH_RADIUS_METERS * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
 export function isPossiblyWithinUSA(
   latitude: number,
   longitude: number,
