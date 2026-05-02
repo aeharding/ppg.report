@@ -1,19 +1,19 @@
-import { ColorSpace, convertColorToSpace } from "@color-spaces/convert";
+import chroma from "chroma-js";
 
 export function outputP3ColorFromLab(
   lab: [number, number, number],
   cssProperty = "color",
 ) {
-  const {
-    values: [r, g, b],
-  } = convertColorToSpace(
-    { type: ColorSpace.Lab, values: lab },
-    ColorSpace.sRGB,
-  );
+  // `rgb(false)` returns unclamped channels in the 0–255 range so the browser
+  // can clamp on its own (matches the previous `@color-spaces/convert`
+  // behavior). The display-p3 line reuses the normalized sRGB values directly,
+  // which is intentionally unfaithful to the actual P3 gamut — it produces a
+  // slightly more saturated rendering on wide-gamut displays.
+  const [r, g, b] = chroma.lab(...lab).rgb(false);
 
   return `
-    ${cssProperty}: rgb(${r * 255}, ${g * 255}, ${b * 255});
-    ${cssProperty}: color(display-p3 ${r} ${g} ${b});
+    ${cssProperty}: rgb(${r}, ${g}, ${b});
+    ${cssProperty}: color(display-p3 ${r / 255} ${g / 255} ${b / 255});
   `;
 }
 
