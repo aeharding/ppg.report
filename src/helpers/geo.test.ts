@@ -1,4 +1,39 @@
-import { isPossiblyWithinUSA } from "./geo";
+import { getDistance, isPossiblyWithinUSA } from "./geo";
+
+describe("getDistance", () => {
+  it("returns 0 for identical coordinates", () => {
+    const p = { lat: 40.7128, lon: -74.006 };
+    expect(getDistance(p, p)).toBe(0);
+  });
+
+  it("computes a known great-circle distance within 0.5%", () => {
+    // New York City -> Los Angeles, ~3,936 km
+    const meters = getDistance(
+      { lat: 40.7128, lon: -74.006 },
+      { lat: 34.0522, lon: -118.2437 },
+    );
+    expect(meters).toBeGreaterThan(3_920_000);
+    expect(meters).toBeLessThan(3_955_000);
+  });
+
+  it("is symmetric", () => {
+    const paris = { lat: 48.8566, lon: 2.3522 };
+    const london = { lat: 51.5074, lon: -0.1278 };
+    expect(getDistance(paris, london)).toBeCloseTo(
+      getDistance(london, paris),
+      6,
+    );
+  });
+
+  it("handles tiny deltas without NaN", () => {
+    const meters = getDistance(
+      { lat: 0, lon: 0 },
+      { lat: 0.0001, lon: 0.0001 },
+    );
+    expect(Number.isFinite(meters)).toBe(true);
+    expect(meters).toBeGreaterThan(0);
+  });
+});
 
 describe("isPossiblyWithinUSA", () => {
   describe("should return true", () => {
