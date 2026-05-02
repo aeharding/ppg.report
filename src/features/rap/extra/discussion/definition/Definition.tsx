@@ -1,12 +1,12 @@
 import { detect } from "detect-browser";
-import { isTouchDevice } from "../../../../../helpers/device";
+import { supportsHover } from "../../../../../helpers/device";
 import DefinitionDialog from "./DefinitionDialog";
 import DefinitionTooltip from "./DefinitionTooltip";
 import { css, keyframes } from "@emotion/react";
 
 const browser = detect();
 
-const touchDevice = isTouchDevice();
+const hoverDevice = supportsHover();
 
 const definitionUnderlineColorFadeIn = keyframes`
   from {
@@ -52,7 +52,7 @@ export interface DefinitionTooltipProps {
 }
 
 export default function Definition(props: DefinitionTooltipProps) {
-  if (touchDevice) return <DefinitionDialog {...props} />;
+  if (!hoverDevice) return <DefinitionDialog {...props} />;
 
   return <DefinitionTooltip {...props} />;
 }
