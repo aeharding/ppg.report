@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { getTrimmedCoordinates } from "../helpers/coordinates";
 import { useAppSelector } from "../hooks";
 import { search } from "../services/geocode";
-import { isTouchDevice } from "../helpers/device";
+import { supportsHover } from "../helpers/device";
 import { outputP3ColorFromRGB } from "../helpers/colors";
 import SubmitButton, { State } from "./SubmitButton";
 import { AxiosError } from "axios";
@@ -135,7 +135,7 @@ export default function Search({ ...rest }) {
             enterKeyHint="go"
             autoCorrect="off"
             placeholder={t("Search locations")}
-            autoFocus={locationsLength === 0 || !isTouchDevice()}
+            autoFocus={locationsLength === 0 || supportsHover()}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);

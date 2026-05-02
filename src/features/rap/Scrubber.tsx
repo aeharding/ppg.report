@@ -7,7 +7,7 @@ import { CSSTransition } from "react-transition-group";
 import {
   headerIsFixed,
   isLandscape,
-  isTouchDevice,
+  supportsHover,
 } from "../../helpers/device";
 import { smoothScrollBodyTo } from "../../helpers/scroll";
 
@@ -234,7 +234,7 @@ export default function Scrubber({ scrollViewRef, children }: ScrubberProps) {
     })();
   }, [enabled]);
 
-  if (!isTouchDevice()) return <>{children}</>;
+  if (supportsHover()) return <>{children}</>;
 
   return (
     <div
