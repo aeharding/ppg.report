@@ -1,5 +1,4 @@
 import { differenceInDays, differenceInHours } from "date-fns";
-import getDistance from "geolib/es/getDistance";
 import { getAlertId } from "../../helpers/alert";
 import { Alert } from "../alerts/alertsSlice";
 import {
@@ -48,6 +47,26 @@ import {
   MAX_LOCATIONS,
   MAX_DISTANCE_MATCH,
 } from "./constants";
+
+const DEG_TO_RAD = Math.PI / 180;
+const EARTH_RADIUS_METERS = 6371000;
+
+function getDistance(a: UserLocation, b: UserLocation): number {
+  const lat1 = a.lat * DEG_TO_RAD;
+  const lat2 = b.lat * DEG_TO_RAD;
+
+  const dLat = (b.lat - a.lat) * DEG_TO_RAD;
+  const dLon = (b.lon - a.lon) * DEG_TO_RAD;
+
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) *
+      Math.cos(lat2) *
+      Math.sin(dLon / 2) ** 2;
+
+  return 2 * EARTH_RADIUS_METERS *
+    Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
 
 export function getLocations(): UserLocation[] {
   const locations: UserLocation[] = JSON.parse(
