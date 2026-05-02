@@ -99,16 +99,20 @@ export default function Tooltip({
     gestureClose,
   ]);
 
+  // Derived state: sync to `true` immediately when `isMounted` flips on
+  // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes)
+  if (isMounted && !delayedMounted) {
+    setDelayedMounted(true);
+  }
+
   useEffect(() => {
-    if (isMounted) {
-      setDelayedMounted(isMounted);
-      return;
-    }
+    if (isMounted) return;
 
     // Hack to prohibit the class from being immediately removed
-    setTimeout(() => {
-      setDelayedMounted(isMounted);
+    const timeout = setTimeout(() => {
+      setDelayedMounted(false);
     });
+    return () => clearTimeout(timeout);
   }, [isMounted]);
 
   const renderedContent = contents();
