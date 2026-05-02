@@ -132,9 +132,15 @@ describe("outputP3ColorFromLab", () => {
 
     const [pr, pg, pb] = parseDisplayP3Channels(css);
     const clampUnit = (n: number) => Math.max(0, Math.min(1, n));
-    expect(Math.abs(clampUnit(pr) - er / 255)).toBeLessThanOrEqual(P3_TOLERANCE);
-    expect(Math.abs(clampUnit(pg) - eg / 255)).toBeLessThanOrEqual(P3_TOLERANCE);
-    expect(Math.abs(clampUnit(pb) - eb / 255)).toBeLessThanOrEqual(P3_TOLERANCE);
+    expect(Math.abs(clampUnit(pr) - er / 255)).toBeLessThanOrEqual(
+      P3_TOLERANCE,
+    );
+    expect(Math.abs(clampUnit(pg) - eg / 255)).toBeLessThanOrEqual(
+      P3_TOLERANCE,
+    );
+    expect(Math.abs(clampUnit(pb) - eb / 255)).toBeLessThanOrEqual(
+      P3_TOLERANCE,
+    );
   });
 });
 
@@ -142,9 +148,7 @@ describe("outputP3ColorFromRGB", () => {
   it("emits the rgb() and display-p3 lines with normalized channels", () => {
     const css = outputP3ColorFromRGB([255, 128, 0]);
     expect(css).toMatch(/color:\s*rgb\(255,\s*128,\s*0\)/);
-    expect(css).toMatch(
-      /color:\s*color\(display-p3\s+1\s+0\.50196\d*\s+0\)/,
-    );
+    expect(css).toMatch(/color:\s*color\(display-p3\s+1\s+0\.50196\d*\s+0\)/);
   });
 
   it("respects the cssProperty argument", () => {
