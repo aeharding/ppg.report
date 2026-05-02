@@ -4,6 +4,16 @@ export function isTouchDevice(): boolean {
   return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
 
+/**
+ * True only when the primary input supports hovering with a precise pointer
+ * (mouse / trackpad). Use this instead of `isTouchDevice()` for hover-vs-click
+ * UX decisions, since modern laptops may report touch capability while still
+ * being primarily mouse-driven.
+ */
+export function supportsHover(): boolean {
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
 export function isLandscape(): boolean {
   return window.matchMedia("(orientation: landscape)").matches;
 }
