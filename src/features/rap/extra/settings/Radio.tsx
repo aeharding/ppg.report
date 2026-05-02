@@ -77,10 +77,14 @@ export function Radio<T extends string>({
 }: RadioProps<T>) {
   // Cached value provides instant update
   const [cachedValue, setCachedValue] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
 
-  useEffect(() => {
+  // Derived state: re-sync cached value when the prop changes
+  // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes)
+  if (prevValue !== value) {
+    setPrevValue(value);
     setCachedValue(value);
-  }, [value]);
+  }
 
   return (
     <div>
