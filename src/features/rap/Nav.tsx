@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { isTouchDevice } from "../../helpers/device";
+import { supportsHover } from "../../helpers/device";
 
 const Container = styled.div<{ flip: boolean }>`
   position: absolute;
@@ -99,7 +99,7 @@ type NavProps = React.HTMLAttributes<HTMLDivElement> & {
 } & ({ left: true } | { right: true });
 
 export default function Nav(props: NavProps) {
-  if (isTouchDevice()) return null;
+  if (!supportsHover()) return null;
 
   return (
     <Container flip={"right" in props} {...props}>

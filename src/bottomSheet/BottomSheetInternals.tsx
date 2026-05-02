@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { BottomSheet as SpringBottomSheet } from "react-spring-bottom-sheet";
 import { faTimes } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isTouchDevice } from "../helpers/device";
+import { supportsHover } from "../helpers/device";
 
 import "react-spring-bottom-sheet/dist/style.css";
 
@@ -109,12 +109,12 @@ export default function BottomSheetInternals({
         }
         snapPoints={({ maxHeight, minHeight }) => [
           Math.min(
-            isTouchDevice()
-              ? maxHeight -
+            supportsHover()
+              ? maxHeight - maxHeight / 15
+              : maxHeight -
                   (+getComputedStyle(document.documentElement)
                     .getPropertyValue("--sat")
-                    .slice(0, -2) + 8 || 0)
-              : maxHeight - maxHeight / 15,
+                    .slice(0, -2) + 8 || 0),
             minHeight,
           ),
         ]}
