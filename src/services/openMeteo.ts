@@ -1,5 +1,5 @@
 import axios from "axios";
-import { WindsAloftReport } from "../models/WindsAloft";
+import { WindsAloftAltitude, WindsAloftReport } from "../models/WindsAloft";
 import { notEmpty } from "../helpers/array";
 import { zipObject } from "es-toolkit";
 import * as velitherm from "velitherm";
@@ -214,54 +214,62 @@ function convertOpenMeteoToWindsAloft(
     elevationInM: openMeteoResponse.elevation,
     source: "openMeteo",
     hours: openMeteoResponse.hourly.time.map((time, index) => {
+      const altitudes = [
+        {
+          altitudeInM: openMeteoResponse.elevation,
+          windSpeedInKph: openMeteoResponse.hourly.wind_speed_10m[index],
+          windDirectionInDeg:
+            openMeteoResponse.hourly.wind_direction_10m[index],
+          temperatureInC: openMeteoResponse.hourly.temperature_2m[index],
+          dewpointInC: openMeteoResponse.hourly.dew_point_2m[index],
+          pressure: Math.round(
+            openMeteoResponse.hourly.surface_pressure[index],
+          ),
+        },
+      ]
+        .concat(
+          AGL_ALTITUDES.map((agl) => ({
+            altitudeInM: openMeteoResponse.elevation + agl,
+            windSpeedInKph:
+              openMeteoResponse.hourly[`wind_speed_${agl}m`][index],
+            windDirectionInDeg:
+              openMeteoResponse.hourly[`wind_direction_${agl}m`][index],
+            temperatureInC:
+              openMeteoResponse.hourly[`temperature_${agl}m`][index],
+            dewpointInC: velitherm.dewPoint(
+              calculateRelativeHumidity(
+                openMeteoResponse.elevation,
+                agl,
+                openMeteoResponse.hourly[`surface_pressure`][index],
+                openMeteoResponse.hourly[`temperature_${agl}m`][index],
+                openMeteoResponse.hourly[`relative_humidity_2m`][index],
+              ),
+              openMeteoResponse.hourly[`temperature_${agl}m`][index],
+            ),
+            pressure: Math.round(
+              velitherm.pressureFromAltitude(
+                openMeteoResponse.elevation + agl,
+                openMeteoResponse.hourly["pressure_msl"][index],
+                (openMeteoResponse.hourly[`temperature_${agl}m`][index] +
+                  openMeteoResponse.hourly[`temperature_2m`][index]) /
+                  2,
+              ),
+            ),
+          })),
+        )
+        .concat(pressureAltitudeHours[index]);
+
+      // Some models (e.g. ECMWF via best_match outside the US) return winds at
+      // the AGL altitudes but `null` temperature/dewpoint there. Fill those gaps
+      // so the profile — and the lapse rate derived from it — stays continuous.
+      fillMissingByAltitude(altitudes, "temperatureInC");
+      fillMissingByAltitude(altitudes, "dewpointInC");
+
       return {
         date: new Date(time * 1_000).toISOString(),
         cape: openMeteoResponse.hourly.cape[index],
         cin: openMeteoResponse.hourly.convective_inhibition[index],
-        altitudes: [
-          {
-            altitudeInM: openMeteoResponse.elevation,
-            windSpeedInKph: openMeteoResponse.hourly.wind_speed_10m[index],
-            windDirectionInDeg:
-              openMeteoResponse.hourly.wind_direction_10m[index],
-            temperatureInC: openMeteoResponse.hourly.temperature_2m[index],
-            dewpointInC: openMeteoResponse.hourly.dew_point_2m[index],
-            pressure: Math.round(
-              openMeteoResponse.hourly.surface_pressure[index],
-            ),
-          },
-        ]
-          .concat(
-            AGL_ALTITUDES.map((agl) => ({
-              altitudeInM: openMeteoResponse.elevation + agl,
-              windSpeedInKph:
-                openMeteoResponse.hourly[`wind_speed_${agl}m`][index],
-              windDirectionInDeg:
-                openMeteoResponse.hourly[`wind_direction_${agl}m`][index],
-              temperatureInC:
-                openMeteoResponse.hourly[`temperature_${agl}m`][index],
-              dewpointInC: velitherm.dewPoint(
-                calculateRelativeHumidity(
-                  openMeteoResponse.elevation,
-                  agl,
-                  openMeteoResponse.hourly[`surface_pressure`][index],
-                  openMeteoResponse.hourly[`temperature_${agl}m`][index],
-                  openMeteoResponse.hourly[`relative_humidity_2m`][index],
-                ),
-                openMeteoResponse.hourly[`temperature_${agl}m`][index],
-              ),
-              pressure: Math.round(
-                velitherm.pressureFromAltitude(
-                  openMeteoResponse.elevation + agl,
-                  openMeteoResponse.hourly["pressure_msl"][index],
-                  (openMeteoResponse.hourly[`temperature_${agl}m`][index] +
-                    openMeteoResponse.hourly[`temperature_2m`][index]) /
-                    2,
-                ),
-              ),
-            })),
-          )
-          .concat(pressureAltitudeHours[index]),
+        altitudes,
       };
     }),
   };
@@ -297,6 +305,53 @@ function generateWindsAloftParams(): HourlyPressureParams[] {
 
 function generateWeatherParams(): HourlyWeatherParams[] {
   return WEATHER_VARIABLES.slice();
+}
+
+function isFiniteNumber(value: number | null | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * Linearly interpolate (by altitude) any missing values for `key` across the
+ * vertical profile, using the nearest levels above and below that do have a
+ * value. Levels at the very top/bottom with no neighbor on one side fall back
+ * to the nearest available value. Mutates `altitudes` in place.
+ *
+ * `altitudes` is assumed to be sorted ascending by `altitudeInM`.
+ */
+export function fillMissingByAltitude(
+  altitudes: WindsAloftAltitude[],
+  key: "temperatureInC" | "dewpointInC",
+): void {
+  const valid = altitudes.map((altitude) => isFiniteNumber(altitude[key]));
+
+  for (let index = 0; index < altitudes.length; index++) {
+    if (valid[index]) continue;
+
+    let below = index - 1;
+    while (below >= 0 && !valid[below]) below--;
+
+    let above = index + 1;
+    while (above < altitudes.length && !valid[above]) above++;
+
+    const hasBelow = below >= 0;
+    const hasAbove = above < altitudes.length;
+
+    if (hasBelow && hasAbove) {
+      const low = altitudes[below];
+      const high = altitudes[above];
+      const span = high.altitudeInM - low.altitudeInM;
+      const factor =
+        span === 0
+          ? 0
+          : (altitudes[index].altitudeInM - low.altitudeInM) / span;
+      altitudes[index][key] = low[key] + factor * (high[key] - low[key]);
+    } else if (hasBelow) {
+      altitudes[index][key] = altitudes[below][key];
+    } else if (hasAbove) {
+      altitudes[index][key] = altitudes[above][key];
+    }
+  }
 }
 
 function calculateRelativeHumidity(
