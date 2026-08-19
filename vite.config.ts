@@ -52,12 +52,23 @@ export default defineConfig(() => {
             },
             {
               handler: "NetworkFirst",
-              urlPattern: /\/api\/weather.*/,
+              urlPattern: /\/api\/openmeteo.*/,
               options: {
-                cacheName: "apiWeatherCache",
+                cacheName: "apiOpenMeteoCache",
                 expiration: {
                   maxEntries: 100,
                   maxAgeSeconds: 60 * 60 * 4, // 4 Hours
+                },
+              },
+            },
+            {
+              handler: "NetworkFirst",
+              urlPattern: /\/api\/timezone.*/,
+              options: {
+                cacheName: "apiTimezoneCache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 Days
                 },
               },
             },
